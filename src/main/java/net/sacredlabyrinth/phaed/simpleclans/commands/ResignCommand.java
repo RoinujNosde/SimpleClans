@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.commands;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -26,13 +27,13 @@ public class ResignCommand {
         SimpleClans plugin = SimpleClans.getInstance();
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.member.resign")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
         

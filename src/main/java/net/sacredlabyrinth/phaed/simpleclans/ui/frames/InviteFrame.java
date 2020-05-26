@@ -40,18 +40,18 @@ public class InviteFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage));
-		add(Components.getNextPageComponent(7, this::nextPage));
+		add(Components.getPreviousPageComponent(6, this::previousPage, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 
 			Player player = players.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.invite.player.title", player.getName()),
-					Collections.singletonList(lang("gui.invite.player.lore")), Material.PLAYER_HEAD, slot);
+					lang("gui.invite.player.title",getViewer(), player.getName()),
+					Collections.singletonList(lang("gui.invite.player.lore",getViewer())), Material.PLAYER_HEAD, slot);
 			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
 			if (itemMeta != null) {
@@ -83,7 +83,7 @@ public class InviteFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.invite.title");
+		return lang("gui.invite.title",getViewer());
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -24,20 +25,20 @@ public class BbCommand {
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isVerified()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("clan.is.not.verified"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("clan.is.not.verified",player));
             return;
         }
 
         if (arg.length == 0) {
             if (!plugin.getPermissionsManager().has(player, "simpleclans.member.bb")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
             clan.displayBb(player);
@@ -49,7 +50,7 @@ public class BbCommand {
                 return;
             }
             cp.getClan().clearBb();
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("cleared.bb"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("cleared.bb",player));
             return;
         }
 

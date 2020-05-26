@@ -367,7 +367,7 @@ public final class PermissionsManager {
     	boolean hasBukkitPermission = has(player, permission.getBukkitPermission());
     	if (!hasBukkitPermission) {
     	    if (notify) {
-                ChatBlock.sendMessage(player, lang(ChatColor.RED + "insufficient.permissions"));
+                ChatBlock.sendMessage(player, lang(ChatColor.RED + "insufficient.permissions",player));
             }
     		return false;
     	}
@@ -394,8 +394,8 @@ public final class PermissionsManager {
 		}
 		
 		if (notify && !hasLevel && !hasRankPermission) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this"),
-            		permission.getPermissionLevel() == PermissionLevel.LEADER ? lang("leader") : lang("trusted"), permission.toString()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this",player),
+            		permission.getPermissionLevel() == PermissionLevel.LEADER ? lang("leader",player) : lang("trusted",player), permission.toString()));
 		}
     	
     	return hasLevel || hasRankPermission;

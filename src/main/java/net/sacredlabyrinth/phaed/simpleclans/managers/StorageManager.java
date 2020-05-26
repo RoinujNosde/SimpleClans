@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import com.google.common.base.Charsets;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.storage.DBCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.MySQLCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
@@ -76,7 +77,7 @@ public final class StorageManager {
             core = new MySQLCore(plugin.getSettingsManager().getHost(), plugin.getSettingsManager().getDatabase(), plugin.getSettingsManager().getPort(), plugin.getSettingsManager().getUsername(), plugin.getSettingsManager().getPassword());
 
             if (core.checkConnection()) {
-                plugin.getLogger().info(plugin.getLang("mysql.connection.successful"));
+                plugin.getLogger().info(lang("mysql.connection.successful"));
 
                 if (!core.existsTable("sc_clans")) {
                 	plugin.getLogger().info("Creating table: sc_clans");
@@ -143,14 +144,14 @@ public final class StorageManager {
                     core.execute(query);
                 }
             } else {
-                SimpleClans.getInstance().getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + plugin.getLang("mysql.connection.failed"));
+                SimpleClans.getInstance().getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + lang("mysql.connection.failed"));
             }
         } else {
             core = new SQLiteCore(plugin.getDataFolder().getPath());
 
             if (core.checkConnection()) {
 
-            	plugin.getLogger().info(plugin.getLang("sqlite.connection.successful"));
+            	plugin.getLogger().info(lang("sqlite.connection.successful"));
 
                 if (!core.existsTable("sc_clans")) {
                 	plugin.getLogger().info("Creating table: sc_clans");
@@ -217,7 +218,7 @@ public final class StorageManager {
                     core.execute(query);
                 }
             } else {
-                SimpleClans.getInstance().getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + plugin.getLang("sqlite.connection.failed"));
+                SimpleClans.getInstance().getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + lang("sqlite.connection.failed"));
             }
         }
     }
@@ -247,7 +248,7 @@ public final class StorageManager {
         }
 
         if (!clans.isEmpty()) {
-        	plugin.getLogger().info(MessageFormat.format(plugin.getLang("clans"), clans.size()));
+        	plugin.getLogger().info(MessageFormat.format(lang("clans"), clans.size()));
         }
 
         List<ClanPlayer> cps = retrieveClanPlayers();
@@ -263,7 +264,7 @@ public final class StorageManager {
         }
 
         if (!cps.isEmpty()) {
-        	plugin.getLogger().info(MessageFormat.format(plugin.getLang("clan.players"), cps.size()));
+        	plugin.getLogger().info(MessageFormat.format(lang("clan.players"), cps.size()));
         }
     }
 
@@ -306,7 +307,7 @@ public final class StorageManager {
         }
 
         for (Clan clan : purge) {
-        	plugin.getLogger().info(MessageFormat.format(plugin.getLang("purging.clan"), clan.getName()));
+        	plugin.getLogger().info(MessageFormat.format(lang("purging.clan"), clan.getName()));
             deleteClan(clan);
             clans.remove(clan);
         }
@@ -322,7 +323,7 @@ public final class StorageManager {
         }
 
         for (ClanPlayer cp : purge) {
-        	plugin.getLogger().info(MessageFormat.format(plugin.getLang("purging.player.data"), cp.getName()));
+        	plugin.getLogger().info(MessageFormat.format(lang("purging.player.data"), cp.getName()));
             deleteClanPlayer(cp);
             cps.remove(cp);
         }
@@ -828,7 +829,7 @@ public final class StorageManager {
     public void deleteClanPlayer(ClanPlayer cp) {
         final Clan clan = cp.getClan();
         if (clan != null) {
-            clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(plugin.getLang("has.been.purged"), cp.getName()));
+            clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(lang("has.been.purged"), cp.getName()));
             updateClan(clan, false);
         }
 		String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
@@ -1112,7 +1113,7 @@ public final class StorageManager {
 
 
         if (!cps.isEmpty()) {
-        	plugin.getLogger().info(MessageFormat.format(plugin.getLang("clan.players"), cps.size()));
+        	plugin.getLogger().info(MessageFormat.format(lang("clan.players"), cps.size()));
         }
         SimpleClans.getInstance().setUUID(true);
     }

@@ -41,22 +41,22 @@ public class LeaderboardFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage));
-		add(Components.getNextPageComponent(7, this::nextPage));
+		add(Components.getPreviousPageComponent(6, this::previousPage, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			ClanPlayer cp = clanPlayers.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.leaderboard.player.title", i + 1, cp.getName()),
+					lang("gui.leaderboard.player.title",getViewer(), i + 1, cp.getName()),
 					Arrays.asList(
-							cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan")
-									: lang("gui.playerdetails.player.lore.clan",
+							cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan",getViewer())
+									: lang("gui.playerdetails.player.lore.clan",getViewer(),
 											cp.getClan().getColorTag(), cp.getClan().getName()),
-							lang("gui.playerdetails.player.lore.kdr", Helper.formatKDR(cp.getKDR())),
-							lang("gui.playerdetails.player.lore.last.seen", cp.getLastSeenString())),
+							lang("gui.playerdetails.player.lore.kdr",getViewer(), Helper.formatKDR(cp.getKDR())),
+							lang("gui.playerdetails.player.lore.last.seen",getViewer(), cp.getLastSeenString())),
 					Material.PLAYER_HEAD, slot);
 			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
@@ -90,7 +90,7 @@ public class LeaderboardFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.leaderboard.title", clanPlayers.size());
+		return lang("gui.leaderboard.title",getViewer(), clanPlayers.size());
 	}
 
 	@Override

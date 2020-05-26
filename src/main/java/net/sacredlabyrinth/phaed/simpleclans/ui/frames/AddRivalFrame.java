@@ -42,21 +42,21 @@ public class AddRivalFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage));
-		add(Components.getNextPageComponent(7, this::nextPage));
+		add(Components.getPreviousPageComponent(6, this::previousPage, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 
 			Clan notRival = notRivals.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.clanlist.clan.title", notRival.getColorTag(), notRival.getName()),
+					lang("gui.clanlist.clan.title",getViewer(), notRival.getColorTag(), notRival.getName()),
 					Arrays.asList(lang("gui.add.rival.clan.lore")), Material.RED_BANNER, slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rival %s %s", lang("add"), notRival.getTag()), false));
+					String.format("rival %s %s", lang("add",getViewer()), notRival.getTag()), false));
 			c.setPermission(ClickType.LEFT, RankPermission.RIVAL_ADD);
 			add(c);
 			slot++;
@@ -81,7 +81,7 @@ public class AddRivalFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.add.rival.title");
+		return lang("gui.add.rival.title",getViewer());
 	}
 
 	@Override

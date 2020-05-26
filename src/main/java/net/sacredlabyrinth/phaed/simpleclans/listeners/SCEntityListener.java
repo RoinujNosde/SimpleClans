@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Kill;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager.DataCallback;
 import net.sacredlabyrinth.phaed.simpleclans.Kill.Type;
@@ -137,7 +138,7 @@ public class SCEntityListener implements Listener
                     for (ClanPlayer cp : attackerCp.getClan().getOnlineMembers())
                     {
                         double money = Math.round((reward / attackerCp.getClan().getOnlineMembers().size()) * 100D) / 100D;
-                        cp.toPlayer().sendMessage(ChatColor.AQUA + MessageFormat.format(plugin.getLang("player.got.money"), money, victim.getName(), kdr));
+                        cp.toPlayer().sendMessage(ChatColor.AQUA + MessageFormat.format(lang("player.got.money",cp.toPlayer()), money, victim.getName(), kdr));
                         plugin.getPermissionsManager().playerGrantMoney(cp.toPlayer(), money);
                     }
                 }

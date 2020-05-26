@@ -38,10 +38,10 @@ public class AddPermissionFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage));
-		add(Components.getNextPageComponent(7, this::nextPage));
+		add(Components.getPreviousPageComponent(6, this::previousPage, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
@@ -49,8 +49,8 @@ public class AddPermissionFrame extends SCFrame {
 			String permission = availablePermissions[i];
 
 			SCComponent c = new SCComponentImpl(
-					lang("gui.add.permission.permission.title", permission),
-					Collections.singletonList(lang("gui.add.permission.permission.lore")), Material.PAPER, slot);
+					lang("gui.add.permission.permission.title",getViewer(), permission),
+					Collections.singletonList(lang("gui.add.permission.permission.lore",getViewer())), Material.PAPER, slot);
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("rank permissions %s add %s", rank.getName(), permission), true));
 			c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.add");
@@ -77,7 +77,7 @@ public class AddPermissionFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.add.permission.title");
+		return lang("gui.add.permission.title",getViewer());
 	}
 
 	@Override

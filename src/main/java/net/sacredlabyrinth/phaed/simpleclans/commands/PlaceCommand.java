@@ -1,7 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,27 +25,27 @@ public class PlaceCommand {
             Player player = (Player) sender;
 
             if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.place")) {
-                ChatBlock.sendMessage(sender, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(sender, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
         }
 
         if (arg.length != 2) {
-            ChatBlock.sendMessage(sender, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.0.place"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(sender, ChatColor.RED + MessageFormat.format(lang("usage.0.place",sender), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
         Player player = Helper.getPlayer(arg[0]);
 
         if (player == null) {
-            ChatBlock.sendMessage(sender, ChatColor.RED + plugin.getLang("no.player.matched"));
+            ChatBlock.sendMessage(sender, ChatColor.RED + lang("no.player.matched",sender));
             return;
         }
 
         Clan newClan = plugin.getClanManager().getClan(arg[1]);
 
         if (newClan == null) {
-            ChatBlock.sendMessage(sender, ChatColor.RED + plugin.getLang("the.clan.does.not.exist"));
+            ChatBlock.sendMessage(sender, ChatColor.RED + lang("the.clan.does.not.exist", sender));
             return;
         }
 
@@ -55,10 +55,10 @@ public class PlaceCommand {
             Clan oldClan = oldCp.getClan();
 
             if (oldClan.isLeader(player) && oldClan.getLeaders().size() <= 1) {
-                oldClan.clanAnnounce(player.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("clan.has.been.disbanded"), oldClan.getName()));
+                oldClan.clanAnnounce(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.has.been.disbanded",sender), oldClan.getName()));
                 oldClan.disband();
             } else {
-                oldClan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("0.has.resigned"), player.getName()));
+                oldClan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("0.has.resigned",sender), player.getName()));
                 oldClan.removePlayerFromClan(player.getUniqueId());
             }
         }
@@ -69,8 +69,8 @@ public class PlaceCommand {
             return;
         }
 
-        newClan.addBb(ChatColor.AQUA + MessageFormat.format(plugin.getLang("joined.the.clan"), player.getName()));
-        plugin.getClanManager().serverAnnounce(MessageFormat.format(plugin.getLang("has.joined"), player.getName(), newClan.getName()));
+        newClan.addBb(ChatColor.AQUA + MessageFormat.format(lang("joined.the.clan", sender), player.getName()));
+        plugin.getClanManager().serverAnnounce(MessageFormat.format(lang("has.joined", sender), player.getName(), newClan.getName()));
         newClan.addPlayerToClan(cp);
 
     }

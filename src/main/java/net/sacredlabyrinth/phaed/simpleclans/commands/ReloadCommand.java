@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.commands;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 
 import org.bukkit.ChatColor;
@@ -45,7 +46,7 @@ public class ReloadCommand
         {
             SimpleClans.getInstance().getPermissionsManager().updateClanPermissions(clan);
         }
-        ChatBlock.sendMessage(sender, ChatColor.AQUA + plugin.getLang("configuration.reloaded"));
+        ChatBlock.sendMessage(sender, ChatColor.AQUA + lang("configuration.reloaded",sender));
 
     }
 }

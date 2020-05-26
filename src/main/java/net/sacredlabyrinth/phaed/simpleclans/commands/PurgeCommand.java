@@ -7,6 +7,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 
@@ -30,7 +31,7 @@ public class PurgeCommand {
         SimpleClans plugin = SimpleClans.getInstance();
         if (sender instanceof Player) {
             if (!plugin.getPermissionsManager().has((Player) sender, "simpleclans.admin.purge")) {
-                ChatBlock.sendMessage(sender, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(sender, ChatColor.RED + lang("insufficient.permissions",sender));
                 return;
             }
         }
@@ -38,7 +39,7 @@ public class PurgeCommand {
         if (args.length == 1) {
             UUID uuid = UUIDMigration.getForcedPlayerUUID(args[0]);
             if (uuid == null || plugin.getClanManager().getAnyClanPlayer(uuid) == null) {
-                ChatBlock.sendMessage(sender, ChatColor.RED + plugin.getLang("no.player.matched"));
+                ChatBlock.sendMessage(sender, ChatColor.RED + lang("no.player.matched",sender));
                 return;
             }
             Player player = plugin.getServer().getPlayer(uuid);
@@ -53,11 +54,11 @@ public class PurgeCommand {
                 clan.disband();
             }
             plugin.getClanManager().deleteClanPlayer(cp);
-            ChatBlock.sendMessage(sender, ChatColor.AQUA + plugin.getLang("player.purged"));
+            ChatBlock.sendMessage(sender, ChatColor.AQUA + lang("player.purged",sender));
             return;
         }
 
         ChatBlock.sendMessage(sender, ChatColor.RED
-                + MessageFormat.format(plugin.getLang("usage.purge"), plugin.getSettingsManager().getCommandClan()));
+                + MessageFormat.format(lang("usage.purge",sender), plugin.getSettingsManager().getCommandClan()));
     }
 }
