@@ -42,16 +42,16 @@ public class RosterFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent invite = new SCComponentImpl(lang("gui.roster.invite.title"),
-				Collections.singletonList(lang("gui.roster.invite.lore")), Material.LIME_WOOL, 4);
+		SCComponent invite = new SCComponentImpl(lang("gui.roster.invite.title",getViewer()),
+				Collections.singletonList(lang("gui.roster.invite.lore",getViewer())), Material.LIME_WOOL, 4);
 		invite.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new InviteFrame(this, getViewer())));
 		invite.setPermission(ClickType.LEFT, RankPermission.INVITE);
 		add(invite);
 
-		add(Components.getPreviousPageComponent(6, this::previousPage));
-		add(Components.getNextPageComponent(7, this::nextPage));
+		add(Components.getPreviousPageComponent(6, this::previousPage, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
@@ -78,7 +78,7 @@ public class RosterFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.roster.title", Helper.stripColors(subject.getColorTag()));
+		return lang("gui.roster.title",getViewer(), Helper.stripColors(subject.getColorTag()));
 	}
 
 	@Override

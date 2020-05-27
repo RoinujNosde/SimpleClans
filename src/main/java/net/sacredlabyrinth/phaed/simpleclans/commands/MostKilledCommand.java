@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager.DataCallback;
 
 import org.bukkit.ChatColor;
@@ -8,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -29,21 +29,21 @@ public class MostKilledCommand {
         String subColor = plugin.getSettingsManager().getPageSubTitleColor();
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.mostkilled")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
 
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isVerified()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("clan.is.not.verified"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("clan.is.not.verified",player));
             return;
         }
         if (!plugin.getPermissionsManager().has(player, RankPermission.MOSTKILLED, PermissionLevel.TRUSTED, true)) {
@@ -61,10 +61,10 @@ public class MostKilledCommand {
 						ChatBlock chatBlock = new ChatBlock();
 				        chatBlock.setFlexibility(true, false, false);
 				        chatBlock.setAlignment("l", "c", "l");
-				        chatBlock.addRow("  " + headColor + plugin.getLang("victim"), headColor + plugin.getLang("killcount"), headColor + plugin.getLang("attacker"));
+				        chatBlock.addRow("  " + headColor + lang("victim",player), headColor + lang("killcount",player), headColor + lang("attacker",player));
 
 				        if (data.isEmpty()) {
-				            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("nokillsfound"));
+				            ChatBlock.sendMessage(player, ChatColor.RED + lang("nokillsfound",player));
 				            return;
 				        }
 				        Map<String, Integer> killsPerPlayer = Helper.sortByValue(data);
@@ -83,7 +83,7 @@ public class MostKilledCommand {
 				            chatBlock.addRow("  " + ChatColor.WHITE + victim, ChatColor.AQUA + "" + count, ChatColor.YELLOW + attacker);
 				        }
 
-				        ChatBlock.saySingle(player, plugin.getSettingsManager().getServerName() + subColor + " " + plugin.getLang("mostkilled") + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
+				        ChatBlock.saySingle(player, plugin.getSettingsManager().getServerName() + subColor + " " + lang("mostkilled",player) + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
 				        ChatBlock.sendBlank(player);
 
 				        boolean more = chatBlock.sendBlock(player, plugin.getSettingsManager().getPageSize());
@@ -91,7 +91,7 @@ public class MostKilledCommand {
 				        if (more) {
 				            plugin.getStorageManager().addChatBlock(player, chatBlock);
 				            ChatBlock.sendBlank(player);
-				            ChatBlock.sendMessage(player, headColor + MessageFormat.format(plugin.getLang("view.next.page"), plugin.getSettingsManager().getCommandMore()));
+				            ChatBlock.sendMessage(player, headColor + MessageFormat.format(lang("view.next.page",player), plugin.getSettingsManager().getCommandMore()));
 				        }
 
 				        ChatBlock.sendBlank(player);

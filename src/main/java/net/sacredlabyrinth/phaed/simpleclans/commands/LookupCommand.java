@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 
 import org.bukkit.ChatColor;
@@ -34,24 +35,24 @@ public class LookupCommand {
 
         if (arg.length == 0) {
             if (!plugin.getPermissionsManager().has(player, "simpleclans.member.lookup")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
             playerName = player.getName();
         } else if (arg.length == 1) {
             if (!plugin.getPermissionsManager().has(player, "simpleclans.anyone.lookup")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
             playerName = arg[0];
         } else {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.lookup.tag"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.lookup.tag",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
         UUID targetUuid = UUIDMigration.getForcedPlayerUUID(playerName);
         if (targetUuid == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.player.matched"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("no.player.matched",player));
             return;
         }
         ClanPlayer targetCp = plugin.getClanManager().getAnyClanPlayer(targetUuid);
@@ -62,16 +63,16 @@ public class LookupCommand {
             Clan targetClan = targetCp.getClan();
 
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, MessageFormat.format(plugin.getLang("s.player.info"), plugin.getSettingsManager().getPageClanNameColor() + targetCp.getName() + subColor) + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
+            ChatBlock.saySingle(player, MessageFormat.format(lang("s.player.info",player), plugin.getSettingsManager().getPageClanNameColor() + targetCp.getName() + subColor) + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
             ChatBlock.sendBlank(player);
 
-            String clanName = ChatColor.WHITE + plugin.getLang("none");
+            String clanName = ChatColor.WHITE + lang("none",player);
 
             if (targetClan != null) {
                 clanName = plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketLeft() + plugin.getSettingsManager().getTagDefaultColor() + targetClan.getColorTag() + plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketRight() + " " + plugin.getSettingsManager().getPageClanNameColor() + targetClan.getName();
             }
 
-            String status = targetClan == null ? ChatColor.WHITE + plugin.getLang("free.agent") : (targetCp.isLeader() ? plugin.getSettingsManager().getPageLeaderColor() + plugin.getLang("leader") : (targetCp.isTrusted() ? plugin.getSettingsManager().getPageTrustedColor() + plugin.getLang("trusted") : plugin.getSettingsManager().getPageUnTrustedColor() + plugin.getLang("untrusted")));
+            String status = targetClan == null ? ChatColor.WHITE + lang("free.agent",player) : (targetCp.isLeader() ? plugin.getSettingsManager().getPageLeaderColor() + lang("leader",player) : (targetCp.isTrusted() ? plugin.getSettingsManager().getPageTrustedColor() + lang("trusted",player) : plugin.getSettingsManager().getPageUnTrustedColor() + lang("untrusted",player)));
             String rank = ChatColor.WHITE + "" + Helper.parseColors(targetCp.getRankDisplayName());
             String joinDate = ChatColor.WHITE + "" + targetCp.getJoinDateString();
             String lastSeen = ChatColor.WHITE + "" + targetCp.getLastSeenString();
@@ -83,36 +84,36 @@ public class LookupCommand {
             String kdr = ChatColor.YELLOW + "" + formatter.format(targetCp.getKDR());
             String pastClans = ChatColor.WHITE + "" + targetCp.getPastClansString(headColor + ", ");
 
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("clan.0"), clanName));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("rank.0"), rank));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("status.0"), status));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("kdr.0"), kdr));
-            ChatBlock.sendMessage(player, "  " + subColor + plugin.getLang("kill.totals") + " " + headColor + "[" + plugin.getLang("rival") + ":" + rival + " " + headColor + "" + plugin.getLang("neutral") + ":" + neutral + " " + headColor + "" + plugin.getLang("civilian") + ":" + civilian + headColor + "]");
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("deaths.0"), deaths));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("join.date.0"), joinDate));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("last.seen.0"), lastSeen));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("past.clans.0"), pastClans));
-            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("inactive.0"), inactive));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("clan.0",player), clanName));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("rank.0",player), rank));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("status.0",player), status));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("kdr.0",player), kdr));
+            ChatBlock.sendMessage(player, "  " + subColor + lang("kill.totals",player) + " " + headColor + "[" + lang("rival",player) + ":" + rival + " " + headColor + "" + lang("neutral",player) + ":" + neutral + " " + headColor + "" + lang("civilian",player) + ":" + civilian + headColor + "]");
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("deaths.0",player), deaths));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("join.date.0",player), joinDate));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("last.seen.0",player), lastSeen));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("past.clans.0",player), pastClans));
+            ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("inactive.0",player), inactive));
 
             if (arg.length == 1 && !targetCp.equals(myCp)) {
-                String killType = ChatColor.GRAY + plugin.getLang("neutral");
+                String killType = ChatColor.GRAY + lang("neutral",player);
 
                 if (targetClan == null) {
-                    killType = ChatColor.DARK_GRAY + plugin.getLang("civilian");
+                    killType = ChatColor.DARK_GRAY + lang("civilian",player);
                 } else if (myClan != null && myClan.isRival(targetClan.getTag())) {
-                    killType = ChatColor.WHITE + plugin.getLang("rival");
+                    killType = ChatColor.WHITE + lang("rival",player);
                 }
 
-                ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(plugin.getLang("kill.type.0"), killType));
+                ChatBlock.sendMessage(player, "  " + subColor + MessageFormat.format(lang("kill.type.0",player), killType));
             }
 
             ChatBlock.sendBlank(player);
         } else {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.player.data.found"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("no.player.data.found",player));
 
             if (arg.length == 1 && myClan != null) {
                 ChatBlock.sendBlank(player);
-                ChatBlock.sendMessage(player, MessageFormat.format(plugin.getLang("kill.type.civilian"), ChatColor.DARK_GRAY));
+                ChatBlock.sendMessage(player, MessageFormat.format(lang("kill.type.civilian",player), ChatColor.DARK_GRAY));
             }
         }
     }

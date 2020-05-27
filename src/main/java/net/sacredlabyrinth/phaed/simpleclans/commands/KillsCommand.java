@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager.DataCallback;
 
 import org.bukkit.ChatColor;
@@ -28,21 +29,21 @@ public class KillsCommand {
         String subColor = plugin.getSettingsManager().getPageSubTitleColor();
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.member.kills")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
 
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isVerified()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("clan.is.not.verified"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("clan.is.not.verified",player));
             return;
         }
         if (!plugin.getPermissionsManager().has(player, RankPermission.KILLS, PermissionLevel.TRUSTED, true)) {
@@ -68,10 +69,10 @@ public class KillsCommand {
 				        ChatBlock chatBlock = new ChatBlock();
 				        chatBlock.setFlexibility(true, false);
 				        chatBlock.setAlignment("l", "c");
-				        chatBlock.addRow("  " + headColor + plugin.getLang("victim"), plugin.getLang("killcount"));				        
+				        chatBlock.addRow("  " + headColor + lang("victim",player), lang("killcount",player));				        
 
 				        if (data.isEmpty()) {
-				            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("nokillsfound"));
+				            ChatBlock.sendMessage(player, ChatColor.RED + lang("nokillsfound",player));
 				            return;
 				        }
 
@@ -82,7 +83,7 @@ public class KillsCommand {
 				            chatBlock.addRow("  " + playerKills.getKey(), ChatColor.AQUA + "" + count);
 				        }
 
-				        ChatBlock.saySingle(player, plugin.getSettingsManager().getPageClanNameColor() + name + subColor + " " + plugin.getLang("kills") + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
+				        ChatBlock.saySingle(player, plugin.getSettingsManager().getPageClanNameColor() + name + subColor + " " + lang("kills",player) + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
 				        ChatBlock.sendBlank(player);
 
 				        boolean more = chatBlock.sendBlock(player, plugin.getSettingsManager().getPageSize());
@@ -90,7 +91,7 @@ public class KillsCommand {
 				        if (more) {
 				            plugin.getStorageManager().addChatBlock(player, chatBlock);
 				            ChatBlock.sendBlank(player);
-				            ChatBlock.sendMessage(player, headColor + MessageFormat.format(plugin.getLang("view.next.page"), plugin.getSettingsManager().getCommandMore()));
+				            ChatBlock.sendMessage(player, headColor + MessageFormat.format(lang("view.next.page",player), plugin.getSettingsManager().getCommandMore()));
 				        }
 
 				        ChatBlock.sendBlank(player);						

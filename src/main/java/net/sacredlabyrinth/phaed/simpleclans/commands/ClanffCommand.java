@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -26,43 +27,43 @@ public class ClanffCommand {
         SimpleClans plugin = SimpleClans.getInstance();
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.ff")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
 
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isLeader(player)) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.leader.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("no.leader.permissions",player));
             return;
         }
         if (arg.length != 1) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.clanff"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clanff",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
         String action = arg[0];
 
-        if (action.equalsIgnoreCase(plugin.getLang("allow"))) {
-            clan.addBb(player.getName(), ChatColor.AQUA + plugin.getLang("clan.wide.friendly.fire.is.allowed"));
+        if (action.equalsIgnoreCase(lang("allow",player))) {
+            clan.addBb(player.getName(), ChatColor.AQUA + lang("clan.wide.friendly.fire.is.allowed",player));
             clan.setFriendlyFire(true);
             plugin.getStorageManager().updateClan(clan);
             return;
         }
 
-        if (!action.equalsIgnoreCase(plugin.getLang("block"))) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.clanff"), plugin.getSettingsManager().getCommandClan()));
+        if (!action.equalsIgnoreCase(lang("block",player))) {
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clanff",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
-        clan.addBb(player.getName(), ChatColor.AQUA + plugin.getLang("clan.wide.friendly.fire.blocked"));
+        clan.addBb(player.getName(), ChatColor.AQUA + lang("clan.wide.friendly.fire.blocked",player));
         clan.setFriendlyFire(false);
         plugin.getStorageManager().updateClan(clan);
     }

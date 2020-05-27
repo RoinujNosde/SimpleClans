@@ -36,18 +36,18 @@ public class AddAllyFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage));
-		add(Components.getNextPageComponent(7, this::nextPage));
+		add(Components.getPreviousPageComponent(6, this::previousPage, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 
 			Clan notRival = notAllies.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.clanlist.clan.title", notRival.getColorTag(), notRival.getName()),
-					Collections.singletonList(lang("gui.add.ally.clan.lore")), Material.CYAN_BANNER, slot);
+					lang("gui.clanlist.clan.title",getViewer(), notRival.getColorTag(), notRival.getName()),
+					Collections.singletonList(lang("gui.add.ally.clan.lore",getViewer())), Material.CYAN_BANNER, slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("ally %s %s", lang("add"), notRival.getTag()), false));
@@ -75,7 +75,7 @@ public class AddAllyFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.add.ally.title");
+		return lang("gui.add.ally.title",getViewer());
 	}
 
 	@Override
