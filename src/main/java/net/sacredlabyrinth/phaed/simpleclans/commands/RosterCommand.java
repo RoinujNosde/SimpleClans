@@ -79,7 +79,7 @@ public class RosterCommand {
                     Player p = cp.toPlayer();
 
                     String name = plugin.getSettingsManager().getPageLeaderColor() + cp.getName();
-                    String lastSeen = p != null && p.isOnline() && !Helper.isVanished(p) ? ChatColor.GREEN + lang("online",player) : ChatColor.WHITE + cp.getLastSeenDaysString();
+                    String lastSeen = p != null && p.isOnline() && !Helper.isVanished(p) ? ChatColor.GREEN + lang("online",player) : ChatColor.WHITE + cp.getLastSeenDaysString(player);
 
                     chatBlock.addRow("  " + name, ChatColor.YELLOW + Helper.parseColors(cp.getRankDisplayName()) + ChatColor.RESET, lastSeen);
 
@@ -89,7 +89,7 @@ public class RosterCommand {
                     Player p = cp.toPlayer();
 
                     String name = (cp.isTrusted() ? plugin.getSettingsManager().getPageTrustedColor() : plugin.getSettingsManager().getPageUnTrustedColor()) + cp.getName();
-                    String lastSeen = p != null && p.isOnline() && !Helper.isVanished(p) ? ChatColor.GREEN + lang("online",player) : ChatColor.WHITE + cp.getLastSeenDaysString();
+                    String lastSeen = p != null && p.isOnline() && !Helper.isVanished(p) ? ChatColor.GREEN + lang("online",player) : ChatColor.WHITE + cp.getLastSeenDaysString(player);
 
                     chatBlock.addRow("  " + name, ChatColor.YELLOW + Helper.parseColors(cp.getRankDisplayName()) + ChatColor.RESET, lastSeen);
                 }

@@ -67,9 +67,9 @@ public class LeaderboardCommand {
             }
 
             String name = (cp.isLeader() ? plugin.getSettingsManager().getPageLeaderColor() : (cp.isTrusted() ? plugin.getSettingsManager().getPageTrustedColor() : plugin.getSettingsManager().getPageUnTrustedColor())) + cp.getName();
-            String lastSeen = isOnline ? ChatColor.GREEN + lang("online",player) : ChatColor.WHITE + cp.getLastSeenDaysString();
+            String lastSeen = isOnline ? ChatColor.GREEN + lang("online", player) : ChatColor.WHITE + cp.getLastSeenDaysString(player);
 
-            String clanTag = ChatColor.WHITE + lang("free.agent",player);
+            String clanTag = ChatColor.WHITE + lang("free.agent", player);
 
             if (cp.getClan() != null) {
                 clanTag = cp.getClan().getColorTag();

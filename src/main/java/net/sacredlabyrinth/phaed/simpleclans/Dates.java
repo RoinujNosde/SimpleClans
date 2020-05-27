@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 /**
  * @author phaed
  */
@@ -143,46 +145,46 @@ public class Dates {
     {
         SimpleClans plugin = SimpleClans.getInstance();
         if (seconds == null || seconds < 1) {
-            return plugin.getLang("bb.moments");
+            return lang("bb.moments");
         }
 
         if (seconds < 60) {
-            return seconds + plugin.getLang("bb.seconds");
+            return seconds + lang("bb.seconds");
         }
 
         if (seconds < 3600) {
-            Long count = (long) Math.ceil(seconds / 60);
+            long count = (long) Math.ceil(seconds / 60f);
             String res;
             if (count > 1) {
-                res = count + plugin.getLang("bb.minutes");
+                res = count + lang("bb.minutes");
             } else {
-                res = plugin.getLang("bb.one.minute");
+                res = lang("bb.one.minute");
             }
-            Long remaining = seconds % 60;
+            long remaining = seconds % 60;
             if (depth > 0 && remaining >= 5) {
                 return res + ", " + formatTime(remaining, --depth);
             }
             return res;
         }
         if (seconds < 86400) {
-            Long count = (long) Math.ceil(seconds / 3600);
+            long count = (long) Math.ceil(seconds / 3600f);
             String res;
             if (count > 1) {
-                res = count + plugin.getLang("bb.hours");
+                res = count + lang("bb.hours");
             } else {
-                res = plugin.getLang("bb.one.hour");
+                res = lang("bb.one.hour");
             }
             if (depth > 0) {
                 return res + ", " + formatTime(seconds % 3600, --depth);
             }
             return res;
         }
-        Long count = (long) Math.ceil(seconds / 86400);
+        long count = (long) Math.ceil(seconds / 86400f);
         String res;
         if (count > 1) {
-            res = count + plugin.getLang("bb.days");
+            res = count + lang("bb.days");
         } else {
-            res = plugin.getLang("bb.one.day");
+            res = lang("bb.one.day");
         }
         if (depth > 0) {
             return res + ", " + formatTime(seconds % 86400, --depth);

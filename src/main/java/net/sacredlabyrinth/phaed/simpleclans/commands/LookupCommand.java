@@ -75,7 +75,7 @@ public class LookupCommand {
             String status = targetClan == null ? ChatColor.WHITE + lang("free.agent",player) : (targetCp.isLeader() ? plugin.getSettingsManager().getPageLeaderColor() + lang("leader",player) : (targetCp.isTrusted() ? plugin.getSettingsManager().getPageTrustedColor() + lang("trusted",player) : plugin.getSettingsManager().getPageUnTrustedColor() + lang("untrusted",player)));
             String rank = ChatColor.WHITE + "" + Helper.parseColors(targetCp.getRankDisplayName());
             String joinDate = ChatColor.WHITE + "" + targetCp.getJoinDateString();
-            String lastSeen = ChatColor.WHITE + "" + targetCp.getLastSeenString();
+            String lastSeen = ChatColor.WHITE + "" + targetCp.getLastSeenString(player);
             String inactive = ChatColor.WHITE + "" + targetCp.getInactiveDays() + subColor + "/" + ChatColor.WHITE + plugin.getSettingsManager().getPurgePlayers() + " days";
             String rival = ChatColor.WHITE + "" + targetCp.getRivalKills();
             String neutral = ChatColor.WHITE + "" + targetCp.getNeutralKills();

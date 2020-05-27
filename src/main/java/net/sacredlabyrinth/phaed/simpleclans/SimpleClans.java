@@ -266,10 +266,11 @@ public class SimpleClans extends JavaPlugin {
     
     @NotNull
     public static String lang(@NotNull String key, @NotNull CommandSender sender, Object... arguments) {
-    	if(sender instanceof Player)
-    		return lang(key, (Player) sender, arguments);
-    	else
-    		return lang(key, (Player) null, arguments);
+    	if (sender instanceof Player) {
+            return lang(key, (Player) sender, arguments);
+        } else {
+            return lang(key, (Player) null, arguments);
+        }
     }
 
     @NotNull

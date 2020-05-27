@@ -57,7 +57,7 @@ public class Components {
                                 cp.getNeutralKills(), cp.getCivilianKills()),
                         lang("gui.playerdetails.player.lore.deaths",viewer, cp.getDeaths()),
                         lang("gui.playerdetails.player.lore.join.date",viewer, cp.getJoinDateString()),
-                        lang("gui.playerdetails.player.lore.last.seen",viewer, cp.getLastSeenString()),
+                        lang("gui.playerdetails.player.lore.last.seen",viewer, cp.getLastSeenString(viewer)),
                         lang("gui.playerdetails.player.lore.past.clans",viewer, cp.getPastClansString(
                                 lang("gui.playerdetails.player.lore.past.clans.separator",viewer))),
                         lang("gui.playerdetails.player.lore.inactive",viewer, cp.getInactiveDays(),
