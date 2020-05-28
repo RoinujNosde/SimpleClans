@@ -30,12 +30,12 @@ public class AlliancesCommand {
         String subColor = plugin.getSettingsManager().getPageSubTitleColor();
 
         if (arg.length != 0) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clan.alliances",player), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clan.alliances", player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.anyone.alliances")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
             return;
         }
 

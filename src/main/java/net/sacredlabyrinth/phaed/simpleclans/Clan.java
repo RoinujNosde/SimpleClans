@@ -114,8 +114,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void deposit(double amount, Player player) {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
-                player.sendMessage(ChatColor.AQUA + MessageFormat.format(lang("player.clan.deposit",player), amount));
-                addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("bb.clan.deposit"), amount));
+                player.sendMessage(ChatColor.AQUA + lang("player.clan.deposit", player, amount));
+                addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.deposit", amount));
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
@@ -135,8 +135,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void withdraw(double amount, Player player) {
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
-                player.sendMessage(ChatColor.AQUA + MessageFormat.format(lang("player.clan.withdraw",player), amount));
-                addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("bb.clan.withdraw"), amount));
+                player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
+                addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             }
@@ -1382,7 +1382,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void displayBb(Player player) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, MessageFormat.format(lang("bulletin.board.header"), SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
+            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
 
             int maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
 
@@ -1409,7 +1409,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void displayBb(Player player, int maxSize) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, MessageFormat.format(lang("bulletin.board.header"), SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
+            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
 
             List<String> localBb = new ArrayList<>(bb);
             while (localBb.size() > maxSize) {
