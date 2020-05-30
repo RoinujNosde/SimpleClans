@@ -4,12 +4,15 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestFinishedEvent;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
 import java.util.*;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -47,7 +50,7 @@ public final class RequestManager {
     	if (requests.containsKey(clan.getTag())) {
     		return;
     	}
-    	String msg = MessageFormat.format(plugin.getLang("asking.for.the.demotion"), requester.getName(), demotedName);
+    	String msg = MessageFormat.format(lang("asking.for.the.demotion"), requester.getName(), demotedName);
 
         ClanPlayer demotedTp = plugin.getClanManager().getClanPlayer(UUIDMigration.getForcedPlayerUUID(demotedName));
 
@@ -71,7 +74,7 @@ public final class RequestManager {
     	if (requests.containsKey(clan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("asking.for.the.promotion"), requester.getName(), promotedName);
+		String msg = MessageFormat.format(lang("asking.for.the.promotion"), requester.getName(), promotedName);
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
 
@@ -91,7 +94,7 @@ public final class RequestManager {
     	if (requests.containsKey(clan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("asking.for.the.deletion"), requester.getName());
+		String msg = MessageFormat.format(lang("asking.for.the.deletion"), requester.getName());
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
 
@@ -104,15 +107,20 @@ public final class RequestManager {
     /**
      * Add a member invite request
      *
-     * @param requester
-     * @param invitedName
-     * @param clan
+     * @param requester the requester
+     * @param invitedName the invited Player
+     * @param clan the Clan
      */
     public void addInviteRequest(ClanPlayer requester, String invitedName, Clan clan) {
     	if (requests.containsKey(invitedName.toLowerCase())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("inviting.you.to.join"), requester.getName(), clan.getName());
+        Player player = Bukkit.getPlayer(invitedName);
+        if (player == null) {
+            return;
+        }
+
+		String msg = lang("inviting.you.to.join", player, requester.getName(), clan.getName());
         Request req = new Request(plugin, ClanRequest.INVITE, null, requester, invitedName, clan, msg);
         requests.put(invitedName.toLowerCase(), req);
         ask(req);
@@ -129,7 +137,7 @@ public final class RequestManager {
     	if (requests.containsKey(warClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("proposing.war"), requestingClan.getName(), Helper.stripColors(warClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.war"), requestingClan.getName(), Helper.stripColors(warClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(warClan.getLeaders());
         acceptors.remove(requester);
@@ -150,7 +158,7 @@ public final class RequestManager {
     	if (requests.containsKey(warClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("proposing.to.end.the.war"), requestingClan.getName(), Helper.stripColors(warClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.to.end.the.war"), requestingClan.getName(), Helper.stripColors(warClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(warClan.getLeaders());
         acceptors.remove(requester);
@@ -171,7 +179,7 @@ public final class RequestManager {
     	if (requests.containsKey(allyClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("proposing.an.alliance"), requestingClan.getName(), Helper.stripColors(allyClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.an.alliance"), requestingClan.getName(), Helper.stripColors(allyClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(allyClan.getLeaders());
         acceptors.remove(requester);
@@ -192,7 +200,7 @@ public final class RequestManager {
        	if (requests.containsKey(rivalClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(plugin.getLang("proposing.to.end.the.rivalry"), requestingClan.getName(), Helper.stripColors(rivalClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.to.end.the.rivalry"), requestingClan.getName(), Helper.stripColors(rivalClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(rivalClan.getLeaders());
         acceptors.remove(requester);
@@ -258,11 +266,11 @@ public final class RequestManager {
                 return;
             }
 
-            clan.addBb(ChatColor.AQUA + MessageFormat.format(plugin.getLang("joined.the.clan"), invited));
-            plugin.getClanManager().serverAnnounce(MessageFormat.format(plugin.getLang("has.joined"), invited, clan.getName()));
+            clan.addBb(ChatColor.AQUA + lang("joined.the.clan", invited));
+            plugin.getClanManager().serverAnnounce(lang("has.joined", invited, clan.getName()));
             clan.addPlayerToClan(cp);
         } else {
-            clan.leaderAnnounce(ChatColor.RED + MessageFormat.format(plugin.getLang("membership.invitation"), invited));
+            clan.leaderAnnounce(ChatColor.RED + lang("membership.invitation", invited));
         }
 
         requests.remove(req.getTarget().toLowerCase());
@@ -329,22 +337,22 @@ public final class RequestManager {
 
 	private void processDisband(Clan requesterClan, List<String> denies) {
 		if (denies.isEmpty()) {
-		    requesterClan.addBb(plugin.getLang("leaders"), ChatColor.AQUA + MessageFormat.format(plugin.getLang("has.been.disbanded"), requesterClan.getName()));
+		    requesterClan.addBb(lang("leaders"), ChatColor.AQUA + lang("has.been.disbanded", requesterClan.getName()));
 		    requesterClan.disband();
 		} else {
 		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-		    requesterClan.leaderAnnounce(ChatColor.RED + MessageFormat.format(plugin.getLang("clan.deletion"), deniers));
+		    requesterClan.leaderAnnounce(ChatColor.RED + lang("clan.deletion", deniers));
 		}
 	}
 
 	private void processPromote(Request req, Clan requesterClan, UUID targetPlayer, List<String> denies) {
 		String promotedName = req.getTarget();
 		if (denies.isEmpty()) {
-		    requesterClan.addBb(plugin.getLang("leaders"), ChatColor.AQUA + MessageFormat.format(plugin.getLang("promoted.to.leader"), promotedName));
+		    requesterClan.addBb(lang("leaders"), ChatColor.AQUA + lang("promoted.to.leader", promotedName));
 		    requesterClan.promote(targetPlayer);
 		} else {
 		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-		    requesterClan.leaderAnnounce(ChatColor.RED + MessageFormat.format(plugin.getLang("denied.the.promotion"), deniers, promotedName));
+		    requesterClan.leaderAnnounce(ChatColor.RED + lang("denied.the.promotion", deniers, promotedName));
 		}
 	}
 
@@ -352,13 +360,13 @@ public final class RequestManager {
 		String demotedName = req.getTarget();
 
 		if (denies.isEmpty()) {
-			requesterClan.addBb(plugin.getLang("leaders"), ChatColor.AQUA
-					+ MessageFormat.format(plugin.getLang("demoted.back.to.member"), demotedName));
+			requesterClan.addBb(lang("leaders"), ChatColor.AQUA
+					+ lang("demoted.back.to.member", demotedName));
 			requesterClan.demote(targetPlayer);
 		} else {
 			String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
 			requesterClan.leaderAnnounce(
-					ChatColor.RED + MessageFormat.format(plugin.getLang("denied.demotion"), deniers, demotedName));
+					ChatColor.RED + lang("denied.demotion", deniers, demotedName));
 		}
 	}
 
@@ -367,11 +375,11 @@ public final class RequestManager {
 		if (targetClan != null && requesterClan != null) {
 		    if (!accepts.isEmpty()) {
 		    	requesterClan.removeRival(targetClan);
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("broken.the.rivalry"), accepts.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("broken.the.rivalry.with"), requesterCp.getName(), targetClan.getName()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("broken.the.rivalry", accepts.get(0), requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("broken.the.rivalry.with", requesterCp.getName(), targetClan.getName()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("denied.to.make.peace"), denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("peace.agreement.denied"), targetClan.getName()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.to.make.peace", denies.get(0), requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("peace.agreement.denied", targetClan.getName()));
 		    }
 		}
 	}
@@ -382,11 +390,11 @@ public final class RequestManager {
 		    if (!accepts.isEmpty()) {
 		        requesterClan.addAlly(targetClan);
 
-		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("accepted.an.alliance"), accepts.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("created.an.alliance"), requesterCp.getName(), targetClan.getName()));
+		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("accepted.an.alliance", accepts.get(0), requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("created.an.alliance", requesterCp.getName(), targetClan.getName()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("denied.an.alliance"), denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("the.alliance.was.denied"), targetClan.getName()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.an.alliance", denies.get(0), requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("the.alliance.was.denied", targetClan.getName()));
 		    }
 		}
 	}
@@ -398,11 +406,11 @@ public final class RequestManager {
 		    	requesterClan.removeWarringClan(targetClan);
 		    	targetClan.removeWarringClan(requesterClan);
 
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("you.are.no.longer.at.war"), accepts.get(0), requesterClan.getColorTag()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("you.are.no.longer.at.war"), requesterClan.getName(), targetClan.getColorTag()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", accepts.get(0), requesterClan.getColorTag()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", requesterClan.getName(), targetClan.getColorTag()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("denied.war.end"), denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("end.war.denied"), targetClan.getName()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.end", denies.get(0), requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
 		    }
 		}
 	}
@@ -414,11 +422,11 @@ public final class RequestManager {
 		        requesterClan.addWarringClan(targetClan);
 		        targetClan.addWarringClan(requesterClan);
 
-		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("you.are.at.war"), targetClan.getName(), requesterClan.getColorTag()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("you.are.at.war"), requesterClan.getName(), targetClan.getColorTag()));
+		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war", targetClan.getName(), requesterClan.getColorTag()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war", requesterClan.getName(), targetClan.getColorTag()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("denied.war.req"), denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("end.war.denied"), targetClan.getName()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0), requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
 		    }
 		}
 	}
@@ -426,21 +434,19 @@ public final class RequestManager {
     /**
      * End a pending request prematurely
      *
-     * @param playerName
-     * @return
+     * @param playerName the Player signing off
      */
-    public boolean endPendingRequest(String playerName) {
-        for (Request req : new LinkedList<Request>(requests.values())) {
+    public void endPendingRequest(String playerName) {
+        for (Request req : new LinkedList<>(requests.values())) {
             for (ClanPlayer cp : req.getAcceptors()) {
                 if (cp.getName().equalsIgnoreCase(playerName)) {
-                    req.getClan().leaderAnnounce(MessageFormat.format(plugin.getLang("signed.off.request.cancelled"), ChatColor.RED + playerName, req.getType()));
+                    req.getClan().leaderAnnounce(lang("signed.off.request.cancelled", ChatColor.RED + playerName, req.getType()));
                     requests.remove(req.getClan().getTag());
                     break;
                 }
             }
         }
 
-        return false;
     }
 
     /**
@@ -471,17 +477,18 @@ public final class RequestManager {
     /**
      * Asks a request to players for votes
      *
-     * @param req
+     * @param req the Request
      */
     public void ask(final Request req) {
         final String tag = plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketLeft() + plugin.getSettingsManager().getTagDefaultColor() + req.getClan().getColorTag() + plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketRight();
         final String message = tag + " " + plugin.getSettingsManager().getRequestMessageColor() + req.getMsg();
-        final String options = MessageFormat.format(plugin.getLang("accept.or.deny"), ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
 
         if (req.getType().equals(ClanRequest.INVITE)) {
             Player player = Helper.getPlayer(req.getTarget());
 
             if (player != null) {
+                String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
+
                 ChatBlock.sendBlank(player);
                 ChatBlock.sendMessage(player, message);
                 ChatBlock.sendMessage(player, options);
@@ -493,6 +500,8 @@ public final class RequestManager {
                     Player player = cp.toPlayer();
 
                     if (player != null) {
+                        String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
+
                         ChatBlock.sendBlank(player);
                         ChatBlock.sendMessage(player, message);
                         ChatBlock.sendMessage(player, options);

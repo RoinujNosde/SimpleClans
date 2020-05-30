@@ -65,7 +65,7 @@ public class StatsCommand {
 
         chatBlock.setFlexibility(true, false, false, false, false, false, false);
         chatBlock.setAlignment("l", "c", "c", "c", "c", "c", "c");
-        chatBlock.addRow("  " + headColor + lang("name",player), plugin.getLang("kdr",player), lang("rival",player), plugin.getLang("neutral",player), lang("civilian.abbreviation",player), lang("deaths",player));
+        chatBlock.addRow("  " + headColor + lang("name", player), lang("kdr", player), lang("rival",player), lang("neutral",player), lang("civilian.abbreviation",player), lang("deaths",player));
 
         List<ClanPlayer> leaders = clan.getLeaders();
         plugin.getClanManager().sortClanPlayersByKDR(leaders);
