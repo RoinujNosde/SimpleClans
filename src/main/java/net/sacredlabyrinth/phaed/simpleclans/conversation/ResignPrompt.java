@@ -37,7 +37,7 @@ public class ResignPrompt extends StringPrompt {
         		
         if (yes.equalsIgnoreCase(input)) {
             if (!clan.isLeader(player) || clan.getLeaders().size() > 1) {
-                clan.addBb(player.getName(), ChatColor.AQUA + lang("0.has.resigned", player, player.getName()));
+                clan.addBb(player.getName(), ChatColor.AQUA + lang("0.has.resigned", player.getName()));
                 cp.addResignTime(clan.getTag());
                 clan.removePlayerFromClan(player.getUniqueId());
                 

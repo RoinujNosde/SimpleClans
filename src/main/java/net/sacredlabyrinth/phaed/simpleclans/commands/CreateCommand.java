@@ -98,7 +98,7 @@ public class CreateCommand {
             plugin.getClanManager().createClan(player, tag, name);
 
             Clan clan = plugin.getClanManager().getClan(tag);
-            clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.created",player), name));
+            clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.created"), name));
             plugin.getStorageManager().updateClan(clan);
 
             if (plugin.getSettingsManager().isRequireVerification()) {

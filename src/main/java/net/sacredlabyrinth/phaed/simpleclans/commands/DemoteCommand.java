@@ -59,8 +59,8 @@ public class DemoteCommand {
 
             clan.demote(toDemote.getUniqueId());
                 
-            clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("demoted.back.to.member",player), demotedName));
-            ChatBlock.sendMessage(player, ChatColor.AQUA + lang("player.successfully.demoted",player));
+            clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("demoted.back.to.member"), demotedName));
+            ChatBlock.sendMessage(player, ChatColor.AQUA + lang("player.successfully.demoted", player));
             return;
         }
 

@@ -81,7 +81,7 @@ public class UntrustCommand {
             return;
         }
 
-        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.been.given.untrusted.status.by",player), arg[0], player.getName()));
+        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.been.given.untrusted.status.by"), arg[0], player.getName()));
         tcp.setTrusted(false);
         plugin.getStorageManager().updateClanPlayer(tcp);
     }

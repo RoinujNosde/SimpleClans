@@ -72,7 +72,7 @@ public class KickCommand {
             return;
         }
 
-        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.been.kicked.by",player), arg[0], player.getName()));
+        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.been.kicked.by"), arg[0], player.getName()));
         clan.removePlayerFromClan(kicked);
     }
 }

@@ -96,8 +96,8 @@ public class AllyCommand {
             }
 
             clan.removeAlly(ally);
-            ally.addBb(cp.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.broken.the.alliance",player), clan.getName(), ally.getName()), false);
-            clan.addBb(cp.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.broken.the.alliance",player), cp.getName(), ally.getName()));
+            ally.addBb(cp.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.broken.the.alliance"), clan.getName(), ally.getName()), false);
+            clan.addBb(cp.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.broken.the.alliance"), cp.getName(), ally.getName()));
         } else {
             ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.ally",player), plugin.getSettingsManager().getCommandClan()));
         }

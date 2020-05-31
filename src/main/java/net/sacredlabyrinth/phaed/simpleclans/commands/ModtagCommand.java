@@ -57,6 +57,7 @@ public class ModtagCommand {
             return;
         }
 
+        // TODO Verificar se tamanho é > 25
         String newtag = arg[0];
         String cleantag = Helper.cleanTag(newtag);
 
@@ -81,7 +82,7 @@ public class ModtagCommand {
             return;
         }
 
-        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("tag.changed.to.0",player), Helper.parseColors(newtag)));
+        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("tag.changed.to.0"), Helper.parseColors(newtag)));
         clan.changeClanTag(newtag);
         plugin.getClanManager().updateDisplayName(player.getPlayer());
     }

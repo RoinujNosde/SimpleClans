@@ -47,8 +47,8 @@ public class VerifyCommand {
                 if (isBuyer) {
                     if (plugin.getClanManager().purchaseVerification(player)) {
                         clan.verifyClan();
-                        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.0.has.been.verified",player), clan.getName()));
-                        ChatBlock.sendMessage(player, ChatColor.AQUA + lang("the.clan.has.been.verified",player));
+                        clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.0.has.been.verified"), clan.getName()));
+                        ChatBlock.sendMessage(player, ChatColor.AQUA + lang("the.clan.has.been.verified", player));
                     }
                     return;
                 }
@@ -76,7 +76,7 @@ public class VerifyCommand {
         if (clan != null) {
             if (!clan.isVerified()) {
                 clan.verifyClan();
-                clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.0.has.been.verified",player), clan.getName()));
+                clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.0.has.been.verified"), clan.getName()));
                 ChatBlock.sendMessage(player, ChatColor.AQUA + lang("the.clan.has.been.verified",player));
             } else {
                 ChatBlock.sendMessage(player, ChatColor.RED + lang("the.clan.is.already.verified",player));

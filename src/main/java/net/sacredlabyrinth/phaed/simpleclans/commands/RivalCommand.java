@@ -84,8 +84,8 @@ public class RivalCommand {
             if (!clan.reachedRivalLimit()) {
                 if (!clan.isRival(rival.getTag())) {
                     clan.addRival(rival);
-                    rival.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.initiated.a.rivalry",player), clan.getName(), rival.getName()), false);
-                    clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.initiated.a.rivalry",player), player.getName(), rival.getName()));
+                    rival.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.initiated.a.rivalry"), clan.getName(), rival.getName()), false);
+                    clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("has.initiated.a.rivalry"), player.getName(), rival.getName()));
                 } else {
                     ChatBlock.sendMessage(player, ChatColor.RED + lang("your.clans.are.already.rivals",player));
                 }

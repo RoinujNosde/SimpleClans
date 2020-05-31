@@ -58,7 +58,7 @@ public class PlaceCommand {
                 oldClan.clanAnnounce(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.has.been.disbanded",sender), oldClan.getName()));
                 oldClan.disband();
             } else {
-                oldClan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("0.has.resigned",sender), player.getName()));
+                oldClan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("0.has.resigned"), player.getName()));
                 oldClan.removePlayerFromClan(player.getUniqueId());
             }
         }

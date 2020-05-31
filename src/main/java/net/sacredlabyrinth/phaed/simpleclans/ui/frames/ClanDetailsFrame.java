@@ -102,11 +102,11 @@ public class ClanDetailsFrame extends SCFrame {
 	}
 
 	private void addFee() {
-		String status = clan.isMemberFeeEnabled() ? lang("fee.enabled",getViewer()) : lang("fee.disabled",getViewer());
-		SCComponent fee = new SCComponentImpl(lang("gui.clandetails.fee.title",getViewer()),
-				Arrays.asList(lang("gui.clandetails.fee.value.lore,getViewer()", clan.getMemberFee()),
-						lang("gui.clandetails.fee.status.lore,getViewer()", status),
-						lang("gui.clandetails.fee.toggle.lore,getViewer()")),
+		String status = clan.isMemberFeeEnabled() ? lang("fee.enabled", getViewer()) : lang("fee.disabled",getViewer());
+		SCComponent fee = new SCComponentImpl(lang("gui.clandetails.fee.title", getViewer()),
+				Arrays.asList(lang("gui.clandetails.fee.value.lore", getViewer(), clan.getMemberFee()),
+						lang("gui.clandetails.fee.status.lore", getViewer(), status),
+						lang("gui.clandetails.fee.toggle.lore", getViewer())),
 				Material.GOLD_NUGGET, 41);
 		fee.setVerifiedOnly(ClickType.LEFT);
 		fee.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "toggle fee", true));

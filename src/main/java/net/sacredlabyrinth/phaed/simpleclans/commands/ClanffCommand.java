@@ -52,18 +52,18 @@ public class ClanffCommand {
         String action = arg[0];
 
         if (action.equalsIgnoreCase(lang("allow",player))) {
-            clan.addBb(player.getName(), ChatColor.AQUA + lang("clan.wide.friendly.fire.is.allowed",player));
+            clan.addBb(player.getName(), ChatColor.AQUA + lang("clan.wide.friendly.fire.is.allowed"));
             clan.setFriendlyFire(true);
             plugin.getStorageManager().updateClan(clan);
             return;
         }
 
         if (!action.equalsIgnoreCase(lang("block",player))) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clanff",player), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clanff"), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
-        clan.addBb(player.getName(), ChatColor.AQUA + lang("clan.wide.friendly.fire.blocked",player));
+        clan.addBb(player.getName(), ChatColor.AQUA + lang("clan.wide.friendly.fire.blocked"));
         clan.setFriendlyFire(false);
         plugin.getStorageManager().updateClan(clan);
     }
