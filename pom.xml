@@ -160,7 +160,7 @@
         <repository>
             <id>bintray-roinujnosde-bukkit-plugins</id>
             <name>roinujnosde-bukkit-plugins</name>
-            <url>https://api.bintray.com/maven/roinujnosde/bukkit-plugins/SimpleClans/;publish=1</url>
+            <url>https://api.bintray.com/maven/roinujnosde/bukkit-plugins/SimpleClans-MC1.8/;publish=1</url>
         </repository>
     </distributionManagement>
 </project>
