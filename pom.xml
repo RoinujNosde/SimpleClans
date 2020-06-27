@@ -157,15 +157,10 @@
     <!-- Upstream Distribution -->
 
     <distributionManagement>
-	<repository>
-            <id>github</id>
-            <name>GitHub SimpleClan's Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/marcelo-mason/SimpleClans</url>
+        <repository>
+            <id>bintray-roinujnosde-bukkit-plugins</id>
+            <name>roinujnosde-bukkit-plugins</name>
+            <url>https://api.bintray.com/maven/roinujnosde/bukkit-plugins/SimpleClans/;publish=1</url>
         </repository>
-        <snapshotRepository>
-            <id>SacredCoding</id>
-            <name>SacredCoding-snapshots</name>
-            <url>http://104.236.246.108:8081/artifactory/plugins-release-local</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>
