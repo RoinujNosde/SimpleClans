@@ -182,6 +182,7 @@ permissions:
       simpleclans.admin.all-seeing-eye: true
       simpleclans.admin.resetkdr: true
       simpleclans.admin.demote: true
+      simpleclans.admin.promote: true
   simpleclans.mod.*:
     description: Permissions for moderators
     default: op

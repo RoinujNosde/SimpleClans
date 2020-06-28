@@ -36,14 +36,13 @@ public class DemoteCommand {
         }
 
         String demotedName = arg[0];
+        UUID uuid = UUIDMigration.getForcedPlayerUUID(demotedName);
 
-        if (demotedName == null) {
+        if (uuid == null) {
             ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.player.matched"));
             return;
         }
-        ClanPlayer toDemote;
-        UUID uuid = UUIDMigration.getForcedPlayerUUID(demotedName);
-        toDemote = plugin.getClanManager().getAnyClanPlayer(uuid);
+        ClanPlayer toDemote = plugin.getClanManager().getAnyClanPlayer(uuid);
         
         if (plugin.getPermissionsManager().has(player, "simpleclans.admin.demote")) {
             if (!toDemote.isLeader()) {
