@@ -387,9 +387,12 @@ public final class ClanManager {
     /**
      * Announce message to the server
      *
-     * @param msg
+     * @param msg the message
      */
     public void serverAnnounce(String msg) {
+        if (plugin.getSettingsManager().isDisableMessages()) {
+            return;
+        }
         Collection<Player> players = Helper.getOnlinePlayers();
 
         for (Player player : players) {

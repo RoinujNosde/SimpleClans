@@ -1617,6 +1617,11 @@ public final class SettingsManager {
         return true;
     }
 
+    /**
+     * Checks if server announcements are disabled
+     *
+     * @return if they are disabled
+     */
     public boolean isDisableMessages() {
         return disableMessages;
     }
