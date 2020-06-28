@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -148,10 +149,19 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addVerify() {
 		boolean verified = clan.isVerified();
+		boolean purchaseVerification = plugin.getSettingsManager().isRequireVerification()
+				&& plugin.getSettingsManager().isePurchaseVerification();
+
 		Material material = verified ? Material.REDSTONE_TORCH : Material.LEVER;
 		String title = verified ? lang("gui.clandetails.verified.title")
 				: lang("gui.clandetails.not.verified.title");
-		List<String> lore = verified ? null : Collections.singletonList(lang("gui.clandetails.not.verified.lore"));
+		List<String> lore = verified ? null : new ArrayList<>();
+		if (!verified) {
+			if (purchaseVerification) {
+				lore.add(lang("gui.clandetails.verify.price.lore", plugin.getSettingsManager().getVerificationPrice()));
+			}
+			lore.add(lang("gui.clandetails.not.verified.lore"));
+		}
 		SCComponent verify = new SCComponentImpl(title, lore, material, 39);
 		if (!verified) {
 			verify.setPermission(ClickType.LEFT, "simpleclans.leader.verify");
@@ -219,10 +229,20 @@ public class ClanDetailsFrame extends SCFrame {
 	}
 
 	private void addRegroup() {
-		SCComponent regroup = new SCComponentImpl(lang("gui.clandetails.regroup.title"),
-				Arrays.asList(lang("gui.clandetails.regroup.lore.home"),
-						lang("gui.clandetails.regroup.lore.me")),
-				Material.BEACON, 30);
+		double price = 0;
+		if (plugin.getSettingsManager().isePurchaseHomeRegroup()) {
+			price = plugin.getSettingsManager().getHomeRegroupPrice();
+			if (!plugin.getSettingsManager().iseUniqueTaxOnRegroup()) {
+				price = price * clan.getOnlineMembers().size();
+			}
+		}
+
+		List<String> lore = new ArrayList<>();
+		if (price != 0) lore.add(lang("gui.clandetails.regroup.lore.price", price));
+		lore.add(lang("gui.clandetails.regroup.lore.home"));
+		lore.add(lang("gui.clandetails.regroup.lore.me"));
+
+		SCComponent regroup = new SCComponentImpl(lang("gui.clandetails.regroup.title"), lore, Material.BEACON, 30);
 		regroup.setVerifiedOnly(ClickType.LEFT);
 		regroup.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "home regroup", false));
 		regroup.setPermission(ClickType.LEFT, RankPermission.HOME_REGROUP);
@@ -233,11 +253,18 @@ public class ClanDetailsFrame extends SCFrame {
 	}
 
 	private void addHome() {
-		SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title"),
-				Arrays.asList(lang("gui.clandetails.home.lore.teleport"),
-						lang("gui.clandetails.home.lore.set"),
-						lang("gui.clandetails.home.lore.clear")),
-				Material.MAGENTA_BED, 28);
+		SettingsManager sm = plugin.getSettingsManager();
+		double homePrice = sm.isePurchaseHomeTeleport() ? sm.getHomeTeleportPrice() : 0;
+		double setPrice = sm.isePurchaseHomeTeleportSet() ? sm.getHomeTeleportPriceSet() : 0;
+
+		List<String> lore = new ArrayList<>();
+		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", homePrice));
+		lore.add(lang("gui.clandetails.home.lore.teleport"));
+		if (setPrice != 0) lore.add(lang("gui.clandetails.home.lore.set.price", setPrice));
+		lore.add(lang("gui.clandetails.home.lore.set"));
+		lore.add(lang("gui.clandetails.home.lore.clear"));
+
+		SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title"), lore, Material.MAGENTA_BED, 28);
 		home.setVerifiedOnly(ClickType.LEFT);
 		home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "home", false));
 		home.setPermission(ClickType.LEFT, RankPermission.HOME_TP);
