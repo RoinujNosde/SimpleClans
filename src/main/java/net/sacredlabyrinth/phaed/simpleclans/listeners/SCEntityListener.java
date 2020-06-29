@@ -208,7 +208,7 @@ public class SCEntityListener implements Listener
                 {
                 	return;
                 }
-                if (cp.getClan().isMember((Player) tamed.getOwner()))
+                if (cp.getClan() != null && cp.getClan().isMember((Player) tamed.getOwner()))
                 {
                     tamed.setOwner(player);
                 }
@@ -229,7 +229,7 @@ public class SCEntityListener implements Listener
                 ClanPlayer cp = plugin.getClanManager().getClanPlayer((Player) event.getTarget());
                 Tameable wolf = (Tameable) event.getEntity();
 
-                if (wolf.isTamed() && cp.getClan().isMember((Player) wolf.getOwner()))
+                if (wolf.isTamed() && cp.getClan() != null && cp.getClan().isMember((Player) wolf.getOwner()))
                 {
                 	// cancels the event if the attacker is one out of his clan
                     event.setCancelled(true);
