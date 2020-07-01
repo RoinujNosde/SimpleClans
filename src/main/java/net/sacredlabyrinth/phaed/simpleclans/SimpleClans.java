@@ -131,9 +131,7 @@ public class SimpleClans extends JavaPlugin {
         getCommand(getSettingsManager().getCommandClan()).setTabCompleter(new PlayerNameTabCompleter());
         getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
         getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
-        if (!Locale.getDefault().getLanguage().equals("en")) {
-        	getLogger().info("Help us translate SimpleClans to your language! Access https://crowdin.com/project/simpleclans/");
-        }
+        getLogger().info("Help us translate SimpleClans to your language! Access https://crowdin.com/project/simpleclans/");
         
         startTasks();
         startMetrics();
@@ -225,6 +223,7 @@ public class SimpleClans extends JavaPlugin {
     /**
      * @return the permissionsManager
      */
+    @NotNull
     public PermissionsManager getPermissionsManager() {
         return permissionsManager;
     }

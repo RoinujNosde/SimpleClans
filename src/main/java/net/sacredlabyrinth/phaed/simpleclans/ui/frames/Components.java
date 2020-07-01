@@ -1,9 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
-
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -11,17 +12,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -108,12 +105,20 @@ public class Components {
                     ));
         } else {
             name = lang("gui.clandetails.free.agent.title");
-            lore = null;
+            double price = pl.getSettingsManager().isePurchaseCreation() ? pl.getSettingsManager().getCreationPrice() : 0;
+            lore = new ArrayList<>();
+            if (price != 0) {
+                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", price));
+            }
+            lore.add(lang("gui.clandetails.free.agent.create.clan.lore"));
         }
 
         SCComponent c = new SCComponentImpl(name, lore, Material.GREEN_BANNER, slot);
         if (openDetails && clan != null) {
             c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanDetailsFrame(frame, viewer, clan)));
+        }
+        if (clan == null) {
+            c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(viewer, "create", false));
         }
 
         if (clan != null && clan.isMember(viewer)) {

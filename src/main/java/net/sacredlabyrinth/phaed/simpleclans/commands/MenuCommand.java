@@ -47,9 +47,9 @@ public class MenuCommand {
 
         if (clan == null && plugin.getPermissionsManager().has(player, "simpleclans.leader.create")) {
             if (plugin.getSettingsManager().isePurchaseCreation()) {
-                chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.create.tag.name.1.purchase.a.new.clan"), clanCommand, ChatColor.WHITE));
+                chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.create.1.purchase.a.new.clan"), clanCommand, ChatColor.WHITE));
             } else {
-                chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.create.tag.name.1.create.a.new.clan"), clanCommand, ChatColor.WHITE));
+                chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.create.1.create.a.new.clan"), clanCommand, ChatColor.WHITE));
             }
         }
         if (clan != null && plugin.getPermissionsManager().has(player, "simpleclans.member.chat")) {

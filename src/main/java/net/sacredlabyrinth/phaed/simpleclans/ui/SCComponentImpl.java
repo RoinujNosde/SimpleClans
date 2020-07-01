@@ -7,13 +7,14 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SCComponentImpl extends SCComponent {
 	
 	private final ItemStack item;
 	private final int slot;
 
-	public SCComponentImpl(String displayName, List<String> lore, Material material, int slot) {
+	public SCComponentImpl(String displayName, @Nullable List<String> lore, Material material, int slot) {
 		item = new ItemStack(material);
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta != null) {
