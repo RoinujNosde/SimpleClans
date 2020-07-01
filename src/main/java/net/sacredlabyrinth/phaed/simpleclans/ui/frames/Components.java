@@ -118,6 +118,7 @@ public class Components {
             c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanDetailsFrame(frame, viewer, clan)));
         }
         if (clan == null) {
+            c.setPermission(ClickType.LEFT, "simpleclans.leader.create");
             c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(viewer, "create", false));
         }
 
@@ -130,7 +131,7 @@ public class Components {
         return c;
     }
 
-    public static SCComponent getBackComponent(SCFrame parent, int slot) {
+    public static SCComponent getBackComponent(@Nullable SCFrame parent, int slot) {
         SCComponent back = new SCComponentImpl(lang("gui.back.title"), null,
                 Material.ARROW, slot);
         back.setListener(ClickType.LEFT, () -> InventoryDrawer.open(parent));

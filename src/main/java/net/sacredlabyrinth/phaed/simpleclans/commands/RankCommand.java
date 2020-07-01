@@ -3,7 +3,11 @@ package net.sacredlabyrinth.phaed.simpleclans.commands;
 import java.text.MessageFormat;
 import java.util.*;
 
+import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
 import org.bukkit.ChatColor;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
@@ -149,21 +153,16 @@ public class RankCommand {
             ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions"));
             return;
 		}
-		if (args.length != 1) {
-			ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.rank.create"),
+		if (args.length != 0) {
+			ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.rank.create.noargs"),
             		plugin.getSettingsManager().getCommandClan()));
 			return;
 		}
-		
-		String rank = args[0].toLowerCase();
-		if (clan.hasRank(rank)) {
-			ChatBlock.sendMessage(player, ChatColor.RED + lang("rank.already.exists"));
-			return;
-		}
-		
-		clan.createRank(rank);
-		plugin.getStorageManager().updateClan(clan, true);
-		ChatBlock.sendMessage(player, ChatColor.AQUA + lang("rank.created"));
+
+		Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateRankNamePrompt())
+				.withLocalEcho(true).buildConversation(player);
+		conversation.getContext().setSessionData("clan", clan);
+		conversation.begin();
 	}
 
 	private void listRanks() {

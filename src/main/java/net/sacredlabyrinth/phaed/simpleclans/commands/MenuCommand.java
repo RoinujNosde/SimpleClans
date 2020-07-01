@@ -187,7 +187,7 @@ public class MenuCommand {
             chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.trust.untrust.player.1.set.trust.level2"), clanCommand, ChatColor.WHITE));
         }
         if (isVerified && isLeader && plugin.getPermissionsManager().has(player, "simpleclans.leader.rank.create")) {
-        	chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.rank.create.rank.1.create.rank"), clanCommand, ChatColor.WHITE));
+        	chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.rank.create.1.create.rank"), clanCommand, ChatColor.WHITE));
         }
         if (isVerified && isLeader && plugin.getPermissionsManager().has(player, "simpleclans.leader.rank.assign")) {
         	chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.rank.assign.player.rank.1.assign.rank.to.player"), clanCommand, ChatColor.WHITE));
