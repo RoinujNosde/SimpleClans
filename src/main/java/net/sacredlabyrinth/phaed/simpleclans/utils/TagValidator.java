@@ -16,6 +16,7 @@ public class TagValidator {
     private final SimpleClans plugin;
     private final Player player;
     private final String tag;
+    private String error;
 
     public TagValidator(@NotNull SimpleClans plugin, @NotNull Player player, @NotNull String tag) {
         this.plugin = plugin;
@@ -37,31 +38,46 @@ public class TagValidator {
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
             if (plugin.getSettingsManager().isDisallowedWord(cleanTag.toLowerCase())) {
-                return ChatColor.RED + plugin.getLang("that.tag.name.is.disallowed");
+                error = ChatColor.RED + plugin.getLang("that.tag.name.is.disallowed");
             }
             if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
-                return ChatColor.RED + plugin.getLang("your.tag.cannot.contain.color.codes");
+                error =  ChatColor.RED + plugin.getLang("your.tag.cannot.contain.color.codes");
             }
             if (cleanTag.length() < plugin.getSettingsManager().getTagMinLength()) {
-                return ChatColor.RED +
+                error = ChatColor.RED +
                         MessageFormat.format(plugin.getLang("your.clan.tag.must.be.longer.than.characters"),
                                 plugin.getSettingsManager().getTagMinLength());
             }
             if (cleanTag.length() > plugin.getSettingsManager().getTagMaxLength()) {
-                return ChatColor.RED +
+                error = ChatColor.RED +
                         MessageFormat.format(plugin.getLang("your.clan.tag.cannot.be.longer.than.characters"),
                                 plugin.getSettingsManager().getTagMaxLength());
             }
             if (plugin.getSettingsManager().hasDisallowedColor(tag)) {
-                return ChatColor.RED +
+                error = ChatColor.RED +
                         MessageFormat.format(plugin.getLang("your.tag.cannot.contain.the.following.colors"),
                                 plugin.getSettingsManager().getDisallowedColorString());
             }
-            if (!cleanTag.matches("[0-9a-zA-Z]*")) {
-                return ChatColor.RED + plugin.getLang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes");
-            }
+            checkAlphabet();
         }
 
-        return null;
+        return error;
+    }
+
+    private void checkAlphabet() {
+        String cleanTag = Helper.cleanTag(tag);
+        String alphabetError = ChatColor.RED + plugin.getLang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes");
+        if (plugin.getSettingsManager().isAcceptOtherAlphabetsLettersOnTag()) {
+            for (char c : cleanTag.toCharArray()) {
+                if (!Character.isLetterOrDigit(c)) {
+                    error = alphabetError;
+                    return;
+                }
+            }
+            return;
+        }
+        if (!cleanTag.matches("[0-9a-zA-Z]*")) {
+            error = alphabetError;
+        }
     }
 }

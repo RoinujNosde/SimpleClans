@@ -120,10 +120,11 @@ public class InventoryController implements Listener {
 		SimpleClans plugin = SimpleClans.getInstance();
 		PermissionsManager pm = plugin.getPermissionsManager();
 		if (permission instanceof String) {
-			boolean leaderPerm = ((String) permission).contains("simpleclans.leader");
+			String permS = (String) permission;
+			boolean leaderPerm = permS.contains("simpleclans.leader") && !permS.equalsIgnoreCase("simpleclans.leader.create");
 			ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
-			
-			return pm.has(player, (String) permission) && (!leaderPerm || cp.isLeader());
+
+			return pm.has(player, permS) && (!leaderPerm || cp.isLeader());
 		}
 		return pm.has(player, (RankPermission) permission, false);
 	}

@@ -36,6 +36,7 @@ public final class SettingsManager {
     private boolean showUnverifiedOnList;
     private boolean requireVerification;
     private boolean rejoinCooldownEnabled;
+    private boolean acceptOtherAlphabetsLettersOnTag;
     private int rejoinCooldown;
     private String listDefault;
     private String listSize;
@@ -244,6 +245,7 @@ public final class SettingsManager {
         requireVerification = getConfig().getBoolean("settings.new-clan-verification-required");
         rejoinCooldown = getConfig().getInt("settings.rejoin-cooldown");
         rejoinCooldownEnabled = getConfig().getBoolean("settings.rejoin-cooldown-enabled");
+        acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
         listActive = getConfig().getString("list.active", "active");
         listKdr = getConfig().getString("list.kdr", "kdr");
         listDefault = getConfig().getString("list.default", listKdr);
@@ -423,6 +425,14 @@ public final class SettingsManager {
 		this.enableGUI = enableGUI;
         getConfig().set("settings.enable-gui", enableGUI);
         save();
+    }
+
+    /**
+     *
+     * @return if the tag can contain letters from other alphabets
+     */
+    public boolean isAcceptOtherAlphabetsLettersOnTag() {
+        return acceptOtherAlphabetsLettersOnTag;
     }
     
     public Locale getLanguage() {

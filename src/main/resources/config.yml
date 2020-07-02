@@ -48,6 +48,7 @@ settings:
     allow-reset-kdr: false
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
+    accept-other-alphabets-letters-on-tag: false
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10
