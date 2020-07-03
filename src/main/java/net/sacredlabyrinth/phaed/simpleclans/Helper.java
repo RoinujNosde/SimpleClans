@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -354,12 +356,17 @@ public class Helper {
      * @param hexValue
      * @return
      */
-    public static String toColor(String hexValue) {
+    @NotNull
+    public static String toColor(@Nullable String hexValue) {
         if (hexValue == null) {
             return "";
         }
 
-        return ChatColor.getByChar(hexValue).toString();
+        ChatColor color = ChatColor.getByChar(hexValue);
+        if (color == null) {
+            return "";
+        }
+        return color.toString();
     }
 
     /**
