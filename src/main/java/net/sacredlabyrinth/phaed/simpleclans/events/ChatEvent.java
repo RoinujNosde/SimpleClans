@@ -8,6 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -15,12 +16,12 @@ import org.bukkit.event.HandlerList;
  */
 public class ChatEvent extends Event implements Cancellable {
 
-    private final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLER_LIST = new HandlerList();
     private String message;
-    private ClanPlayer sender;
-    private List<ClanPlayer> receivers;
-    private Map<String, String> placeholders = new HashMap<>();
-    private Type type;
+    private final ClanPlayer sender;
+    private final List<ClanPlayer> receivers;
+    private final Map<String, String> placeholders = new HashMap<>();
+    private final Type type;
     private boolean cancelled;
     
     public ChatEvent(String message, ClanPlayer sender, List<ClanPlayer> receivers, Type type) {
@@ -134,8 +135,12 @@ public class ChatEvent extends Event implements Cancellable {
     }
 
     @Override
-    public HandlerList getHandlers() {
-        return handlers;
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
     }
 
 }
