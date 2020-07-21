@@ -8,11 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 
-import jdk.vm.ci.meta.Local;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 /**
