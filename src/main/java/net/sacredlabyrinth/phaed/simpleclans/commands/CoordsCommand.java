@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -30,21 +31,21 @@ public class CoordsCommand {
         String subColor = plugin.getSettingsManager().getPageSubTitleColor();
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.member.coords")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
 
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isVerified()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("clan.is.not.verified"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("clan.is.not.verified",player));
             return;
         }
         if (!plugin.getPermissionsManager().has(player, RankPermission.COORDS, PermissionLevel.TRUSTED, true)) {
@@ -52,7 +53,7 @@ public class CoordsCommand {
         }
 
         if (arg.length != 0) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.0.coords"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.coords",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
@@ -61,7 +62,7 @@ public class CoordsCommand {
         chatBlock.setFlexibility(true, false, false, false);
         chatBlock.setAlignment("l", "c", "c", "c");
 
-        chatBlock.addRow("  " + headColor + plugin.getLang("name"), plugin.getLang("distance"), plugin.getLang("coords.upper"), plugin.getLang("world"));
+        chatBlock.addRow("  " + headColor + lang("name",player), lang("distance",player), lang("coords.upper",player), lang("world",player));
 
         List<ClanPlayer> members = Helper.stripOffLinePlayers(clan.getMembers());
 
@@ -87,7 +88,7 @@ public class CoordsCommand {
         }
 
         if (rows.isEmpty()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.are.the.only.member.online"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("you.are.the.only.member.online",player));
             return;
         }
 
@@ -96,7 +97,7 @@ public class CoordsCommand {
         }
 
         ChatBlock.sendBlank(player);
-        ChatBlock.saySingle(player, plugin.getSettingsManager().getPageClanNameColor() + clan.getName() + subColor + " " + plugin.getLang("coords") + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
+        ChatBlock.saySingle(player, plugin.getSettingsManager().getPageClanNameColor() + clan.getName() + subColor + " " + lang("coords",player) + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
         ChatBlock.sendBlank(player);
 
         boolean more = chatBlock.sendBlock(player, plugin.getSettingsManager().getPageSize());
@@ -104,7 +105,7 @@ public class CoordsCommand {
         if (more) {
             plugin.getStorageManager().addChatBlock(player, chatBlock);
             ChatBlock.sendBlank(player);
-            ChatBlock.sendMessage(player, headColor + MessageFormat.format(plugin.getLang("view.next.page"), plugin.getSettingsManager().getCommandMore()));
+            ChatBlock.sendMessage(player, headColor + MessageFormat.format(lang("view.next.page",player), plugin.getSettingsManager().getCommandMore()));
         }
 
         ChatBlock.sendBlank(player);

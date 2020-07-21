@@ -50,6 +50,7 @@ public class LanguageSelectorFrame extends SCFrame {
         int slot = 9;
         for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
             Locale locale = languages.get(i);
+            // TODO Display translation status
             SCComponent c = new SCComponentImpl.Builder(Material.PAPER)
                     .withDisplayName(lang("gui.languageselector.language.title", locale.getDisplayName()))
                     .withSlot(slot).withLore(Collections.singletonList(lang("gui.languageselector.language.lore")))
@@ -69,10 +70,10 @@ public class LanguageSelectorFrame extends SCFrame {
                 continue;
             add(Components.getPanelComponent(slot));
         }
-        add(Components.getBackComponent(getParent(), 2));
+        add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-        add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-        add(Components.getNextPageComponent(7, this::nextPage, paginator));
+        add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+        add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
     }
 
     private void previousPage() {

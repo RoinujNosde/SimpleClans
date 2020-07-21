@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.TeleportState;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,7 +42,7 @@ public final class TeleportManager {
 
 		if (secs > 0) {
 			ChatBlock.sendMessage(player, ChatColor.AQUA
-					+ MessageFormat.format(plugin.getLang("waiting.for.teleport.stand.still.for.0.seconds"), secs));
+					+ MessageFormat.format(lang("waiting.for.teleport.stand.still.for.0.seconds",player), secs));
 		}
     }
 
@@ -122,15 +123,15 @@ public final class TeleportManager {
 
                                 player.teleport(new Location(loc.getWorld(), loc.getBlockX() + .5, loc.getBlockY(), loc.getBlockZ() + .5));
 
-                                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(plugin.getLang("now.at.homebase"), state.getClanName()));
+                                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(lang("now.at.homebase",player), state.getClanName()));
                             } else {
-                                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.moved.teleport.cancelled"));
+                                ChatBlock.sendMessage(player, ChatColor.RED + lang("you.moved.teleport.cancelled",player));
                             }
 
                             iter.remove();
                         } else {
                             if (!Helper.isSameBlock(player.getLocation(), state.getLocation())) {
-                                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.moved.teleport.cancelled"));
+                                ChatBlock.sendMessage(player, ChatColor.RED + lang("you.moved.teleport.cancelled",player));
                                 iter.remove();
                             } else {
                                 ChatBlock.sendMessage(player, ChatColor.AQUA + "" + state.getCounter());

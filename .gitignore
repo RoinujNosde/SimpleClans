@@ -6,3 +6,5 @@ SimpleClans.iml
 /.project
 /dependency-reduced-pom.xml
 /simpleclans-mc1.8.iml
+*.jar
+.settings

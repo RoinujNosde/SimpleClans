@@ -12,6 +12,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.PermissionLevel;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 public class DescriptionCommand {
@@ -27,20 +28,20 @@ public class DescriptionCommand {
 		final SettingsManager sm = plugin.getSettingsManager();
 
 		if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.description")) {
-			ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+			ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
 			return;
 		}
 
 		ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 		if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isVerified()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("clan.is.not.verified"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("clan.is.not.verified",player));
             return;
         }
         if (!plugin.getPermissionsManager().has(player, RankPermission.DESCRIPTION, PermissionLevel.LEADER, true)) {
@@ -48,22 +49,22 @@ public class DescriptionCommand {
         }
         
         if (args.length < 1) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.description"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.description",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
         
         String description = Helper.toMessage(args);
         if (description.length() < sm.getClanMinDescriptionLength()) {
-        	ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("your.clan.description.must.be.longer.than"), sm.getClanMinDescriptionLength()));
+        	ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("your.clan.description.must.be.longer.than",player), sm.getClanMinDescriptionLength()));
         	return;
         }
         if (description.length() > sm.getClanMaxDescriptionLength()) {
-        	ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("your.clan.description.cannot.be.longer.than"), sm.getClanMaxDescriptionLength()));
+        	ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("your.clan.description.cannot.be.longer.than",player), sm.getClanMaxDescriptionLength()));
         	return;
         }
 
         clan.setDescription(description);
-        ChatBlock.sendMessage(player, ChatColor.AQUA + plugin.getLang("description.changed"));
+        ChatBlock.sendMessage(player, ChatColor.AQUA + lang("description.changed",player));
         plugin.getStorageManager().updateClan(clan);
 	}
 }

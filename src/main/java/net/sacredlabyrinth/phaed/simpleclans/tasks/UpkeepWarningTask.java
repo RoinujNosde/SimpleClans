@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.tasks;
 import java.text.MessageFormat;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -49,7 +50,7 @@ public class UpkeepWarningTask extends BukkitRunnable {
                 upkeep = upkeep * clan.getSize();
             }
             if (balance < upkeep) {
-                clan.addBb(MessageFormat.format(plugin.getLang("balance.is.not.enough.for.upkeep"), upkeep), false);
+                clan.addBb(MessageFormat.format(lang("balance.is.not.enough.for.upkeep"), upkeep), false);
             }
         });
     }

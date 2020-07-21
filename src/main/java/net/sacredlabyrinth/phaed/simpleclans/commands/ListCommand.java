@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
@@ -36,11 +37,11 @@ public class ListCommand {
         NumberFormat formatter = new DecimalFormat("#.#");
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.anyone.list")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
         if (args.length > 2) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.list"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.list",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
         List<Clan> clans = plugin.getClanManager().getClans();
@@ -48,19 +49,19 @@ public class ListCommand {
         sort(plugin, clans, args);
 
         if (clans.isEmpty()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.clans.have.been.created"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("no.clans.have.been.created",player));
             return;
         }
 
         ChatBlock chatBlock = new ChatBlock();
         ChatBlock.sendBlank(player);
-        ChatBlock.saySingle(player, plugin.getSettingsManager().getServerName() + subColor + " " + plugin.getLang("clans.lower") + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
+        ChatBlock.saySingle(player, plugin.getSettingsManager().getServerName() + subColor + " " + lang("clans.lower",player) + " " + headColor + Helper.generatePageSeparator(plugin.getSettingsManager().getPageSep()));
         ChatBlock.sendBlank(player);
-        ChatBlock.sendMessage(player, headColor + plugin.getLang("total.clans") + " " + subColor + clans.size());
+        ChatBlock.sendMessage(player, headColor + lang("total.clans",player) + " " + subColor + clans.size());
         ChatBlock.sendBlank(player);
         chatBlock.setAlignment("c", "l", "c", "c");
         chatBlock.setFlexibility(false, true, false, false);
-        chatBlock.addRow("  " + headColor + plugin.getLang("rank"), plugin.getLang("name"), plugin.getLang("kdr"), plugin.getLang("members"));
+        chatBlock.addRow("  " + headColor + lang("rank",player), lang("name",player), lang("kdr",player), lang("members",player));
 
         int rank = 1;
 
@@ -84,7 +85,7 @@ public class ListCommand {
         if (more) {
             plugin.getStorageManager().addChatBlock(player, chatBlock);
             ChatBlock.sendBlank(player);
-            ChatBlock.sendMessage(player, headColor + MessageFormat.format(plugin.getLang("view.next.page"), plugin.getSettingsManager().getCommandMore()));
+            ChatBlock.sendMessage(player, headColor + MessageFormat.format(lang("view.next.page",player), plugin.getSettingsManager().getCommandMore()));
         }
 
         ChatBlock.sendBlank(player);

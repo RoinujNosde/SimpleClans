@@ -36,19 +36,19 @@ public class ClanListFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			Clan clan = clans.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.clanlist.clan.title", clan.getColorTag(), clan.getName()),
-					Arrays.asList(lang("gui.clanlist.clan.lore.position", i + 1),
-							lang("gui.clanlist.clan.lore.kdr", Helper.formatKDR(clan.getTotalKDR())),
-							lang("gui.clanlist.clan.lore.members", clan.getMembers().size())),
+					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
+					Arrays.asList(lang("gui.clanlist.clan.lore.position",getViewer(), i + 1),
+							lang("gui.clanlist.clan.lore.kdr",getViewer(), Helper.formatKDR(clan.getTotalKDR())),
+							lang("gui.clanlist.clan.lore.members",getViewer(), clan.getMembers().size())),
 					Material.BLACK_BANNER, slot);
 			c.setLorePermission("simpleclans.anyone.list");
 			add(c);
@@ -74,7 +74,7 @@ public class ClanListFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.clanlist.title", clans.size());
+		return lang("gui.clanlist.title",getViewer(), clans.size());
 	}
 
 	@Override

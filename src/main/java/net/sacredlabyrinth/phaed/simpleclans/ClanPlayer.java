@@ -16,6 +16,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 /**
  * @author phaed
  */
@@ -273,25 +275,33 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     }
 
     /**
-     * Returns a verbal representation of how many days ago a player was last seen
      *
-     * @return
+     * @return a verbal representation of how many days ago a player was last seen
      */
     public String getLastSeenDaysString()
+    {
+        return getLastSeenDaysString(null);
+    }
+
+    /**
+     * @param viewer the Player viewing the last seen days
+     * @return a verbal representation of how many days ago a player was last seen
+     */
+    public String getLastSeenDaysString(@Nullable Player viewer)
     {
         double days = Dates.differenceInDays(new Timestamp(lastSeen), new Timestamp((new Date()).getTime()));
 
         if (days < 1)
         {
-            return SimpleClans.getInstance().getLang("today");
+            return lang("today", viewer);
         }
         else if (Math.round(days) == 1)
         {
-            return MessageFormat.format(SimpleClans.getInstance().getLang("1.color.day"), ChatColor.GRAY);
+            return lang("1.color.day", viewer, ChatColor.GRAY);
         }
         else
         {
-            return MessageFormat.format(SimpleClans.getInstance().getLang("many.color.days"), Math.round(days), ChatColor.GRAY);
+            return lang("many.color.days", viewer, Math.round(days), ChatColor.GRAY);
         }
     }
 
@@ -540,15 +550,24 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     }
 
     /**
-     * Returns a string representation of the last seen date
      *
-     * @return
+     * @return a string representation of the last seen date
      */
+    @NotNull
     public String getLastSeenString()
     {
-    	if (toPlayer() != null) {
-    		return SimpleClans.getInstance().getLang("online");
-    	}
+    	return getLastSeenString(null);
+    }
+
+    /**
+     *
+     * @param viewer the Player viewing the last seen
+     * @return a string representation of the last seen date
+     */
+    public String getLastSeenString(@Nullable Player viewer) {
+        if (toPlayer() != null) {
+            return lang("online", viewer);
+        }
         return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(this.lastSeen));
     }
 
@@ -570,16 +589,16 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      */
     public String getPackedPastClans()
     {
-        String PackedPastClans = "";
+        String packedPastClans = "";
 
         Set<String> pt = getPastClans();
 
         for (String pastClan : pt)
         {
-            PackedPastClans += pastClan + "|";
+            packedPastClans += pastClan + "|";
         }
 
-        return Helper.stripTrailing(PackedPastClans, "|");
+        return Helper.stripTrailing(packedPastClans, "|");
     }
 
     /**
@@ -613,28 +632,39 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     }
 
     /**
-     * Returns a separator delimited string with the color tags for all past clans this player has been in
      *
-     * @param sep
-     * @return
+     * @param sep the separator
+     * @return a separator delimited string with the color tags for all past clans this player has been in
      */
-    public String getPastClansString(String sep)
+    @NotNull
+    public String getPastClansString(@NotNull String sep)
     {
-        String out = "";
+        return getPastClansString(sep, null);
+    }
+
+    /**
+     *
+     * @param sep the separator
+     * @param viewer the Player viewing the clan's string
+     * @return a separator delimited string with the color tags for all past clans this player has been in
+     */
+    @NotNull
+    public String getPastClansString(String sep, @Nullable Player viewer) {
+        StringBuilder out = new StringBuilder();
 
         for (String pastClan : getPastClans())
         {
-            out += pastClan + sep;
+            out.append(pastClan).append(sep);
         }
 
-        out = Helper.stripTrailing(out, sep);
+        out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
 
-        if (out.trim().isEmpty())
+        if (out.toString().trim().isEmpty())
         {
-            return SimpleClans.getInstance().getLang("none");
+            return lang("none", viewer);
         }
 
-        return out;
+        return out.toString();
     }
 
     /**

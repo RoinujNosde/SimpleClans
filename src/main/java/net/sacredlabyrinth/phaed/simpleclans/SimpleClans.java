@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -261,10 +262,19 @@ public class SimpleClans extends JavaPlugin {
                 ChatColor.translateAlternateColorCodes(
                         '&', languageResource.getLang(key, locale)), arguments);
     }
+    
+    @NotNull
+    public static String lang(@NotNull String key, @NotNull CommandSender sender, Object... arguments) {
+    	if (sender instanceof Player) {
+            return lang(key, (Player) sender, arguments);
+        } else {
+            return lang(key, (Player) null, arguments);
+        }
+    }
 
     @NotNull
     public static String lang(@NotNull String key, Object... arguments) {
-        return lang(key, null, arguments);
+        return lang(key, (Player) null, arguments);
     }
 
     public TeleportManager getTeleportManager() {

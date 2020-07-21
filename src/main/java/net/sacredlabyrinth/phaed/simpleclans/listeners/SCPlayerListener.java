@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.listeners;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.executors.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -74,7 +75,7 @@ public class SCPlayerListener implements Listener {
             if (cp.getTag().equalsIgnoreCase(command)) {
                 event.setCancelled(true);
                 if (!plugin.getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.chat")) {
-                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + lang("insufficient.permissions",cp.toPlayer()));
                     return;
                 }
 
@@ -97,7 +98,7 @@ public class SCPlayerListener implements Listener {
             event.setCancelled(true);
 
             if (!plugin.getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.chat")) {
-                ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + lang("insufficient.permissions",cp.toPlayer()));
                 return;
             }
             if (split.length > 1) {
@@ -160,7 +161,7 @@ public class SCPlayerListener implements Listener {
             if (cp.getChannel().equals(ClanPlayer.Channel.CLAN)) {
                 event.setCancelled(true);
                 if (!plugin.getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.chat")) {
-                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + lang("insufficient.permissions",cp.toPlayer()));
                     return;
                 }
 
@@ -168,7 +169,7 @@ public class SCPlayerListener implements Listener {
             } else if (cp.getChannel().equals(ClanPlayer.Channel.ALLY)) {
                 event.setCancelled(true);
                 if (!plugin.getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.ally")) {
-                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + lang("insufficient.permissions",cp.toPlayer()));
                     return;
                 }
 

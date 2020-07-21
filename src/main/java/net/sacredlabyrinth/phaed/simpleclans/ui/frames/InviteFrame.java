@@ -73,10 +73,10 @@ public class InviteFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 	}
 
 	private void previousPage() {
@@ -97,7 +97,7 @@ public class InviteFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.invite.title");
+		return lang("gui.invite.title",getViewer());
 	}
 	
 	@Override

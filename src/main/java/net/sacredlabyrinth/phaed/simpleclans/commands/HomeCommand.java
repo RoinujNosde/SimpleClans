@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,12 +40,12 @@ public class HomeCommand {
                 Clan clan = plugin.getClanManager().getClan(arg[1]);
 
                 if (clan == null) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("the.clan.does.not.exist"));
+                    ChatBlock.sendMessage(player, ChatColor.RED + lang("the.clan.does.not.exist",player));
                     return;
                 }
 
                 clan.setHomeLocation(loc);
-                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(plugin.getLang("hombase.mod.set"), clan.getName()) + " " + ChatColor.YELLOW + Helper.toLocationString(loc));
+                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(lang("hombase.mod.set",player), clan.getName()) + " " + ChatColor.YELLOW + Helper.toLocationString(loc));
                 return;
             }
 
@@ -52,19 +53,19 @@ public class HomeCommand {
                 Clan clan = plugin.getClanManager().getClan(arg[1]);
 
                 if (clan == null) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("the.clan.does.not.exist"));
+                    ChatBlock.sendMessage(player, ChatColor.RED + lang("the.clan.does.not.exist",player));
                     return;
                 }
 
                 Location loc = clan.getHomeLocation();
 
                 if (loc == null) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("hombase.not.set"));
+                    ChatBlock.sendMessage(player, ChatColor.RED + lang("hombase.not.set",player));
                     return;
                 }
 
                 player.teleport(loc);
-                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(plugin.getLang("now.at.homebase"), clan.getName()));
+                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(lang("now.at.homebase",player), clan.getName()));
                 return;
             }
         }
@@ -72,14 +73,14 @@ public class HomeCommand {
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
         if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
             return;
         }
 
         Clan clan = cp.getClan();
 
         if (!clan.isVerified()) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("clan.is.not.verified"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("clan.is.not.verified",player));
             return;
         }
 
@@ -91,7 +92,7 @@ public class HomeCommand {
             Location loc = clan.getHomeLocation();
 
             if (loc == null) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("hombase.not.set"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("hombase.not.set",player));
                 return;
             }
 
@@ -106,7 +107,7 @@ public class HomeCommand {
                 return;
             }
             if (plugin.getSettingsManager().isHomebaseSetOnce() && clan.getHomeLocation() != null && !plugin.getPermissionsManager().has(player, "simpleclans.mod.home")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("home.base.only.once"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("home.base.only.once",player));
                 return;
             }
 
@@ -118,7 +119,7 @@ public class HomeCommand {
             }
 
             clan.setHomeLocation(player.getLocation());
-            ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(plugin.getLang("hombase.set"), ChatColor.YELLOW + Helper.toLocationString(player.getLocation())));
+            ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(lang("hombase.set",player), ChatColor.YELLOW + Helper.toLocationString(player.getLocation())));
             return;
         }
 
@@ -127,18 +128,18 @@ public class HomeCommand {
                 return;
             }
             if (plugin.getSettingsManager().isHomebaseSetOnce() && clan.getHomeLocation() != null && !plugin.getPermissionsManager().has(player, "simpleclans.mod.home")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("home.base.only.once"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("home.base.only.once",player));
                 return;
             }
 
             clan.setHomeLocation(null);
-            ChatBlock.sendMessage(player, ChatColor.AQUA + plugin.getLang("hombase.cleared"));
+            ChatBlock.sendMessage(player, ChatColor.AQUA + lang("hombase.cleared",player));
             return;
         }
 
         if (arg[0].equalsIgnoreCase("regroup")) {
             if (!SimpleClans.getInstance().getSettingsManager().getAllowReGroupCommand()) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
             
@@ -154,7 +155,7 @@ public class HomeCommand {
             }
             
             if(loc == null) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("hombase.not.set"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("hombase.not.set",player));
                 return;
             }
             

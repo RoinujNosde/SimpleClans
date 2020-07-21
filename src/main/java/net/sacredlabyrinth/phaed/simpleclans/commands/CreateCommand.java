@@ -32,7 +32,7 @@ public class CreateCommand {
         SimpleClans plugin = SimpleClans.getInstance();
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.create")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
             return;
         }
 
@@ -46,7 +46,7 @@ public class CreateCommand {
 
         if (cp != null) {
             ChatBlock.sendMessage(player, ChatColor.RED +
-                    MessageFormat.format(plugin.getLang("you.must.first.resign"), cp.getClan().getName()));
+                    MessageFormat.format(lang("you.must.first.resign", player), cp.getClan().getName()));
             return;
         }
 
