@@ -46,6 +46,15 @@ public class Helper {
     	DecimalFormat formatter = new DecimalFormat("#.#");
     	return formatter.format(kdr);
     }
+
+    @NotNull
+    public static Locale forLanguageTag(@Nullable String languageTag) {
+        Locale defaultLanguage = SimpleClans.getInstance().getSettingsManager().getLanguage();
+        if (languageTag == null) {
+            return defaultLanguage;
+        }
+        return Locale.forLanguageTag(languageTag);
+    }
     
     /**
      * Gets the Player locale
@@ -53,15 +62,13 @@ public class Helper {
      * @param player the player
      * @return the locale
      */
-    public static Locale getLocale(Player player) {
-    	String lang = player.getLocale();
-    	String[] split = lang.split("_");
-    	
-    	if (split.length == 2) {
-    		return new Locale(split[0], split[1]);
-    	}
-    	
-    	return new Locale(lang);
+    @Nullable
+    public static Locale getLocale(@NotNull Player player) {
+        ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getClanPlayer(player);
+        if (clanPlayer != null) {
+            return clanPlayer.getLocale();
+        }
+        return null;
     }
     
     /**

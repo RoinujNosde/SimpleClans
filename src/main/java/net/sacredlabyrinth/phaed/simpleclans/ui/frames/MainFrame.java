@@ -7,6 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,11 +47,22 @@ public class MainFrame extends SCFrame {
 		add(clanList);
 
 		addResetKdr();
+		addLanguageSelector();
 
 		SCComponent otherCommands = new SCComponentImpl(lang("gui.main.other.commands.title"),
 				Collections.singletonList(lang("gui.main.other.commands.lore")), Material.BOOK, 8);
 		otherCommands.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "help", false));
 		add(otherCommands);
+	}
+
+	private void addLanguageSelector() {
+		if (plugin.getSettingsManager().isLanguagePerPlayer()) {
+			SCComponent language = new SCComponentImpl.Builder(Material.MAP)
+					.withDisplayName(lang("gui.main.languageselector.title"))
+					.withSlot(7).withLore(Collections.singletonList(lang("gui.main.languageselector.lore"))).build();
+			language.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new LanguageSelectorFrame(this, getViewer())));
+			add(language);
+		}
 	}
 
 	public void addResetKdr() {

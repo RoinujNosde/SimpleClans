@@ -10,9 +10,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SCComponentImpl extends SCComponent {
-	
-	private final ItemStack item;
-	private final int slot;
+
+	@NotNull
+	private ItemStack item;
+	private int slot;
+
+	private SCComponentImpl() {
+		item = new ItemStack(Material.STONE);
+		slot = 0;
+	}
 
 	public SCComponentImpl(String displayName, @Nullable List<String> lore, Material material, int slot) {
 		item = new ItemStack(material);
@@ -34,5 +40,40 @@ public class SCComponentImpl extends SCComponent {
 	@Override
 	public int getSlot() {
 		return slot;
+	}
+
+	public static class Builder {
+		private final SCComponentImpl component = new SCComponentImpl();
+
+		public Builder(@NotNull Material material) {
+			component.item = new ItemStack(material);
+		}
+
+		public Builder withDisplayName(@Nullable String displayName) {
+			ItemMeta itemMeta = component.getItemMeta();
+			if (itemMeta != null) {
+				itemMeta.setDisplayName(displayName);
+				component.setItemMeta(itemMeta);
+			}
+			return this;
+		}
+
+		public Builder withLore(@Nullable List<String> lore) {
+			ItemMeta itemMeta = component.getItemMeta();
+			if (itemMeta != null) {
+				itemMeta.setLore(lore);
+				component.setItemMeta(itemMeta);
+			}
+			return this;
+		}
+
+		public Builder withSlot(int slot) {
+			component.slot = slot;
+			return this;
+		}
+
+		public SCComponent build() {
+			return component;
+		}
 	}
 }

@@ -125,6 +125,7 @@ public final class StorageManager {
                     		+ " `flags` text NOT NULL,"
                     		+ " `packed_past_clans` text,"
                     		+ " `resign_times` text,"
+                            + " `locale` varchar(10),"
                     		+ " PRIMARY KEY  (`id`),"
                     		+ " UNIQUE KEY `uq_sc_players_1` (`name`));";
                     core.execute(query);
@@ -199,6 +200,7 @@ public final class StorageManager {
                     		+ " `flags` text NOT NULL,"
                     		+ " `packed_past_clans` text,"
                     		+ " `resign_times` text,"
+                            + " `locale` varchar(10),"
                     		+ " PRIMARY KEY  (`id`),"
                     		+ " UNIQUE (`name`));";
                     core.execute(query);
@@ -513,7 +515,8 @@ public final class StorageManager {
                         String flags = res.getString("flags");
                         String packed_past_clans = Helper.parseColors(res.getString("packed_past_clans"));
                         String resign_times = res.getString("resign_times");
-                        
+                        Locale locale = Helper.forLanguageTag(res.getString("locale"));
+
                         if (last_seen == 0) {
                             last_seen = (new Date()).getTime();
                         }
@@ -539,6 +542,7 @@ public final class StorageManager {
                         cp.setPackedPastClans(packed_past_clans);
                         cp.setTrusted(leader || trusted);
                         cp.setResignTimes(Helper.resignTimesFromJson(resign_times));
+                        cp.setLocale(locale);
 
                         if (!tag.isEmpty()) {
                             Clan clan = SimpleClans.getInstance().getClanManager().getClan(tag);
@@ -596,7 +600,8 @@ public final class StorageManager {
                         String flags = res.getString("flags");
                         String packed_past_clans = Helper.parseColors(res.getString("packed_past_clans"));
                         String resign_times = res.getString("resign_times");
-                        
+                        Locale locale = Helper.forLanguageTag(res.getString("locale"));
+
                         if (last_seen == 0) {
                             last_seen = (new Date()).getTime();
                         }
@@ -622,7 +627,8 @@ public final class StorageManager {
                         cp.setPackedPastClans(packed_past_clans);
                         cp.setTrusted(leader || trusted);
                         cp.setResignTimes(Helper.resignTimesFromJson(resign_times));
-                        
+                        cp.setLocale(locale);
+
                         if (!tag.isEmpty()) {
                             Clan clanDB = retrieveOneClan(tag);
                             Clan clan = SimpleClans.getInstance().getClanManager().getClan(tag);
@@ -782,8 +788,8 @@ public final class StorageManager {
      * @param cp
      */
     public void insertClanPlayer(ClanPlayer cp) {
-    	String query = "INSERT INTO `sc_players` (`resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
-        String values = "VALUES ( '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
+    	String query = "INSERT INTO `sc_players` (`locale`, `resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
+        String values = "VALUES ('"+cp.getLocale().toLanguageTag()+"', '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
         core.insert(query + values);
     }
 
@@ -817,8 +823,16 @@ public final class StorageManager {
     }
     
     private String getUpdateClanPlayerQuery(ClanPlayer cp) {
-        String query = "UPDATE `sc_players` SET resign_times = '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes())) +"', leader = " + (cp.isLeader() ? 1 : 0) + ", tag = '" + Helper.escapeQuotes(cp.getTag()) + "' , friendly_fire = " + (cp.isFriendlyFire() ? 1 : 0) + ", neutral_kills = " + cp.getNeutralKills() + ", rival_kills = " + cp.getRivalKills() + ", civilian_kills = " + cp.getCivilianKills() + ", deaths = " + cp.getDeaths() + ", last_seen = '" + cp.getLastSeen() + "', packed_past_clans = '" + Helper.escapeQuotes(cp.getPackedPastClans()) + "', trusted = " + (cp.isTrusted() ? 1 : 0) + ", flags = '" + Helper.escapeQuotes(cp.getFlags()) + "', name = '" + cp.getName() + "' WHERE `uuid` = '" + cp.getUniqueId().toString() + "';";
-        return query;
+        return "UPDATE `sc_players` SET" +
+                " locale = '" + cp.getLocale().toLanguageTag() + "'," +
+                " resign_times = '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes())) +"'," +
+                " leader = " + (cp.isLeader() ? 1 : 0) + ", tag = '" + Helper.escapeQuotes(cp.getTag()) + "'," +
+                " friendly_fire = " + (cp.isFriendlyFire() ? 1 : 0) + ", neutral_kills = " + cp.getNeutralKills() + "," +
+                " rival_kills = " + cp.getRivalKills() + ", civilian_kills = " + cp.getCivilianKills() + "," +
+                " deaths = " + cp.getDeaths() + ", last_seen = '" + cp.getLastSeen() + "'," +
+                " packed_past_clans = '" + Helper.escapeQuotes(cp.getPackedPastClans()) + "'," +
+                " trusted = " + (cp.isTrusted() ? 1 : 0) + ", flags = '" + Helper.escapeQuotes(cp.getFlags()) + "'," +
+                " name = '" + cp.getName() + "' WHERE `uuid` = '" + cp.getUniqueId().toString() + "';";
     }
 
     /**
@@ -1052,6 +1066,12 @@ public final class StorageManager {
         if (!core.existsColumn("sc_clans", "ranks")) {
         	query = "ALTER TABLE sc_clans ADD COLUMN `ranks` text;";
         	core.execute(query);
+        }
+
+        // From 2.12.1 to 2.13.0
+        if (!core.existsColumn("sc_players", "locale")) {
+            query = "ALTER TABLE sc_players ADD COLUMN `locale` varchar(10);";
+            core.execute(query);
         }
 
         /**

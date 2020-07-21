@@ -39,7 +39,7 @@ settings:
     - vip
     - clan
     language: en
-    language-per-player: false
+    user-language-selector: true
     disallowed-tag-colors:
     - '4'
     server-name: '&4SimpleClans'

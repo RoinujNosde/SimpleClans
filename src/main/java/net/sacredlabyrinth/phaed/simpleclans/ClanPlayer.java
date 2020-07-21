@@ -3,6 +3,8 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -50,6 +52,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     private boolean clanChatMute = false;
 
     private String rank = "";
+    private @Nullable Locale locale;
 
     /**
      *
@@ -1023,6 +1026,17 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
         this.rank = rank;
     }
 
+    public @NotNull Locale getLocale() {
+        if (locale == null) {
+            return SimpleClans.getInstance().getSettingsManager().getLanguage();
+        }
+        return locale;
+    }
+
+    public void setLocale(@Nullable Locale locale) {
+        this.locale = locale;
+    }
+
     public enum Channel
     {
         CLAN,
@@ -1030,7 +1044,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
         NONE
     }
 
-    public Player toPlayer()
+    public @Nullable Player toPlayer()
     {
         if (this.uniqueId != null)
         {
