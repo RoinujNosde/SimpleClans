@@ -37,6 +37,7 @@ public final class SettingsManager {
     private boolean requireVerification;
     private boolean rejoinCooldownEnabled;
     private boolean acceptOtherAlphabetsLettersOnTag;
+    private int minToVerify;
     private int rejoinCooldown;
     private String listDefault;
     private String listSize;
@@ -246,6 +247,7 @@ public final class SettingsManager {
         rejoinCooldown = getConfig().getInt("settings.rejoin-cooldown");
         rejoinCooldownEnabled = getConfig().getBoolean("settings.rejoin-cooldown-enabled");
         acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
+        minToVerify = getConfig().getInt("settings.min-to-verify", 1);
         listActive = getConfig().getString("list.active", "active");
         listKdr = getConfig().getString("list.kdr", "kdr");
         listDefault = getConfig().getString("list.default", listKdr);
@@ -496,7 +498,11 @@ public final class SettingsManager {
 	public void setTasksCollectFeeMinute(int tasksCollectFeeMinute) {
 		this.tasksCollectFeeMinute = tasksCollectFeeMinute;
 	}
-	
+
+	public int getMinToVerify() {
+        return minToVerify;
+    }
+
 	/**
      * Returns the delay between kills
      * 

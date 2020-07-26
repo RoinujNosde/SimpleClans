@@ -45,6 +45,11 @@ public class VerifyCommand {
                     return;
                 }
                 if (isBuyer) {
+                    int minToVerify = plugin.getSettingsManager().getMinToVerify();
+                    if (minToVerify > clan.getAllMembers().size()) {
+                        ChatBlock.sendMessage(player, lang("your.clan.must.have.members.to.verify", minToVerify));
+                        return;
+                    }
                     if (plugin.getClanManager().purchaseVerification(player)) {
                         clan.verifyClan();
                         clan.addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.0.has.been.verified"), clan.getName()));
