@@ -60,8 +60,8 @@ public class MenuCommand {
         }
         if (clan != null && plugin.getPermissionsManager().has(player, "simpleclans.member.ally")) {
             String allyCommand = plugin.getSettingsManager().getCommandAlly();
-            chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.message.1.send.a.message.to.ally.chat"), allyCommand, ChatColor.WHITE));
-            chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.join.leave.3.join.leave.the.ally.chat"), allyCommand, lang("join", player), lang("leave", player), ChatColor.WHITE));
+            chatBlock.addRow(ChatColor.AQUA + "  " + lang("0.message.1.send.a.message.to.ally.chat", player, allyCommand, ChatColor.WHITE));
+            chatBlock.addRow(ChatColor.AQUA + "  " + lang("0.join.leave.3.join.leave.the.ally.chat", player, allyCommand, lang("join", player), lang("leave", player), ChatColor.WHITE));
         }
         if (isNonVerified && plugin.getSettingsManager().isRequireVerification() && plugin.getSettingsManager().isePurchaseVerification()) {
             chatBlock.addRow(ChatColor.DARK_RED + "  " + MessageFormat.format(lang("0.verify.1.purchase.verification.of.your.clan",player), clanCommand, ChatColor.WHITE));

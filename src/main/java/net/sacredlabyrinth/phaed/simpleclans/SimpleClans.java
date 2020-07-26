@@ -234,28 +234,23 @@ public class SimpleClans extends JavaPlugin {
      * @return the lang
      */
     @Deprecated
-    public String getLang(String key) {
+    public String getLang(@NotNull String key) {
         return getLang(key, null);
     }
 
     @Deprecated
-    public String getLang(String key, Player player) {
-    	Locale locale;
-    	if (player == null) {
-    		locale = getSettingsManager().getLanguage();
-    	} else {
-    		locale = Helper.getLocale(player);
-    	}
-    	return ChatColor.translateAlternateColorCodes('&', languageResource.getLang(key, locale));
+    public String getLang(@NotNull String key, @Nullable Player player) {
+        return lang(key, player);
     }
 
     @NotNull
     public static String lang(@NotNull String key, @Nullable Player player, Object... arguments) {
-        Locale locale;
+        Locale locale = getInstance().getSettingsManager().getLanguage();
         if (player != null && instance.getSettingsManager().isLanguagePerPlayer()) {
-            locale = Helper.getLocale(player);
-        } else {
-            locale = getInstance().getSettingsManager().getLanguage();
+            Locale playerLocale = Helper.getLocale(player);
+            if (playerLocale != null) {
+                locale = playerLocale;
+            }
         }
 
         return MessageFormat.format(
@@ -268,13 +263,13 @@ public class SimpleClans extends JavaPlugin {
     	if (sender instanceof Player) {
             return lang(key, (Player) sender, arguments);
         } else {
-            return lang(key, (Player) null, arguments);
+            return lang(key, null, arguments);
         }
     }
 
     @NotNull
     public static String lang(@NotNull String key, Object... arguments) {
-        return lang(key, (Player) null, arguments);
+        return lang(key, null, arguments);
     }
 
     public TeleportManager getTeleportManager() {

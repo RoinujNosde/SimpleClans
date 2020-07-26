@@ -52,8 +52,14 @@ public class MainFrame extends SCFrame {
 		if (plugin.getSettingsManager().isLanguagePerPlayer()) {
 			SCComponent language = new SCComponentImpl.Builder(Material.MAP)
 					.withDisplayName(lang("gui.main.languageselector.title", getViewer()))
-					.withSlot(7).withLore(Collections.singletonList(lang("gui.main.languageselector.lore", getViewer()))).build();
+					.withSlot(7).withLore(Arrays.asList(lang("gui.main.languageselector.lore.left.click", getViewer())
+					, lang("gui.main.languageselector.lore.right.click"))).build();
 			language.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new LanguageSelectorFrame(this, getViewer())));
+			language.setListener(ClickType.RIGHT, () -> {
+				getViewer().sendMessage(lang("click.to.help.translating",
+						"https://crowdin.com/project/simpleclans"));
+				getViewer().closeInventory();
+			});
 			add(language);
 		}
 	}

@@ -14,7 +14,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,7 +34,7 @@ public class LanguageSelectorFrame extends SCFrame {
 
     @Override
     public @NotNull String getTitle() {
-        return lang("gui.languageselector.title", clanPlayer.getLocale().getDisplayName());
+        return lang("gui.languageselector.title", clanPlayer.getLocale().toLanguageTag());
     }
 
     @Override
@@ -50,18 +50,46 @@ public class LanguageSelectorFrame extends SCFrame {
         int slot = 9;
         for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
             Locale locale = languages.get(i);
-            // TODO Display translation status
-            SCComponent c = new SCComponentImpl.Builder(Material.PAPER)
-                    .withDisplayName(lang("gui.languageselector.language.title", locale.getDisplayName()))
-                    .withSlot(slot).withLore(Collections.singletonList(lang("gui.languageselector.language.lore")))
-                    .build();
-            c.setListener(ClickType.LEFT, () -> {
-                clanPlayer.setLocale(locale);
-                plugin.getStorageManager().updateClanPlayer(clanPlayer);
-            });
-            add(c);
+            addLanguage(slot, locale);
             slot++;
         }
+    }
+
+    private void addLanguage(int slot, Locale locale) {
+        SCComponent c = new SCComponentImpl.Builder(Material.PAPER)
+                .withDisplayName(lang("gui.languageselector.language.title", locale.toLanguageTag()))
+                .withSlot(slot).withLore(
+                        Arrays.asList(lang("gui.languageselector.language.lore.left.click"),
+                                lang("gui.languageselector.language.lore.translation.status",
+                                        LanguageResource.getTranslationStatus(locale)),
+                                !locale.equals(Locale.ENGLISH) ?
+                                        lang("gui.languageselector.language.lore.right.click") : ""))
+                .build();
+        c.setListener(ClickType.LEFT, () -> {
+            clanPlayer.setLocale(locale);
+            plugin.getStorageManager().updateClanPlayer(clanPlayer);
+            InventoryDrawer.open(this);
+        });
+        if (!locale.equals(Locale.ENGLISH)) {
+            c.setListener(ClickType.RIGHT, () -> {
+                getViewer().sendMessage(lang("click.to.help.translating", getCrowdinLink(locale)));
+                getViewer().closeInventory();
+            });
+        }
+        add(c);
+    }
+
+    private String getCrowdinLink(@NotNull Locale locale) {
+        String base = "https://crowdin.com/project/simpleclans/";
+        //only known exception
+        if (locale.equals(new Locale("uk", "UA"))) {
+            return base + "uk";
+        }
+        if (locale.getLanguage().equalsIgnoreCase(locale.getCountry())) {
+            return base + locale.getLanguage();
+        }
+
+        return base + locale.toLanguageTag();
     }
 
     public void addHeader() {

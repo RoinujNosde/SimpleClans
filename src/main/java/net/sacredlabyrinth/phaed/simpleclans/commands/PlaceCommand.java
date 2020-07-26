@@ -55,7 +55,7 @@ public class PlaceCommand {
             Clan oldClan = oldCp.getClan();
 
             if (oldClan.equals(newClan)) {
-                ChatBlock.sendMessage(sender, plugin.getLang("player.already.in.this.clan"));
+                ChatBlock.sendMessage(sender, lang("player.already.in.this.clan", player));
                 return;
             }
 

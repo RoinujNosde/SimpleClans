@@ -13,8 +13,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.MessageFormat;
-
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class CreateClanNamePrompt extends StringPrompt {
@@ -47,7 +45,7 @@ public class CreateClanNamePrompt extends StringPrompt {
 
             Clan clan = plugin.getClanManager().getClan(tag);
             clan.addBb(player.getName(), ChatColor.AQUA +
-                    MessageFormat.format(plugin.getLang("clan.created"), name));
+                    lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
 
             if (plugin.getSettingsManager().isRequireVerification()) {
@@ -56,7 +54,7 @@ public class CreateClanNamePrompt extends StringPrompt {
 
                 if (!verified) {
                     ChatBlock.sendMessage(player, ChatColor.AQUA +
-                            plugin.getLang("get.your.clan.verified.to.access.advanced.features"));
+                            lang("get.your.clan.verified.to.access.advanced.features", player));
                 }
             }
         }
@@ -68,18 +66,18 @@ public class CreateClanNamePrompt extends StringPrompt {
         if (bypass) {
             if (Helper.stripColors(input).length() > plugin.getSettingsManager().getClanMaxLength()) {
                 return new MessagePromptImpl(ChatColor.RED +
-                        MessageFormat.format(plugin.getLang("your.clan.name.cannot.be.longer.than.characters"),
+                        lang("your.clan.name.cannot.be.longer.than.characters", player,
                                 plugin.getSettingsManager().getClanMaxLength()), this);
             }
             if (Helper.stripColors(input).length() <= plugin.getSettingsManager().getClanMinLength()) {
                 return new MessagePromptImpl(ChatColor.RED +
-                        MessageFormat.format(plugin.getLang("your.clan.name.must.be.longer.than.characters"),
+                        lang("your.clan.name.must.be.longer.than.characters", player,
                                 plugin.getSettingsManager().getClanMinLength()), this);
             }
         }
         if (input.contains("&")) {
             return new MessagePromptImpl(ChatColor.RED +
-                    plugin.getLang("your.clan.name.cannot.contain.color.codes"), this);
+                    lang("your.clan.name.cannot.contain.color.codes", player), this);
         }
 
         return null;

@@ -64,7 +64,7 @@ public class Helper {
      */
     @Nullable
     public static Locale getLocale(@NotNull Player player) {
-        ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getClanPlayer(player);
+        ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
         if (clanPlayer != null) {
             return clanPlayer.getLocale();
         }

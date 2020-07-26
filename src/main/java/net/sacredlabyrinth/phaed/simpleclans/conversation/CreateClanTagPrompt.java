@@ -37,7 +37,7 @@ public class CreateClanTagPrompt extends StringPrompt {
         String cleanTag = Helper.stripColors(clanTag);
         if (plugin.getClanManager().isClan(cleanTag)) {
             return new MessagePromptImpl(ChatColor.RED +
-                    plugin.getLang("clan.with.this.tag.already.exists"), this);
+                    lang("clan.with.this.tag.already.exists", player), this);
         }
 
         TagValidator validator = new TagValidator(plugin, player, clanTag);

@@ -38,24 +38,24 @@ public class TagValidator {
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
             if (plugin.getSettingsManager().isDisallowedWord(cleanTag.toLowerCase())) {
-                error = ChatColor.RED + plugin.getLang("that.tag.name.is.disallowed");
+                error = ChatColor.RED + lang("that.tag.name.is.disallowed", player);
             }
             if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
-                error =  ChatColor.RED + plugin.getLang("your.tag.cannot.contain.color.codes");
+                error =  ChatColor.RED + lang("your.tag.cannot.contain.color.codes", player);
             }
             if (cleanTag.length() < plugin.getSettingsManager().getTagMinLength()) {
                 error = ChatColor.RED +
-                        MessageFormat.format(plugin.getLang("your.clan.tag.must.be.longer.than.characters"),
+                        lang("your.clan.tag.must.be.longer.than.characters", player,
                                 plugin.getSettingsManager().getTagMinLength());
             }
             if (cleanTag.length() > plugin.getSettingsManager().getTagMaxLength()) {
                 error = ChatColor.RED +
-                        MessageFormat.format(plugin.getLang("your.clan.tag.cannot.be.longer.than.characters"),
+                        lang("your.clan.tag.cannot.be.longer.than.characters", player,
                                 plugin.getSettingsManager().getTagMaxLength());
             }
             if (plugin.getSettingsManager().hasDisallowedColor(tag)) {
                 error = ChatColor.RED +
-                        MessageFormat.format(plugin.getLang("your.tag.cannot.contain.the.following.colors"),
+                        lang("your.tag.cannot.contain.the.following.colors", player,
                                 plugin.getSettingsManager().getDisallowedColorString());
             }
             checkAlphabet();
@@ -66,7 +66,7 @@ public class TagValidator {
 
     private void checkAlphabet() {
         String cleanTag = Helper.cleanTag(tag);
-        String alphabetError = ChatColor.RED + plugin.getLang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes");
+        String alphabetError = ChatColor.RED + lang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes", player);
         if (plugin.getSettingsManager().isAcceptOtherAlphabetsLettersOnTag()) {
             for (char c : cleanTag.toCharArray()) {
                 if (!Character.isLetterOrDigit(c)) {

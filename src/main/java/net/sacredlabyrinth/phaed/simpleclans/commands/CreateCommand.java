@@ -1,9 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
 import org.bukkit.ChatColor;
@@ -38,7 +36,7 @@ public class CreateCommand {
 
         if (arg.length != 0) {
             ChatBlock.sendMessage(player, ChatColor.RED +
-                    MessageFormat.format(plugin.getLang("usage.create"), plugin.getSettingsManager().getCommandClan()));
+                    lang("usage.create", player, plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
