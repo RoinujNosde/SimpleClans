@@ -1,11 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.clip.placeholderapi.PlaceholderHook;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
@@ -13,6 +12,7 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static me.clip.placeholderapi.PlaceholderAPIPlugin.booleanFalse;
@@ -26,7 +26,7 @@ import static me.clip.placeholderapi.PlaceholderAPIPlugin.booleanTrue;
  * @author Peng1104
  */
 
-public final class PlaceholdersManager {
+public final class PlaceholdersManager extends PlaceholderExpansion {
 
 	private static final String TOP_CLANS_IDENTIFIER = "topclans_";
 	
@@ -35,7 +35,6 @@ public final class PlaceholdersManager {
 	 * 
 	 * @since 2.10.1
 	 */
-	
 	private final SimpleClans plugin;
 	
 	/**
@@ -43,35 +42,8 @@ public final class PlaceholdersManager {
 	 * 
 	 * @since 2.10.1
 	 */
-	
 	public PlaceholdersManager(SimpleClans plugin) {
 		this.plugin = plugin;
-		setupPlaceholderAPI();
-	}
-	
-	/**
-	 * Registers the {@link PlaceholderAPI} hook
-	 * 
-	 * @since 2.10.1
-	 */
-	
-	private void setupPlaceholderAPI() {
-		PlaceholderAPI.registerPlaceholderHook(plugin.getName(), new PlaceholderHook() {
-
-			@Override
-			public String onPlaceholderRequest(Player player, String identifier) {
-				return onRequest(player, identifier);
-			}
-			
-			@Override
-			public String onRequest(OfflinePlayer player, String identifier) {
-				ClanPlayer clanPlayer = null;
-				if (player != null) {
-					clanPlayer = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
-				}
-				return getPlaceholderValue(clanPlayer, identifier);
-			}
-		});
 	}
 	
 	/**
@@ -315,5 +287,41 @@ public final class PlaceholdersManager {
 			return String.valueOf(totalKills);
 		}
 		return "";
+	}
+
+	@Override
+	public String onRequest(OfflinePlayer player, String params) {
+		ClanPlayer clanPlayer = null;
+		if (player != null) {
+			clanPlayer = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
+		}
+		return getPlaceholderValue(clanPlayer, params);
+	}
+
+	@Override
+	public String getIdentifier() {
+		return "simpleclans";
+	}
+
+	@Override
+	public String getAuthor() {
+		List<String> authors = new ArrayList<>(plugin.getDescription().getAuthors());
+		authors.add("Peng1104");
+		return authors.toString();
+	}
+
+	@Override
+	public String getVersion() {
+		return plugin.getDescription().getVersion();
+	}
+
+	@Override
+	public boolean persist() {
+		return true;
+	}
+
+	@Override
+	public boolean canRegister() {
+		return true;
 	}
 }

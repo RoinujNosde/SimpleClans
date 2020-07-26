@@ -143,7 +143,7 @@ public class SimpleClans extends JavaPlugin {
     private void hookIntoPAPI() {
 		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			getLogger().info("PlaceholderAPI found. Registering hook...");
-			new PlaceholdersManager(this);
+			new PlaceholdersManager(this).register();
 		}
     }
     
@@ -158,6 +158,7 @@ public class SimpleClans extends JavaPlugin {
     	metrics.addCustomChart(new Metrics.SingleLineChart("clan_players", () -> cm.getAllClanPlayers().size()));
     	metrics.addCustomChart(new Metrics.SimplePie("language", () -> sm.getLanguage().toString()));
     	metrics.addCustomChart(new Metrics.SimplePie("machine_language", () -> Locale.getDefault().toString()));
+    	metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.isLanguagePerPlayer() ? on : off));
     	metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.isUseMysql() ? "MySQL" : "SQLite"));
     	metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.isSavePeriodically() ? on : off));
     	metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.getSaveInterval())));
