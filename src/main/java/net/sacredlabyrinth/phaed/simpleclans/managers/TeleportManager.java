@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -9,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -16,6 +18,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 public final class TeleportManager {
     private SimpleClans plugin;
@@ -121,9 +124,15 @@ public final class TeleportManager {
 
                                 SimpleClans.debug("teleporting");
 
-                                player.teleport(new Location(loc.getWorld(), loc.getBlockX() + .5, loc.getBlockY(), loc.getBlockZ() + .5));
+                                Location location = new Location(loc.getWorld(), loc.getBlockX() + .5, loc.getBlockY(), loc.getBlockZ() + .5);
+                                PaperLib.teleportAsync(player, location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                                    if (result) {
+                                        ChatBlock.sendMessage(player, ChatColor.AQUA + lang("now.at.homebase", player, state.getClanName()));
+                                    } else {
+                                        plugin.getLogger().log(Level.WARNING, "An error occurred while teleporting a player");
+                                    }
+                                });
 
-                                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(lang("now.at.homebase",player), state.getClanName()));
                             } else {
                                 ChatBlock.sendMessage(player, ChatColor.RED + lang("you.moved.teleport.cancelled",player));
                             }

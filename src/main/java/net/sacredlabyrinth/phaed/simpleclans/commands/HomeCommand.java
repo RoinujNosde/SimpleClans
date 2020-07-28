@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
+import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
@@ -10,8 +11,11 @@ import org.bukkit.entity.Player;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+
 import net.sacredlabyrinth.phaed.simpleclans.events.HomeRegroupEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * @author phaed
@@ -64,8 +68,13 @@ public class HomeCommand {
                     return;
                 }
 
-                player.teleport(loc);
-                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(lang("now.at.homebase",player), clan.getName()));
+                PaperLib.teleportAsync(player, loc, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                    if (result) {
+                        ChatBlock.sendMessage(player, ChatColor.AQUA + lang("now.at.homebase", player, clan.getName()));
+                    } else {
+                        plugin.getLogger().log(Level.WARNING, "An error occurred while teleporting a player");
+                    }
+                });
                 return;
             }
         }
