@@ -730,6 +730,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      *
      * @return the clan
      */
+    @Nullable
     public Clan getClan()
     {
         return clan;

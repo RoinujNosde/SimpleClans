@@ -244,7 +244,7 @@ public class SCPlayerListener implements Listener {
         if (SimpleClans.getInstance().getSettingsManager().getUseBungeeCord()) {
             cp = SimpleClans.getInstance().getClanManager().getClanPlayerJoinEvent(player);
         } else {
-            cp = SimpleClans.getInstance().getClanManager().getClanPlayer(player);
+            cp = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
         }
 
         SimpleClans.getInstance().getStorageManager().updatePlayerNameAsync(player);
@@ -258,7 +258,7 @@ public class SCPlayerListener implements Listener {
 
         SimpleClans.getInstance().getPermissionsManager().addPlayerPermissions(cp);
 
-        if (plugin.getSettingsManager().isBbShowOnLogin() && cp.isBbEnabled()) {
+        if (plugin.getSettingsManager().isBbShowOnLogin() && cp.isBbEnabled() && cp.getClan() != null) {
             cp.getClan().displayBb(player, plugin.getSettingsManager().getBbLoginSize());
         }
 
