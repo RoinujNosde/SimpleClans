@@ -144,7 +144,7 @@ public class SimpleClans extends JavaPlugin {
     private void hookIntoPAPI() {
 		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			getLogger().info("PlaceholderAPI found. Registering hook...");
-			new PlaceholdersManager(this);
+			new PlaceholdersManager();
 		}
     }
     
