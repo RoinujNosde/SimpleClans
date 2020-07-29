@@ -110,6 +110,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 		PLACEHOLDERS_LIST.add("%simpleclans_clan_onlinemembers_count%");
 		PLACEHOLDERS_LIST.add("%simpleclans_clan_allies_count%");
 		PLACEHOLDERS_LIST.add("%simpleclans_clan_rivals_count%");
+		PLACEHOLDERS_LIST.add("%simpleclans_clan_topclans_position%");
 		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_total_neutral%");
 		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_total_civilian%");
 		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_total_rival%");
@@ -135,6 +136,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_onlinemembers_count%");
 		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_allies_count%");
 		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_rivals_count%");
+		PLACEHOLDERS_LIST.add("%simpleclans_topclans_<Number>_clan_topclans_position%");
 	}
 	
 	/**
@@ -172,7 +174,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	public String getPlaceholderValue(@Nullable ClanPlayer player, @NotNull String identifier) {
 		Clan clan = null;
 		
-		if (TOP_CLANS_PATTERN.matcher(identifier).matches()) {
+		if (TOP_CLANS_PATTERN.matcher(identifier).find()) {
 			// getting the position
 			int position = Integer.parseInt(identifier.substring(9, identifier.indexOf('_', 9)));
 			
@@ -392,6 +394,12 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 			}
 			case "clan_rivals_count": {
 				return String.valueOf(clan.getRivals().size());
+			}
+			case "clan_topclans_position": {
+				List<Clan> clans = simpleClans.getClanManager().getClans();
+				simpleClans.getClanManager().sortClansByKDR(clans);
+				
+				return String.valueOf(clans.indexOf(clan) + 1);
 			}
 			default:
 				break;
