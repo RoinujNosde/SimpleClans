@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
   <artifactId>SimpleClans</artifactId>
-  <version>2.12.2</version>
+  <version>2.12.3</version>
   <name>SimpleClans</name>
   <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
   
@@ -99,23 +99,23 @@
       <version>1.1.1</version>
       <scope>provided</scope>
     </dependency>
-		<dependency>
+    <dependency>
       <groupId>org.bstats</groupId>
       <artifactId>bstats-bukkit</artifactId>
       <version>1.7</version>
       <scope>compile</scope>
-		</dependency>
-		<dependency>
+    </dependency>
+    <dependency>
       <groupId>me.clip</groupId>
       <artifactId>PlaceholderAPI</artifactId>
       <version>2.10.7</version>
       <scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>16.0.2</version>
-		</dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>16.0.2</version>
+    </dependency>
   </dependencies>
   
   <!-- Repositories -->
@@ -166,15 +166,9 @@
   
   <distributionManagement>
     <repository>
-      <id>github</id>
-      <name>GitHub SimpleClan's Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/marcelo-mason/SimpleClans</url>
+      <id>bintray-roinujnosde-bukkit-plugins</id>
+      <name>roinujnosde-bukkit-plugins</name>
+      <url>https://api.bintray.com/maven/roinujnosde/bukkit-plugins/SimpleClans/;publish=1</url>
     </repository>
-    
-    <snapshotRepository>
-      <id>SacredCoding</id>
-      <name>SacredCoding-snapshots</name>
-      <url>http://104.236.246.108:8081/artifactory/plugins-release-local</url>
-    </snapshotRepository>
   </distributionManagement>
 </project>
