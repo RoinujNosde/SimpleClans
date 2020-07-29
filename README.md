@@ -1,7 +1,7 @@
 SimpleClans
 ==========
 
-Full featured clan system for PVP Minecraft Servers
+Full featured clan system for PVP Minecraft Servers!
 
 [![Build Status](https://travis-ci.com/RoinujNosde/SimpleClans.svg?branch=master)](https://travis-ci.com/RoinujNosde/SimpleClans)
 [![Spiget Downloads](https://img.shields.io/spiget/downloads/71242)](https://www.spigotmc.org/resources/simpleclans.71242/)
@@ -10,6 +10,8 @@ Full featured clan system for PVP Minecraft Servers
 [![Discord](https://img.shields.io/discord/719557355917934613?label=discord&logo=discord)](https://discord.gg/CkNwgdE)
 
 Spigot resource page: https://www.spigotmc.org/resources/simpleclans.71242/
+
+Wiki page: https://github.com/RoinujNosde/SimpleClans/wiki
 
 #### Developers
 
@@ -30,6 +32,7 @@ Including SimpleClans with Maven:
     </dependency>
 </dependencies>
 ```
+
 Using Gradle:
 ```groovy
 repositories {
@@ -41,4 +44,5 @@ dependencies {
     compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.12.2"
 }
 ```
+
 Some examples on how to use the API: https://github.com/RoinujNosde/SimpleClans/wiki/SimpleClans-API-example
