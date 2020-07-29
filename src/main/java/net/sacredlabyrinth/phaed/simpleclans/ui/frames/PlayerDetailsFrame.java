@@ -50,6 +50,7 @@ public class PlayerDetailsFrame extends SCFrame {
 		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title",getViewer()), null, Material.RED_WOOL,
 				28);
 		kick.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "kick " + subjectName, true));
+		kick.setConfirmationRequired(ClickType.LEFT);
 		kick.setPermission(ClickType.LEFT, RankPermission.KICK);
 		add(kick);
 
@@ -57,11 +58,13 @@ public class PlayerDetailsFrame extends SCFrame {
 				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click",getViewer()),
 						lang("gui.playerdetails.demote.lore.right.click",getViewer())),
 				Material.GUNPOWDER, 30);
+		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, !plugin.getSettingsManager().isConfirmationForPromote()));
 		promoteDemote.setPermission(ClickType.LEFT, "simpleclans.leader.promote");
 		promoteDemote.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "demote " + subjectName, !plugin.getSettingsManager().isConfirmationForDemote()));
+		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.leader.demote");
 
@@ -69,6 +72,7 @@ public class PlayerDetailsFrame extends SCFrame {
 				Arrays.asList(lang("gui.playerdetails.assign.lore.left.click",getViewer()),
 						lang("gui.playerdetails.unassign.lore.right.click",getViewer())),
 				Material.FEATHER, 32);
+		assignUnassign.setConfirmationRequired(ClickType.RIGHT);
 		assignUnassign.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "rank unassign " + subjectName, true));
 		assignUnassign.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.unassign");
@@ -81,12 +85,14 @@ public class PlayerDetailsFrame extends SCFrame {
 				Arrays.asList(lang("gui.playerdetails.trust.lore.left.click",getViewer()),
 						lang("gui.playerdetails.untrust.lore.right.click",getViewer())),
 				Material.CYAN_DYE, 34);
+		trustUntrust.setConfirmationRequired(ClickType.LEFT);
 		trustUntrust.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "trust " + subjectName, true));
 		trustUntrust.setPermission(ClickType.LEFT, "simpleclans.leader.settrust");
 		trustUntrust.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "untrust " + subjectName, true));
 		trustUntrust.setPermission(ClickType.RIGHT, "simpleclans.leader.settrust");
+		trustUntrust.setConfirmationRequired(ClickType.RIGHT);
 		add(trustUntrust);
 	}
 

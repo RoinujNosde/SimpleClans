@@ -10,6 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ public class WarningFrame extends SCFrame {
 	private final SimpleClans plugin = SimpleClans.getInstance();
 	private final Object permission;
 
-	public WarningFrame(SCFrame parent, Player viewer, Object permission) {
+	public WarningFrame(@NotNull SCFrame parent, @NotNull Player viewer, @Nullable Object permission) {
 		super(parent, viewer);
 		this.permission = permission;
 	}

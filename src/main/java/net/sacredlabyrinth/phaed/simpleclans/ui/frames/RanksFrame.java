@@ -75,12 +75,14 @@ public class RanksFrame extends SCFrame {
 			if (toEdit != null) {
 				c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 						String.format("rank assign %s %s", toEdit.getName(), rank.getName()), true));
+				c.setConfirmationRequired(ClickType.LEFT);
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.assign");
 			} else {
 				c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PermissionsFrame(this, getViewer(), rank)));
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.list");
 				c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
 						String.format("rank delete %s", rank.getName()), true));
+				c.setConfirmationRequired(ClickType.RIGHT);
 				c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.delete");
 			}
 			c.setVerifiedOnly(ClickType.LEFT);

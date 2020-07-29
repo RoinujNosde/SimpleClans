@@ -2,11 +2,13 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import java.util.*;
 
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.ConfirmationFrame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -64,17 +66,18 @@ public class InventoryController implements Listener {
 			return;
 		}
 
-		Runnable listener = component.getListener(event.getClick());
+		ClickType click = event.getClick();
+		Runnable listener = component.getListener(click);
 		if (listener == null) {
 			return;
 		}
 
-		if (component.isVerifiedOnly(event.getClick()) && !isClanVerified((Player) entity)) {
+		if (component.isVerifiedOnly(click) && !isClanVerified((Player) entity)) {
 			InventoryDrawer.open(new WarningFrame(frame, (Player) entity, null));
 			return;
 		}
 		
-		Object permission = component.getPermission(event.getClick());
+		Object permission = component.getPermission(click);
 		if (permission != null) {
 			if (!hasPermission((Player) entity, permission)) {
 				InventoryDrawer.open(new WarningFrame(frame, (Player) entity, permission));
@@ -82,6 +85,11 @@ public class InventoryController implements Listener {
 			}
 		}
 
+		if (component.isConfirmationRequired(click)) {
+			listener = () -> InventoryDrawer.open(new ConfirmationFrame(frame, frame.getViewer(), component.getListener(click)));
+		}
+
+		Runnable finalListener = listener;
 		Bukkit.getScheduler().runTask(SimpleClans.getInstance(), () -> {
 			ItemStack currentItem = event.getCurrentItem();
 			if (currentItem == null) return;
@@ -90,7 +98,7 @@ public class InventoryController implements Listener {
 			Objects.requireNonNull(itemMeta).setLore(Collections.singletonList(lang("gui.loading")));
 			currentItem.setItemMeta(itemMeta);
 
-			listener.run();
+			finalListener.run();
 		});
 	}
 

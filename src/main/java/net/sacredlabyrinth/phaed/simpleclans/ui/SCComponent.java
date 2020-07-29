@@ -23,7 +23,8 @@ public abstract class SCComponent {
 	private final HashMap<ClickType, Runnable> listeners = new HashMap<>();
 	private final HashMap<ClickType, Object> permissions = new HashMap<>();
 	private final Set<ClickType> verified = new HashSet<>();
-	private Object lorePermission;
+	private final Set<ClickType> confirmationRequired = new HashSet<>();
+	private @Nullable Object lorePermission;
 
 	@NotNull
 	public abstract ItemStack getItem();
@@ -80,5 +81,13 @@ public abstract class SCComponent {
 	@Nullable
 	public Runnable getListener(@NotNull ClickType click) {
 		return listeners.get(click);
+	}
+
+	public void setConfirmationRequired(@NotNull ClickType click) {
+		confirmationRequired.add(click);
+	}
+
+	public boolean isConfirmationRequired(@NotNull ClickType click) {
+		return confirmationRequired.contains(click);
 	}
 }

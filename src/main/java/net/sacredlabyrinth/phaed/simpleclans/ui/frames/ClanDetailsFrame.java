@@ -135,6 +135,7 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent disband = new SCComponentImpl(lang("gui.clandetails.disband.title",getViewer()),
 				Collections.singletonList(lang("gui.clandetails.disband.lore",getViewer())), Material.BARRIER, 50);
 		disband.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
+		disband.setConfirmationRequired(ClickType.MIDDLE);
 		disband.setPermission(ClickType.MIDDLE, "simpleclans.leader.disband");
 		add(disband);
 	}
@@ -143,6 +144,7 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent resign = new SCComponentImpl(lang("gui.clandetails.resign.title",getViewer()),
 				Collections.singletonList(lang("gui.clandetails.resign.lore",getViewer())), Material.IRON_DOOR, 48);
 		resign.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resign", false));
+		resign.setConfirmationRequired(ClickType.LEFT);
 		resign.setPermission(ClickType.LEFT, "simpleclans.member.resign");
 		add(resign);
 	}
@@ -183,6 +185,7 @@ public class ClanDetailsFrame extends SCFrame {
 		bank.setLorePermission(RankPermission.BANK_BALANCE);
 		bank.setVerifiedOnly(ClickType.MIDDLE);
 		bank.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "toggle withdraw", true));
+		bank.setConfirmationRequired(ClickType.MIDDLE);
 		bank.setPermission(ClickType.MIDDLE, "simpleclans.leader.withdraw-toggle");
 		bank.setVerifiedOnly(ClickType.RIGHT);
 		bank.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "toggle deposit", true));
@@ -245,9 +248,11 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent regroup = new SCComponentImpl(lang("gui.clandetails.regroup.title", getViewer()), lore, Material.BEACON, 30);
 		regroup.setVerifiedOnly(ClickType.LEFT);
 		regroup.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "home regroup", false));
+		regroup.setConfirmationRequired(ClickType.LEFT);
 		regroup.setPermission(ClickType.LEFT, RankPermission.HOME_REGROUP);
 		regroup.setVerifiedOnly(ClickType.RIGHT);
 		regroup.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "home regroup me", false));
+		regroup.setConfirmationRequired(ClickType.RIGHT);
 		regroup.setPermission(ClickType.RIGHT, RankPermission.HOME_REGROUP);
 		add(regroup);
 	}
@@ -271,9 +276,11 @@ public class ClanDetailsFrame extends SCFrame {
 		home.setVerifiedOnly(ClickType.RIGHT);
 		home.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "home set", false));
 		home.setPermission(ClickType.RIGHT, RankPermission.HOME_SET);
+		home.setConfirmationRequired(ClickType.RIGHT);
 		home.setVerifiedOnly(ClickType.MIDDLE);
 		home.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "home clear", false));
 		home.setPermission(ClickType.MIDDLE, RankPermission.HOME_SET);
+		home.setConfirmationRequired(ClickType.MIDDLE);
 		add(home);
 	}
 

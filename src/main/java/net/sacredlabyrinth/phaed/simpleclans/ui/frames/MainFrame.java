@@ -76,6 +76,7 @@ public class MainFrame extends SCFrame {
 		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title"),
 				resetKrLore, Material.ANVIL, 6);
 		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
+		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.vip.resetkdr");
 		add(resetKdr);
 	}
