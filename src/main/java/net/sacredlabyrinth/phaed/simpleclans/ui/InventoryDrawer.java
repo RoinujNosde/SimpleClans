@@ -124,7 +124,7 @@ public class InventoryDrawer {
                 if (permission != null) {
                     if (!hasPermission(frame.getViewer(), permission)) {
                         lore.clear();
-                        lore.add(lang("gui.lore.no.permission"));
+                        lore.add(lang("gui.lore.no.permission", frame.getViewer()));
                         itemMeta.setLore(lore);
                         component.setItemMeta(itemMeta);
                     }

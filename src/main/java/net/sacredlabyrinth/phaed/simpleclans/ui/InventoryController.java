@@ -95,7 +95,7 @@ public class InventoryController implements Listener {
 			if (currentItem == null) return;
 
 			ItemMeta itemMeta = currentItem.getItemMeta();
-			Objects.requireNonNull(itemMeta).setLore(Collections.singletonList(lang("gui.loading")));
+			Objects.requireNonNull(itemMeta).setLore(Collections.singletonList(lang("gui.loading", (Player) entity)));
 			currentItem.setItemMeta(itemMeta);
 
 			finalListener.run();
@@ -176,7 +176,11 @@ public class InventoryController implements Listener {
 				if (!update) {
 					player.closeInventory();
 				} else {
-					InventoryDrawer.update(frames.get(player.getUniqueId()));
+					SCFrame currentFrame = frames.get(player.getUniqueId());
+					if (currentFrame instanceof ConfirmationFrame) {
+						currentFrame = currentFrame.getParent();
+					}
+					InventoryDrawer.open(currentFrame);
 				}
 			}
 		}.runTask(SimpleClans.getInstance());

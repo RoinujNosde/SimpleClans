@@ -81,11 +81,11 @@ public class AllyCommand {
             int maxAlliances = plugin.getSettingsManager().getClanMaxAlliances();
             if (maxAlliances != -1) {
                 if (clan.getAllies().size() >= maxAlliances) {
-                    ChatBlock.sendMessage(player, lang("your.clan.reached.max.alliances"));
+                    ChatBlock.sendMessage(player, lang("your.clan.reached.max.alliances", player));
                     return;
                 }
                 if (ally.getAllies().size() >= maxAlliances) {
-                    ChatBlock.sendMessage(player, lang("other.clan.reached.max.alliances"));
+                    ChatBlock.sendMessage(player, lang("other.clan.reached.max.alliances", player));
                     return;
                 }
             }

@@ -47,7 +47,7 @@ public class VerifyCommand {
                 if (isBuyer) {
                     int minToVerify = plugin.getSettingsManager().getMinToVerify();
                     if (minToVerify > clan.getAllMembers().size()) {
-                        ChatBlock.sendMessage(player, lang("your.clan.must.have.members.to.verify", minToVerify));
+                        ChatBlock.sendMessage(player, lang("your.clan.must.have.members.to.verify", player, minToVerify));
                         return;
                     }
                     if (plugin.getClanManager().purchaseVerification(player)) {
@@ -57,7 +57,7 @@ public class VerifyCommand {
                     }
                     return;
                 }
-                ChatBlock.sendMessage(player, lang("staff.member.verify.clan"));
+                ChatBlock.sendMessage(player, lang("staff.member.verify.clan", player));
             } else {
                 if (arg.length != 1) {
                     ChatBlock.sendMessage(sender, ChatColor.RED + MessageFormat.format(lang("usage.0.verify.tag",player), plugin.getSettingsManager().getCommandClan()));

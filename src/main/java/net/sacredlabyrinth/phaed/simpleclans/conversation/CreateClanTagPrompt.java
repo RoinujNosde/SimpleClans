@@ -16,7 +16,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class CreateClanTagPrompt extends StringPrompt {
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
-        return lang("insert.clan.tag");
+        return lang("insert.clan.tag", (Player) context.getForWhom());
     }
 
     @Override

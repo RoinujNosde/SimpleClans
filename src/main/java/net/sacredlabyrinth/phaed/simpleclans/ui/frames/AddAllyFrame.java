@@ -50,7 +50,7 @@ public class AddAllyFrame extends SCFrame {
 					Collections.singletonList(lang("gui.add.ally.clan.lore",getViewer())), Material.CYAN_BANNER, slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("ally %s %s", lang("add"), notRival.getTag()), false));
+					String.format("ally %s %s", lang("add", getViewer()), notRival.getTag()), false));
 			c.setPermission(ClickType.LEFT, RankPermission.ALLY_ADD);
 			add(c);
 			slot++;

@@ -286,18 +286,18 @@ public final class ClanCommandExecutor implements CommandExecutor {
                     String subcommand = args[0];
                     String[] subargs = Helper.removeFirst(args);
 
-                    if (subcommand.equalsIgnoreCase(lang("verify.command")) || subcommand.equalsIgnoreCase("verify")) {
+                    if (subcommand.equalsIgnoreCase(lang("verify.command", sender)) || subcommand.equalsIgnoreCase("verify")) {
                         verifyCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("reload.command")) || subcommand.equalsIgnoreCase("reload")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("reload.command", sender)) || subcommand.equalsIgnoreCase("reload")) {
                         reloadCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("place.command")) || subcommand.equalsIgnoreCase("place")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("place.command", sender)) || subcommand.equalsIgnoreCase("place")) {
                         placeCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("globalff.command")) || subcommand.equalsIgnoreCase("globalff")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("globalff.command", sender)) || subcommand.equalsIgnoreCase("globalff")) {
                         globalffCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("purge.command")) || subcommand.equalsIgnoreCase("purge")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("purge.command", sender)) || subcommand.equalsIgnoreCase("purge")) {
                         purgeCommand.execute(sender, subargs);
                     } else {
-                        ChatBlock.sendMessage(sender, ChatColor.RED + lang("does.not.match"));
+                        ChatBlock.sendMessage(sender, ChatColor.RED + lang("does.not.match", sender));
                     }
                 }
             }

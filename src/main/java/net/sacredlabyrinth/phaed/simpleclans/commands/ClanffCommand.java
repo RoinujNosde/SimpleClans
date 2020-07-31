@@ -56,7 +56,7 @@ public class ClanffCommand {
         }
 
         if (!action.equalsIgnoreCase(lang("block", player))) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.clanff"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("usage.clanff", player, plugin.getSettingsManager().getCommandClan()));
             return;
         }
 

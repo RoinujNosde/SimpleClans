@@ -34,7 +34,7 @@ public class LanguageSelectorFrame extends SCFrame {
 
     @Override
     public @NotNull String getTitle() {
-        return lang("gui.languageselector.title", clanPlayer.getLocale().toLanguageTag());
+        return lang("gui.languageselector.title", getViewer(), clanPlayer.getLocale().toLanguageTag());
     }
 
     @Override
@@ -57,13 +57,13 @@ public class LanguageSelectorFrame extends SCFrame {
 
     private void addLanguage(int slot, Locale locale) {
         SCComponent c = new SCComponentImpl.Builder(Material.PAPER)
-                .withDisplayName(lang("gui.languageselector.language.title", locale.toLanguageTag()))
+                .withDisplayName(lang("gui.languageselector.language.title", getViewer(), locale.toLanguageTag()))
                 .withSlot(slot).withLore(
-                        Arrays.asList(lang("gui.languageselector.language.lore.left.click"),
-                                lang("gui.languageselector.language.lore.translation.status",
+                        Arrays.asList(lang("gui.languageselector.language.lore.left.click", getViewer()),
+                                lang("gui.languageselector.language.lore.translation.status", getViewer(),
                                         LanguageResource.getTranslationStatus(locale)),
                                 !locale.equals(Locale.ENGLISH) ?
-                                        lang("gui.languageselector.language.lore.right.click") : ""))
+                                        lang("gui.languageselector.language.lore.right.click", getViewer()) : ""))
                 .build();
         c.setListener(ClickType.LEFT, () -> {
             clanPlayer.setLocale(locale);
@@ -72,7 +72,7 @@ public class LanguageSelectorFrame extends SCFrame {
         });
         if (!locale.equals(Locale.ENGLISH)) {
             c.setListener(ClickType.RIGHT, () -> {
-                getViewer().sendMessage(lang("click.to.help.translating", getCrowdinLink(locale)));
+                getViewer().sendMessage(lang("click.to.help.translating", getViewer(), getCrowdinLink(locale)));
                 getViewer().closeInventory();
             });
         }

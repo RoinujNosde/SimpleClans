@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.StaffFrame;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -40,6 +41,13 @@ public class MainFrame extends SCFrame {
 		add(clanList);
 
 		addResetKdr();
+		if (plugin.getPermissionsManager().has(getViewer(), "simpleclans.mod.staffgui")) {
+			SCComponent staff = new SCComponentImpl.Builder(Material.COMMAND_BLOCK).withSlot(6).withDisplayName(
+					lang("gui.main.staff.title", getViewer())).build();
+			staff.setPermission(ClickType.LEFT, "simpleclans.mod.staffgui");
+			staff.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new StaffFrame(this, getViewer())));
+			add(staff);
+		}
 		addLanguageSelector();
 
 		SCComponent otherCommands = new SCComponentImpl(lang("gui.main.other.commands.title",getViewer()),
@@ -53,10 +61,10 @@ public class MainFrame extends SCFrame {
 			SCComponent language = new SCComponentImpl.Builder(Material.MAP)
 					.withDisplayName(lang("gui.main.languageselector.title", getViewer()))
 					.withSlot(7).withLore(Arrays.asList(lang("gui.main.languageselector.lore.left.click", getViewer())
-					, lang("gui.main.languageselector.lore.right.click"))).build();
+					, lang("gui.main.languageselector.lore.right.click", getViewer()))).build();
 			language.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new LanguageSelectorFrame(this, getViewer())));
 			language.setListener(ClickType.RIGHT, () -> {
-				getViewer().sendMessage(lang("click.to.help.translating",
+				getViewer().sendMessage(lang("click.to.help.translating", getViewer(),
 						"https://crowdin.com/project/simpleclans"));
 				getViewer().closeInventory();
 			});
@@ -71,10 +79,10 @@ public class MainFrame extends SCFrame {
 					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().geteResetKdr()),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
-			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore"));
+			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
 		}
-		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title"),
-				resetKrLore, Material.ANVIL, 6);
+		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title", getViewer()),
+				resetKrLore, Material.ANVIL, 5);
 		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
 		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.vip.resetkdr");

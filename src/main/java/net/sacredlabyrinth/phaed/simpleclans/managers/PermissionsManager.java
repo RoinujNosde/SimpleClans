@@ -347,8 +347,8 @@ public final class PermissionsManager {
 		}
 		
 		if (notify && !hasLevel && !hasRankPermission) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this"),
-            		level == PermissionLevel.LEADER ? lang("leader") : lang("trusted"), permission.toString()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this", player),
+            		level == PermissionLevel.LEADER ? lang("leader", player) : lang("trusted", player), permission.toString()));
 		}
     	
     	return hasLevel || hasRankPermission;

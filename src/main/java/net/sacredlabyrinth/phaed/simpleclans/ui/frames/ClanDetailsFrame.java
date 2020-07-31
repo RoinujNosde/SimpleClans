@@ -95,8 +95,8 @@ public class ClanDetailsFrame extends SCFrame {
 
 		SettingsManager sm = plugin.getSettingsManager();
 		String chatCommand = sm.isTagBasedClanChat() ? clan.getTag() : sm.getCommandClanChat();
-		String joinArg = lang("join");
-		String leaveArg = lang("leave");
+		String joinArg = lang("join", getViewer());
+		String leaveArg = lang("leave", getViewer());
 		return new SCComponentImpl(lang("gui.clandetails.chat.title", getViewer()),
 				Arrays.asList(
 						lang("gui.clandetails.chat.clan.chat.lore", getViewer(), chatCommand),
@@ -160,7 +160,7 @@ public class ClanDetailsFrame extends SCFrame {
 		List<String> lore = verified ? null : new ArrayList<>();
 		if (!verified) {
 			if (purchaseVerification) {
-				lore.add(lang("gui.clandetails.verify.price.lore", plugin.getSettingsManager().getVerificationPrice()));
+				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().getVerificationPrice()));
 			}
 			lore.add(lang("gui.clandetails.not.verified.lore",getViewer()));
 		}

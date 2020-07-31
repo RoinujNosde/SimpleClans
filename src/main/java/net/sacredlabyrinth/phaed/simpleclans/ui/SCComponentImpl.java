@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -44,6 +45,7 @@ public class SCComponentImpl extends SCComponent {
 
 	public static class Builder {
 		private final SCComponentImpl component = new SCComponentImpl();
+		private @Nullable List<String> lore;
 
 		public Builder(@NotNull Material material) {
 			component.item = new ItemStack(material);
@@ -59,11 +61,15 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public Builder withLore(@Nullable List<String> lore) {
-			ItemMeta itemMeta = component.getItemMeta();
-			if (itemMeta != null) {
-				itemMeta.setLore(lore);
-				component.setItemMeta(itemMeta);
+			this.lore = lore;
+			return this;
+		}
+
+		public Builder withLoreLine(@NotNull String line) {
+			if (lore == null) {
+				lore = new ArrayList<>();
 			}
+			lore.add(line);
 			return this;
 		}
 
@@ -73,6 +79,11 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public SCComponent build() {
+			ItemMeta itemMeta = component.getItemMeta();
+			if (itemMeta != null) {
+				itemMeta.setLore(lore);
+				component.setItemMeta(itemMeta);
+			}
 			return component;
 		}
 	}

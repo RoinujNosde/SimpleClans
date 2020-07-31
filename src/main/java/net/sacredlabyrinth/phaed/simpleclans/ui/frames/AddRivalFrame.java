@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,7 @@ public class AddRivalFrame extends SCFrame {
 			Clan notRival = notRivals.get(i);
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title",getViewer(), notRival.getColorTag(), notRival.getName()),
-					Arrays.asList(lang("gui.add.rival.clan.lore")), Material.RED_BANNER, slot);
+					Collections.singletonList(lang("gui.add.rival.clan.lore", getViewer())), Material.RED_BANNER, slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("rival %s %s", lang("add",getViewer()), notRival.getTag()), false));
