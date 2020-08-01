@@ -50,7 +50,7 @@ public final class SettingsManager {
     private String listActive;
     private String listAsc;
     private String listDesc;
-    private List<Material> itemsList = new ArrayList<Material>();;
+    private List<Material> itemsList = new ArrayList<Material>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
     private List<String> disallowedWords;
