@@ -170,7 +170,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	 * @since 2.10.1
 	 */
 	
-	@Nullable
+	@NotNull
 	public String getPlaceholderValue(@Nullable ClanPlayer player, @NotNull String identifier) {
 		Clan clan = null;
 		
@@ -190,7 +190,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 			identifier = identifier.substring(identifier.indexOf('_', 9) + 1);
 		}
 		else if (player == null) {
-			return null;
+			return "";
 		}
 		if (clan == null) {
 			clan = player.getClan();
@@ -315,7 +315,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 					break;
 			}
 			if (clan == null) {
-				return null;
+				return "";
 			}
 		}
 		switch (identifier) {
@@ -404,7 +404,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 			default:
 				break;
 		}
-		return null;
+		return "";
 	}
 	
 	@Override
