@@ -116,8 +116,8 @@
     </dependency>
     <dependency>
       <groupId>me.clip</groupId>
-      <artifactId>PlaceholderAPI</artifactId>
-      <version>2.10.7</version>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.10.8</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -154,12 +154,6 @@
     <repository>
       <id>papermc</id>
       <url>https://papermc.io/repo/repository/maven-public/</url>
-    </repository>
-    
-    <!-- To be removed after placeholder 2.10.8 -->
-    <repository>
-      <id>rayzr-repo</id>
-      <url>https://rayzr.dev/repo/</url>
     </repository>
   </repositories>
   
