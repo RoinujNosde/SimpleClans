@@ -50,6 +50,7 @@ settings:
     rejoin-cooldown-enabled: false
     accept-other-alphabets-letters-on-tag: false
     min-to-verify: 1
+    ranking-type: "DENSE"
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10

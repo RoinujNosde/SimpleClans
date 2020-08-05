@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -92,7 +93,7 @@ public class Components {
                     lang("gui.clandetails.clan.lore.status",viewer, clan.isVerified() ? lang("verified",viewer) : lang("unverified",viewer)),
                     lang("gui.clandetails.clan.lore.leaders",viewer, clan.getLeadersString("", ", ")),
                     lang("gui.clandetails.clan.lore.online.members",viewer, clan.getOnlineMembers().size(), clan.getMembers().size()),
-                    lang("gui.clandetails.clan.lore.kdr",viewer, Helper.formatKDR(clan.getTotalKDR())),
+                    lang("gui.clandetails.clan.lore.kdr",viewer, KDRFormat.format(clan.getTotalKDR())),
                     lang("gui.clandetails.clan.lore.kill.totals",viewer, clan.getTotalRival(), clan.getTotalNeutral(), clan.getTotalCivilian()),
                     lang("gui.clandetails.clan.lore.deaths",viewer, clan.getTotalDeaths()),
                     lang("gui.clandetails.clan.lore.fee",viewer, clan.isMemberFeeEnabled()

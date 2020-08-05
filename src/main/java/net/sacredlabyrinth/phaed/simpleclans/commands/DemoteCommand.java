@@ -43,12 +43,12 @@ public class DemoteCommand {
             return;
         }
         ClanPlayer toDemote = plugin.getClanManager().getAnyClanPlayer(uuid);
+        if (toDemote == null || toDemote.getClan() == null) {
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("player.is.not.a.leader.of.any.clan", player));
+            return;
+        }
         
         if (plugin.getPermissionsManager().has(player, "simpleclans.admin.demote")) {
-            if (!toDemote.isLeader()) {
-                ChatBlock.sendMessage(player, ChatColor.RED + lang("player.is.not.a.leader.of.any.clan", player));
-                return;
-            }
             final Clan clan = toDemote.getClan();
 
             if (clan.getLeaders().size() == 1) {
@@ -77,6 +77,7 @@ public class DemoteCommand {
 
         Clan clan = cp.getClan();
 
+        //noinspection ConstantConditions
         if (!clan.isLeader(player)) {
             ChatBlock.sendMessage(player, ChatColor.RED + lang("no.leader.permissions", player));
             return;

@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,7 +42,11 @@ public class Helper {
             SimpleClans.debug(el.toString());
         }
     }
-    
+
+    /**
+     * @deprecated use {@link KDRFormat}
+     */
+    @Deprecated
     public static String formatKDR(float kdr) {
     	DecimalFormat formatter = new DecimalFormat("#.#");
     	return formatter.format(kdr);

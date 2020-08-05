@@ -63,6 +63,8 @@ public class PlayerDetailsFrame extends SCFrame {
 				lang("gui.playerdetails.purge.title", getViewer())).withLoreLine(
 				lang("gui.playerdetails.purge.lore", getViewer())).build();
 		purge.setConfirmationRequired(ClickType.LEFT);
+		purge.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
+				String.format("purge %s", subjectName), false));
 		purge.setPermission(ClickType.LEFT, "simpleclans.admin.purge");
 		add(purge);
 	}
