@@ -2,11 +2,14 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -49,7 +52,7 @@ public final class SettingsManager {
     private String listActive;
     private String listAsc;
     private String listDesc;
-    private List<Integer> itemsList;
+    private List<Material> itemsList = new ArrayList<Material>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
     private List<String> disallowedWords;
@@ -232,7 +235,14 @@ public final class SettingsManager {
         teleportOnSpawn = getConfig().getBoolean("settings.teleport-home-on-spawn");
         dropOnHome = getConfig().getBoolean("settings.drop-items-on-clan-home");
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
-        itemsList = getConfig().getIntegerList("settings.item-list");
+		for (String material : getConfig().getStringList("settings.item-list")) {
+			Material type = Material.getMaterial(material);
+			if (type != null) {
+                itemsList.add(type);
+            } else {
+                plugin.getLogger().warning("Error with Material: " + material);
+            }
+		}
         debugging = getConfig().getBoolean("settings.show-debug-info");
         mChatIntegration = getConfig().getBoolean("settings.mchat-integration");
         pvpOnlywhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
@@ -558,7 +568,7 @@ public final class SettingsManager {
      * @param typeId the type
      * @return whether the world is blacklisted
      */
-    public boolean isItemInList(int typeId) {
+    public boolean isItemInList(Material typeId) {
         return itemsList.contains(typeId);
     }
 
@@ -1526,7 +1536,7 @@ public final class SettingsManager {
         return dropOnHome;
     }
 
-    public List<Integer> getItemsList() {
+    public List<Material> getItemsList() {
         return Collections.unmodifiableList(itemsList);
     }
 

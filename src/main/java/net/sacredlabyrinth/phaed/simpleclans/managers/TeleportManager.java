@@ -59,9 +59,9 @@ public final class TeleportManager {
                     continue;
                 }
 
-                List<Integer> itemsList = plugin.getSettingsManager().getItemsList();
+                List<Material> itemsList = plugin.getSettingsManager().getItemsList();
 
-                if (itemsList.contains(item.getType().getId())) {
+                if (itemsList.contains(item.getType())) {
                     player.getWorld().dropItemNaturally(player.getLocation(), item);
                     inv.remove(item);
                 }
@@ -76,9 +76,9 @@ public final class TeleportManager {
                         continue;
                     }
 
-                    List<Integer> itemsList = plugin.getSettingsManager().getItemsList();
+                    List<Material> itemsList = plugin.getSettingsManager().getItemsList();
 
-                    if (!itemsList.contains(item.getType().getId())) {
+                    if (!itemsList.contains(item.getType())) {
                         player.getWorld().dropItemNaturally(player.getLocation(), item);
                         inv.remove(item);
                     }
