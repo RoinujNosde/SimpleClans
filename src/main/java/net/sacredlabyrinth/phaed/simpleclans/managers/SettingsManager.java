@@ -10,10 +10,12 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author phaed
@@ -197,6 +199,7 @@ public final class SettingsManager {
 	private boolean languagePerPlayer;
 	private boolean savePeriodically;
 	private int saveInterval;
+	private String rankingType;
 
     /**
      *
@@ -258,6 +261,7 @@ public final class SettingsManager {
         rejoinCooldownEnabled = getConfig().getBoolean("settings.rejoin-cooldown-enabled");
         acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
         minToVerify = getConfig().getInt("settings.min-to-verify", 1);
+        rankingType = getConfig().getString("settings.ranking-type", "DENSE");
         listActive = getConfig().getString("list.active", "active");
         listKdr = getConfig().getString("list.kdr", "kdr");
         listDefault = getConfig().getString("list.default", listKdr);
@@ -456,7 +460,16 @@ public final class SettingsManager {
 
     	return new Locale(language);
     }
-    
+
+    @NotNull
+    public RankingType getRankingType() {
+        try {
+            return RankingType.valueOf(rankingType);
+        } catch (IllegalArgumentException ex) {
+            return RankingType.DENSE;
+        }
+    }
+
     public boolean isLanguagePerPlayer() {
     	return languagePerPlayer;
     }

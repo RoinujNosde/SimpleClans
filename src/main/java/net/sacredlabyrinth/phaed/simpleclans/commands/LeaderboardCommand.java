@@ -4,14 +4,16 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.List;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -30,7 +32,6 @@ public class LeaderboardCommand {
         SimpleClans plugin = SimpleClans.getInstance();
         String headColor = plugin.getSettingsManager().getPageHeadingsColor();
         String subColor = plugin.getSettingsManager().getPageSubTitleColor();
-        NumberFormat formatter = new DecimalFormat("#.#");
 
         if (arg.length != 0) {
             ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.leaderboard",player), plugin.getSettingsManager().getCommandClan()));
@@ -42,7 +43,6 @@ public class LeaderboardCommand {
         }
 
         List<ClanPlayer> clanPlayers = plugin.getClanManager().getAllClanPlayers();
-        plugin.getClanManager().sortClanPlayersByKDR(clanPlayers);
 
         ChatBlock chatBlock = new ChatBlock();
 
@@ -55,8 +55,8 @@ public class LeaderboardCommand {
         chatBlock.setAlignment("c", "l", "c", "c", "c", "c");
         chatBlock.addRow("  " + headColor + lang("rank",player), lang("player",player), lang("kdr",player), lang("clan",player), lang("seen",player));
 
-        int rank = 1;
-
+        RankingNumberResolver<ClanPlayer, BigDecimal> rankingResolver = new RankingNumberResolver<>(clanPlayers,
+                c -> KDRFormat.toBigDecimal(c.getKDR()), false, plugin.getSettingsManager().getRankingType());
         for (ClanPlayer cp : clanPlayers) {
             Player p = cp.toPlayer();
 
@@ -75,8 +75,8 @@ public class LeaderboardCommand {
                 clanTag = cp.getClan().getColorTag();
             }
 
-            chatBlock.addRow("  " + rank, name, ChatColor.YELLOW + "" + formatter.format(cp.getKDR()), ChatColor.WHITE + clanTag, lastSeen);
-            rank++;
+            chatBlock.addRow("  " + rankingResolver.getRankingNumber(cp),
+                    name, ChatColor.YELLOW + "" + KDRFormat.format(cp.getKDR()), ChatColor.WHITE + clanTag, lastSeen);
         }
 
         boolean more = chatBlock.sendBlock(player, plugin.getSettingsManager().getPageSize());
