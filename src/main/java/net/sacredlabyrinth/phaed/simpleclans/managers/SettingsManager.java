@@ -234,10 +234,11 @@ public final class SettingsManager {
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
 		for (String material : getConfig().getStringList("settings.item-list")) {
 			Material type = Material.getMaterial(material);
-			if(type != null)
-				itemsList.add(type);
-			else
-				Bukkit.getLogger().warning("Error with Material: " + material);
+			if (type != null) {
+                itemsList.add(type);
+            } else {
+                plugin.getLogger().warning("Error with Material: " + material);
+            }
 		}
         debugging = getConfig().getBoolean("settings.show-debug-info");
         mChatIntegration = getConfig().getBoolean("settings.mchat-integration");
