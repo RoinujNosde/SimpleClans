@@ -27,4 +27,5 @@ slot-items:
 2. Restart (or reload) and enjoy!
 
 ## Screenshot
-![Tablist](https://i.imgur.com/MnK3gsJ.png)
+
+![](../.gitbook/assets/clan-on-tablist.png)

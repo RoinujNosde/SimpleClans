@@ -28,4 +28,5 @@ For example:
 4. Restart (or reload) and enjoy!
 
 ## Screenshot
-![Player's Name Tag](https://i.imgur.com/IBC8kLC.png)
+
+![](../.gitbook/assets/clan-tag-below-player-name.png)
