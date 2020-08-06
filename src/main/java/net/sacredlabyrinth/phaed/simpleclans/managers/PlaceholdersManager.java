@@ -1,25 +1,21 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.Plugin;
-
-import static me.clip.placeholderapi.PlaceholderAPIPlugin.booleanFalse;
-import static me.clip.placeholderapi.PlaceholderAPIPlugin.booleanTrue;
-
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-
+import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import static me.clip.placeholderapi.PlaceholderAPIPlugin.booleanFalse;
+import static me.clip.placeholderapi.PlaceholderAPIPlugin.booleanTrue;
 
 /**
  * {@link Class} to manage and hook {@link SimpleClans} into {@link PlaceholderAPI}
@@ -36,7 +32,6 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	 * 
 	 * @since 1.12.3
 	 */
-	
 	private static final Pattern TOP_CLANS_PATTERN = Pattern.compile("^topclans_\\d+_clan_");
 	
 	/**
@@ -44,15 +39,8 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	 * 
 	 * @since 1.12.3
 	 */
-	
 	private static final List<String> PLACEHOLDERS_LIST = new ArrayList<>();
-	
-	/**
-	 * The static values {@link Constructor}
-	 * 
-	 * @since 1.12.3
-	 */
-	
+
 	static {
 		PLACEHOLDERS_LIST.add("%simpleclans_neutral_kills%");
 		PLACEHOLDERS_LIST.add("%simpleclans_rival_kills%");
@@ -144,7 +132,6 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	 * 
 	 * @since 2.10.1
 	 */
-	
 	private final SimpleClans simpleClans;
 	
 	/**
@@ -154,7 +141,6 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	 * 
 	 * @since 2.10.1
 	 */
-	
 	public PlaceholdersManager(@NotNull SimpleClans simpleClans) {
 		this.simpleClans = simpleClans;
 	}
@@ -169,7 +155,6 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	 * 
 	 * @since 2.10.1
 	 */
-	
 	@NotNull
 	public String getPlaceholderValue(@Nullable ClanPlayer player, @NotNull String identifier) {
 		Clan clan = null;
@@ -189,10 +174,10 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 			clan = clans.get(position - 1);
 			identifier = identifier.substring(identifier.indexOf('_', 9) + 1);
 		}
-		else if (player == null) {
-			return "";
-		}
 		if (clan == null) {
+			if (player == null) {
+				return "";
+			}
 			clan = player.getClan();
 			
 			switch (identifier) {
@@ -413,7 +398,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	}
 	
 	@Override
-	public String getAuthor() {
+	public @NotNull String getAuthor() {
 		List<String> authors = new ArrayList<>(simpleClans.getDescription().getAuthors());
 		authors.add("Peng1104");
 		return authors.toString();
@@ -425,7 +410,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	}
 	
 	@Override
-	public String onRequest(OfflinePlayer player, String params) {
+	public String onRequest(@Nullable OfflinePlayer player, @NotNull String params) {
 		ClanPlayer clanPlayer = null;
 		if (player != null) {
 			clanPlayer = simpleClans.getClanManager().getAnyClanPlayer(player.getUniqueId());
@@ -439,7 +424,7 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 	}
 	
 	@Override
-	public List<String> getPlaceholders() {
+	public @NotNull List<String> getPlaceholders() {
 		return PLACEHOLDERS_LIST;
 	}
 	
