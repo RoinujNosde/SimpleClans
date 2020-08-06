@@ -1,5 +1,5 @@
 ---
-description:
+description: null
 ---
 
 # SimpleClans API Example
@@ -58,3 +58,4 @@ Every player has a **ClanPlayer** object which holds all his information, includ
 The **Clan** object holds all the information for a clan and can be used to perform various operations on the clan.
 
 The **ClanManager** holds all the **Clans** and **ClanPlayers** and contains methods that allow you to retrieve them.
+

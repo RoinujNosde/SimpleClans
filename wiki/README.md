@@ -2,7 +2,7 @@
 description: Welcome to the SimpleClans Wiki!
 ---
 
-# Welcome to the SimpleClans Wiki!
+# Introduction
 
 Here you will find a complete set of documentation including installation, configuration, permissions and usage for SimpleClans.
 
@@ -20,5 +20,5 @@ If the wiki does not have your answer, feel free to join [the discord](https://d
 
 `Issue Tracker`
 
-If you believe you have found a bug with the plugin, feel free to make an issue on the the [issue tracker!](https://github.com/RoinujNosde/SimpleClans/issues)\
-Bugs will be looked into and addressed at the earliest opportunity.
+If you believe you have found a bug in the plugin, feel free to make an issue on the [issue tracker!](https://github.com/RoinujNosde/SimpleClans/issues) Bugs will be looked into and addressed at the earliest opportunity.
+

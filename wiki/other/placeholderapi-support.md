@@ -1,0 +1,2 @@
+# PlaceholderAPI Support
+

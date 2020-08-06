@@ -1,12 +1,10 @@
 ---
-description:
+description: null
 ---
 
 # Configuration
 
 [The main configuration file for SimpleClans can be found here.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
-
-***
 
 ## General Settings
 
@@ -14,7 +12,7 @@ description:
 * `disable-messages` - This will disable broadcasts from the plugin such as "Clan created", "Clan disbanded", etc
 * `tameable-mobs-sharing` - 
 * `teleport-blocks` - 
-* `teleport-home-on-spawn` - 
+* `teleport-home-on-spawn` - Players will be teleported to their clan's home when they respawn
 * `drop-items-on-clan-home` - 
 * `keep-items-on-clan-home` - 
 * `item-list` - 
@@ -39,14 +37,16 @@ description:
 * `allow-reset-kdr` - 
 * `rejoin-cooldown` - 
 * `rejoin-cooldown-enabled` - 
-* `min-to-verify` - The clan must have this amount of members to get verified (moderators can bypass this)
+* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\)
 * `ranking-type` - Valid options: ORDINAL and DENSE\
-DENSE: if players have the same KDR, they will have the same rank position. Ex.: 12234\
-ORDINAL: Every player will have a different rank position. Ex.: 12345
+
+  DENSE: if players have the same KDR, they will have the same rank position. Ex.: 12234\
+
+  ORDINAL: Every player will have a different rank position. Ex.: 12345
 
 ### Example
 
-```yml
+```text
 settings:
     enable-gui: true
     disable-messages: false
@@ -87,10 +87,7 @@ settings:
     ranking-type: DENSE
 ```
 
-***
-
 ## Tags Format
-
 
 ### Example
 
@@ -107,7 +104,7 @@ settings:
   * `leader-color` - 
   * `char` - 
 
-```yml
+```text
 tag:
     default-color: '8'
     max-length: 5
@@ -123,8 +120,6 @@ tag:
         char: ' .'
 ```
 
-***
-
 ## General Commands
 
 * `more` - 
@@ -138,7 +133,7 @@ tag:
 
 ### Example
 
-```yml
+```text
 commands:
     more: more
     ally: ally
@@ -150,8 +145,6 @@ commands:
     force-priority: true
 ```
 
-***
-
 ## KDR Grinding Prevention
 
 * `enable-max-kills` - 
@@ -161,15 +154,13 @@ commands:
 
 ### Example
 
-```yml
+```text
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10
     enable-kill-delay: false
     delay-between-kills: 5
 ```
-
-***
 
 ## List Commands
 
@@ -184,7 +175,7 @@ kdr-grinding-prevention:
 
 ### Example
 
-```yml
+```text
 list:
     size: size
     kdr: kdr
@@ -195,8 +186,6 @@ list:
     desc: desc
     default: kdr
 ```
-
-***
 
 ## Economy
 
@@ -229,7 +218,7 @@ list:
 
 ### Example
 
-```yml
+```text
 economy:
     creation-price: 100.0
     purchase-clan-create: false
@@ -259,8 +248,6 @@ economy:
     charge-upkeep-only-if-member-fee-enabled: true
 ```
 
-***
-
 ## Kill Weights
 
 * `rival` - 
@@ -270,15 +257,13 @@ economy:
 
 ### Example
 
-```yml
+```text
 kill-weights:
     rival: 2.0
     civilian: 0.0
     neutral: 1.0
     deny-same-ip-kills: false
 ```
-
-***
 
 ## Clan Settings
 
@@ -299,7 +284,7 @@ kill-weights:
 
 ### Example
 
-```yml
+```text
 clan:
     homebase-teleport-wait-secs: 10
     homebase-can-be-set-only-once: true
@@ -317,8 +302,6 @@ clan:
     min-size-to-set-ally: 3
 ```
 
-***
-
 ## Tasks
 
 * `collect-upkeep` - 
@@ -333,7 +316,7 @@ clan:
 
 ### Example
 
-```yml
+```text
 tasks:
     collect-upkeep:
         hour: 1
@@ -345,8 +328,6 @@ tasks:
         hour: 1
         minute: 0
 ```
-
-***
 
 ## Page
 
@@ -361,7 +342,7 @@ tasks:
 
 ### Example
 
-```yml
+```text
 page:
     untrusted-color: '8'
     clan-name-color: b
@@ -372,8 +353,6 @@ page:
     separator: '-'
     size: 100
 ```
-
-***
 
 ## Clan Chat
 
@@ -388,7 +367,7 @@ page:
 
 ### Example
 
-```yml
+```text
 clanchat:
     enable: true
     tag-based-clan-chat: false
@@ -400,8 +379,6 @@ clanchat:
     member-color: '7'
 ```
 
-***
-
 ## Request
 
 * `message-color` - 
@@ -410,14 +387,12 @@ clanchat:
 
 ### Example
 
-```yml
+```text
 request:
     message-color: b
     ask-frequency-secs: 60
     max-asks-per-request: 1440
 ```
-
-***
 
 ## Bulletin Board
 
@@ -429,7 +404,7 @@ request:
 
 ### Example
 
-```yml
+```text
 bb:
     color: e
     accent-color: '8'
@@ -437,8 +412,6 @@ bb:
     size: 6
     login-size: 6
 ```
-
-***
 
 ## Ally Chat
 
@@ -451,7 +424,7 @@ bb:
 
 ### Example
 
-```yml
+```text
 allychat:
     enable: true
     format: "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"
@@ -461,8 +434,6 @@ allychat:
     member-color: '7'
 ```
 
-***
-
 ## Purge Data
 
 * `inactive-player-data-days` - 
@@ -471,14 +442,12 @@ allychat:
 
 ### Example
 
-```yml
+```text
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7
     unverified-clan-days: 2
 ```
-
-***
 
 ## mySQL Settings
 
@@ -491,7 +460,7 @@ purge:
 
 ### Example
 
-```yml
+```text
 mysql:
     username: ''
     host: localhost
@@ -501,21 +470,18 @@ mysql:
     database: ''
 ```
 
-***
-
 ## Permissions
+
 * `auto-group-groupname` - 
 
 ### Example
 
-```yml
+```text
 permissions:
   auto-group-groupname: false
   YourClanNameHere:
   - test.permission
 ```
-
-***
 
 ## Performance
 
@@ -526,7 +492,7 @@ permissions:
 
 ### Example
 
-```yml
+```text
 performance:
   save-periodically: true
   save-interval: 10
@@ -534,14 +500,13 @@ performance:
   use-bungeecord: false
 ```
 
-***
-
 ## Safe Civilians
 
 * `safe-civilians` - Civilians are safe from PvP, even civilian vs civilian combat is disabled
 
 ### Example
 
-```yml
+```text
 safe-civilians: false
 ```
+

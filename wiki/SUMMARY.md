@@ -1,34 +1,29 @@
 # Table of contents
 
+* [Introduction](README.md)
 * [Discord Support](https://discord.gg/CkNwgdE)
 * [Bugs and Suggestions](https://github.com/RoinujNosde/SimpleClans/issues)
 
 ## How to Setup
 
----
-
-* [Configuration](configuration.md)
-* [Translation](translation.md)
-* [Member Fee](merber-fee.md)
-* [Clan Upkeep](clan-upkeep.md)
-* [Clan Below Player's Name](clan-below-players-name.md)
-* [Clan on Tablist](clan-on-tablist.md)
+* [Configuration](how-to-setup/configuration.md)
+* [Translation](how-to-setup/translation.md)
+* [Member Fee](how-to-setup/member-fee.md)
+* [Clan Upkeep](how-to-setup/clan-upkeep.md)
+* [Clan Below Player's Name](how-to-setup/clan-below-players-name.md)
+* [Clan on Tablist](how-to-setup/clan-on-tablist.md)
 
 ## Commands and Permissions
 
----
-
-* [Commands](commands.md)
-* [Permissions](permissions.md)
-* [Clan Alliances and Rivalries](aliances-and-rivalries.md)
-* [Ranks with Permissions](ranks-with-permissions.md)
+* [Commands](commands-and-permissions/commands.md)
+* [Permissions](commands-and-permissions/permissions.md)
+* [Clan Alliances and Rivalries](commands-and-permissions/aliances-and-rivalries.md)
+* [Ranks with Permissions](commands-and-permissions/ranks-with-permissions.md)
 
 ## Other
 
----
-
-* [SimpleClans API Example](simpleclans-api.md)
-* [PlaceholderAPI Support](placeholderapi.md)
-* [Land Claims Plugins](land-claims.md)
-* [Bugs and Suggestions](news.md)
+* [SimpleClans API Example](other/simpleclans-api.md)
+* [PlaceholderAPI Support](other/placeholderapi-support.md)
+* [Land Claims Plugins](other/land-claims.md)
+* [Bugs and Suggestions](other/bugs-and-suggestions.md)
 
