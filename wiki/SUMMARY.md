@@ -25,5 +25,4 @@
 * [SimpleClans API Example](other/simpleclans-api.md)
 * [PlaceholderAPI Support](other/placeholderapi-support.md)
 * [Land Claims Plugins](other/land-claims.md)
-* [Bugs and Suggestions](other/bugs-and-suggestions.md)
 
