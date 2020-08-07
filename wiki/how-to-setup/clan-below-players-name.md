@@ -11,10 +11,9 @@ description: null
 
 ## Step by step
 
-1. Open TAB's config and edit the Groups section adding `%simpleclans_clan_color_tag%` to `belowname` :\
+1. Open TAB's config and edit the Groups section adding `%simpleclans_clan_color_tag%` to `belowname`:
 
    For example:
-
    ```text
    _OTHER_:
     tabprefix: "%vault-prefix% "
@@ -31,6 +30,3 @@ description: null
 4. Restart \(or reload\) and enjoy!
 
 ## Screenshot
-
-![](https://github.com/RoinujNosde/SimpleClans/tree/34d4590d7ec7f67d65cb85470f4b26e8040e5013/.gitbook/assets/clan-tag-below-player-name.png)
-

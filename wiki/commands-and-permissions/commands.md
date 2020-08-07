@@ -4,20 +4,19 @@ description: null
 
 # Commands
 
-## Commands Index
+> Required arguments are marked with `[argument]`
+> Optional arguments are marked with `(argument)`
 
-> Required arguments are marked with `[argument]` Optional arguments are marked with `(argument)`
-
-### Anyone Commands
+## Anyone Commands
 
 | Command | Description |
 | :--- | :--- |
 | `/clan create` | Create a new clan |
 | `/clan list (order by) (asc \| desc)` | Lists all clans - \(order by: name/size/kdr/founded/active\) |
 
-### Members Commands
+## Members Commands
 
-#### General Commands
+### General Commands
 
 | Command | Description |
 | :--- | :--- |
@@ -29,7 +28,7 @@ description: null
 | `/clan mostkilled` | View serverwide most killed counts |
 | `/clan fee check` | Check if the fee is enabled and how much is |
 
-#### Chat Commands
+### Chat Commands
 
 | Command | Description |
 | :--- | :--- |
@@ -38,7 +37,7 @@ description: null
 | `/ally [message]` | Send a message to the ally chat |
 | `/ally [join \| leave]` | Join/leave the ally chat |
 
-### Leaders Commands
+## Leaders Commands
 
 | Command | Description |
 | :--- | :--- |
@@ -64,7 +63,7 @@ description: null
 | `/clan rank permissions [rank] add [permission]` | adds a permission to the rank |
 | `/clan rank permissions [rank] remove [permission]` | removes a permission from the rank |
 
-### Mod Commands
+## Mod Commands
 
-### Admin Commands
+## Admin Commands
 

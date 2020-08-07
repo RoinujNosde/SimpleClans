@@ -11,10 +11,9 @@ description: null
 
 ## Step by step
 
-1. Open PlayerListPlus config and edit the formats adding `%simpleclans_clan_color_tag%`:\
+1. Open PlayerListPlus config and edit the formats adding `%simpleclans_clan_color_tag%`:
 
    For example:
-
 ```text
 slot-items:
 #   This slot items will shows all players
@@ -29,6 +28,3 @@ slot-items:
 1. Restart \(or reload\) and enjoy!
 
 ## Screenshot
-
-![](https://github.com/RoinujNosde/SimpleClans/tree/34d4590d7ec7f67d65cb85470f4b26e8040e5013/.gitbook/assets/clan-on-tablist.png)
-

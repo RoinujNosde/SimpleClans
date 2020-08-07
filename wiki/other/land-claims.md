@@ -9,7 +9,7 @@ description: null
 * `enable-auto-groups` - 
 * `auto-group-groupname`- 
 
-### Exemple
+#### Exemple
 
 ```text
 settings:
@@ -20,7 +20,7 @@ permissions:
   - test.permission
 ```
 
-## GriefPrevention Commands
+## GriefPrevention
 
 You can replace `<clantag>` with ANY clan tag \(ally, rival, etc\)
 

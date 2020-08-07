@@ -14,11 +14,11 @@ description: null
 | `simpleclans.mod.*` | Permissions for moderators |
 | `simpleclans.admin.*` | Permissions for admins |
 
-### Individual Nodes
+## Individual Nodes
 
 \(You don't need to add these as they are all included if you've already added the node groups \(above\). They are only included here as reference in case you want to toggle a couple of them off individually. Then you can just drop those in, set to false, along with the node groups.\)
 
-## Anyone Nodes
+### Anyone Nodes
 
 | Permission | Description |
 | :--- | :--- |
@@ -31,7 +31,7 @@ description: null
 | `simpleclans.anyone.rivalries` | Can view rivalries by clan |
 | `simpleclans.anyone.roster` | Can veiw a clan's member list |
 
-## Member Nodes
+### Member Nodes
 
 | Permission | Description |
 | :--- | :--- |
@@ -60,7 +60,7 @@ description: null
 | `simpleclans.member.toggle.bb` | Can toggle bb on/off |
 | `simpleclans.member.fee-check` | Allows the member to check how much is the fee and if it's enabled |
 
-## Leader Nodes
+### Leader Nodes
 
 | Permission | Description |
 | :--- | :--- |
@@ -94,7 +94,7 @@ description: null
 | `simpleclans.leader.settrust` | Can set trust levels for members |
 | `simpleclans.leader.war` | Can start wars |
 
-## Mod Nodes
+### Mod Nodes
 
 | Permission | Description |
 | :--- | :--- |
@@ -113,7 +113,7 @@ description: null
 | `simpleclans.mod.unban` | Can unban players from the entire plugin |
 | `simpleclans.mod.verify` | Can verify simpleclans |
 
-## Admin Nodes
+### Admin Nodes
 
 | Permission | Description |
 | :--- | :--- |
