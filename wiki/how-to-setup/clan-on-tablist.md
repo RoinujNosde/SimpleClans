@@ -14,17 +14,19 @@ description: null
 1. Open PlayerListPlus config and edit the formats adding `%simpleclans_clan_color_tag%`:
 
    For example:
-```text
-slot-items:
-#   This slot items will shows all players
+
+   ```text
+   slot-items:
+   #   This slot items will shows all players
     PLAYERS:
         format: "%simpleclans_clan_color_tag%&c.$displayname"
         type: PLAYER_LIST
         hidevanished: true
         ping: true
         skin: true
-```
+   ```
 
-1. Restart \(or reload\) and enjoy!
+2. Restart \(or reload\) and enjoy!
 
 ## Screenshot
+

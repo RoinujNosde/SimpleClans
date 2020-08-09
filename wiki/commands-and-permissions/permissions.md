@@ -93,6 +93,7 @@ description: null
 | `simpleclans.leader.setrank` | Can set ranks |
 | `simpleclans.leader.settrust` | Can set trust levels for members |
 | `simpleclans.leader.war` | Can start wars |
+| `simpleclans.leader.setbanner` | Can set his clan's banner |
 
 ### Mod Nodes
 

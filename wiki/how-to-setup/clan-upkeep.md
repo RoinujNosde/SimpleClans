@@ -23,7 +23,7 @@ final upkeep   = 200.0
 * `multiply-upkeep-by-clan-size` - This works as explained above
 * `charge-upkeep-only-if-member-fee-enabled` - Enable upkeep if [member fee](https://github.com/RoinujNosde/SimpleClans/wiki/Member-Fee) is enabled.
 
-#### Exemple
+### Exemple
 
 ```text
 economy:

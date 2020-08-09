@@ -4,8 +4,7 @@ description: null
 
 # Commands
 
-> Required arguments are marked with `[argument]`
-> Optional arguments are marked with `(argument)`
+> Required arguments are marked with `[argument]` Optional arguments are marked with `(argument)`
 
 ## Anyone Commands
 
@@ -48,6 +47,7 @@ description: null
 | `/clan untrust [player]` | Set member as untrusted |
 | `/clan promote [member]` | Promote a member to leader |
 | `/clan demote [leader]` | Demote a leader to member |
+| `/clan setbanner` | Set the clan''s banner |
 | `/clan clanff [allow \| block]` | Toggle clan''s friendly fire |
 | `/clan war [start \| end] [tag]` | Start or end a war |
 | `/clan disband` | Disband your clan |
