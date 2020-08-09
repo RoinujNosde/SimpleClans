@@ -693,7 +693,7 @@ public class Helper {
      * @param str
      * @return
      */
-    public static String escapeQuotes(String str) {
+    public static String escapeQuotes(@Nullable String str) {
         if (str == null) {
             return "";
         }

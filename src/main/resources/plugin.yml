@@ -111,6 +111,8 @@ permissions:
     description: Can set his clan's cape url
   simpleclans.leader.bb-clear:
     description: Can clear his clan's bb
+  simpleclans.leader.setbanner:
+    description: Can set his clan's banner
   simpleclans.member.cape-toggle:
     description: Can toggle his cape on/off
   simpleclans.member.kills:

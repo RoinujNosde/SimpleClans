@@ -1,5 +1,8 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * 
  * @author RoinujNosde
@@ -35,7 +38,8 @@ public enum RankPermission {
 	KILLS("simpleclans.member.kills", PermissionLevel.TRUSTED),
 	DESCRIPTION("simpleclans.leader.description", PermissionLevel.LEADER),
 	MOSTKILLED("simpleclans.mod.mostkilled", PermissionLevel.TRUSTED),
-	FRIENDLYFIRE("simpleclans.leader.ff", PermissionLevel.LEADER);
+	FRIENDLYFIRE("simpleclans.leader.ff", PermissionLevel.LEADER),
+	SETBANNER("simpleclans.leader.setbanner", PermissionLevel.LEADER);
 
 	private final String bukkitPermission;
 	private final PermissionLevel permissionLevel;
@@ -46,9 +50,8 @@ public enum RankPermission {
 	}
 
 	/**
-	 * Returns the Bukkit equivalent to this rank permission
-	 * 
-	 * @return
+	 *
+	 * @return the Bukkit equivalent to this rank permission
 	 */
 	public String getBukkitPermission() {
 		return bukkitPermission;
@@ -69,12 +72,12 @@ public enum RankPermission {
 	}
 
 	/**
-	 * Checks if this is a valid rank permission.
 	 * 
-	 * @param permission
-	 * @return
+	 * @param permission the permission
+	 * @return true if this is a valid rank permission
 	 */
-	public static boolean isValid(String permission) {
+	@Contract("null -> false")
+	public static boolean isValid(@Nullable String permission) {
 		for (RankPermission p : values()) {
 			if (p.toString().equalsIgnoreCase(permission)) {
 				return true;

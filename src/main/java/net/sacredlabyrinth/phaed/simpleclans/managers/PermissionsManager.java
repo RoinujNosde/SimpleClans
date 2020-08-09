@@ -375,7 +375,7 @@ public final class PermissionsManager {
     	boolean hasBukkitPermission = has(player, permission.getBukkitPermission());
     	if (!hasBukkitPermission) {
     	    if (notify) {
-                ChatBlock.sendMessage(player, lang(ChatColor.RED + "insufficient.permissions",player));
+                ChatBlock.sendMessage(player,ChatColor.RED + lang("insufficient.permissions", player));
             }
     		return false;
     	}

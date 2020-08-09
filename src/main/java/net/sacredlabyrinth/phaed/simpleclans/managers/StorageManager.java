@@ -7,12 +7,14 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.storage.DBCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.MySQLCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
+import net.sacredlabyrinth.phaed.simpleclans.utils.YAMLSerializer;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDFetcher;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,11 +30,11 @@ import java.util.logging.Level;
  */
 public final class StorageManager {
 
-    private SimpleClans plugin;
+    private final SimpleClans plugin;
     private DBCore core;
-    private HashMap<String, ChatBlock> chatBlocks = new HashMap<>();
-    private Set<Clan> modifiedClans = new HashSet<>();
-    private Set<ClanPlayer> modifiedClanPlayers = new HashSet<>();
+    private final HashMap<String, ChatBlock> chatBlocks = new HashMap<>();
+    private final Set<Clan> modifiedClans = new HashSet<>();
+    private final Set<ClanPlayer> modifiedClanPlayers = new HashSet<>();
 
     /**
      *
@@ -102,6 +104,7 @@ public final class StorageManager {
                     		+ " `fee_enabled` tinyint(1) default '0',"
                     		+ " `fee_value` double(64,2),"
                     		+ " `ranks` text NOT NULL,"
+                            + " `banner` text,"
                     		+ " PRIMARY KEY  (`id`),"
                     		+ " UNIQUE KEY `uq_simpleclans_1` (`tag`));";
                     core.execute(query);
@@ -177,6 +180,7 @@ public final class StorageManager {
                     		+ " `fee_enabled` tinyint(1) default '0',"
                     		+ " `fee_value` double(64,2),"
                     		+ " `ranks` text NOT NULL,"
+                            + " `banner` text,"
                     		+ "  PRIMARY KEY  (`id`),"
                     		+ " UNIQUE (`tag`));";
                     core.execute(query);
@@ -364,6 +368,7 @@ public final class StorageManager {
                         double balance = res.getDouble("balance");
                         double feeValue = res.getDouble("fee_value");
                         boolean feeEnabled = res.getBoolean("fee_enabled");
+                        ItemStack banner = YAMLSerializer.deserialize(res.getString("banner"), ItemStack.class);
 
                         if (founded == 0) {
                             founded = (new Date()).getTime();
@@ -391,6 +396,7 @@ public final class StorageManager {
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
+                        clan.setBanner(banner);
 
                         out.add(clan);
                     } catch (Exception ex) {
@@ -442,6 +448,7 @@ public final class StorageManager {
                         double balance = res.getDouble("balance");
                         double feeValue = res.getDouble("fee_value");
                         boolean feeEnabled = res.getBoolean("fee_enabled");
+                        ItemStack banner = YAMLSerializer.deserialize(res.getString("banner"), ItemStack.class);
 
                         if (founded == 0) {
                             founded = (new Date()).getTime();
@@ -469,6 +476,7 @@ public final class StorageManager {
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
+                        clan.setBanner(banner);
 
                         out = clan;
                     } catch (Exception ex) {
@@ -680,8 +688,11 @@ public final class StorageManager {
      * @param clan
      */
     public void insertClan(Clan clan) {
-        String query = "INSERT INTO `sc_clans` (`ranks`, `description`, `fee_enabled`, `fee_value`, `verified`, `tag`, `color_tag`, `name`, `friendly_fire`, `founded`, `last_used`, `packed_allies`, `packed_rivals`, `packed_bb`, `cape_url`, `flags`, `balance`) ";
+        String query = "INSERT INTO `sc_clans` (`banner`, `ranks`, `description`, `fee_enabled`, `fee_value`, `verified`, `tag`," +
+                " `color_tag`, `name`, `friendly_fire`, `founded`, `last_used`, `packed_allies`, `packed_rivals`, " +
+                "`packed_bb`, `cape_url`, `flags`, `balance`) ";
         String values = "VALUES ( '"
+                                    + Helper.escapeQuotes(YAMLSerializer.serialize(clan.getBanner())) + "','"
         							+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks())) + "','"
         							+ Helper.escapeQuotes(clan.getDescription())+ "'," 
         							+ (clan.isMemberFeeEnabled() ? 1 : 0) +","
@@ -769,7 +780,27 @@ public final class StorageManager {
     }
     
     private String getUpdateClanQuery(Clan clan) {
-        String query = "UPDATE `sc_clans` SET ranks = '"+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks())) +"', description = '" + Helper.escapeQuotes(clan.getDescription())+ "', fee_enabled = "+ (clan.isMemberFeeEnabled() ? 1 : 0) +", fee_value = '" + clan.getMemberFee() + "', verified = " + (clan.isVerified() ? 1 : 0) + ", tag = '" + Helper.escapeQuotes(clan.getTag()) + "', color_tag = '" + Helper.escapeQuotes(clan.getColorTag()) + "', name = '" + Helper.escapeQuotes(clan.getName()) + "', friendly_fire = " + (clan.isFriendlyFire() ? 1 : 0) + ", founded = '" + clan.getFounded() + "', last_used = '" + clan.getLastUsed() + "', packed_allies = '" + Helper.escapeQuotes(clan.getPackedAllies()) + "', packed_rivals = '" + Helper.escapeQuotes(clan.getPackedRivals()) + "', packed_bb = '" + Helper.escapeQuotes(clan.getPackedBb()) + "', cape_url = '" + Helper.escapeQuotes(clan.getCapeUrl()) + "', cape_url = '" + Helper.escapeQuotes(String.valueOf(clan.getCapeUrl())) + "', balance = '" + clan.getBalance() + "', flags = '" + Helper.escapeQuotes(clan.getFlags()) + "' WHERE tag = '" + Helper.escapeQuotes(clan.getTag()) + "';";
+        String query = "UPDATE `sc_clans`" +
+                " SET ranks = '"+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks())) +"'," +
+                " banner = '" + Helper.escapeQuotes(YAMLSerializer.serialize(clan.getBanner())) + "'," +
+                " description = '" + Helper.escapeQuotes(clan.getDescription())+ "'," +
+                " fee_enabled = "+ (clan.isMemberFeeEnabled() ? 1 : 0) +"," +
+                " fee_value = '" + clan.getMemberFee() + "'," +
+                " verified = " + (clan.isVerified() ? 1 : 0) + "," +
+                " tag = '" + Helper.escapeQuotes(clan.getTag()) + "'," +
+                " color_tag = '" + Helper.escapeQuotes(clan.getColorTag()) + "'," +
+                " name = '" + Helper.escapeQuotes(clan.getName()) + "'," +
+                " friendly_fire = " + (clan.isFriendlyFire() ? 1 : 0) + "," +
+                " founded = '" + clan.getFounded() + "'," +
+                " last_used = '" + clan.getLastUsed() + "'," +
+                " packed_allies = '" + Helper.escapeQuotes(clan.getPackedAllies()) + "'," +
+                " packed_rivals = '" + Helper.escapeQuotes(clan.getPackedRivals()) + "'," +
+                " packed_bb = '" + Helper.escapeQuotes(clan.getPackedBb()) + "'," +
+                " cape_url = '" + Helper.escapeQuotes(clan.getCapeUrl()) + "'," +
+                " cape_url = '" + Helper.escapeQuotes(String.valueOf(clan.getCapeUrl())) + "'," +
+                " balance = '" + clan.getBalance() + "'," +
+                " flags = '" + Helper.escapeQuotes(clan.getFlags())
+                + "' WHERE tag = '" + Helper.escapeQuotes(clan.getTag()) + "';";
         return query;
     }
 
@@ -1073,6 +1104,9 @@ public final class StorageManager {
         if (!core.existsColumn("sc_players", "locale")) {
             query = "ALTER TABLE sc_players ADD COLUMN `locale` varchar(10);";
             core.execute(query);
+        }
+        if (!core.existsColumn("sc_clans", "banner")) {
+            core.execute("ALTER TABLE sc_clans ADD COLUMN `banner` text;");
         }
 
         /**

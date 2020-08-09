@@ -12,6 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -42,8 +46,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     private List<String> allies = new ArrayList<>();
     private List<String> rivals = new ArrayList<>();
     private List<String> bb = new ArrayList<>();
-    private List<String> members = new ArrayList<>();
-    private HashMap<String, Clan> warringClans = new HashMap<>();
+    private final List<String> members = new ArrayList<>();
+    private final HashMap<String, Clan> warringClans = new HashMap<>();
     private int homeX = 0;
     private int homeY = 0;
     private int homeZ = 0;
@@ -52,6 +56,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     private boolean allowDeposit = true;
     private boolean feeEnabled;
     private List<Rank> ranks = new ArrayList<>();
+    private @Nullable ItemStack banner;
 
     /**
      *
@@ -1664,7 +1669,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
     }
 
-    public void setHomeLocation(Location home) {
+    public void setHomeLocation(@Nullable Location home) {
         if (home == null) {
             homeY = 0;
             homeX = 0;
@@ -1681,7 +1686,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
-    public Location getHomeLocation() {
+    public @Nullable Location getHomeLocation() {
         if (homeWorld == null) {
             return null;
         }
@@ -1833,7 +1838,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 * @param name the rank name
 	 * @return a rank or null
 	 */
-	public Rank getRank(String name) {
+	public @Nullable Rank getRank(String name) {
 		if (name != null) {
 			for (Rank r : ranks) {
 				if (r.getName().equals(name)) {
@@ -1843,4 +1848,29 @@ public class Clan implements Serializable, Comparable<Clan> {
 		}
 		return null;
 	}
+
+    public void setBanner(@Nullable ItemStack banner) {
+	    if (banner == null) {
+	        this.banner = null;
+	        return;
+        }
+	    banner = banner.clone();
+        banner.setAmount(1);
+        ItemMeta itemMeta = banner.getItemMeta();
+        if (itemMeta != null) {
+            // hides the banner patterns from the lore (I don't know why it's called POTION_EFFECTS)
+            itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            itemMeta.setLore(null);
+            itemMeta.setDisplayName(null);
+            banner.setItemMeta(itemMeta);
+        }
+        this.banner = banner;
+    }
+
+    public @Nullable ItemStack getBanner() {
+	    if (banner != null) {
+	        return banner.clone();
+        }
+        return null;
+    }
 }

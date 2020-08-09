@@ -21,8 +21,13 @@ public class SCComponentImpl extends SCComponent {
 		slot = 0;
 	}
 
-	public SCComponentImpl(String displayName, @Nullable List<String> lore, Material material, int slot) {
-		item = new ItemStack(material);
+	public SCComponentImpl(String displayName, @Nullable List<String> lore, @NotNull Material material, int slot) {
+		this(displayName, lore, new ItemStack(material), slot);
+	}
+
+	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @NotNull ItemStack item,
+						   int slot) {
+		this.item = item;
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta != null) {
 			itemMeta.setDisplayName(displayName);
@@ -49,6 +54,10 @@ public class SCComponentImpl extends SCComponent {
 
 		public Builder(@NotNull Material material) {
 			component.item = new ItemStack(material);
+		}
+
+		public Builder(@NotNull ItemStack item) {
+			component.item = item;
 		}
 
 		public Builder withDisplayName(@Nullable String displayName) {

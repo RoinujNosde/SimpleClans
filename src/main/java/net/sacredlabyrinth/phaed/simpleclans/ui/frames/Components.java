@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -114,7 +115,13 @@ public class Components {
             lore.add(lang("gui.clandetails.free.agent.create.clan.lore", frame.getViewer()));
         }
 
-        SCComponent c = new SCComponentImpl(name, lore, Material.GREEN_BANNER, slot);
+        ItemStack item;
+        if (clan != null && clan.getBanner() != null) {
+            item = clan.getBanner();
+        } else {
+            item = new ItemStack(Material.GREEN_BANNER);
+        }
+        SCComponent c = new SCComponentImpl.Builder(item).withLore(lore).withDisplayName(name).withSlot(slot).build();
         if (openDetails && clan != null) {
             c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanDetailsFrame(frame, viewer, clan)));
         }

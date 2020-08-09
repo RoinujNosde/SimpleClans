@@ -11,6 +11,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -49,13 +50,14 @@ public class ClanListFrame extends SCFrame {
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			Clan clan = clans.get(i);
+			ItemStack banner = clan.getBanner() != null ? clan.getBanner() : new ItemStack(Material.BLACK_BANNER);
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title", getViewer(), clan.getColorTag(), clan.getName()),
 					Arrays.asList(lang("gui.clanlist.clan.lore.position", getViewer(),
 							rankingResolver.getRankingNumber(clan)),
 							lang("gui.clanlist.clan.lore.kdr", getViewer(), KDRFormat.format(clan.getTotalKDR())),
 							lang("gui.clanlist.clan.lore.members", getViewer(), clan.getMembers().size())),
-					Material.BLACK_BANNER, slot);
+					banner, slot);
 			c.setLorePermission("simpleclans.anyone.list");
 			add(c);
 			slot++;
