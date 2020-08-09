@@ -42,35 +42,39 @@ public class PlayerDetailsFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 
-		add(Components.getBackComponent(getParent(), 4));
+		add(Components.getBackComponent(getParent(), 4, getViewer()));
 		add(Components.getPlayerComponent(this, getViewer(), subject, 13, false));
 
 		if (!isSameClan()) {
 			return;
 		}
 		
-		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title"), null, Material.WOOL, DyeColor.RED.getWoolData(),
+		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title",getViewer()), null, Material.WOOL, DyeColor.RED.getWoolData(),
 				28);
 		kick.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "kick " + subjectName, true));
+		kick.setConfirmationRequired(ClickType.LEFT);
 		kick.setPermission(ClickType.LEFT, RankPermission.KICK);
 		add(kick);
 
-		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title"),
-				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click"),
-						lang("gui.playerdetails.demote.lore.right.click")),
+		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title",getViewer()),
+				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click",getViewer()),
+						lang("gui.playerdetails.demote.lore.right.click",getViewer())),
 				Material.BLAZE_POWDER, 30);
+		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, !plugin.getSettingsManager().isConfirmationForPromote()));
 		promoteDemote.setPermission(ClickType.LEFT, "simpleclans.leader.promote");
 		promoteDemote.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "demote " + subjectName, !plugin.getSettingsManager().isConfirmationForDemote()));
+		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.leader.demote");
 
-		SCComponentImpl assignUnassign = new SCComponentImpl(lang("gui.playerdetails.assign.unassign.title"),
-				Arrays.asList(lang("gui.playerdetails.assign.lore.left.click"),
-						lang("gui.playerdetails.unassign.lore.right.click")),
+		SCComponentImpl assignUnassign = new SCComponentImpl(lang("gui.playerdetails.assign.unassign.title",getViewer()),
+				Arrays.asList(lang("gui.playerdetails.assign.lore.left.click",getViewer()),
+						lang("gui.playerdetails.unassign.lore.right.click",getViewer())),
 				Material.FEATHER, 32);
+		assignUnassign.setConfirmationRequired(ClickType.RIGHT);
 		assignUnassign.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "rank unassign " + subjectName, true));
 		assignUnassign.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.unassign");
@@ -79,22 +83,24 @@ public class PlayerDetailsFrame extends SCFrame {
 		add(assignUnassign);
 		assignUnassign.setPermission(ClickType.LEFT, "simpleclans.leader.rank.assign");
 
-		SCComponent trustUntrust = new SCComponentImpl(lang("gui.playerdetails.trust.untrust.title"),
-				Arrays.asList(lang("gui.playerdetails.trust.lore.left.click"),
-						lang("gui.playerdetails.untrust.lore.right.click")),
+		SCComponent trustUntrust = new SCComponentImpl(lang("gui.playerdetails.trust.untrust.title",getViewer()),
+				Arrays.asList(lang("gui.playerdetails.trust.lore.left.click",getViewer()),
+						lang("gui.playerdetails.untrust.lore.right.click",getViewer())),
 				Material.INK_SACK, DyeColor.CYAN.getDyeData(), 34);
+		trustUntrust.setConfirmationRequired(ClickType.LEFT);
 		trustUntrust.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "trust " + subjectName, true));
 		trustUntrust.setPermission(ClickType.LEFT, "simpleclans.leader.settrust");
 		trustUntrust.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "untrust " + subjectName, true));
 		trustUntrust.setPermission(ClickType.RIGHT, "simpleclans.leader.settrust");
+		trustUntrust.setConfirmationRequired(ClickType.RIGHT);
 		add(trustUntrust);
 	}
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.playerdetails.title", subject.getName());
+		return lang("gui.playerdetails.title",getViewer(), subject.getName());
 	}
 
 	@Override

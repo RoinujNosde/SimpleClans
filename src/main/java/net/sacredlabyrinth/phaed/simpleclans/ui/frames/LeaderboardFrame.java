@@ -1,37 +1,43 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
-import java.util.Arrays;
-import java.util.List;
-
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
+import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
-import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class LeaderboardFrame extends SCFrame {
 
 	private final Paginator paginator;
-	private final List<ClanPlayer> clanPlayers = SimpleClans.getInstance().getClanManager().getAllClanPlayers();
+	private final List<ClanPlayer> clanPlayers;
+	private final RankingNumberResolver<ClanPlayer, BigDecimal> rankingResolver;
 
 	public LeaderboardFrame(Player viewer, SCFrame parent) {
 		super(parent, viewer);
-		paginator = new Paginator(getSize() - 9, clanPlayers.size());
+
 		SimpleClans plugin = SimpleClans.getInstance();
-		plugin.getClanManager().sortClanPlayersByKDR(clanPlayers);
+		clanPlayers = plugin.getClanManager().getAllClanPlayers();
+
+		rankingResolver = new RankingNumberResolver<>(clanPlayers, c -> KDRFormat.toBigDecimal(c.getKDR()), false,
+				plugin.getSettingsManager().getRankingType());
+		paginator = new Paginator(getSize() - 9, this.clanPlayers.size());
 	}
 
 	@Override
@@ -41,22 +47,23 @@ public class LeaderboardFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			ClanPlayer cp = clanPlayers.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.leaderboard.player.title", i + 1, cp.getName()),
+					lang("gui.leaderboard.player.title", getViewer(),
+							rankingResolver.getRankingNumber(cp), cp.getName()),
 					Arrays.asList(
-							cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan")
-									: lang("gui.playerdetails.player.lore.clan",
+							cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan",getViewer())
+									: lang("gui.playerdetails.player.lore.clan",getViewer(),
 											cp.getClan().getColorTag(), cp.getClan().getName()),
-							lang("gui.playerdetails.player.lore.kdr", Helper.formatKDR(cp.getKDR())),
-							lang("gui.playerdetails.player.lore.last.seen", cp.getLastSeenString())),
+							lang("gui.playerdetails.player.lore.kdr",getViewer(), KDRFormat.format(cp.getKDR())),
+							lang("gui.playerdetails.player.lore.last.seen",getViewer(), cp.getLastSeenString(getViewer()))),
 					Material.SKULL_ITEM, (byte) 3, slot);
 			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
@@ -85,12 +92,12 @@ public class LeaderboardFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.leaderboard.title", clanPlayers.size());
+		return lang("gui.leaderboard.title",getViewer(), clanPlayers.size());
 	}
 
 	@Override

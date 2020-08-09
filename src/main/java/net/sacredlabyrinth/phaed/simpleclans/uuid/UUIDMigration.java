@@ -37,11 +37,7 @@ public class UUIDMigration {
         			return cp.getUniqueId();
         		}
         	}
-        	if (offlinePlayer != null) {
-        		return offlinePlayer.getUniqueId();
-        	} else {
-        		return null;
-        	}
+            return offlinePlayer.getUniqueId();
         }
     }
 

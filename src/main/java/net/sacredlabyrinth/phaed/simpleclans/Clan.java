@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,6 +12,10 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -41,8 +46,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     private List<String> allies = new ArrayList<>();
     private List<String> rivals = new ArrayList<>();
     private List<String> bb = new ArrayList<>();
-    private List<String> members = new ArrayList<>();
-    private HashMap<String, Clan> warringClans = new HashMap<>();
+    private final List<String> members = new ArrayList<>();
+    private final HashMap<String, Clan> warringClans = new HashMap<>();
     private int homeX = 0;
     private int homeY = 0;
     private int homeZ = 0;
@@ -51,6 +56,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     private boolean allowDeposit = true;
     private boolean feeEnabled;
     private List<Rank> ranks = new ArrayList<>();
+    private @Nullable ItemStack banner;
 
     /**
      *
@@ -113,15 +119,15 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void deposit(double amount, Player player) {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
-                player.sendMessage(ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("player.clan.deposit"), amount));
-                addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("bb.clan.deposit"), amount));
+                player.sendMessage(ChatColor.AQUA + lang("player.clan.deposit", player, amount));
+                addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.deposit", amount));
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
-                player.sendMessage(ChatColor.AQUA + SimpleClans.getInstance().getLang("not.sufficient.money"));
+                player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money",player));
             }
         } else {
-            player.sendMessage(ChatColor.AQUA + SimpleClans.getInstance().getLang("not.sufficient.money"));
+            player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money",player));
         }
     }
 
@@ -134,13 +140,13 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void withdraw(double amount, Player player) {
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
-                player.sendMessage(ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("player.clan.withdraw"), amount));
-                addBb(player.getName(), ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("bb.clan.withdraw"), amount));
+                player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
+                addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             }
         } else {
-            player.sendMessage(ChatColor.AQUA + SimpleClans.getInstance().getLang("clan.bank.not.enough.money"));
+            player.sendMessage(ChatColor.AQUA + lang("clan.bank.not.enough.money",player));
         }
     }
 
@@ -1323,7 +1329,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         }
 
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + SimpleClans.getInstance().getLang("clan.announce") + ChatColor.AQUA + "] " + ChatColor.AQUA + "[" + Helper.getColorName(playerName) + ChatColor.WHITE + "] " + message);
+        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("clan.announce") + ChatColor.AQUA + "] " + ChatColor.AQUA + "[" + Helper.getColorName(playerName) + ChatColor.WHITE + "] " + message);
     }
 
     /**
@@ -1343,7 +1349,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 ChatBlock.sendMessage(pl, message);
             }
         }
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + SimpleClans.getInstance().getLang("leader.announce") + ChatColor.AQUA + "] " + ChatColor.WHITE + message);
+        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("leader.announce") + ChatColor.AQUA + "] " + ChatColor.WHITE + message);
     }
 
     /**
@@ -1381,7 +1387,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void displayBb(Player player) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, MessageFormat.format(SimpleClans.getInstance().getLang("bulletin.board.header"), SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
+            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
 
             int maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
 
@@ -1408,7 +1414,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void displayBb(Player player, int maxSize) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, MessageFormat.format(SimpleClans.getInstance().getLang("bulletin.board.header"), SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
+            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
 
             List<String> localBb = new ArrayList<>(bb);
             while (localBb.size() > maxSize) {
@@ -1447,8 +1453,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             textComponent.setHoverEvent(
                     new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             TextComponent.fromLegacyText(
-                                    Dates.formatTime(time, 1) + SimpleClans
-                                            .getInstance().getLang("bb.ago"))));
+                                    Dates.formatTime(time, 1) + lang("bb.ago"))));
             player.spigot().sendMessage(textComponent);
             return true;
         } catch (Throwable rock) {
@@ -1480,18 +1485,18 @@ public class Clan implements Serializable, Comparable<Clan> {
         clans.remove(this);
 
         for (Clan c : clans) {
-            String disbanded = SimpleClans.getInstance().getLang("clan.disbanded");
+            String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("you.are.no.longer.at.war"), c.getName(), getColorTag()));
+                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("you.are.no.longer.at.war"), c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("has.been.disbanded.rivalry.ended"), getName()));
+                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("has.been.disbanded.rivalry.ended"), getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(SimpleClans.getInstance().getLang("has.been.disbanded.alliance.ended"), getName()));
+                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("has.been.disbanded.alliance.ended"), getName()));
             }
         }
 
@@ -1664,7 +1669,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
     }
 
-    public void setHomeLocation(Location home) {
+    public void setHomeLocation(@Nullable Location home) {
         if (home == null) {
             homeY = 0;
             homeX = 0;
@@ -1681,7 +1686,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
-    public Location getHomeLocation() {
+    public @Nullable Location getHomeLocation() {
         if (homeWorld == null) {
             return null;
         }
@@ -1833,7 +1838,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 * @param name the rank name
 	 * @return a rank or null
 	 */
-	public Rank getRank(String name) {
+	public @Nullable Rank getRank(String name) {
 		if (name != null) {
 			for (Rank r : ranks) {
 				if (r.getName().equals(name)) {
@@ -1843,4 +1848,29 @@ public class Clan implements Serializable, Comparable<Clan> {
 		}
 		return null;
 	}
+
+    public void setBanner(@Nullable ItemStack banner) {
+	    if (banner == null) {
+	        this.banner = null;
+	        return;
+        }
+	    banner = banner.clone();
+        banner.setAmount(1);
+        ItemMeta itemMeta = banner.getItemMeta();
+        if (itemMeta != null) {
+            // hides the banner patterns from the lore (I don't know why it's called POTION_EFFECTS)
+            itemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+            itemMeta.setLore(null);
+            itemMeta.setDisplayName(null);
+            banner.setItemMeta(itemMeta);
+        }
+        this.banner = banner;
+    }
+
+    public @Nullable ItemStack getBanner() {
+	    if (banner != null) {
+	        return banner.clone();
+        }
+        return null;
+    }
 }

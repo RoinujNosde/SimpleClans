@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.executors;
 
 import java.text.MessageFormat;
 
+import net.sacredlabyrinth.phaed.simpleclans.commands.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,50 +12,6 @@ import org.bukkit.entity.Player;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.commands.AlliancesCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.AllyCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.BanCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.BankCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.BbCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ClanffCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.CoordsCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.CreateCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.DemoteCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.DescriptionCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.DisbandCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.FeeCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.FfCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.GlobalffCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.HomeCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.InviteCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.KickCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.KillsCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.LeaderboardCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ListCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.LookupCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.MenuCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ModtagCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.MostKilledCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.PlaceCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ProfileCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.PromoteCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.PurgeCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.RankCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ReloadCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ResetKDRCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ResignCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.RivalCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.RivalriesCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.RosterCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.SetRankCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.StatsCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.ToggleCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.TrustCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.UnbanCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.UntrustCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.VerifyCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.VitalsCommand;
-import net.sacredlabyrinth.phaed.simpleclans.commands.WarCommand;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
 import org.jetbrains.annotations.NotNull;
@@ -275,7 +232,9 @@ public final class ClanCommandExecutor implements CommandExecutor {
                     	rankCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("help.command",player)) || subcommand.equalsIgnoreCase("help")) {
                     	menuCommand.execute(player);
-                    } else {   
+                    } else if (subcommand.equalsIgnoreCase(lang("setbanner.command", player)) || subcommand.equalsIgnoreCase("setbanner")) {
+                        new SetBannerCommand().execute(player);
+                    } else {
                         ChatBlock.sendMessage(player, ChatColor.RED + lang("does.not.match",player));
                     }
                 }
@@ -286,18 +245,18 @@ public final class ClanCommandExecutor implements CommandExecutor {
                     String subcommand = args[0];
                     String[] subargs = Helper.removeFirst(args);
 
-                    if (subcommand.equalsIgnoreCase(lang("verify.command")) || subcommand.equalsIgnoreCase("verify")) {
+                    if (subcommand.equalsIgnoreCase(lang("verify.command", sender)) || subcommand.equalsIgnoreCase("verify")) {
                         verifyCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("reload.command")) || subcommand.equalsIgnoreCase("reload")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("reload.command", sender)) || subcommand.equalsIgnoreCase("reload")) {
                         reloadCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("place.command")) || subcommand.equalsIgnoreCase("place")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("place.command", sender)) || subcommand.equalsIgnoreCase("place")) {
                         placeCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("globalff.command")) || subcommand.equalsIgnoreCase("globalff")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("globalff.command", sender)) || subcommand.equalsIgnoreCase("globalff")) {
                         globalffCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("purge.command")) || subcommand.equalsIgnoreCase("purge")) {
+                    } else if (subcommand.equalsIgnoreCase(lang("purge.command", sender)) || subcommand.equalsIgnoreCase("purge")) {
                         purgeCommand.execute(sender, subargs);
                     } else {
-                        ChatBlock.sendMessage(sender, ChatColor.RED + lang("does.not.match"));
+                        ChatBlock.sendMessage(sender, ChatColor.RED + lang("does.not.match", sender));
                     }
                 }
             }

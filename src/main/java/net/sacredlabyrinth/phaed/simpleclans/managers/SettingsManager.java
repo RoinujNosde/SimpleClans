@@ -2,15 +2,20 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author phaed
@@ -36,6 +41,8 @@ public final class SettingsManager {
     private boolean showUnverifiedOnList;
     private boolean requireVerification;
     private boolean rejoinCooldownEnabled;
+    private boolean acceptOtherAlphabetsLettersOnTag;
+    private int minToVerify;
     private int rejoinCooldown;
     private String listDefault;
     private String listSize;
@@ -45,7 +52,7 @@ public final class SettingsManager {
     private String listActive;
     private String listAsc;
     private String listDesc;
-    private List<Integer> itemsList;
+    private List<Material> itemsList = new ArrayList<Material>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
     private List<String> disallowedWords;
@@ -105,6 +112,7 @@ public final class SettingsManager {
     private int clanMinSizeToAlly;
     private int clanMinSizeToRival;
     private int clanMinLength;
+    private int clanMaxAlliances;
     private int clanMaxLength;
     private int clanMaxDescriptionLength;
     private int clanMinDescriptionLength;
@@ -191,6 +199,7 @@ public final class SettingsManager {
 	private boolean languagePerPlayer;
 	private boolean savePeriodically;
 	private int saveInterval;
+	private String rankingType;
 
     /**
      *
@@ -226,7 +235,14 @@ public final class SettingsManager {
         teleportOnSpawn = getConfig().getBoolean("settings.teleport-home-on-spawn");
         dropOnHome = getConfig().getBoolean("settings.drop-items-on-clan-home");
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
-        itemsList = getConfig().getIntegerList("settings.item-list");
+		for (String material : getConfig().getStringList("settings.item-list")) {
+			Material type = Material.getMaterial(material);
+			if (type != null) {
+                itemsList.add(type);
+            } else {
+                plugin.getLogger().warning("Error with Material: " + material);
+            }
+		}
         debugging = getConfig().getBoolean("settings.show-debug-info");
         mChatIntegration = getConfig().getBoolean("settings.mchat-integration");
         pvpOnlywhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
@@ -243,6 +259,9 @@ public final class SettingsManager {
         requireVerification = getConfig().getBoolean("settings.new-clan-verification-required");
         rejoinCooldown = getConfig().getInt("settings.rejoin-cooldown");
         rejoinCooldownEnabled = getConfig().getBoolean("settings.rejoin-cooldown-enabled");
+        acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
+        minToVerify = getConfig().getInt("settings.min-to-verify", 1);
+        rankingType = getConfig().getString("settings.ranking-type", "DENSE");
         listActive = getConfig().getString("list.active", "active");
         listKdr = getConfig().getString("list.kdr", "kdr");
         listDefault = getConfig().getString("list.default", listKdr);
@@ -314,6 +333,7 @@ public final class SettingsManager {
         clanMinSizeToAlly = getConfig().getInt("clan.min-size-to-set-ally");
         clanMinSizeToRival = getConfig().getInt("clan.min-size-to-set-rival");
         clanMinLength = getConfig().getInt("clan.min-length");
+        clanMaxAlliances = getConfig().getInt("clan.max-alliances");
         clanMaxLength = getConfig().getInt("clan.max-length");
         clanMaxDescriptionLength = getConfig().getInt("clan.max-description-length");
         clanMinDescriptionLength = getConfig().getInt("clan.min-description-length");
@@ -380,7 +400,7 @@ public final class SettingsManager {
         KDRMultipliesPerKill = getConfig().getDouble("economy.money-per-kill-kdr-multipier");
         teleportBlocks = getConfig().getBoolean("settings.teleport-blocks");
         language = getConfig().getString("settings.language", "");
-        languagePerPlayer = getConfig().getBoolean("settings.language-per-player", false);
+        languagePerPlayer = getConfig().getBoolean("settings.user-language-selector", true);
         AutoGroupGroupName = getConfig().getBoolean("permissions.auto-group-groupname");
         tamableMobsSharing = getConfig().getBoolean("settings.tameable-mobs-sharing");
         allowReGroupCommand = getConfig().getBoolean("settings.allow-regroup-command");
@@ -422,6 +442,14 @@ public final class SettingsManager {
         getConfig().set("settings.enable-gui", enableGUI);
         save();
     }
+
+    /**
+     *
+     * @return if the tag can contain letters from other alphabets
+     */
+    public boolean isAcceptOtherAlphabetsLettersOnTag() {
+        return acceptOtherAlphabetsLettersOnTag;
+    }
     
     public Locale getLanguage() {
     	String[] split = language.split("_");
@@ -432,7 +460,16 @@ public final class SettingsManager {
 
     	return new Locale(language);
     }
-    
+
+    @NotNull
+    public RankingType getRankingType() {
+        try {
+            return RankingType.valueOf(rankingType);
+        } catch (IllegalArgumentException ex) {
+            return RankingType.DENSE;
+        }
+    }
+
     public boolean isLanguagePerPlayer() {
     	return languagePerPlayer;
     }
@@ -484,7 +521,11 @@ public final class SettingsManager {
 	public void setTasksCollectFeeMinute(int tasksCollectFeeMinute) {
 		this.tasksCollectFeeMinute = tasksCollectFeeMinute;
 	}
-	
+
+	public int getMinToVerify() {
+        return minToVerify;
+    }
+
 	/**
      * Returns the delay between kills
      * 
@@ -527,7 +568,7 @@ public final class SettingsManager {
      * @param typeId the type
      * @return whether the world is blacklisted
      */
-    public boolean isItemInList(int typeId) {
+    public boolean isItemInList(Material typeId) {
         return itemsList.contains(typeId);
     }
 
@@ -1017,6 +1058,14 @@ public final class SettingsManager {
     }
 
     /**
+     *
+     * @return the max number of alliances a clan can have
+     */
+    public int getClanMaxAlliances() {
+        return clanMaxAlliances;
+    }
+
+    /**
      * @return the clanMaxLength
      */
     public int getClanMaxLength() {
@@ -1487,7 +1536,7 @@ public final class SettingsManager {
         return dropOnHome;
     }
 
-    public List<Integer> getItemsList() {
+    public List<Material> getItemsList() {
         return Collections.unmodifiableList(itemsList);
     }
 
@@ -1607,6 +1656,11 @@ public final class SettingsManager {
         return true;
     }
 
+    /**
+     * Checks if server announcements are disabled
+     *
+     * @return if they are disabled
+     */
     public boolean isDisableMessages() {
         return disableMessages;
     }

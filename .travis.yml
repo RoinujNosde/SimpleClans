@@ -10,6 +10,9 @@ jdk: [openjdk8]
 # if one build failed, exit testing
 matrix:
   fast_finish: true
+  
+addons:
+  artifacts: true
 
 # Disable caching in order to get notified if there are some repo/dependency issues
 ## Cache maven dependencies

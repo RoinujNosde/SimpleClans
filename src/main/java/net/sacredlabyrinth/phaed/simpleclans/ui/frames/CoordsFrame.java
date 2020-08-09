@@ -47,21 +47,21 @@ public class CoordsFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			ClanPlayer cp = allMembers.get(i);
 			Location cpLoc = cp.toPlayer().getLocation();
 			int distance = (int) Math.ceil(cpLoc.toVector().distance(getViewer().getLocation().toVector()));
 
-			SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title", cp.getName()),
-					Arrays.asList(lang("gui.coords.player.lore.distance", distance),
-							lang("gui.coords.player.lore.coords", cpLoc.getBlockX(),
+			SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title",getViewer(), cp.getName()),
+					Arrays.asList(lang("gui.coords.player.lore.distance",getViewer(), distance),
+							lang("gui.coords.player.lore.coords",getViewer(), cpLoc.getBlockX(),
 									cpLoc.getBlockY(), cpLoc.getBlockZ()),
-							lang("gui.coords.player.lore.world", Objects.requireNonNull(cpLoc.getWorld()).getName())),
+							lang("gui.coords.player.lore.world",getViewer(), Objects.requireNonNull(cpLoc.getWorld()).getName())),
 					Material.SKULL_ITEM, (byte) 3, slot);
 			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
@@ -96,7 +96,7 @@ public class CoordsFrame extends SCFrame {
 	@Override
 	@NotNull
 	public String getTitle() {
-		return lang("gui.coords.title");
+		return lang("gui.coords.title",getViewer());
 	}
 
 	@Override

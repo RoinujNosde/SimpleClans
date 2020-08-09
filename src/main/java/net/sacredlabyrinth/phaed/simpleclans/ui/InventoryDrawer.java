@@ -96,7 +96,24 @@ public class InventoryDrawer {
                 continue;
             }
             checkLorePermission(frame, c);
+            processLineBreaks(c);
             inventory.setItem(c.getSlot(), c.getItem());
+        }
+    }
+
+    private static void processLineBreaks(SCComponent c) {
+        ItemMeta itemMeta = c.getItemMeta();
+        if (itemMeta != null) {
+            List<String> oldLore = itemMeta.getLore();
+            if (oldLore != null) {
+                ArrayList<String> newLore = new ArrayList<>();
+                for (String line : oldLore) {
+                    String[] split = line.split("\n");
+                    newLore.addAll(Arrays.asList(split));
+                }
+                itemMeta.setLore(newLore);
+                c.setItemMeta(itemMeta);
+            }
         }
     }
 
@@ -116,7 +133,7 @@ public class InventoryDrawer {
                 if (permission != null) {
                     if (!hasPermission(frame.getViewer(), permission)) {
                         lore.clear();
-                        lore.add(lang("gui.lore.no.permission"));
+                        lore.add(lang("gui.lore.no.permission", frame.getViewer()));
                         itemMeta.setLore(lore);
                         component.setItemMeta(itemMeta);
                     }

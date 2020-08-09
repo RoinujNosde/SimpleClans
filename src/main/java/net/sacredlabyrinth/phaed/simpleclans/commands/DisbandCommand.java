@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -27,52 +28,52 @@ public class DisbandCommand {
 
         if (arg.length == 0) {
             if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.disband")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
 
             ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
             if (cp == null) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
                 return;
             }
 
             Clan clan = cp.getClan();
 
             if (!clan.isLeader(player)) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.leader.permissions"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("no.leader.permissions",player));
                 return;
             }
             if (clan.getLeaders().size() != 1) {
                 plugin.getRequestManager().addDisbandRequest(cp, clan);
-                ChatBlock.sendMessage(player, ChatColor.AQUA + plugin.getLang("clan.disband.vote.has.been.requested.from.all.leaders"));
+                ChatBlock.sendMessage(player, ChatColor.AQUA + lang("clan.disband.vote.has.been.requested.from.all.leaders",player));
                 return;
             }
 
-            clan.clanAnnounce(player.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("clan.has.been.disbanded"), clan.getName()));
+            clan.clanAnnounce(player.getName(), ChatColor.AQUA + MessageFormat.format(lang("clan.has.been.disbanded",player), clan.getName()));
             clan.disband();
             return;
         }
 
         if (arg.length > 1) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("usage.0.disband"), plugin.getSettingsManager().getCommandClan()));
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.disband",player), plugin.getSettingsManager().getCommandClan()));
             return;
         }
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.disband")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
         }
 
         Clan clan = plugin.getClanManager().getClan(arg[0]);
 
         if (clan == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.clan.matched"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("no.clan.matched",player));
             return;
         }
 
-        plugin.getClanManager().serverAnnounce(ChatColor.AQUA + MessageFormat.format(plugin.getLang("clan.has.been.disbanded"), clan.getName()));
+        plugin.getClanManager().serverAnnounce(ChatColor.AQUA + MessageFormat.format(lang("clan.has.been.disbanded",player), clan.getName()));
         clan.disband();
     }
 }

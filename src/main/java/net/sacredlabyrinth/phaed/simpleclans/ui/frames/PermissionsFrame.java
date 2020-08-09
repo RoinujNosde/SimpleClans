@@ -32,24 +32,24 @@ public class PermissionsFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent add = new SCComponentImpl(lang("gui.permissions.add.title"), null, Material.WOOL,
+		SCComponent add = new SCComponentImpl(lang("gui.permissions.add.title",getViewer()), null, Material.WOOL,
 				4);
 		add.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new AddPermissionFrame(this, getViewer(), rank)));
 		add.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.add");
 		add(add);
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 
 			String permission = permissions[i];
 
-			SCComponent c = new SCComponentImpl(lang("gui.permissions.permission.title", permission),
-					Collections.singletonList(lang("gui.permissions.permission.lore")), Material.PAPER, slot);
+			SCComponent c = new SCComponentImpl(lang("gui.permissions.permission.title",getViewer(), permission),
+					Collections.singletonList(lang("gui.permissions.permission.lore",getViewer())), Material.PAPER, slot);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("rank permissions %s remove %s", rank.getName(), permission), true));
 			c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.permissions.remove");
@@ -76,7 +76,7 @@ public class PermissionsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.permissions.title", rank.getName());
+		return lang("gui.permissions.title",getViewer(), rank.getName());
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 /**
@@ -55,13 +56,13 @@ public class CollectFeeTask extends BukkitRunnable {
                         public void run() {
                             if (success) {
                                 ChatBlock.sendMessage(cp.toPlayer(), ChatColor.AQUA + 
-                                        MessageFormat.format(plugin.getLang("fee.collected"), memberFee));
+                                        MessageFormat.format(lang("fee.collected",cp.toPlayer()), memberFee));
                                 clan.setBalance(clan.getBalance() + memberFee);
                                 plugin.getStorageManager().updateClan(clan);
                             } else {
                             	clan.removePlayerFromClan(cp.getUniqueId());
                                 clan.addBb(ChatColor.AQUA + 
-                                        MessageFormat.format(plugin.getLang("bb.fee.player.kicked"), cp.getName()));
+                                        MessageFormat.format(lang("bb.fee.player.kicked"), cp.getName()));
                             }
                         }
                     }.runTask(plugin);   

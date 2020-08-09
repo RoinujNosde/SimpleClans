@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.DyeColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -16,6 +17,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.PlayerDetailsFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,11 +26,19 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class RosterFrame extends SCFrame {
 
 	private final Clan subject;
+	private final boolean staff;
 	private Paginator paginator;
 
 	public RosterFrame(Player viewer, SCFrame parent, Clan subject) {
 		super(parent, viewer);
 		this.subject = subject;
+		this.staff = false;
+	}
+
+	public RosterFrame(Player viewer, SCFrame parent, Clan subject, boolean staff) {
+		super(parent, viewer);
+		this.subject = subject;
+		this.staff = staff;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -44,20 +54,31 @@ public class RosterFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent invite = new SCComponentImpl(lang("gui.roster.invite.title"),
-				Collections.singletonList(lang("gui.roster.invite.lore")), Material.WOOL, DyeColor.LIME.getWoolData(), 4);
-		invite.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new InviteFrame(this, getViewer())));
-		invite.setPermission(ClickType.LEFT, RankPermission.INVITE);
-		add(invite);
+		if (!staff) {
+			SCComponent invite = new SCComponentImpl(lang("gui.roster.invite.title", getViewer()),
+					Collections.singletonList(lang("gui.roster.invite.lore", getViewer())), Material.WOOL, DyeColor.LIME.getWoolData(), 4);
+			invite.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new InviteFrame(this, getViewer())));
+			invite.setPermission(ClickType.LEFT, RankPermission.INVITE);
+			add(invite);
+		} else {
+			add(Components.getPanelComponent(4));
+		}
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
-			add(Components.getPlayerComponent(this, getViewer(), allMembers.get(i), slot, true));
+			ClanPlayer cp = allMembers.get(i);
+			SCComponent playerComponent = Components.getPlayerComponent(this, getViewer(), cp, slot,
+					true);
+			if (staff) {
+				playerComponent.setListener(ClickType.LEFT, () -> InventoryDrawer.open(
+						new PlayerDetailsFrame(getViewer(), this, Bukkit.getOfflinePlayer(cp.getUniqueId()))));
+			}
+			add(playerComponent);
 			slot++;
 		}
 	}
@@ -75,12 +96,12 @@ public class RosterFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.roster.title", Helper.stripColors(subject.getColorTag()));
+		return lang("gui.roster.title", getViewer(), Helper.stripColors(subject.getColorTag()));
 	}
 
 	@Override

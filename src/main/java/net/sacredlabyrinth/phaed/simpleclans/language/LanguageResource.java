@@ -1,20 +1,17 @@
 package net.sacredlabyrinth.phaed.simpleclans.language;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.*;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.logging.Level;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 
@@ -23,20 +20,25 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
  */
 public class LanguageResource {
 
-	private static ResourceLoader loader = new ResourceLoader(SimpleClans.getInstance().getDataFolder());
-	private Locale defaultLocale;
+	private static final ResourceLoader LOADER = new ResourceLoader(SimpleClans.getInstance().getDataFolder());
+	private final Locale defaultLocale;
+	private static List<Locale> availableLocales;
+	private static final Map<Locale, Integer> TRANSLATION_STATUS = new HashMap<>();
 
 	public LanguageResource() {
 		this.defaultLocale = SimpleClans.getInstance().getSettingsManager().getLanguage();
 	}
 
-	public String getLang(String key, Locale locale) {
+	public String getLang(@NotNull String key, @NotNull Locale locale) {
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale, loader,
-					new ResourceControl(defaultLocale));
+			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale, LOADER,
+					new ResourceControl(defaultLocale, false));
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
-
+		if (locale.equals(Locale.ENGLISH)) {
+			// English is the root messages.properties inside the jar
+			locale = Locale.ROOT;
+		}
 		try {
 			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale,
 					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
@@ -44,11 +46,85 @@ public class LanguageResource {
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
 
-		return "Missing language key: " + key;
+		return key;
+	}
+
+	public static int getTranslationStatus(@NotNull Locale locale) {
+		if (locale.equals(Locale.ENGLISH)) {
+			return 100;
+		}
+		Integer lines = TRANSLATION_STATUS.get(locale);
+		Integer englishLines = TRANSLATION_STATUS.get(Locale.ENGLISH);
+		if (lines == null || englishLines == null) {
+			return -1;
+		}
+
+		return Math.round((lines / englishLines.floatValue()) * 100);
 	}
 
 	public static void clearCache() {
-		ResourceBundle.clearCache(loader);
+		ResourceBundle.clearCache(LOADER);
+	}
+
+	public static List<Locale> getAvailableLocales() {
+		if (availableLocales != null) {
+			return availableLocales;
+		}
+		loadAvailableLocales();
+		return availableLocales;
+	}
+
+	private static void loadAvailableLocales() {
+		ArrayList<Locale> locales = new ArrayList<>();
+		try {
+			URI uri = LanguageResource.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+			FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri.toString()), Collections.emptyMap());
+			Files.walk(fileSystem.getPath("/")).forEach(p -> {
+				String name = p.getFileName() == null ? "" : p.getFileName().toString();
+				if (name.startsWith("messages") && name.endsWith(".properties")) {
+					Locale locale = getLocaleByFileName(name);
+					locales.add(locale);
+					loadTranslationStatus(locale, name);
+				}
+			});
+			fileSystem.close();
+		} catch (URISyntaxException | IOException e) {
+			SimpleClans.getInstance().getLogger().log(Level.WARNING, "An error occurred while getting the available languages", e);
+		}
+		locales.sort(Comparator.comparing(Locale::toLanguageTag));
+		availableLocales = locales;
+	}
+
+	private static @NotNull Locale getLocaleByFileName(@NotNull String name) {
+		Locale locale;
+		if (name.equalsIgnoreCase("messages.properties")) {
+			locale = Locale.ENGLISH;
+		} else {
+			String[] extensionSplit = name.split(".properties");
+			String[] split = extensionSplit[0].split("_");
+			if (split.length == 2) {
+				locale = new Locale(split[1]);
+			} else {
+				locale = new Locale(split[1], split[2]);
+			}
+		}
+		return locale;
+	}
+
+	private static void loadTranslationStatus(@NotNull Locale locale, @NotNull String fileName) {
+		InputStream stream = SimpleClans.getInstance().getClass().getResourceAsStream("/" + fileName);
+		if (stream == null) return;
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		int lineCount = 0;
+		try {
+			while (reader.readLine() != null) {
+				lineCount++;
+			}
+		} catch (IOException ex) {
+			lineCount = -1;
+		}
+		TRANSLATION_STATUS.put(locale, lineCount);
 	}
 
 	static class ResourceLoader extends ClassLoader {
@@ -75,11 +151,17 @@ public class LanguageResource {
 
 	static class ResourceControl extends ResourceBundle.Control {
 
-		private Locale defaultLocale;
+		private final Locale defaultLocale;
+		private final boolean defaultAsFallback;
 
-		public ResourceControl(Locale defaultLocale) {
+		public ResourceControl(@NotNull Locale defaultLocale) {
 			this.defaultLocale = defaultLocale;
+			this.defaultAsFallback = true;
+		}
 
+		public ResourceControl(@NotNull Locale defaultLocale, boolean defaultAsFallback) {
+			this.defaultLocale = defaultLocale;
+			this.defaultAsFallback = defaultAsFallback;
 		}
 
 		@Override
@@ -88,30 +170,36 @@ public class LanguageResource {
 				throw new NullPointerException();
 			}
 
-			return Arrays.asList("java.properties");
+			return Collections.singletonList("java.properties");
 		}
 
 		@Override
+		public List<Locale> getCandidateLocales(String baseName, Locale locale) {
+			List<Locale> candidateLocales = new ArrayList<>(super.getCandidateLocales(baseName, locale));
+			if (!defaultAsFallback && candidateLocales.size() != 1) {
+				candidateLocales.remove(Locale.ROOT);
+			}
+			return candidateLocales;
+		}
+
+		@Override
+		@Nullable
 		public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader,
-				boolean reload) throws IllegalAccessException, InstantiationException, IOException {
+				boolean reload) throws IOException {
 			String bundleName = toBundleName(baseName, locale);
 
-			ResourceBundle bundle = null;
+			ResourceBundle bundle;
 			if (format.equals("java.properties")) {
 
 				String resourceName = toResourceName(bundleName, "properties");
 
-				if (resourceName == null) {
-					return bundle;
-				}
 				URL url = loader.getResource(resourceName);
 				if (url == null) {
-					return bundle;
+					return null;
 				}
 
 				URLConnection connection = url.openConnection();
 				if (reload) {
-
 					connection.setUseCaches(false);
 				}
 				
@@ -127,7 +215,11 @@ public class LanguageResource {
 
 
 		@Override
+		@Nullable
 		public Locale getFallbackLocale(String baseName, Locale locale) {
+			if (!defaultAsFallback) {
+				return null;
+			}
 			if (!locale.equals(defaultLocale) && !locale.equals(Locale.ROOT)) {
 				return defaultLocale;
 			}

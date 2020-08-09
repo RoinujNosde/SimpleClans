@@ -1,10 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -39,31 +42,38 @@ public class Helper {
             SimpleClans.debug(el.toString());
         }
     }
-    
+
+    /**
+     * @deprecated use {@link KDRFormat}
+     */
+    @Deprecated
     public static String formatKDR(float kdr) {
     	DecimalFormat formatter = new DecimalFormat("#.#");
     	return formatter.format(kdr);
     }
-    
+
+    @NotNull
+    public static Locale forLanguageTag(@Nullable String languageTag) {
+        Locale defaultLanguage = SimpleClans.getInstance().getSettingsManager().getLanguage();
+        if (languageTag == null) {
+            return defaultLanguage;
+        }
+        return Locale.forLanguageTag(languageTag);
+    }
+
     /**
      * Gets the Player locale
      * 
      * @param player the player
      * @return the locale
      */
-    public static Locale getLocale(Player player) {
-        // TODO Implementar
-//      String lang = player.getLocale();
-
-        return SimpleClans.getInstance().getSettingsManager().getLanguage();
-
-//    	String[] split = lang.split("_");
-//
-//    	if (split.length == 2) {
-//    		return new Locale(split[0], split[1]);
-//    	}
-//
-//    	return new Locale(lang);
+    @Nullable
+    public static Locale getLocale(@NotNull Player player) {
+        ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
+        if (clanPlayer != null) {
+            return clanPlayer.getLocale();
+        }
+        return null;
     }
     
     /**
@@ -358,12 +368,17 @@ public class Helper {
      * @param hexValue
      * @return
      */
-    public static String toColor(String hexValue) {
+    @NotNull
+    public static String toColor(@Nullable String hexValue) {
         if (hexValue == null) {
             return "";
         }
 
-        return ChatColor.getByChar(hexValue).toString();
+        ChatColor color = ChatColor.getByChar(hexValue);
+        if (color == null) {
+            return "";
+        }
+        return color.toString();
     }
 
     /**
@@ -678,7 +693,7 @@ public class Helper {
      * @param str
      * @return
      */
-    public static String escapeQuotes(String str) {
+    public static String escapeQuotes(@Nullable String str) {
         if (str == null) {
             return "";
         }

@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -10,18 +11,24 @@ import org.bukkit.conversations.Prompt;
 public class MessagePromptImpl extends org.bukkit.conversations.MessagePrompt {
     
     private final String message;
+    private Prompt nextPrompt;
 
     public MessagePromptImpl(String message) {
         this.message = message;
     }
 
-    @Override
-    protected Prompt getNextPrompt(ConversationContext cc) {
-        return END_OF_CONVERSATION;
+    public MessagePromptImpl(String message, Prompt nextPrompt) {
+        this(message);
+        this.nextPrompt = nextPrompt;
     }
 
     @Override
-    public String getPromptText(ConversationContext cc) {
+    protected Prompt getNextPrompt(@NotNull ConversationContext cc) {
+        return nextPrompt != null ? nextPrompt : END_OF_CONVERSATION;
+    }
+
+    @Override
+    public @NotNull String getPromptText(@NotNull ConversationContext cc) {
         return message;
     }
     

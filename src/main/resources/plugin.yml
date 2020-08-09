@@ -3,6 +3,10 @@ main: net.sacredlabyrinth.phaed.simpleclans.SimpleClans
 version: '${project.version}'
 softdepend: [VanishNoPacket, Permissions, PermissionsBukkit, Vault, PermissionsEx, mChat, mChatSuite, PlaceholderAPI]
 api-version: '1.13'
+authors:
+  - Phaed
+  - RoinujNosde
+website: https://www.spigotmc.org/resources/simpleclans.71242/
 permissions:
   simpleclans.admin.permissions:
     description: Can grant clans permissions
@@ -52,7 +56,7 @@ permissions:
     description: Can view rivalries by clan
   simpleclans.other.kdr-exempt:
     description: The player's KDR is not affected on killing/dying
-    default: false
+    default: op
   simpleclans.member.profile:
     description: Can view his own clan's profile
   simpleclans.member.roster:
@@ -85,7 +89,7 @@ permissions:
     description: Can join clans
   simpleclans.member.home:
     description: Can tp to home base
-  simpleclans.member.resetkdr:
+  simpleclans.vip.resetkdr:
     description: Can reset his kdr
   simpleclans.leader.create:
     description: Can create simpleclans
@@ -107,6 +111,8 @@ permissions:
     description: Can set his clan's cape url
   simpleclans.leader.bb-clear:
     description: Can clear his clan's bb
+  simpleclans.leader.setbanner:
+    description: Can set his clan's banner
   simpleclans.member.cape-toggle:
     description: Can toggle his cape on/off
   simpleclans.member.kills:
@@ -121,6 +127,8 @@ permissions:
     description: Can keep items when teleporting home
   simpleclans.mod.place:
     description: Can manually place players in clans
+  simpleclans.mod.staffgui:
+    description: Can open the staff gui
   simpleclans.leader.fee:
     description: Can enable and set the clan fee
   simpleclans.leader.invite:
@@ -178,6 +186,7 @@ permissions:
       simpleclans.admin.all-seeing-eye: true
       simpleclans.admin.resetkdr: true
       simpleclans.admin.demote: true
+      simpleclans.admin.promote: true
   simpleclans.mod.*:
     description: Permissions for moderators
     default: op
@@ -192,6 +201,7 @@ permissions:
       simpleclans.mod.keep-items: true
       simpleclans.mod.nopvpinwar: true
       simpleclans.mod.place: true
+      simpleclans.mod.staffgui: true
   simpleclans.anyone.*:
     description: Permissions for anyone
     default: false
@@ -226,7 +236,6 @@ permissions:
       simpleclans.member.home: true
       simpleclans.member.kills: true
       simpleclans.member.bank: true
-      simpleclans.member.resetkdr: true
       simpleclans.member.fee-check: true
   simpleclans.leader.*:
     description: Permissions for those who can be clan leaders

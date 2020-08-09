@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import net.md_5.bungee.api.ChatColor;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -50,7 +51,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
             final double balance = clan.getBalance();
             if (balance >= upkeep) {
                 clan.setBalance(balance - upkeep);
-                clan.addBb(ChatColor.AQUA + MessageFormat.format(plugin.getLang("upkeep.collected"), upkeep), false);
+                clan.addBb(ChatColor.AQUA + MessageFormat.format(lang("upkeep.collected"), upkeep), false);
             } else {
                 clan.disband();
             }

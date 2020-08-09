@@ -1,0 +1,5 @@
+root: ./wiki
+
+structure:
+    readme: README.md 
+    summary: SUMMARY.md

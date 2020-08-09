@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.UUID;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 
 import org.bukkit.ChatColor;
@@ -28,22 +29,22 @@ public class ResetKDRCommand {
         if (arg == null || arg.length == 0) {
             if (!plugin.getSettingsManager().isAllowResetKdr()) {
                 ChatBlock.sendMessage(player, ChatColor.RED
-                        + MessageFormat.format(plugin.getLang("usage.resetkdr"),
+                        + MessageFormat.format(lang("usage.resetkdr",player),
                                 plugin.getSettingsManager().getCommandClan()));
                 return;
             }
-            if (!plugin.getPermissionsManager().has(player, "simpleclans.member.resetkdr")) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            if (!plugin.getPermissionsManager().has(player, "simpleclans.vip.resetkdr")) {
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
                 return;
             }
             ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
             if (cp == null) {
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("not.a.member.of.any.clan"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
                 return;
             }
             if (plugin.getClanManager().purchaseResetKdr(player)) {
                 plugin.getClanManager().resetKdr(cp);
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.have.reseted.your.kdr"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("you.have.reseted.your.kdr",player));
             }
             return;
         }
@@ -52,23 +53,23 @@ public class ResetKDRCommand {
                 for (ClanPlayer cp : SimpleClans.getInstance().getClanManager().getAllClanPlayers()) {
                     plugin.getClanManager().resetKdr(cp);
                 }
-                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.have.reseted.kdr.of.all.players"));
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("you.have.reseted.kdr.of.all.players",player));
             } else {                
             	UUID uuid = UUIDMigration.getForcedPlayerUUID(arg[0]);
                 if (uuid == null) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.player.matched"));
+                    ChatBlock.sendMessage(player, ChatColor.RED + lang("no.player.matched",player));
                     return;
                 }
                 ClanPlayer trcp = plugin.getClanManager().getClanPlayer(uuid);
                 if (trcp == null) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("no.player.data.found"));
+                    ChatBlock.sendMessage(player, ChatColor.RED + lang("no.player.data.found",player));
                     return;
                 }
                 plugin.getClanManager().resetKdr(trcp);
-                ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(plugin.getLang("you.have.reseted.0.kdr"), trcp.getName()));
+                ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.have.reseted.0.kdr",player), trcp.getName()));
             }
         } else {
-            ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
         }
     }
 }
