@@ -42,17 +42,17 @@ public class RanksFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 		
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent create = new SCComponentImpl(lang("gui.ranks.create.title"),
-				Collections.singletonList(lang("gui.ranks.create.lore")), Material.WHITE_WOOL, 4);
+		SCComponent create = new SCComponentImpl(lang("gui.ranks.create.title",getViewer()),
+				Collections.singletonList(lang("gui.ranks.create.lore",getViewer())), Material.WHITE_WOOL, 4);
 		create.setVerifiedOnly(ClickType.LEFT);
 		create.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "rank create", false));
 		create.setPermission(ClickType.LEFT, "simpleclans.leader.rank.create");
 		add(create);
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
@@ -60,27 +60,29 @@ public class RanksFrame extends SCFrame {
 			List<String> lore;
 			if (toEdit == null) {
 				lore = Arrays.asList(
-						lang("gui.ranks.rank.displayname.lore",
+						lang("gui.ranks.rank.displayname.lore",getViewer(),
 								Helper.parseColors(rank.getDisplayName())),
-						lang("gui.ranks.rank.edit.permissions.lore"),
-						lang("gui.ranks.rank.remove.lore"));
+						lang("gui.ranks.rank.edit.permissions.lore",getViewer()),
+						lang("gui.ranks.rank.remove.lore",getViewer()));
 			} else {
 				lore = Arrays.asList(
-						lang("gui.ranks.rank.displayname.lore",
+						lang("gui.ranks.rank.displayname.lore",getViewer(),
 								Helper.parseColors(rank.getDisplayName())),
-						lang("gui.ranks.rank.assign.lore", toEdit.getName()));
+						lang("gui.ranks.rank.assign.lore",getViewer(), toEdit.getName()));
 			}
-			SCComponent c = new SCComponentImpl(lang("gui.ranks.rank.title", rank.getName()), lore,
+			SCComponent c = new SCComponentImpl(lang("gui.ranks.rank.title",getViewer(), rank.getName()), lore,
 					Material.FILLED_MAP, slot);
 			if (toEdit != null) {
 				c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 						String.format("rank assign %s %s", toEdit.getName(), rank.getName()), true));
+				c.setConfirmationRequired(ClickType.LEFT);
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.assign");
 			} else {
 				c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PermissionsFrame(this, getViewer(), rank)));
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.list");
 				c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
 						String.format("rank delete %s", rank.getName()), true));
+				c.setConfirmationRequired(ClickType.RIGHT);
 				c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.delete");
 			}
 			c.setVerifiedOnly(ClickType.LEFT);
@@ -110,9 +112,9 @@ public class RanksFrame extends SCFrame {
 	public @NotNull String getTitle() {
 		if (toEdit != null) {
 			String rank = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(toEdit.getUniqueId()).getRankId();
-			return lang("gui.ranks.title.set.rank", rank);
+			return lang("gui.ranks.title.set.rank",getViewer(), rank);
 		}
-		return lang("gui.ranks.title");
+		return lang("gui.ranks.title",getViewer());
 	}
 
 	@Override

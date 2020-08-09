@@ -36,16 +36,16 @@ public class RivalsFrame extends SCFrame {
 			add(Components.getPanelComponent(slot));
 		}
 
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent add = new SCComponentImpl(lang("gui.rivals.add.title"), null, Material.RED_WOOL, 4);
+		SCComponent add = new SCComponentImpl(lang("gui.rivals.add.title",getViewer()), null, Material.RED_WOOL, 4);
 		add.setVerifiedOnly(ClickType.LEFT);
 		add.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new AddRivalFrame(this, getViewer(), subject)));
 		add.setPermission(ClickType.LEFT, RankPermission.RIVAL_ADD);
 		add(add);
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
@@ -54,10 +54,10 @@ public class RivalsFrame extends SCFrame {
 			if (clan == null)
 				continue;
 			SCComponent c = new SCComponentImpl(
-					lang("gui.clanlist.clan.title", clan.getColorTag(), clan.getName()),
-					Collections.singletonList(lang("gui.rivals.clan.lore")), Material.RED_BANNER, slot	);
+					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
+					Collections.singletonList(lang("gui.rivals.clan.lore",getViewer())), Material.RED_BANNER, slot	);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rival %s %s", lang("remove"), clan.getTag()), false));
+					String.format("rival %s %s", lang("remove", getViewer()), clan.getTag()), false));
 			c.setPermission(ClickType.RIGHT, RankPermission.RIVAL_REMOVE);
 			add(c);
 			slot++;
@@ -82,7 +82,7 @@ public class RivalsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.rivals.title");
+		return lang("gui.rivals.title",getViewer());
 	}
 
 	@Override

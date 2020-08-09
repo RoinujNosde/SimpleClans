@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,21 +43,22 @@ public class AddRivalFrame extends SCFrame {
 				continue;
 			add(Components.getPanelComponent(slot));
 		}
-		add(Components.getBackComponent(getParent(), 2));
+		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator));
+		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
+		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
 
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 
 			Clan notRival = notRivals.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.clanlist.clan.title", notRival.getColorTag(), notRival.getName()),
-					Arrays.asList(lang("gui.add.rival.clan.lore")), Material.RED_BANNER, slot);
+					lang("gui.clanlist.clan.title",getViewer(), notRival.getColorTag(), notRival.getName()),
+					Collections.singletonList(lang("gui.add.rival.clan.lore", getViewer())), Material.RED_BANNER, slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rival %s %s", lang("add"), notRival.getTag()), false));
+					String.format("rival %s %s", lang("add",getViewer()), notRival.getTag()), false));
+			c.setConfirmationRequired(ClickType.LEFT);
 			c.setPermission(ClickType.LEFT, RankPermission.RIVAL_ADD);
 			add(c);
 			slot++;
@@ -81,7 +83,7 @@ public class AddRivalFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.add.rival.title");
+		return lang("gui.add.rival.title",getViewer());
 	}
 
 	@Override

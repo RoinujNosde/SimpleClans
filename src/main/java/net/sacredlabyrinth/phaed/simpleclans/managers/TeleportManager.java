@@ -1,13 +1,16 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.TeleportState;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -15,6 +18,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 public final class TeleportManager {
     private SimpleClans plugin;
@@ -41,7 +45,7 @@ public final class TeleportManager {
 
 		if (secs > 0) {
 			ChatBlock.sendMessage(player, ChatColor.AQUA
-					+ MessageFormat.format(plugin.getLang("waiting.for.teleport.stand.still.for.0.seconds"), secs));
+					+ MessageFormat.format(lang("waiting.for.teleport.stand.still.for.0.seconds",player), secs));
 		}
     }
 
@@ -55,9 +59,9 @@ public final class TeleportManager {
                     continue;
                 }
 
-                List<Integer> itemsList = plugin.getSettingsManager().getItemsList();
+                List<Material> itemsList = plugin.getSettingsManager().getItemsList();
 
-                if (itemsList.contains(item.getType().getId())) {
+                if (itemsList.contains(item.getType())) {
                     player.getWorld().dropItemNaturally(player.getLocation(), item);
                     inv.remove(item);
                 }
@@ -72,9 +76,9 @@ public final class TeleportManager {
                         continue;
                     }
 
-                    List<Integer> itemsList = plugin.getSettingsManager().getItemsList();
+                    List<Material> itemsList = plugin.getSettingsManager().getItemsList();
 
-                    if (!itemsList.contains(item.getType().getId())) {
+                    if (!itemsList.contains(item.getType())) {
                         player.getWorld().dropItemNaturally(player.getLocation(), item);
                         inv.remove(item);
                     }
@@ -120,17 +124,23 @@ public final class TeleportManager {
 
                                 SimpleClans.debug("teleporting");
 
-                                player.teleport(new Location(loc.getWorld(), loc.getBlockX() + .5, loc.getBlockY(), loc.getBlockZ() + .5));
+                                Location location = new Location(loc.getWorld(), loc.getBlockX() + .5, loc.getBlockY(), loc.getBlockZ() + .5);
+                                PaperLib.teleportAsync(player, location, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+                                    if (result) {
+                                        ChatBlock.sendMessage(player, ChatColor.AQUA + lang("now.at.homebase", player, state.getClanName()));
+                                    } else {
+                                        plugin.getLogger().log(Level.WARNING, "An error occurred while teleporting a player");
+                                    }
+                                });
 
-                                ChatBlock.sendMessage(player, ChatColor.AQUA + MessageFormat.format(plugin.getLang("now.at.homebase"), state.getClanName()));
                             } else {
-                                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.moved.teleport.cancelled"));
+                                ChatBlock.sendMessage(player, ChatColor.RED + lang("you.moved.teleport.cancelled",player));
                             }
 
                             iter.remove();
                         } else {
                             if (!Helper.isSameBlock(player.getLocation(), state.getLocation())) {
-                                ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("you.moved.teleport.cancelled"));
+                                ChatBlock.sendMessage(player, ChatColor.RED + lang("you.moved.teleport.cancelled",player));
                                 iter.remove();
                             } else {
                                 ChatBlock.sendMessage(player, ChatColor.AQUA + "" + state.getCounter());

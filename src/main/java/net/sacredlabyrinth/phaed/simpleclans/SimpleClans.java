@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -131,9 +132,7 @@ public class SimpleClans extends JavaPlugin {
         getCommand(getSettingsManager().getCommandClan()).setTabCompleter(new PlayerNameTabCompleter());
         getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
         getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
-        if (!Locale.getDefault().getLanguage().equals("en")) {
-        	getLogger().info("Help us translate SimpleClans to your language! Access https://crowdin.com/project/simpleclans/");
-        }
+        getLogger().info("Help us translate SimpleClans to your language! Access https://crowdin.com/project/simpleclans/");
         
         startTasks();
         startMetrics();
@@ -144,7 +143,7 @@ public class SimpleClans extends JavaPlugin {
     private void hookIntoPAPI() {
 		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			getLogger().info("PlaceholderAPI found. Registering hook...");
-			new PlaceholdersManager(this);
+			new PlaceholdersManager(this).register();
 		}
     }
     
@@ -159,6 +158,7 @@ public class SimpleClans extends JavaPlugin {
     	metrics.addCustomChart(new Metrics.SingleLineChart("clan_players", () -> cm.getAllClanPlayers().size()));
     	metrics.addCustomChart(new Metrics.SimplePie("language", () -> sm.getLanguage().toString()));
     	metrics.addCustomChart(new Metrics.SimplePie("machine_language", () -> Locale.getDefault().toString()));
+    	metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.isLanguagePerPlayer() ? on : off));
     	metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.isUseMysql() ? "MySQL" : "SQLite"));
     	metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.isSavePeriodically() ? on : off));
     	metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.getSaveInterval())));
@@ -225,6 +225,7 @@ public class SimpleClans extends JavaPlugin {
     /**
      * @return the permissionsManager
      */
+    @NotNull
     public PermissionsManager getPermissionsManager() {
         return permissionsManager;
     }
@@ -234,33 +235,37 @@ public class SimpleClans extends JavaPlugin {
      * @return the lang
      */
     @Deprecated
-    public String getLang(String key) {
+    public String getLang(@NotNull String key) {
         return getLang(key, null);
     }
 
     @Deprecated
-    public String getLang(String key, Player player) {
-    	Locale locale;
-    	if (player == null) {
-    		locale = getSettingsManager().getLanguage();
-    	} else {
-    		locale = Helper.getLocale(player);
-    	}
-    	return ChatColor.translateAlternateColorCodes('&', languageResource.getLang(key, locale));
+    public String getLang(@NotNull String key, @Nullable Player player) {
+        return lang(key, player);
     }
 
     @NotNull
     public static String lang(@NotNull String key, @Nullable Player player, Object... arguments) {
-        Locale locale;
+        Locale locale = getInstance().getSettingsManager().getLanguage();
         if (player != null && instance.getSettingsManager().isLanguagePerPlayer()) {
-            locale = Helper.getLocale(player);
-        } else {
-            locale = getInstance().getSettingsManager().getLanguage();
+            Locale playerLocale = Helper.getLocale(player);
+            if (playerLocale != null) {
+                locale = playerLocale;
+            }
         }
 
         return MessageFormat.format(
                 ChatColor.translateAlternateColorCodes(
                         '&', languageResource.getLang(key, locale)), arguments);
+    }
+    
+    @NotNull
+    public static String lang(@NotNull String key, @NotNull CommandSender sender, Object... arguments) {
+    	if (sender instanceof Player) {
+            return lang(key, (Player) sender, arguments);
+        } else {
+            return lang(key, null, arguments);
+        }
     }
 
     @NotNull
