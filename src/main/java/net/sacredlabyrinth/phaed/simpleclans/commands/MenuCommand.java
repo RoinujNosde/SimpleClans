@@ -223,6 +223,9 @@ public class MenuCommand {
         if (isLeader && plugin.getPermissionsManager().has(player, "simpleclans.leader.demote")) {
             chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(lang("0.demote.leader.1.demote.a.leader.to.member",player), clanCommand, ChatColor.WHITE));
         }
+        if (isVerified && plugin.getPermissionsManager().has(player, RankPermission.SETBANNER, false)) {
+            chatBlock.addRow(ChatColor.AQUA + "  " + lang("0.setbanner.1.set.clan.banner", player, clanCommand, ChatColor.WHITE));
+        }
         if (isLeader && plugin.getPermissionsManager().has(player, "simpleclans.leader.ff")) {
             chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(lang("0.clanff.allow.block.1.toggle.clan.s.friendly.fire",player), clanCommand, ChatColor.WHITE));
         }
