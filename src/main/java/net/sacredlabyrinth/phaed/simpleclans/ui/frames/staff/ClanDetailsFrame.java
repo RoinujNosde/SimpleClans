@@ -59,7 +59,7 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addVerify() {
 		boolean verified = clan.isVerified();
 
-		Material material = verified ? Material.REDSTONE_TORCH : Material.LEVER;
+		Material material = verified ? Material.REDSTONE_TORCH_ON : Material.REDSTONE_TORCH_OFF;
 		String title = verified ? lang("gui.clandetails.verified.title", getViewer())
 				: lang("gui.clandetails.not.verified.title", getViewer());
 		List<String> lore = verified ? null : new ArrayList<>();
@@ -82,7 +82,7 @@ public class ClanDetailsFrame extends SCFrame {
 		lore.add(lang("gui.staffclandetails.home.lore.set", getViewer()));
 
 		SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title", getViewer()), lore,
-				Material.MAGENTA_BED, 30);
+				Material.BED, 30);
 		home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 				String.format("home tp %s", clan.getTag()), false));
 		home.setPermission(ClickType.LEFT, "simpleclans.mod.hometp");
@@ -95,12 +95,12 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addRoster() {
 		SCComponent roster = new SCComponentImpl(lang("gui.clandetails.roster.title", getViewer()),
-				Collections.singletonList(lang("gui.staffclandetails.roster.lore", getViewer())), Material.PLAYER_HEAD, 28);
+				Collections.singletonList(lang("gui.staffclandetails.roster.lore", getViewer())), Material.SKULL_ITEM, 28);
 		if (roster.getItemMeta() != null) {
 			SkullMeta itemMeta = (SkullMeta) roster.getItemMeta();
 			List<ClanPlayer> members = clan.getMembers();
-			itemMeta.setOwningPlayer(Bukkit.getOfflinePlayer(
-					members.get((int) (Math.random() * members.size())).getUniqueId()));
+			itemMeta.setOwner(Bukkit.getOfflinePlayer(
+					members.get((int) (Math.random() * members.size())).getUniqueId()).getName());
 			roster.setItemMeta(itemMeta);
 		}
 		roster.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new RosterFrame(getViewer(), this, clan, true)));

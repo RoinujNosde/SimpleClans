@@ -46,7 +46,7 @@ public class PlayerDetailsFrame extends SCFrame {
 		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click", getViewer()),
 						lang("gui.playerdetails.demote.lore.right.click", getViewer())),
-				Material.GUNPOWDER, 28);
+				Material.SULPHUR, 28);
 		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, true));

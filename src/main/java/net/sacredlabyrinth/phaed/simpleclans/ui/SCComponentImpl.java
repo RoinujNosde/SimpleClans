@@ -39,7 +39,6 @@ public class SCComponentImpl extends SCComponent {
 	}
 
 	public SCComponentImpl(String displayName, List<String> lore, Material material, byte data, int slot) {
-		// TODO Testar
 		item = new ItemStack(material, 1, data);
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta != null) {

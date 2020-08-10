@@ -4,11 +4,17 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.ClanListFrame.Type;
@@ -45,7 +51,11 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addClans() {
-        SCComponent clanList = new SCComponentImpl.Builder(Material.PURPLE_BANNER)
+        ItemStack item = new ItemStack(Material.BANNER);
+        BannerMeta bannerMeta = (BannerMeta) Objects.requireNonNull(item.getItemMeta());
+        bannerMeta.setBaseColor(DyeColor.PURPLE);
+        item.setItemMeta(bannerMeta);
+        SCComponent clanList = new SCComponentImpl.Builder(item)
                 .withDisplayName(lang("gui.main.clan.list.title", getViewer())).withSlot(9)
                 .withLoreLine(lang("gui.staff.clan.list.lore.left.click", getViewer()))
                 .withLoreLine(lang("gui.staff.clan.list.lore.right.click", getViewer())).build();
@@ -57,7 +67,11 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addPlayers() {
-        SCComponent players = new SCComponentImpl.Builder(Material.WHITE_BANNER)
+        ItemStack item = new ItemStack(Material.BANNER);
+        BannerMeta bannerMeta = (BannerMeta) Objects.requireNonNull(item.getItemMeta());
+        bannerMeta.setBaseColor(DyeColor.WHITE);
+        item.setItemMeta(bannerMeta);
+        SCComponent players = new SCComponentImpl.Builder(item)
                 .withDisplayName(lang("gui.staff.player.list.title", getViewer())).withSlot(10)
                 .withLoreLine(lang("gui.staff.player.list.lore.left.click", getViewer()))
                 .withLoreLine(lang("gui.staff.player.list.lore.right.click", getViewer())).build();
@@ -67,7 +81,7 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addReload() {
-        SCComponent reload = new SCComponentImpl.Builder(Material.SPAWNER)
+        SCComponent reload = new SCComponentImpl.Builder(Material.MOB_SPAWNER)
                 .withDisplayName(lang("gui.staff.reload.title", getViewer())).withSlot(17)
                 .withLoreLine(lang("gui.staff.reload.lore", getViewer())).build();
         reload.setPermission(ClickType.LEFT, "simpleclans.admin.reload");
