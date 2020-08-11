@@ -9,7 +9,7 @@ description: null
 * `enable-auto-groups` - 
 * `auto-group-groupname`- 
 
-### Exemple
+#### Exemple
 
 ```text
 settings:

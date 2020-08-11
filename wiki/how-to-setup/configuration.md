@@ -87,7 +87,7 @@ settings:
 
 ## Tags Format
 
-### Example
+#### Example
 
 * `default-color` - 
 * `max-length` - 
@@ -129,7 +129,7 @@ tag:
 * `clan_chat` - 
 * `force-priority` - 
 
-### Example
+#### Example
 
 ```text
 commands:
@@ -150,7 +150,7 @@ commands:
 * `enable-kill-delay` - 
 * `delay-between-kills` - 
 
-### Example
+#### Example
 
 ```text
 kdr-grinding-prevention:
@@ -171,7 +171,7 @@ kdr-grinding-prevention:
 * `desc` - 
 * `default` - 
 
-### Example
+#### Example
 
 ```text
 list:
@@ -214,7 +214,7 @@ list:
 * `multiply-upkeep-by-clan-size` - 
 * `charge-upkeep-only-if-member-fee-enabled` - 
 
-### Example
+#### Example
 
 ```text
 economy:
@@ -253,7 +253,7 @@ economy:
 * `neutral` - 
 * `deny-same-ip-kills` - 
 
-### Example
+#### Example
 
 ```text
 kill-weights:
@@ -280,7 +280,7 @@ kill-weights:
 * `min-length` - 
 * `min-size-to-set-ally` - 
 
-### Example
+#### Example
 
 ```text
 clan:
@@ -312,7 +312,7 @@ clan:
   * `hour` - 
   * `minute` - 
 
-### Example
+#### Example
 
 ```text
 tasks:
@@ -338,7 +338,7 @@ tasks:
 * `separator` - 
 * `size` - 
 
-### Example
+#### Example
 
 ```text
 page:
@@ -363,7 +363,7 @@ page:
 * `trusted-color` - 
 * `member-color` - 
 
-### Example
+#### Example
 
 ```text
 clanchat:
@@ -383,7 +383,7 @@ clanchat:
 * `ask-frequency-secs` - 
 * `max-asks-per-request` - 
 
-### Example
+#### Example
 
 ```text
 request:
@@ -400,7 +400,7 @@ request:
 * `size` - 
 * `login-size` - 
 
-### Example
+#### Example
 
 ```text
 bb:
@@ -420,7 +420,7 @@ bb:
 * `trusted-color` - 
 * `member-color` - 
 
-### Example
+#### Example
 
 ```text
 allychat:
@@ -438,7 +438,7 @@ allychat:
 * `inactive-clan-days` - 
 * `unverified-clan-days` - 
 
-### Example
+#### Example
 
 ```text
 purge:
@@ -456,7 +456,7 @@ purge:
 * `password` - 
 * `database` - 
 
-### Example
+#### Example
 
 ```text
 mysql:
@@ -472,7 +472,7 @@ mysql:
 
 * `auto-group-groupname` - 
 
-### Example
+#### Example
 
 ```text
 permissions:
@@ -488,7 +488,7 @@ permissions:
 * `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true
 * `use-bungeecord` - 
 
-### Example
+#### Example
 
 ```text
 performance:
@@ -502,7 +502,7 @@ performance:
 
 * `safe-civilians` - Civilians are safe from PvP, even civilian vs civilian combat is disabled
 
-### Example
+#### Example
 
 ```text
 safe-civilians: false

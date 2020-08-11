@@ -5,9 +5,9 @@ name: Java CI Dev Build
 
 on:
   push:
-    branches: [dev]
+    branches: [ dev ]
   pull_request:
-    branches: [dev]
+    branches: [ dev ]
 
 jobs:
   build:

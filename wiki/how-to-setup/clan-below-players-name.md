@@ -14,7 +14,6 @@ description: null
 1. Open TAB's config and edit the Groups section adding `%simpleclans_clan_color_tag%` to `belowname`:
 
    For example:
-
    ```text
    _OTHER_:
     tabprefix: "%vault-prefix% "
