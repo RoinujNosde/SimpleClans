@@ -25,7 +25,7 @@ final upkeep   = 200.0
 
 #### Exemple
 
-```text
+```yaml
 economy:
     upkeep: 200.0
     upkeep-enabled: false

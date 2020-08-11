@@ -9,9 +9,9 @@ description: null
 * `enable-auto-groups` - 
 * `auto-group-groupname`- 
 
-#### Exemple
+### Exemple
 
-```text
+```yaml
 settings:
     enable-auto-groups: false
 permissions:

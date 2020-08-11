@@ -8,43 +8,43 @@ description: null
 
 ## General Settings
 
-* `enable-gui` - Enables the GUI
-* `disable-messages` - This will disable broadcasts from the plugin such as "Clan created", "Clan disbanded", etc
-* `tameable-mobs-sharing` - 
-* `teleport-blocks` - 
-* `teleport-home-on-spawn` - Players will be teleported to their clan's home when they respawn
-* `drop-items-on-clan-home` - 
-* `keep-items-on-clan-home` - 
-* `item-list` - 
-* `show-debug-info` - 
-* `mchat-integration` - 
-* `enable-auto-groups` - 
-* `chat-compatibility-mode` - 
-* `rival-limit-percent` - 
-* `use-colorcode-from-prefix-for-name` - 
-* `display-chat-tags` - 
-* `unrivable-clans` - 
-* `show-unverified-on-list` - 
-* `blacklisted-worlds` - 
-* `banned-players` - 
-* `disallowed-tags` - 
-* `language` - 
-* `language-per-player` - 
-* `disallowed-tag-colors` - 
-* `server-name` - 
-* `new-clan-verification-required` - 
-* `allow-regroup-command` - 
-* `allow-reset-kdr` - 
-* `rejoin-cooldown` - 
-* `rejoin-cooldown-enabled` - 
-* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\)
+* `enable-gui` - Enables the GUI. 
+* `disable-messages` - This will disable broadcasts from the plugin such as "Clan created", "Clan disbanded", etc. 
+* `tameable-mobs-sharing` -  
+* `teleport-blocks` -  
+* `teleport-home-on-spawn` - Players will be teleported to their clan's home when they respawn. 
+* `drop-items-on-clan-home` -  
+* `keep-items-on-clan-home` -  
+* `item-list` -  
+* `show-debug-info` -  
+* `mchat-integration` -  
+* `enable-auto-groups` -  
+* `chat-compatibility-mode` -  
+* `rival-limit-percent` -  
+* `use-colorcode-from-prefix-for-name` -  
+* `display-chat-tags` -  
+* `unrivable-clans` -  
+* `show-unverified-on-list` -  
+* `blacklisted-worlds` -  
+* `banned-players` -  
+* `disallowed-tags` -  
+* `language` -  
+* `language-per-player` -  
+* `disallowed-tag-colors` -  
+* `server-name` -  
+* `new-clan-verification-required` -  
+* `allow-regroup-command` -  
+* `allow-reset-kdr` -  
+* `rejoin-cooldown` -  
+* `rejoin-cooldown-enabled` -  
+* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\) 
 * `ranking-type` - Valid options: ORDINAL and DENSE
   * `DENSE`: if players have the same KDR, they will have the same rank position. Ex.: 12234
   * `ORDINAL`: Every player will have a different rank position. Ex.: 12345
 
-### Example
+#### Example
 
-```text
+```yaml
 settings:
     enable-gui: true
     disable-messages: false
@@ -102,7 +102,7 @@ settings:
   * `leader-color` - 
   * `char` - 
 
-```text
+```yaml
 tag:
     default-color: '8'
     max-length: 5
@@ -131,7 +131,7 @@ tag:
 
 #### Example
 
-```text
+```yaml
 commands:
     more: more
     ally: ally
@@ -152,7 +152,7 @@ commands:
 
 #### Example
 
-```text
+```yaml
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10
@@ -173,7 +173,7 @@ kdr-grinding-prevention:
 
 #### Example
 
-```text
+```yaml
 list:
     size: size
     kdr: kdr
@@ -216,7 +216,7 @@ list:
 
 #### Example
 
-```text
+```yaml
 economy:
     creation-price: 100.0
     purchase-clan-create: false
@@ -255,7 +255,7 @@ economy:
 
 #### Example
 
-```text
+```yaml
 kill-weights:
     rival: 2.0
     civilian: 0.0
@@ -282,7 +282,7 @@ kill-weights:
 
 #### Example
 
-```text
+```yaml
 clan:
     homebase-teleport-wait-secs: 10
     homebase-can-be-set-only-once: true
@@ -314,7 +314,7 @@ clan:
 
 #### Example
 
-```text
+```yaml
 tasks:
     collect-upkeep:
         hour: 1
@@ -340,7 +340,7 @@ tasks:
 
 #### Example
 
-```text
+```yaml
 page:
     untrusted-color: '8'
     clan-name-color: b
@@ -365,7 +365,7 @@ page:
 
 #### Example
 
-```text
+```yaml
 clanchat:
     enable: true
     tag-based-clan-chat: false
@@ -385,7 +385,7 @@ clanchat:
 
 #### Example
 
-```text
+```yaml
 request:
     message-color: b
     ask-frequency-secs: 60
@@ -402,7 +402,7 @@ request:
 
 #### Example
 
-```text
+```yaml
 bb:
     color: e
     accent-color: '8'
@@ -422,7 +422,7 @@ bb:
 
 #### Example
 
-```text
+```yaml
 allychat:
     enable: true
     format: "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"
@@ -440,7 +440,7 @@ allychat:
 
 #### Example
 
-```text
+```yaml
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7
@@ -458,7 +458,7 @@ purge:
 
 #### Example
 
-```text
+```yaml
 mysql:
     username: ''
     host: localhost
@@ -474,7 +474,7 @@ mysql:
 
 #### Example
 
-```text
+```yaml
 permissions:
   auto-group-groupname: false
   YourClanNameHere:
@@ -483,14 +483,14 @@ permissions:
 
 ## Performance
 
-* `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true
-* `save-interval` - The interval **in minutes** in which changes are written to the database
-* `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true
+* `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true. 
+* `save-interval` - The interval **in minutes** in which changes are written to the database. 
+* `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true. 
 * `use-bungeecord` - 
 
 #### Example
 
-```text
+```yaml
 performance:
   save-periodically: true
   save-interval: 10
@@ -504,7 +504,7 @@ performance:
 
 #### Example
 
-```text
+```yaml
 safe-civilians: false
 ```
 

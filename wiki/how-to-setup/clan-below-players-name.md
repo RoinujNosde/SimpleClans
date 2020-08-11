@@ -13,21 +13,26 @@ description: null
 
 1. Open TAB's config and edit the Groups section adding `%simpleclans_clan_color_tag%` to `belowname`:
 
-   For example:
-   ```text
-   _OTHER_:
-    tabprefix: "%vault-prefix% "
-    tagprefix: "%vault-prefix% "
-    tabsuffix: "%afk%"
-    tagsuffix: "%afk%"
-    customtabname: "%essentialsnick%"
-    customtagname: "%essentialsnick%"
-    belowname: "&l&b[ %simpleclans_clan_color_tag% &l&b]"
-   ```
+{% code title="Example:" %}
+```yaml
+_OTHER_:
+ tabprefix: "%vault-prefix% "
+ tagprefix: "%vault-prefix% "
+ tabsuffix: "%afk%"
+ tagsuffix: "%afk%"
+ customtabname: "%essentialsnick%"
+ customtagname: "%essentialsnick%"
+ belowname: "&l&b[ %simpleclans_clan_color_tag% &l&b]"
+```
+{% endcode %}
 
 2. Find the option `belowname` or `classic-vanilla-belowname` and disable it.
+
 3. Find the option `unlimited-nametag-prefix-suffix-mode` and enable it.
+
 4. Restart \(or reload\) and enjoy!
 
 ## Screenshot
+
+![](../.gitbook/assets/clans-below-name.png)
 

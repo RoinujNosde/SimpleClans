@@ -13,20 +13,22 @@ description: null
 
 1. Open PlayerListPlus config and edit the formats adding `%simpleclans_clan_color_tag%`:
 
-   For example:
-
-   ```text
-   slot-items:
-   #   This slot items will shows all players
-    PLAYERS:
-        format: "%simpleclans_clan_color_tag%&c.$displayname"
-        type: PLAYER_LIST
-        hidevanished: true
-        ping: true
-        skin: true
-   ```
+{% code title="Example:" %}
+```yaml
+slot-items:
+#   This slot items will shows all players
+ PLAYERS:
+     format: "%simpleclans_clan_color_tag%&c.$displayname"
+     type: PLAYER_LIST
+     hidevanished: true
+     ping: true
+     skin: true
+```
+{% endcode %}
 
 2. Restart \(or reload\) and enjoy!
 
 ## Screenshot
+
+![](../.gitbook/assets/clans-tablist.png)
 
