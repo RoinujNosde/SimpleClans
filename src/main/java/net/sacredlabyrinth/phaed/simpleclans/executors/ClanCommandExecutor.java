@@ -23,24 +23,19 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
  */
 public final class ClanCommandExecutor implements CommandExecutor {
     private final SimpleClans plugin;
-    private final CreateCommand createCommand;
     private final ListCommand listCommand;
     private final ProfileCommand profileCommand;
     private final RosterCommand rosterCommand;
     private final LookupCommand lookupCommand;
     private final LeaderboardCommand leaderboardCommand;
-    private final AlliancesCommand alliancesCommand;
     private final RivalriesCommand rivalriesCommand;
     private final VitalsCommand vitalsCommand;
-    private final CoordsCommand coordsCommand;
     private final StatsCommand statsCommand;
     private final AllyCommand allyCommand;
     private final RivalCommand rivalCommand;
-    private final BbCommand bbCommand;
     private final ModtagCommand modtagCommand;
     private final ToggleCommand toggleCommand;
     private final InviteCommand inviteCommand;
-    private final KickCommand kickCommand;
     private final TrustCommand trustCommand;
     private final UntrustCommand untrustCommand;
     private final PromoteCommand promoteCommand;
@@ -62,7 +57,6 @@ public final class ClanCommandExecutor implements CommandExecutor {
     private final MostKilledCommand mostKilledCommand;
     private final SetRankCommand setRankCommand;
     private final BankCommand bankCommand;
-    private final PlaceCommand placeCommand;
     private final ResetKDRCommand resetKDRCommand;
     private final PurgeCommand purgeCommand;
     private final DescriptionCommand descriptionCommand;
@@ -74,24 +68,19 @@ public final class ClanCommandExecutor implements CommandExecutor {
     public ClanCommandExecutor() {
         plugin = SimpleClans.getInstance();
         menuCommand = new MenuCommand();
-        createCommand = new CreateCommand();
         listCommand = new ListCommand();
         profileCommand = new ProfileCommand();
         rosterCommand = new RosterCommand();
         lookupCommand = new LookupCommand();
         leaderboardCommand = new LeaderboardCommand();
-        alliancesCommand = new AlliancesCommand();
         rivalriesCommand = new RivalriesCommand();
         vitalsCommand = new VitalsCommand();
-        coordsCommand = new CoordsCommand();
         statsCommand = new StatsCommand();
         allyCommand = new AllyCommand();
         rivalCommand = new RivalCommand();
-        bbCommand = new BbCommand();
         modtagCommand = new ModtagCommand();
         toggleCommand = new ToggleCommand();
         inviteCommand = new InviteCommand();
-        kickCommand = new KickCommand();
         trustCommand = new TrustCommand();
         untrustCommand = new UntrustCommand();
         promoteCommand = new PromoteCommand();
@@ -111,7 +100,6 @@ public final class ClanCommandExecutor implements CommandExecutor {
         mostKilledCommand = new MostKilledCommand();
         setRankCommand = new SetRankCommand();
         bankCommand = new BankCommand();
-        placeCommand = new PlaceCommand();
         resetKDRCommand = new ResetKDRCommand();
         feeCommand = new FeeCommand();
         purgeCommand = new PurgeCommand();
@@ -144,9 +132,7 @@ public final class ClanCommandExecutor implements CommandExecutor {
                     String subcommand = args[0];
                     String[] subargs = Helper.removeFirst(args);
                     
-                    if (subcommand.equalsIgnoreCase(lang("create.command",player)) || subcommand.equalsIgnoreCase("create")) {
-                        createCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("list.command",player)) || subcommand.equalsIgnoreCase("list")) {
+                    if (subcommand.equalsIgnoreCase(lang("list.command",player)) || subcommand.equalsIgnoreCase("list")) {
                         listCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("bank.command",player)) || subcommand.equalsIgnoreCase("bank")) {
                         bankCommand.execute(player, subargs);
@@ -160,30 +146,22 @@ public final class ClanCommandExecutor implements CommandExecutor {
                         homeCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("leaderboard.command",player)) || subcommand.equalsIgnoreCase("leaderboard")) {
                         leaderboardCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("alliances.command",player)) || subcommand.equalsIgnoreCase("alliances")) {
-                        alliancesCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("rivalries.command",player)) || subcommand.equalsIgnoreCase("rivalries")) {
                         rivalriesCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("vitals.command",player)) || subcommand.equalsIgnoreCase("vitals")) {
                         vitalsCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("coords.command",player)) || subcommand.equalsIgnoreCase("coords")) {
-                        coordsCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("stats.command",player)) || subcommand.equalsIgnoreCase("stats")) {
                         statsCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("ally.command",player)) || subcommand.equalsIgnoreCase("ally")) {
                         allyCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("rival.command",player)) || subcommand.equalsIgnoreCase("rival")) {
                         rivalCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("bb.command",player)) || subcommand.equalsIgnoreCase("bb")) {
-                        bbCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("modtag.command",player)) || subcommand.equalsIgnoreCase("modtag")) {
                         modtagCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("toggle.command",player)) || subcommand.equalsIgnoreCase("toggle")) {
                         toggleCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("invite.command",player)) || subcommand.equalsIgnoreCase("invite")) {
                         inviteCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("kick.command",player)) || subcommand.equalsIgnoreCase("kick")) {
-                        kickCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("trust.command",player)) || subcommand.equalsIgnoreCase("trust")) {
                         trustCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("untrust.command",player)) || subcommand.equalsIgnoreCase("unstrust")) {
@@ -218,8 +196,6 @@ public final class ClanCommandExecutor implements CommandExecutor {
                         mostKilledCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("setrank.command",player)) || subcommand.equalsIgnoreCase("setrank")) {
                         setRankCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("place.command",player)) || subcommand.equalsIgnoreCase("place")) {
-                        placeCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("resetkdr.command",player)) || subcommand.equalsIgnoreCase("resetkdr")) {
                         resetKDRCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("fee.command",player)) || subcommand.equalsIgnoreCase("fee")) {
@@ -249,8 +225,6 @@ public final class ClanCommandExecutor implements CommandExecutor {
                         verifyCommand.execute(sender, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("reload.command", sender)) || subcommand.equalsIgnoreCase("reload")) {
                         reloadCommand.execute(sender, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("place.command", sender)) || subcommand.equalsIgnoreCase("place")) {
-                        placeCommand.execute(sender, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("globalff.command", sender)) || subcommand.equalsIgnoreCase("globalff")) {
                         globalffCommand.execute(sender, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("purge.command", sender)) || subcommand.equalsIgnoreCase("purge")) {

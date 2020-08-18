@@ -91,7 +91,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof Clan)) {
             return false;
         }

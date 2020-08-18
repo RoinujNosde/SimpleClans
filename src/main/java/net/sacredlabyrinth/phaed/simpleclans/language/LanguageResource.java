@@ -45,6 +45,20 @@ public class LanguageResource {
 
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
+		// TODO Refactor
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-core", locale,
+					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-minecraft", locale,
+					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
 
 		return key;
 	}
