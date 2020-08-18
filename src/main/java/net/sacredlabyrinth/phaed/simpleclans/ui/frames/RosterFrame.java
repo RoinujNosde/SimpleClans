@@ -26,26 +26,25 @@ public class RosterFrame extends SCFrame {
 
 	private final Clan subject;
 	private final boolean staff;
-	private Paginator paginator;
+	private final List<ClanPlayer> allMembers;
+	private final Paginator paginator;
 
 	public RosterFrame(Player viewer, SCFrame parent, Clan subject) {
-		super(parent, viewer);
-		this.subject = subject;
-		this.staff = false;
+		this(viewer, parent, subject, false);
 	}
 
 	public RosterFrame(Player viewer, SCFrame parent, Clan subject, boolean staff) {
 		super(parent, viewer);
 		this.subject = subject;
 		this.staff = staff;
+
+		allMembers = subject.getLeaders();
+		allMembers.addAll(subject.getNonLeaders());
+		paginator = new Paginator(getSize() - 9, allMembers.size());
 	}
 
 	@Override
 	public void createComponents() {
-		List<ClanPlayer> allMembers = subject.getLeaders();
-		allMembers.addAll(subject.getNonLeaders());
-		paginator = new Paginator(getSize() - 9, allMembers.size());
-
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 2 || slot == 4 || slot == 6 || slot == 7)
 				continue;

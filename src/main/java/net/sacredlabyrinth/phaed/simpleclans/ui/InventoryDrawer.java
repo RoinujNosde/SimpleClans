@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.commands.MenuCommand;
+import net.sacredlabyrinth.phaed.simpleclans.events.FrameOpenEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -42,6 +44,11 @@ public class InventoryDrawer {
                 return;
             }
             Bukkit.getScheduler().runTask(plugin, () -> {
+                FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return;
+                }
                 frame.getViewer().openInventory(inventory);
                 InventoryController.register(frame);
                 OPENING.remove(uuid);

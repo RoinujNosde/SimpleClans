@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import java.util.*;
 
+import net.sacredlabyrinth.phaed.simpleclans.events.ComponentClickEvent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.ConfirmationFrame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
@@ -93,6 +94,12 @@ public class InventoryController implements Listener {
 		Bukkit.getScheduler().runTask(SimpleClans.getInstance(), () -> {
 			ItemStack currentItem = event.getCurrentItem();
 			if (currentItem == null) return;
+
+			ComponentClickEvent componentClickEvent = new ComponentClickEvent(((Player) entity), frame, component);
+			Bukkit.getPluginManager().callEvent(componentClickEvent);
+			if (componentClickEvent.isCancelled()) {
+				return;
+			}
 
 			ItemMeta itemMeta = currentItem.getItemMeta();
 			Objects.requireNonNull(itemMeta).setLore(Collections.singletonList(lang("gui.loading", (Player) entity)));

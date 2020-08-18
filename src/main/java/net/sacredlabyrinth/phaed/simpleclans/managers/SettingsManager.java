@@ -198,6 +198,7 @@ public final class SettingsManager {
 	private String language;
 	private boolean languagePerPlayer;
 	private boolean savePeriodically;
+	private boolean cachePlayerHeads;
 	private int saveInterval;
 	private String rankingType;
 
@@ -260,7 +261,7 @@ public final class SettingsManager {
         rejoinCooldown = getConfig().getInt("settings.rejoin-cooldown");
         rejoinCooldownEnabled = getConfig().getBoolean("settings.rejoin-cooldown-enabled");
         acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
-        minToVerify = getConfig().getInt("settings.min-to-verify", 1);
+        minToVerify = getConfig().getInt("clan.min-to-verify", 1);
         rankingType = getConfig().getString("settings.ranking-type", "DENSE");
         listActive = getConfig().getString("list.active", "active");
         listKdr = getConfig().getString("list.kdr", "kdr");
@@ -408,6 +409,7 @@ public final class SettingsManager {
         saveInterval = getConfig().getInt("performance.save-interval");
         useThreads = getConfig().getBoolean("performance.use-threads");
         useBungeeCord = getConfig().getBoolean("performance.use-bungeecord");
+        cachePlayerHeads = getConfig().getBoolean("performance.cache-player-heads");
         maxMembers = getConfig().getInt("clan.max-members");
         maxKillsPerVictim = getConfig().getInt("kdr-grinding-prevention.max-kills-per-victim");
         maxKillsPerVictimEnabled = getConfig().getBoolean("kdr-grinding-prevention.enable-max-kills");
@@ -431,6 +433,10 @@ public final class SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isCachePlayerHeads() {
+        return cachePlayerHeads;
     }
     
     public boolean isEnableGUI() {
