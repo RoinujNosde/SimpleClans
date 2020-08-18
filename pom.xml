@@ -170,10 +170,10 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-<!--        <repository>-->
-<!--            <id>aikar</id>-->
-<!--            <url>https://repo.aikar.co/content/groups/aikar/</url>-->
-<!--        </repository>-->
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
     </repositories>
 
     <!-- GitHub/Jenkins -->
