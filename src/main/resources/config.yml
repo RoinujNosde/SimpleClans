@@ -179,11 +179,10 @@ mysql:
     password: ''
     database: ''
 permissions:
-  auto-group-groupname: true
+  auto-group-groupname: false
   YourClanNameHere:
   - test.permission
 performance:
-  cache-player-heads: true
   save-periodically: true
   save-interval: 10
   use-threads: true

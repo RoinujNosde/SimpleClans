@@ -56,7 +56,7 @@ public class RivalriesCommand {
                 continue;
             }
 
-            chatBlock.addRow("  " + ChatColor.AQUA + clan.getName(), clan.getRivalString(ChatColor.DARK_GRAY + ", "));
+            chatBlock.addRow("  " + ChatColor.AQUA + clan.getColorTag(), clan.getRivalString(ChatColor.DARK_GRAY + ", "));
         }
 
         boolean more = chatBlock.sendBlock(player, plugin.getSettingsManager().getPageSize());

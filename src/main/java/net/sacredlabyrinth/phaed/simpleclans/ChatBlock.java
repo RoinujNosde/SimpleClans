@@ -170,6 +170,7 @@ public class ChatBlock {
         }
 
 
+        List<String> messages = new ArrayList<>();
         // size up all sections
 
         for (int i = 0; i < amount; i++) {
@@ -285,11 +286,12 @@ public class ChatBlock {
                 msg = color + msg;
             }
 
-            player.sendMessage(msg);
+            messages.add(msg);
 
             prefix_used = true;
         }
 
+        player.sendMessage(messages.toArray(new String[0]));
         return !rows.isEmpty();
     }
 

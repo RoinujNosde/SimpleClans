@@ -1,19 +1,18 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.MenuCommand;
 import net.sacredlabyrinth.phaed.simpleclans.events.FrameOpenEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.util.ChatPaginator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -106,8 +105,8 @@ public class InventoryDrawer {
             if (oldLore != null) {
                 ArrayList<String> newLore = new ArrayList<>();
                 for (String line : oldLore) {
-                    String[] split = line.split("\n");
-                    newLore.addAll(Arrays.asList(split));
+                    String[] strings = ChatPaginator.wordWrap(line, 28);
+                    newLore.addAll(Arrays.asList(strings));
                 }
                 itemMeta.setLore(newLore);
                 c.setItemMeta(itemMeta);
