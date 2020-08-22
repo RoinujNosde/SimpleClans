@@ -201,6 +201,7 @@ public final class SettingsManager {
 	private boolean cachePlayerHeads;
 	private int saveInterval;
 	private String rankingType;
+	private int loreLength;
 
     /**
      *
@@ -405,6 +406,7 @@ public final class SettingsManager {
         AutoGroupGroupName = getConfig().getBoolean("permissions.auto-group-groupname");
         tamableMobsSharing = getConfig().getBoolean("settings.tameable-mobs-sharing");
         allowReGroupCommand = getConfig().getBoolean("settings.allow-regroup-command");
+        loreLength = getConfig().getInt("settings.lore-length", 38);
         savePeriodically = getConfig().getBoolean("performance.save-periodically");
         saveInterval = getConfig().getInt("performance.save-interval");
         useThreads = getConfig().getBoolean("performance.use-threads");
@@ -433,6 +435,10 @@ public final class SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getLoreLength() {
+        return loreLength;
     }
 
     public boolean isCachePlayerHeads() {

@@ -105,7 +105,7 @@ public class InventoryDrawer {
             if (oldLore != null) {
                 ArrayList<String> newLore = new ArrayList<>();
                 for (String line : oldLore) {
-                    String[] strings = ChatPaginator.wordWrap(line, 28);
+                    String[] strings = ChatPaginator.wordWrap(line, plugin.getSettingsManager().getLoreLength());
                     newLore.addAll(Arrays.asList(strings));
                 }
                 itemMeta.setLore(newLore);
