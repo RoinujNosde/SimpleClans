@@ -15,9 +15,9 @@ If enabled by the server and the clan, at `1am` a fee \(set by the leader\) is c
 * `purchase-member-fee-set` - Enable this to charge the value below everytime a leader changes the fee value.
 * `member-fee-set-price` - Value to charge for changes on the fee value
 
-### Example
+#### Example
 
-```text
+```yaml
 economy:
     member-fee-enabled: false
     max-member-fee: 200.0
