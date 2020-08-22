@@ -5,13 +5,16 @@ import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -25,6 +28,7 @@ public class RivalsFrame extends SCFrame {
 		this.subject = subject;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void createComponents() {
 		List<String> rivals = subject.getRivals();
@@ -38,7 +42,7 @@ public class RivalsFrame extends SCFrame {
 
 		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent add = new SCComponentImpl(lang("gui.rivals.add.title",getViewer()), null, Material.RED_WOOL, 4);
+		SCComponent add = new SCComponentImpl(lang("gui.rivals.add.title",getViewer()), null, Material.WOOL, DyeColor.RED.getWoolData(), 4);
 		add.setVerifiedOnly(ClickType.LEFT);
 		add.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new AddRivalFrame(this, getViewer(), subject)));
 		add.setPermission(ClickType.LEFT, RankPermission.RIVAL_ADD);
@@ -55,7 +59,10 @@ public class RivalsFrame extends SCFrame {
 				continue;
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
-					Collections.singletonList(lang("gui.rivals.clan.lore",getViewer())), Material.RED_BANNER, slot	);
+					Collections.singletonList(lang("gui.rivals.clan.lore",getViewer())), Material.BANNER, slot);
+			BannerMeta bannerMeta = (BannerMeta) Objects.requireNonNull(c.getItemMeta());
+			bannerMeta.setBaseColor(DyeColor.RED);
+			c.setItemMeta(bannerMeta);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("rival %s %s", lang("remove", getViewer()), clan.getTag()), false));
 			c.setPermission(ClickType.RIGHT, RankPermission.RIVAL_REMOVE);

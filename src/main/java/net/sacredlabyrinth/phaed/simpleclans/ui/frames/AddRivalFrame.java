@@ -3,8 +3,10 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -18,6 +20,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -54,7 +57,10 @@ public class AddRivalFrame extends SCFrame {
 			Clan notRival = notRivals.get(i);
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title",getViewer(), notRival.getColorTag(), notRival.getName()),
-					Collections.singletonList(lang("gui.add.rival.clan.lore", getViewer())), Material.RED_BANNER, slot);
+					Collections.singletonList(lang("gui.add.rival.clan.lore", getViewer())), Material.BANNER, slot);
+			BannerMeta bannerMeta = (BannerMeta) Objects.requireNonNull(c.getItemMeta());
+			bannerMeta.setBaseColor(DyeColor.RED);
+			c.setItemMeta(bannerMeta);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("rival %s %s", lang("add",getViewer()), notRival.getTag()), false));

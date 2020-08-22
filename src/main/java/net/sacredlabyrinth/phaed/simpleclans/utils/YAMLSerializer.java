@@ -35,7 +35,8 @@ public class YAMLSerializer {
         if (cs != null) {
             try {
                 config.loadFromString(cs);
-                return config.getObject("cs", clazz);
+                //noinspection unchecked
+                return (T) config.get("cs");
             } catch (NoSuchMethodError ex) {
                 LOGGER.warning("Error deserializing... Are you using the correct version?");
             } catch (Exception e) {

@@ -45,7 +45,7 @@ public class RanksFrame extends SCFrame {
 		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
 		SCComponent create = new SCComponentImpl(lang("gui.ranks.create.title",getViewer()),
-				Collections.singletonList(lang("gui.ranks.create.lore",getViewer())), Material.WHITE_WOOL, 4);
+				Collections.singletonList(lang("gui.ranks.create.lore",getViewer())), Material.WOOL, 4);
 		create.setVerifiedOnly(ClickType.LEFT);
 		create.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "rank create", false));
 		create.setPermission(ClickType.LEFT, "simpleclans.leader.rank.create");
@@ -71,7 +71,7 @@ public class RanksFrame extends SCFrame {
 						lang("gui.ranks.rank.assign.lore",getViewer(), toEdit.getName()));
 			}
 			SCComponent c = new SCComponentImpl(lang("gui.ranks.rank.title",getViewer(), rank.getName()), lore,
-					Material.FILLED_MAP, slot);
+					Material.MAP, slot);
 			if (toEdit != null) {
 				c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 						String.format("rank assign %s %s", toEdit.getName(), rank.getName()), true));

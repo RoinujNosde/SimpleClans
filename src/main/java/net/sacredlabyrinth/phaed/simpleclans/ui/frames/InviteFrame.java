@@ -55,11 +55,11 @@ public class InviteFrame extends SCFrame {
 		lore.add(lang("gui.invite.player.lore", getViewer()));
 
 		SCComponent c = new SCComponentImpl(
-				lang("gui.invite.player.title", getViewer(), player.getName()), lore, Material.PLAYER_HEAD, slot);
+				lang("gui.invite.player.title", getViewer(), player.getName()), lore, Material.SKULL_ITEM, (byte) 3, slot);
 		SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
 		if (itemMeta != null) {
-			itemMeta.setOwningPlayer(offlinePlayer);
+				itemMeta.setOwner(offlinePlayer.getName());
 			c.setItemMeta(itemMeta);
 		}
 		c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "invite " + player.getName(), false));

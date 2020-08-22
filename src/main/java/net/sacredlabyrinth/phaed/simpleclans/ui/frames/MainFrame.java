@@ -2,15 +2,18 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import org.bukkit.DyeColor;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.StaffFrame;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -35,14 +38,17 @@ public class MainFrame extends SCFrame {
 		add(leaderboard);
 
 		SCComponent clanList = new SCComponentImpl(lang("gui.main.clan.list.title",getViewer()),
-				Collections.singletonList(lang("gui.main.clan.list.lore",getViewer())), Material.PURPLE_BANNER, 4);
+				Collections.singletonList(lang("gui.main.clan.list.lore",getViewer())), Material.BANNER, 4);
+		BannerMeta bannerMeta = (BannerMeta) Objects.requireNonNull(clanList.getItemMeta());
+		bannerMeta.setBaseColor(DyeColor.PURPLE);
+		clanList.setItemMeta(bannerMeta);
 		clanList.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanListFrame(this, getViewer())));
 		clanList.setPermission(ClickType.LEFT, "simpleclans.anyone.list");
 		add(clanList);
 
 		addResetKdr();
 		if (plugin.getPermissionsManager().has(getViewer(), "simpleclans.mod.staffgui")) {
-			SCComponent staff = new SCComponentImpl.Builder(Material.COMMAND_BLOCK).withSlot(6).withDisplayName(
+			SCComponent staff = new SCComponentImpl.Builder(Material.COMMAND).withSlot(6).withDisplayName(
 					lang("gui.main.staff.title", getViewer())).build();
 			staff.setPermission(ClickType.LEFT, "simpleclans.mod.staffgui");
 			staff.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new StaffFrame(this, getViewer())));

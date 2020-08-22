@@ -29,7 +29,7 @@ public class SetBannerCommand {
             return;
         }
 
-        ItemStack hand = player.getInventory().getItemInMainHand();
+        ItemStack hand = player.getItemInHand();
         if (!hand.getType().toString().contains("BANNER")) {
             ChatBlock.sendMessage(player, lang("you.must.hold.a.banner", player));
             return;

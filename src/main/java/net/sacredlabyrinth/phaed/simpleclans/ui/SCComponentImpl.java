@@ -37,7 +37,19 @@ public class SCComponentImpl extends SCComponent {
 		}
 		this.slot = slot;
 	}
-	
+
+	public SCComponentImpl(String displayName, List<String> lore, Material material, byte data, int slot) {
+		item = new ItemStack(material, 1, data);
+		ItemMeta itemMeta = item.getItemMeta();
+		if (itemMeta != null) {
+			itemMeta.setDisplayName(displayName);
+			itemMeta.setLore(lore);
+			itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			item.setItemMeta(itemMeta);
+		}
+		this.slot = slot;
+	}
+
 	@Override
 	public @NotNull ItemStack getItem() {
 		return item;

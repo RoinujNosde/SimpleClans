@@ -5,13 +5,17 @@ import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -38,7 +42,8 @@ public class AlliesFrame extends SCFrame {
 
 		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent add = new SCComponentImpl(lang("gui.allies.add.title",getViewer()), null, Material.CYAN_WOOL, 4);
+		@SuppressWarnings("deprecation")
+		SCComponent add = new SCComponentImpl(lang("gui.allies.add.title",getViewer()), null, Material.WOOL, DyeColor.CYAN.getWoolData(), 4);
 		add.setVerifiedOnly(ClickType.LEFT);
 		add.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new AddAllyFrame(this, getViewer(), subject)));
 		add.setPermission(ClickType.LEFT, RankPermission.ALLY_ADD);
@@ -55,7 +60,10 @@ public class AlliesFrame extends SCFrame {
 				continue;
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
-					Collections.singletonList(lang("gui.allies.clan.lore",getViewer())), Material.CYAN_BANNER, slot);
+					Collections.singletonList(lang("gui.allies.clan.lore",getViewer())), Material.BANNER, slot);
+			ItemMeta itemMeta = c.getItemMeta();
+			((BannerMeta) Objects.requireNonNull(itemMeta)).setBaseColor(DyeColor.CYAN);
+			c.setItemMeta(itemMeta);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("ally %s %s", lang("remove",getViewer()), clan.getTag()), false));
 			c.setPermission(ClickType.RIGHT, RankPermission.ALLY_REMOVE);

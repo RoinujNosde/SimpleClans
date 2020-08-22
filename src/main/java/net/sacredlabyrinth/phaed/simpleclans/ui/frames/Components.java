@@ -6,13 +6,20 @@ import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,11 +69,11 @@ public class Components {
                                 lang("gui.playerdetails.player.lore.past.clans.separator",viewer))),
                         lang("gui.playerdetails.player.lore.inactive",viewer, cp.getInactiveDays(),
                                 pl.getSettingsManager().getPurgePlayers())),
-                Material.PLAYER_HEAD, slot);
+                Material.SKULL_ITEM, (byte) 3, slot);
         SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
         if (itemMeta != null) {
-            itemMeta.setOwningPlayer(offlinePlayer);
+            itemMeta.setOwner(offlinePlayer.getName());
             c.setItemMeta(itemMeta);
         }
         if (viewer.getUniqueId().equals(cp.getUniqueId())) {
@@ -119,7 +126,10 @@ public class Components {
         if (clan != null && clan.getBanner() != null) {
             item = clan.getBanner();
         } else {
-            item = new ItemStack(Material.GREEN_BANNER);
+            item = new ItemStack(Material.BANNER);
+            BannerMeta itemMeta = ((BannerMeta) item.getItemMeta());
+            Objects.requireNonNull(itemMeta).setBaseColor(DyeColor.GREEN);
+            item.setItemMeta(itemMeta);
         }
         SCComponent c = new SCComponentImpl.Builder(item).withLore(lore).withDisplayName(name).withSlot(slot).build();
         if (openDetails && clan != null) {
@@ -146,8 +156,9 @@ public class Components {
         return back;
     }
 
+    @SuppressWarnings("deprecation")
     public static SCComponent getPanelComponent(int slot) {
-        return new SCComponentImpl(" ", null, Material.GRAY_STAINED_GLASS_PANE, slot);
+        return new SCComponentImpl(" ", null, Material.STAINED_GLASS_PANE, DyeColor.GRAY.getDyeData(), slot);
     }
 
     public static @NotNull SCComponent getPreviousPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator paginator, @NotNull Player viewer) {

@@ -62,11 +62,11 @@ public class CoordsFrame extends SCFrame {
 							lang("gui.coords.player.lore.coords",getViewer(), cpLoc.getBlockX(),
 									cpLoc.getBlockY(), cpLoc.getBlockZ()),
 							lang("gui.coords.player.lore.world",getViewer(), Objects.requireNonNull(cpLoc.getWorld()).getName())),
-					Material.PLAYER_HEAD, slot);
+					Material.SKULL_ITEM, (byte) 3, slot);
 			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
 			if (itemMeta != null) {
-				itemMeta.setOwningPlayer(offlinePlayer);
+				itemMeta.setOwner(offlinePlayer.getName());
 				c.setItemMeta(itemMeta);
 			}
 			c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PlayerDetailsFrame(getViewer(), this, offlinePlayer)));

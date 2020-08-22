@@ -57,7 +57,7 @@ public class InventoryDrawer {
 
     @NotNull
     private static Inventory prepareInventory(@NotNull SCFrame frame) {
-        Inventory inventory = Bukkit.createInventory(frame.getViewer(), frame.getSize(), frame.getTitle());
+        Inventory inventory = Bukkit.createInventory(frame.getViewer(), frame.getSize(), getSafeTitle(frame));
         long start = System.currentTimeMillis();
         setComponents(inventory, frame);
 
@@ -67,6 +67,15 @@ public class InventoryDrawer {
                             System.currentTimeMillis() - start, frame.getTitle(), frame.getViewer().getName()));
         }
         return inventory;
+    }
+
+    @NotNull
+    private static String getSafeTitle(@NotNull SCFrame frame) {
+        String title = frame.getTitle();
+        if (title.length() > 32) {
+            title = title.substring(0, 32);
+        }
+        return title;
     }
 
     @Deprecated

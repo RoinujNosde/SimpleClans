@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
-    <artifactId>SimpleClans</artifactId>
+    <artifactId>simpleclans-mc1.8</artifactId>
     <version>2.13.1</version>
     <name>SimpleClans</name>
     <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -180,7 +180,7 @@
         <repository>
             <id>bintray-roinujnosde-bukkit-plugins</id>
             <name>roinujnosde-bukkit-plugins</name>
-            <url>https://api.bintray.com/maven/roinujnosde/bukkit-plugins/SimpleClans/;publish=1</url>
+            <url>https://api.bintray.com/maven/roinujnosde/bukkit-plugins/SimpleClans-MC1.8/;publish=1</url>
         </repository>
     </distributionManagement>
 </project>

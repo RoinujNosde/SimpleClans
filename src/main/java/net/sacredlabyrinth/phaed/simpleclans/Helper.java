@@ -60,7 +60,7 @@ public class Helper {
         }
         return Locale.forLanguageTag(languageTag);
     }
-    
+
     /**
      * Gets the Player locale
      * 

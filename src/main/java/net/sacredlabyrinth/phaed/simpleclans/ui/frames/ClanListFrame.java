@@ -1,5 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
@@ -8,9 +16,9 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
+import org.bukkit.inventory.meta.BannerMeta;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +58,7 @@ public class ClanListFrame extends SCFrame {
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			Clan clan = clans.get(i);
-			ItemStack banner = clan.getBanner() != null ? clan.getBanner() : new ItemStack(Material.BLACK_BANNER);
+			ItemStack banner = clan.getBanner() != null ? clan.getBanner() : new ItemStack(Material.BANNER);
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title", getViewer(), clan.getColorTag(), clan.getName()),
 					Arrays.asList(lang("gui.clanlist.clan.lore.position", getViewer(),
@@ -58,6 +66,11 @@ public class ClanListFrame extends SCFrame {
 							lang("gui.clanlist.clan.lore.kdr", getViewer(), KDRFormat.format(clan.getTotalKDR())),
 							lang("gui.clanlist.clan.lore.members", getViewer(), clan.getMembers().size())),
 					banner, slot);
+			if (clan.getBanner() == null) {
+				BannerMeta bannerMeta = (BannerMeta) Objects.requireNonNull(c.getItemMeta());
+				bannerMeta.setBaseColor(DyeColor.BLACK);
+				c.setItemMeta(bannerMeta);
+			}
 			c.setLorePermission("simpleclans.anyone.list");
 			add(c);
 			slot++;
