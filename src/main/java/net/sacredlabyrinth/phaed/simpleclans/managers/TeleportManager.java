@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 public final class TeleportManager {
-    private SimpleClans plugin;
-    private HashMap<String, TeleportState> waitingPlayers = new HashMap<>();
+    private final SimpleClans plugin;
+    private final HashMap<String, TeleportState> waitingPlayers = new HashMap<>();
 
     /**
      *
@@ -91,10 +91,11 @@ public final class TeleportManager {
 
     private void startCounter() {
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            @SuppressWarnings("deprecation")
             @Override
             public void run() {
-                for (Iterator iter = waitingPlayers.values().iterator(); iter.hasNext(); ) {
-                    TeleportState state = (TeleportState) iter.next();
+                for (Iterator<TeleportState> iter = waitingPlayers.values().iterator(); iter.hasNext(); ) {
+                    TeleportState state = iter.next();
 
                     if (state.isProcessing()) {
                         continue;

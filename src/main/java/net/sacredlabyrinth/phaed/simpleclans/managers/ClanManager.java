@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
@@ -18,6 +19,8 @@ import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -526,82 +529,82 @@ public final class ClanManager {
 
         Player player = null;
         InventoryHolder holder = inv.getHolder();
-        if (holder != null && holder instanceof Player) {
+        if (holder instanceof Player) {
         	player = (Player) holder;
         }
 
         if (h != null) {
-            if (h.getType().equals(Material.CHAINMAIL_HELMET)) {
-                out += ChatColor.WHITE + lang("armor.h",player);
-            } else if (h.getType().equals(Material.DIAMOND_HELMET)) {
-                out += ChatColor.AQUA + lang("armor.h",player);
-            } else if (h.getType().equals(Material.GOLDEN_HELMET)) {
-                out += ChatColor.YELLOW + lang("armor.h",player);
-            } else if (h.getType().equals(Material.IRON_HELMET)) {
-                out += ChatColor.GRAY + lang("armor.h",player);
-            } else if (h.getType().equals(Material.LEATHER_HELMET)) {
-                out += ChatColor.GOLD + lang("armor.h",player);
-            } else if (h.getType().equals(Material.AIR)) {
-                out += ChatColor.BLACK + lang("armor.h",player);
+            if (h.getType().equals(XMaterial.CHAINMAIL_HELMET.parseMaterial())) {
+                out += ChatColor.WHITE + lang("armor.h", player);
+            } else if (h.getType().equals(XMaterial.DIAMOND_HELMET.parseMaterial())) {
+                out += ChatColor.AQUA + lang("armor.h", player);
+            } else if (h.getType().equals(XMaterial.GOLDEN_HELMET.parseMaterial())) {
+                out += ChatColor.YELLOW + lang("armor.h", player);
+            } else if (h.getType().equals(XMaterial.IRON_HELMET.parseMaterial())) {
+                out += ChatColor.GRAY + lang("armor.h", player);
+            } else if (h.getType().equals(XMaterial.LEATHER_HELMET.parseMaterial())) {
+                out += ChatColor.GOLD + lang("armor.h", player);
+            } else if (h.getType().equals(XMaterial.AIR.parseMaterial())) {
+                out += ChatColor.BLACK + lang("armor.h", player);
             } else {
-                out += ChatColor.RED + lang("armor.h",player);
+                out += ChatColor.RED + lang("armor.h", player);
             }
         }
         ItemStack c = inv.getChestplate();
 
         if (c != null) {
-            if (c.getType().equals(Material.CHAINMAIL_CHESTPLATE)) {
-                out += ChatColor.WHITE + lang("armor.c",player);
-            } else if (c.getType().equals(Material.DIAMOND_CHESTPLATE)) {
-                out += ChatColor.AQUA + lang("armor.c",player);
-            } else if (c.getType().equals(Material.GOLDEN_CHESTPLATE)) {
-                out += ChatColor.YELLOW + lang("armor.c",player);
-            } else if (c.getType().equals(Material.IRON_CHESTPLATE)) {
-                out += ChatColor.GRAY + lang("armor.c",player);
-            } else if (c.getType().equals(Material.LEATHER_CHESTPLATE)) {
-                out += ChatColor.GOLD + lang("armor.c",player);
-            } else if (c.getType().equals(Material.AIR)) {
-                out += ChatColor.BLACK + lang("armor.c",player);
+            if (c.getType().equals(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial())) {
+                out += ChatColor.WHITE + lang("armor.c", player);
+            } else if (c.getType().equals(XMaterial.DIAMOND_CHESTPLATE.parseMaterial())) {
+                out += ChatColor.AQUA + lang("armor.c", player);
+            } else if (c.getType().equals(XMaterial.GOLDEN_CHESTPLATE.parseMaterial())) {
+                out += ChatColor.YELLOW + lang("armor.c", player);
+            } else if (c.getType().equals(XMaterial.IRON_CHESTPLATE.parseMaterial())) {
+                out += ChatColor.GRAY + lang("armor.c", player);
+            } else if (c.getType().equals(XMaterial.LEATHER_CHESTPLATE.parseMaterial())) {
+                out += ChatColor.GOLD + lang("armor.c", player);
+            } else if (c.getType().equals(XMaterial.AIR.parseMaterial())) {
+                out += ChatColor.BLACK + lang("armor.c", player);
             } else {
-                out += ChatColor.RED + lang("armor.c",player);
+                out += ChatColor.RED + lang("armor.c", player);
             }
         }
         ItemStack l = inv.getLeggings();
 
         if (l != null) {
-            if (l.getType().equals(Material.CHAINMAIL_LEGGINGS)) {
-                out += ChatColor.WHITE + lang("armor.l",player);
-            } else if (l.getType().equals(Material.DIAMOND_LEGGINGS)) {
-                out += lang("armor.l",player);
-            } else if (l.getType().equals(Material.GOLDEN_LEGGINGS)) {
-                out += lang("armor.l",player);
-            } else if (l.getType().equals(Material.IRON_LEGGINGS)) {
-                out += lang("armor.l",player);
-            } else if (l.getType().equals(Material.LEATHER_LEGGINGS)) {
-                out += lang("armor.l",player);
-            } else if (l.getType().equals(Material.AIR)) {
-                out += lang("armor.l",player);
+            if (l.getType().equals(XMaterial.CHAINMAIL_LEGGINGS.parseMaterial())) {
+                out += ChatColor.WHITE + lang("armor.l", player);
+            } else if (l.getType().equals(XMaterial.DIAMOND_LEGGINGS.parseMaterial())) {
+                out += lang("armor.l", player);
+            } else if (l.getType().equals(XMaterial.GOLDEN_LEGGINGS.parseMaterial())) {
+                out += lang("armor.l", player);
+            } else if (l.getType().equals(XMaterial.IRON_LEGGINGS.parseMaterial())) {
+                out += lang("armor.l", player);
+            } else if (l.getType().equals(XMaterial.LEATHER_LEGGINGS.parseMaterial())) {
+                out += lang("armor.l", player);
+            } else if (l.getType().equals(XMaterial.AIR.parseMaterial())) {
+                out += lang("armor.l", player);
             } else {
-                out += lang("armor.l",player);
+                out += lang("armor.l", player);
             }
         }
         ItemStack b = inv.getBoots();
 
         if (b != null) {
-            if (b.getType().equals(Material.CHAINMAIL_BOOTS)) {
-                out += ChatColor.WHITE + lang("armor.B",player);
-            } else if (b.getType().equals(Material.DIAMOND_BOOTS)) {
-                out += ChatColor.AQUA + lang("armor.B",player);
-            } else if (b.getType().equals(Material.GOLDEN_BOOTS)) {
-                out += ChatColor.YELLOW + lang("armor.B",player);
-            } else if (b.getType().equals(Material.IRON_BOOTS)) {
-                out += ChatColor.WHITE + lang("armor.B",player);
-            } else if (b.getType().equals(Material.LEATHER_BOOTS)) {
-                out += ChatColor.GOLD + lang("armor.B",player);
-            } else if (b.getType().equals(Material.AIR)) {
-                out += ChatColor.BLACK + lang("armor.B",player);
+            if (b.getType().equals(XMaterial.CHAINMAIL_BOOTS.parseMaterial())) {
+                out += ChatColor.WHITE + lang("armor.B", player);
+            } else if (b.getType().equals(XMaterial.DIAMOND_BOOTS.parseMaterial())) {
+                out += ChatColor.AQUA + lang("armor.B", player);
+            } else if (b.getType().equals(XMaterial.GOLDEN_BOOTS.parseMaterial())) {
+                out += ChatColor.YELLOW + lang("armor.B", player);
+            } else if (b.getType().equals(XMaterial.IRON_BOOTS.parseMaterial())) {
+                out += ChatColor.WHITE + lang("armor.B", player);
+            } else if (b.getType().equals(XMaterial.LEATHER_BOOTS.parseMaterial())) {
+                out += ChatColor.GOLD + lang("armor.B", player);
+            } else if (b.getType().equals(XMaterial.AIR.parseMaterial())) {
+                out += ChatColor.BLACK + lang("armor.B", player);
             } else {
-                out += ChatColor.RED + lang("armor.B",player);
+                out += ChatColor.RED + lang("armor.B", player);
             }
         }
 
@@ -625,58 +628,58 @@ public final class ClanManager {
 
         Player player = null;
         InventoryHolder holder = inv.getHolder();
-        if (holder != null && holder instanceof Player) {
+        if (holder instanceof Player) {
         	player = (Player) holder;
         }
 
-        int count = getItemCount(inv.all(Material.DIAMOND_SWORD));
+        int count = getItemCount(inv, XMaterial.DIAMOND_SWORD);
 
         if (count > 0) {
             String countString = count > 1 ? count + "" : "";
-            out += ChatColor.AQUA + lang("weapon.S",player) + headColor + countString;
+            out += ChatColor.AQUA + lang("weapon.S", player) + headColor + countString;
         }
 
-        count = getItemCount(inv.all(Material.GOLDEN_SWORD));
+        count = getItemCount(inv, XMaterial.GOLDEN_SWORD);
 
         if (count > 0) {
             String countString = count > 1 ? count + "" : "";
-            out += ChatColor.YELLOW + lang("weapon.S",player) + headColor + countString;
+            out += ChatColor.YELLOW + lang("weapon.S", player) + headColor + countString;
         }
 
-        count = getItemCount(inv.all(Material.IRON_SWORD));
+        count = getItemCount(inv, XMaterial.IRON_SWORD);
 
         if (count > 0) {
             String countString = count > 1 ? count + "" : "";
-            out += ChatColor.WHITE + lang("weapon.S",player) + headColor + countString;
+            out += ChatColor.WHITE + lang("weapon.S", player) + headColor + countString;
         }
 
-        count = getItemCount(inv.all(Material.STONE_SWORD));
+        count = getItemCount(inv, XMaterial.STONE_SWORD);
 
         if (count > 0) {
             String countString = count > 1 ? count + "" : "";
-            out += ChatColor.GRAY + lang("weapon.S",player) + headColor + countString;
+            out += ChatColor.GRAY + lang("weapon.S", player) + headColor + countString;
         }
 
-        count = getItemCount(inv.all(Material.WOODEN_SWORD));
+        count = getItemCount(inv, XMaterial.WOODEN_SWORD);
 
         if (count > 0) {
             String countString = count > 1 ? count + "" : "";
-            out += ChatColor.GOLD + lang("weapon.S",player) + headColor + countString;
+            out += ChatColor.GOLD + lang("weapon.S", player) + headColor + countString;
         }
 
-        count = getItemCount(inv.all(Material.BOW));
+        count = getItemCount(inv, XMaterial.BOW);
 
         if (count > 0) {
             String countString = count > 1 ? count + "" : "";
-            out += ChatColor.GOLD + lang("weapon.B",player) + headColor + countString;
+            out += ChatColor.GOLD + lang("weapon.B", player) + headColor + countString;
         }
 
-        count = getItemCount(inv.all(Material.ARROW));
-        count += getItemCount(inv.all(Material.SPECTRAL_ARROW));
-        count += getItemCount(inv.all(Material.TIPPED_ARROW));
+        count = getItemCount(inv, XMaterial.ARROW);
+        count += getItemCount(inv, XMaterial.SPECTRAL_ARROW);
+        count += getItemCount(inv, XMaterial.TIPPED_ARROW);
 
         if (count > 0) {
-            out += ChatColor.WHITE + lang("weapon.A",player) + headColor + count;
+            out += ChatColor.WHITE + lang("weapon.A", player) + headColor + count;
         }
 
         if (out.length() == 0) {
@@ -684,6 +687,15 @@ public final class ClanManager {
         }
 
         return out;
+    }
+
+    private int getItemCount(@NotNull PlayerInventory inv, @NotNull XMaterial material) {
+        Material parsed = material.parseMaterial();
+        if (parsed == null) {
+            return 0;
+        }
+
+        return getItemCount(inv.all(parsed));
     }
 
     private int getItemCount(HashMap<Integer, ? extends ItemStack> all) {
@@ -696,66 +708,71 @@ public final class ClanManager {
         return count;
     }
 
-    private double getFoodPoints(PlayerInventory inv, Material material, int points, double saturation) {
-        return getItemCount(inv.all(material)) * (points + saturation);
+    private double getFoodPoints(PlayerInventory inv, XMaterial material, int points, double saturation) {
+        Material parsed = material.parseMaterial();
+        if (parsed == null) {
+            return 0;
+        }
+        return getFoodPoints(inv, parsed, points, saturation);
     }
 
-    private double getFoodPoints(PlayerInventory inv, Material material, int type, int points, double saturation) {
-        return getItemCount(inv.all(new ItemStack(material, 1, (short) type))) * (points + saturation);
+    private double getFoodPoints(PlayerInventory inv, Material material, int points, double saturation) {
+        return getItemCount(inv.all(material)) * (points + saturation);
     }
 
     /**
      * Returns a formatted string detailing the players food
      *
-     * @param inv
-     * @return
+     * @param inv the PlayerInventory
+     * @return the food points string
      */
     public String getFoodString(PlayerInventory inv) {
 
         Player player = null;
         InventoryHolder holder = inv.getHolder();
-        if (holder != null && holder instanceof Player) {
+        if (holder instanceof Player) {
         	player = (Player) holder;
         }
 
-        double count = getFoodPoints(inv, Material.APPLE, 4, 2.4);
-        count += getFoodPoints(inv, Material.BAKED_POTATO, 5, 6);
-        count += getFoodPoints(inv, Material.BEETROOT, 1, 1.2);
-        count += getFoodPoints(inv, Material.BEETROOT_SOUP, 6, 7.2);
-        count += getFoodPoints(inv, Material.BREAD, 5, 6);
-        count += getFoodPoints(inv, Material.CAKE, 14, 2.8);
-        count += getFoodPoints(inv, Material.CARROT, 3, 3.6);
-        count += getFoodPoints(inv, Material.CHORUS_FRUIT, 4, 2.4);
-        count += getFoodPoints(inv, Material.COOKED_CHICKEN, 6, 7.2);
-        count += getFoodPoints(inv, Material.COOKED_MUTTON, 6, 9.6);
-        count += getFoodPoints(inv, Material.COOKED_PORKCHOP, 8, 12.8);
-        count += getFoodPoints(inv, Material.COOKED_RABBIT, 5, 6);
-        count += getFoodPoints(inv, Material.COOKED_SALMON, 1, 6, 9.6);
-        count += getFoodPoints(inv, Material.COOKIE, 2, .4);
-        count += getFoodPoints(inv, Material.GOLDEN_APPLE, 4, 9.6);
-        count += getFoodPoints(inv, Material.GOLDEN_CARROT, 6, 14.4);
-        count += getFoodPoints(inv, Material.MELON, 2, 1.2);
-        count += getFoodPoints(inv, Material.MUSHROOM_STEW, 6, 7.2);
-        count += getFoodPoints(inv, Material.POISONOUS_POTATO, 2, 1.2);
-        count += getFoodPoints(inv, Material.POTATO, 1, 0.6);
-        count += getFoodPoints(inv, Material.PUFFERFISH, 3, 1, 0.2);
-        count += getFoodPoints(inv, Material.PUMPKIN_PIE, 8, 4.8);
-        count += getFoodPoints(inv, Material.RABBIT_STEW, 10, 12);
-        count += getFoodPoints(inv, Material.BEEF, 3, 1.8);
-        count += getFoodPoints(inv, Material.CHICKEN, 2, 1.2);
-        count += getFoodPoints(inv, Material.MUTTON, 2, 1.2);
-        count += getFoodPoints(inv, Material.PORKCHOP, 3, 1.8);
-        count += getFoodPoints(inv, Material.RABBIT, 3, 1.8);
-        count += getFoodPoints(inv, Material.SALMON, 1, .4);
-        count += getFoodPoints(inv, Material.COD, 2, .4);
-        count += getFoodPoints(inv, Material.COOKED_COD, 5, 6);
-        count += getFoodPoints(inv, Material.TROPICAL_FISH, 1, .2);
-        count += getFoodPoints(inv, Material.ROTTEN_FLESH, 4, .8);
-        count += getFoodPoints(inv, Material.SPIDER_EYE, 2, 3.2);
-        count += getFoodPoints(inv, Material.COOKED_BEEF, 8, 12.8);
+        // TODO get this data from a file?
+        double count = getFoodPoints(inv, XMaterial.APPLE, 4, 2.4);
+        count += getFoodPoints(inv, XMaterial.BAKED_POTATO, 5, 6);
+        count += getFoodPoints(inv, XMaterial.BEETROOT, 1, 1.2);
+        count += getFoodPoints(inv, XMaterial.BEETROOT_SOUP, 6, 7.2);
+        count += getFoodPoints(inv, XMaterial.BREAD, 5, 6);
+        count += getFoodPoints(inv, XMaterial.CAKE, 14, 2.8);
+        count += getFoodPoints(inv, XMaterial.CARROT, 3, 3.6);
+        count += getFoodPoints(inv, XMaterial.CHORUS_FRUIT, 4, 2.4);
+        count += getFoodPoints(inv, XMaterial.COOKED_CHICKEN, 6, 7.2);
+        count += getFoodPoints(inv, XMaterial.COOKED_MUTTON, 6, 9.6);
+        count += getFoodPoints(inv, XMaterial.COOKED_PORKCHOP, 8, 12.8);
+        count += getFoodPoints(inv, XMaterial.COOKED_RABBIT, 5, 6);
+        count += getFoodPoints(inv, XMaterial.COOKED_SALMON, 6, 9.6);
+        count += getFoodPoints(inv, XMaterial.COOKIE, 2, .4);
+        count += getFoodPoints(inv, XMaterial.GOLDEN_APPLE, 4, 9.6);
+        count += getFoodPoints(inv, XMaterial.GOLDEN_CARROT, 6, 14.4);
+        count += getFoodPoints(inv, XMaterial.MELON, 2, 1.2);
+        count += getFoodPoints(inv, XMaterial.MUSHROOM_STEW, 6, 7.2);
+        count += getFoodPoints(inv, XMaterial.POISONOUS_POTATO, 2, 1.2);
+        count += getFoodPoints(inv, XMaterial.POTATO, 1, 0.6);
+        count += getFoodPoints(inv, XMaterial.PUFFERFISH, 1, 0.2);
+        count += getFoodPoints(inv, XMaterial.PUMPKIN_PIE, 8, 4.8);
+        count += getFoodPoints(inv, XMaterial.RABBIT_STEW, 10, 12);
+        count += getFoodPoints(inv, XMaterial.BEEF, 3, 1.8);
+        count += getFoodPoints(inv, XMaterial.CHICKEN, 2, 1.2);
+        count += getFoodPoints(inv, XMaterial.MUTTON, 2, 1.2);
+        count += getFoodPoints(inv, XMaterial.PORKCHOP, 3, 1.8);
+        count += getFoodPoints(inv, XMaterial.RABBIT, 3, 1.8);
+        count += getFoodPoints(inv, XMaterial.SALMON, 1, .4);
+        count += getFoodPoints(inv, XMaterial.COD, 2, .4);
+        count += getFoodPoints(inv, XMaterial.COOKED_COD, 5, 6);
+        count += getFoodPoints(inv, XMaterial.TROPICAL_FISH, 1, .2);
+        count += getFoodPoints(inv, XMaterial.ROTTEN_FLESH, 4, .8);
+        count += getFoodPoints(inv, XMaterial.SPIDER_EYE, 2, 3.2);
+        count += getFoodPoints(inv, XMaterial.COOKED_BEEF, 8, 12.8);
 
         if (count == 0) {
-            return ChatColor.BLACK + lang("none",player);
+            return ChatColor.BLACK + lang("none", player);
         } else {
             return ((int) count) + "" + ChatColor.GOLD + "p";
         }

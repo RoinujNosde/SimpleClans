@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
@@ -8,7 +9,6 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -1697,7 +1697,9 @@ public class Clan implements Serializable, Comparable<Clan> {
             return null;
         }
 
-        if (!(world.getBlockAt(homeX, homeY, homeZ).getType().equals(Material.AIR)) || !(world.getBlockAt(homeX, homeY + 1, homeZ).getType().equals(Material.AIR)) || homeY == 0) {
+        if (!(world.getBlockAt(homeX, homeY, homeZ).getType().equals(XMaterial.AIR.parseMaterial())) ||
+                !(world.getBlockAt(homeX, homeY + 1, homeZ).getType().equals(XMaterial.AIR.parseMaterial()))
+                || homeY == 0) {
             return new Location(world, homeX, world.getHighestBlockYAt(homeX, homeZ), homeZ);
         } else {
             return new Location(world, homeX, homeY, homeZ);

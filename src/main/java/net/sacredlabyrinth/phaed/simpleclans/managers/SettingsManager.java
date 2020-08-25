@@ -2,13 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
-import org.bukkit.Bukkit;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,7 +48,7 @@ public final class SettingsManager {
     private String listActive;
     private String listAsc;
     private String listDesc;
-    private List<Material> itemsList = new ArrayList<Material>();
+    private final List<Material> itemsList = new ArrayList<>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
     private List<String> disallowedWords;
@@ -236,9 +232,9 @@ public final class SettingsManager {
         dropOnHome = getConfig().getBoolean("settings.drop-items-on-clan-home");
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
 		for (String material : getConfig().getStringList("settings.item-list")) {
-			Material type = Material.getMaterial(material);
-			if (type != null) {
-                itemsList.add(type);
+            Optional<XMaterial> x = XMaterial.matchXMaterial(material);
+            if (x.isPresent()) {
+                itemsList.add(x.get().parseMaterial());
             } else {
                 plugin.getLogger().warning("Error with Material: " + material);
             }

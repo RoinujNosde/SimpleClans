@@ -1,16 +1,15 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -55,14 +54,11 @@ public class InviteFrame extends SCFrame {
 		lore.add(lang("gui.invite.player.lore", getViewer()));
 
 		SCComponent c = new SCComponentImpl(
-				lang("gui.invite.player.title", getViewer(), player.getName()), lore, Material.PLAYER_HEAD, slot);
-		SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
+				lang("gui.invite.player.title", getViewer(), player.getName()), lore, XMaterial.PLAYER_HEAD, slot);
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
-		if (itemMeta != null) {
-			itemMeta.setOwningPlayer(offlinePlayer);
-			c.setItemMeta(itemMeta);
-		}
-		c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "invite " + player.getName(), false));
+		Components.setOwningPlayer(c.getItem(), offlinePlayer);
+		c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "invite " +
+				player.getName(), false));
 		c.setPermission(ClickType.LEFT, RankPermission.INVITE);
 		return c;
 	}
@@ -92,7 +88,7 @@ public class InviteFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

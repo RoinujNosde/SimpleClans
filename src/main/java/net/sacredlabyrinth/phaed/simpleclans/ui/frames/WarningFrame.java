@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.PermissionLevel;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
@@ -7,7 +8,6 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,8 +44,8 @@ public class WarningFrame extends SCFrame {
 	}
 
 	private void addNotVerifiedComponent(int slot) {
-		SCComponent verified = new SCComponentImpl(lang("gui.warning.not.verified.title",getViewer()),
-				Collections.singletonList(lang("gui.warning.not.verified.lore",getViewer())), Material.LEVER, slot);
+		SCComponent verified = new SCComponentImpl(lang("gui.warning.not.verified.title", getViewer()),
+				Collections.singletonList(lang("gui.warning.not.verified.lore", getViewer())), XMaterial.LEVER, slot);
 		add(verified);
 	}
 
@@ -64,7 +64,7 @@ public class WarningFrame extends SCFrame {
 			lore = Collections.singletonList(lang("gui.warning.no.permission.rank.lore",getViewer(), level, p.toString()));
 		}
 		SCComponent perm = new SCComponentImpl(lang("gui.warning.no.permission.title",getViewer()), lore,
-				Material.BARRIER, slot);
+				XMaterial.BARRIER, slot);
 		add(perm);
 	}
 

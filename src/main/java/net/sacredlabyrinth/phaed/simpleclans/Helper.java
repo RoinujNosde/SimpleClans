@@ -465,13 +465,13 @@ public class Helper {
      * @return
      */
     public static String toMessage(String[] args) {
-        String out = "";
+        StringBuilder out = new StringBuilder();
 
         for (String arg : args) {
-            out += arg + " ";
+            out.append(arg).append(" ");
         }
 
-        return out.trim();
+        return out.toString().trim();
     }
 
     /**

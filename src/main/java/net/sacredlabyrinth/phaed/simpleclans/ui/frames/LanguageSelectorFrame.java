@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
@@ -8,7 +9,6 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public class LanguageSelectorFrame extends SCFrame {
     }
 
     private void addLanguage(int slot, Locale locale) {
-        SCComponent c = new SCComponentImpl.Builder(Material.PAPER)
+        SCComponent c = new SCComponentImpl.Builder(XMaterial.PAPER)
                 .withDisplayName(lang("gui.languageselector.language.title", getViewer(), locale.toLanguageTag()))
                 .withSlot(slot).withLore(
                         Arrays.asList(lang("gui.languageselector.language.lore.left.click", getViewer()),

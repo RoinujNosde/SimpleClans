@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -21,12 +22,21 @@ public class SCComponentImpl extends SCComponent {
 		slot = 0;
 	}
 
-	public SCComponentImpl(String displayName, @Nullable List<String> lore, @NotNull Material material, int slot) {
+	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @NotNull Material material,
+						   int slot) {
 		this(displayName, lore, new ItemStack(material), slot);
 	}
 
-	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @NotNull ItemStack item,
+	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @NotNull XMaterial material,
 						   int slot) {
+		this(displayName, lore, material.parseItem(true), slot);
+	}
+
+	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @Nullable ItemStack item,
+						   int slot) {
+		if (item == null) {
+			item = new ItemStack(Material.STONE);
+		}
 		this.item = item;
 		ItemMeta itemMeta = item.getItemMeta();
 		if (itemMeta != null) {
@@ -52,11 +62,18 @@ public class SCComponentImpl extends SCComponent {
 		private final SCComponentImpl component = new SCComponentImpl();
 		private @Nullable List<String> lore;
 
+		public Builder(@NotNull XMaterial material) {
+			this(material.parseItem(true));
+		}
+
 		public Builder(@NotNull Material material) {
 			component.item = new ItemStack(material);
 		}
 
-		public Builder(@NotNull ItemStack item) {
+		public Builder(@Nullable ItemStack item) {
+			if (item == null) {
+				item = new ItemStack(Material.STONE);
+			}
 			component.item = item;
 		}
 

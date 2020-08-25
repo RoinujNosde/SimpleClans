@@ -1,11 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,6 @@ import java.util.Set;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class AddPermissionFrame extends SCFrame {
-	private final SimpleClans plugin = SimpleClans.getInstance();
 	private final String[] availablePermissions;
 	private final Paginator paginator;
 	private final Rank rank;
@@ -50,7 +48,8 @@ public class AddPermissionFrame extends SCFrame {
 
 			SCComponent c = new SCComponentImpl(
 					lang("gui.add.permission.permission.title",getViewer(), permission),
-					Collections.singletonList(lang("gui.add.permission.permission.lore",getViewer())), Material.PAPER, slot);
+					Collections.singletonList(lang("gui.add.permission.permission.lore",getViewer())),
+					XMaterial.PAPER, slot);
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
 					String.format("rank permissions %s add %s", rank.getName(), permission), true));
 			c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.add");
@@ -72,7 +71,7 @@ public class AddPermissionFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

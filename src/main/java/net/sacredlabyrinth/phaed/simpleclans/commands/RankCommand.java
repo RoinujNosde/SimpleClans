@@ -1,24 +1,16 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
-import java.text.MessageFormat;
-import java.util.*;
-
-import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
-import net.sacredlabyrinth.phaed.simpleclans.Rank;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
+import java.text.MessageFormat;
+import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -78,7 +70,7 @@ public class RankCommand {
 					listRanks();
 					return;
 				case "delete":
-					deleteRank(args);
+					deleteRank(Helper.toMessage(args));
 					return;
 				case "permissions":
 					permissions(args);
@@ -186,17 +178,17 @@ public class RankCommand {
 		}
 	}
 
-	private void deleteRank(String[] args) {
+	private void deleteRank(String rank) {
 		if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.rank.delete")) {
             ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
             return;
 		}
-		if (args.length != 1) {
+		if (rank.isEmpty()) {
             ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.rank.delete",player),
             		plugin.getSettingsManager().getCommandClan()));
 			return;
 		}
-		String rank = args[0].toLowerCase();
+		rank = rank.toLowerCase();
 		if (!clan.hasRank(rank)) {
 			ChatBlock.sendMessage(player, ChatColor.RED + lang("rank.0.does.not.exist",player));
 			return;

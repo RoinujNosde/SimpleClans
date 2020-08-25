@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
@@ -9,7 +10,6 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public class ClanListFrame extends SCFrame {
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			Clan clan = clans.get(i);
-			ItemStack banner = clan.getBanner() != null ? clan.getBanner() : new ItemStack(Material.BLACK_BANNER);
+			ItemStack banner = clan.getBanner() != null ? clan.getBanner() : XMaterial.BLACK_BANNER.parseItem();
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title", getViewer(), clan.getColorTag(), clan.getName()),
 					Arrays.asList(lang("gui.clanlist.clan.lore.position", getViewer(),

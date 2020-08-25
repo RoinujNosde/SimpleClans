@@ -80,6 +80,10 @@
                             <pattern>co.aikar.locales</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.locales</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.cryptomorin.xseries</pattern>
+                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.xseries</shadedPattern>
+                        </relocation>
                     </relocations>
                     <artifactSet>
                         <excludes>
@@ -145,6 +149,11 @@
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>7.2.1</version>
         </dependency>
     </dependencies>
 

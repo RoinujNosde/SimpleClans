@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import java.util.Arrays;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -47,7 +48,7 @@ public class PlayerDetailsFrame extends SCFrame {
 			return;
 		}
 		
-		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title",getViewer()), null, Material.RED_WOOL,
+		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title",getViewer()), null, XMaterial.RED_WOOL,
 				28);
 		kick.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "kick " + subjectName, true));
 		kick.setConfirmationRequired(ClickType.LEFT);
@@ -57,7 +58,7 @@ public class PlayerDetailsFrame extends SCFrame {
 		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click",getViewer()),
 						lang("gui.playerdetails.demote.lore.right.click",getViewer())),
-				Material.GUNPOWDER, 30);
+				XMaterial.GUNPOWDER, 30);
 		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, !plugin.getSettingsManager().isConfirmationForPromote()));
@@ -71,7 +72,7 @@ public class PlayerDetailsFrame extends SCFrame {
 		SCComponentImpl assignUnassign = new SCComponentImpl(lang("gui.playerdetails.assign.unassign.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.assign.lore.left.click",getViewer()),
 						lang("gui.playerdetails.unassign.lore.right.click",getViewer())),
-				Material.FEATHER, 32);
+				XMaterial.FEATHER, 32);
 		assignUnassign.setConfirmationRequired(ClickType.RIGHT);
 		assignUnassign.setListener(ClickType.RIGHT,
 				() -> InventoryController.runSubcommand(getViewer(), "rank unassign " + subjectName, true));
@@ -84,7 +85,7 @@ public class PlayerDetailsFrame extends SCFrame {
 		SCComponent trustUntrust = new SCComponentImpl(lang("gui.playerdetails.trust.untrust.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.trust.lore.left.click",getViewer()),
 						lang("gui.playerdetails.untrust.lore.right.click",getViewer())),
-				Material.CYAN_DYE, 34);
+				XMaterial.CYAN_DYE, 34);
 		trustUntrust.setConfirmationRequired(ClickType.LEFT);
 		trustUntrust.setListener(ClickType.LEFT,
 				() -> InventoryController.runSubcommand(getViewer(), "trust " + subjectName, true));

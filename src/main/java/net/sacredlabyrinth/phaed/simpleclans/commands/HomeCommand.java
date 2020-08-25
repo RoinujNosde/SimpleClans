@@ -31,6 +31,7 @@ public class HomeCommand {
      * @param player
      * @param arg
      */
+    @SuppressWarnings("deprecation")
     public void execute(Player player, String[] arg) {
         SimpleClans plugin = SimpleClans.getInstance();
 

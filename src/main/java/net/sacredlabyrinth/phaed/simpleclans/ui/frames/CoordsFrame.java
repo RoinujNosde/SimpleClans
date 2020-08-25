@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
@@ -10,7 +11,6 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -54,7 +54,7 @@ public class CoordsFrame extends SCFrame {
 		int slot = 9;
 		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
 			ClanPlayer cp = allMembers.get(i);
-			Location cpLoc = cp.toPlayer().getLocation();
+			Location cpLoc = Objects.requireNonNull(cp.toPlayer()).getLocation();
 			int distance = (int) Math.ceil(cpLoc.toVector().distance(getViewer().getLocation().toVector()));
 
 			SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title",getViewer(), cp.getName()),
@@ -62,13 +62,9 @@ public class CoordsFrame extends SCFrame {
 							lang("gui.coords.player.lore.coords",getViewer(), cpLoc.getBlockX(),
 									cpLoc.getBlockY(), cpLoc.getBlockZ()),
 							lang("gui.coords.player.lore.world",getViewer(), Objects.requireNonNull(cpLoc.getWorld()).getName())),
-					Material.PLAYER_HEAD, slot);
-			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
+					XMaterial.PLAYER_HEAD, slot);
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
-			if (itemMeta != null) {
-				itemMeta.setOwningPlayer(offlinePlayer);
-				c.setItemMeta(itemMeta);
-			}
+			Components.setOwningPlayer(c.getItem(), offlinePlayer);
 			c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PlayerDetailsFrame(getViewer(), this, offlinePlayer)));
 			c.setLorePermission(RankPermission.COORDS);
 			add(c);
@@ -90,7 +86,7 @@ public class CoordsFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

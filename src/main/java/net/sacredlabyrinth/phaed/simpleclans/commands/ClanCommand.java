@@ -10,6 +10,8 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
+import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -37,9 +39,19 @@ public class ClanCommand extends BaseCommand {
     @Dependency
     private PermissionsManager permissions;
 
+    @Default
+    public void main(Player player) {
+        if (settings.isEnableGUI()) {
+            InventoryDrawer.open(new MainFrame(player));
+        } else {
+            help(player, new CommandHelp(getCurrentCommandManager(),
+                    getCurrentCommandManager().getRootCommand(getName()), getCurrentCommandIssuer()));
+        }
+    }
+
     @Subcommand("%create")
     @CommandPermission("simpleclans.leader.create")
-    public void onCreate(Player player) {
+    public void create(Player player) {
         ClanPlayer cp = cm.getAnyClanPlayer(player.getUniqueId());
 
         if (cp != null && cp.getClan() != null) {
@@ -258,8 +270,9 @@ public class ClanCommand extends BaseCommand {
     }
 
     @HelpCommand
-    public void doHelp(CommandSender sender, CommandHelp help) {
+    public void help(CommandSender sender, CommandHelp help) {
         // TODO Not showing correctly on console
+        // TODO Header footer
         sender.sendMessage("SimpleClans Help"); // TODO Get from the messages file
         help.showHelp();
     }

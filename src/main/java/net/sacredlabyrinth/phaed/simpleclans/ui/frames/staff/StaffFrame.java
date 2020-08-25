@@ -1,10 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addClans() {
-        SCComponent clanList = new SCComponentImpl.Builder(Material.PURPLE_BANNER)
+        SCComponent clanList = new SCComponentImpl.Builder(XMaterial.PURPLE_BANNER)
                 .withDisplayName(lang("gui.main.clan.list.title", getViewer())).withSlot(9)
                 .withLoreLine(lang("gui.staff.clan.list.lore.left.click", getViewer()))
                 .withLoreLine(lang("gui.staff.clan.list.lore.right.click", getViewer())).build();
@@ -57,7 +57,7 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addPlayers() {
-        SCComponent players = new SCComponentImpl.Builder(Material.WHITE_BANNER)
+        SCComponent players = new SCComponentImpl.Builder(XMaterial.WHITE_BANNER)
                 .withDisplayName(lang("gui.staff.player.list.title", getViewer())).withSlot(10)
                 .withLoreLine(lang("gui.staff.player.list.lore.left.click", getViewer()))
                 .withLoreLine(lang("gui.staff.player.list.lore.right.click", getViewer())).build();
@@ -67,7 +67,7 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addReload() {
-        SCComponent reload = new SCComponentImpl.Builder(Material.SPAWNER)
+        SCComponent reload = new SCComponentImpl.Builder(XMaterial.SPAWNER)
                 .withDisplayName(lang("gui.staff.reload.title", getViewer())).withSlot(17)
                 .withLoreLine(lang("gui.staff.reload.lore", getViewer())).build();
         reload.setPermission(ClickType.LEFT, "simpleclans.admin.reload");
@@ -81,7 +81,7 @@ public class StaffFrame extends SCFrame {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
         boolean globalffAllowed = sm.isGlobalff();
         String status = globalffAllowed ? lang("allowed", getViewer()) : lang("auto", getViewer());
-        SCComponent globalFf = new SCComponentImpl.Builder(Material.DIAMOND_SWORD).withSlot(12)
+        SCComponent globalFf = new SCComponentImpl.Builder(XMaterial.DIAMOND_SWORD).withSlot(12)
                 .withDisplayName(lang("gui.staff.global.ff.title", getViewer()))
                 .withLoreLine(lang("gui.staff.global.ff.lore.status", getViewer(), status))
                 .withLoreLine(lang("gui.staff.global.ff.lore.toggle", getViewer())).build();
