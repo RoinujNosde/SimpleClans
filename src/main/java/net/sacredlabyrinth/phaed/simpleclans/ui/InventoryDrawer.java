@@ -1,7 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
-import net.sacredlabyrinth.phaed.simpleclans.commands.MenuCommand;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -109,10 +109,11 @@ public class InventoryDrawer {
     }
 
     private static void runHelpCommand(@NotNull Player player) {
-        MenuCommand menuCommand = new MenuCommand();
-        menuCommand.execute(player);
         Bukkit.getScheduler().runTask(plugin, () -> plugin.getServer().getConsoleSender().sendMessage(lang("gui.not.supported")));
-        plugin.getSettingsManager().setEnableGUI(false);
+        SettingsManager settingsManager = plugin.getSettingsManager();
+        settingsManager.setEnableGUI(false);
+        String commandClan = settingsManager.getCommandClan();
+        player.performCommand(commandClan);
     }
 
     private static void checkLorePermission(@NotNull SCFrame frame, @NotNull SCComponent component) {

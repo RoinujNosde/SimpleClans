@@ -1049,7 +1049,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      * 
      * @param rank the rank id
      */
-    public void setRank(String rank)
+    public void setRank(@Nullable String rank)
     {
     	if (rank == null) {
     		rank = "";

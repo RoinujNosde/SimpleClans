@@ -32,47 +32,14 @@ public class InviteCommand {
     public void execute(Player player, String[] arg) {
         SimpleClans plugin = SimpleClans.getInstance();
 
-        if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.invite")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions",player));
-            return;
-        }
+
 
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
 
-        if (cp == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("not.a.member.of.any.clan",player));
-            return;
-        }
-
         Clan clan = cp.getClan();
 
-        if (!plugin.getPermissionsManager().has(player, RankPermission.INVITE, PermissionLevel.LEADER, true)) {
-        	return;
-        }
-        
-        if (arg.length != 1) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("usage.0.invite.player",player), plugin.getSettingsManager().getCommandClan()));
-            return;
-        }
-        
         Player invited = Helper.getPlayer(arg[0]);
 
-        if (invited == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("no.player.matched",player));
-            return;
-        }
-        if (!plugin.getPermissionsManager().has(invited, "simpleclans.member.can-join")) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("the.player.doesn.t.not.have.the.permissions.to.join.clans",player));
-            return;
-        }
-        if (invited.getName().equals(player.getName())) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("you.cannot.invite.yourself",player));
-            return;
-        }
-        if (plugin.getSettingsManager().isBanned(player.getUniqueId())) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("this.player.is.banned.from.using.clan.commands",player));
-            return;
-        }
 
         ClanPlayer cpInv = plugin.getClanManager().getAnyClanPlayer(invited.getUniqueId());
 

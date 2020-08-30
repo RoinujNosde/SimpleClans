@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author phaed
@@ -584,8 +585,8 @@ public final class SettingsManager {
      * @return whether the world is blacklisted
      */
     public boolean isBlacklistedWorld(String world) {
-        for (Object w : blacklistedWorlds) {
-            if (((String) w).equalsIgnoreCase(world)) {
+        for (String w : blacklistedWorlds) {
+            if (w.equalsIgnoreCase(world)) {
                 return true;
             }
         }

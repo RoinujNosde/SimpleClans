@@ -3,6 +3,8 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import co.aikar.commands.*;
 import co.aikar.locales.MessageKeyProvider;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanCommand;
+import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
+import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.SCEntityListener;
@@ -19,6 +21,8 @@ import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,6 +36,8 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.bukkit.ChatColor.RED;
+
 /**
  * @author Phaed
  */
@@ -41,6 +47,7 @@ public class SimpleClans extends JavaPlugin {
     private static SimpleClans instance;
     private static LanguageResource languageResource;
     private static final Logger logger = Logger.getLogger("Minecraft");
+    private PaperCommandManager commandManager;
     private ClanManager clanManager;
     private RequestManager requestManager;
     private StorageManager storageManager;
@@ -106,22 +113,7 @@ public class SimpleClans extends JavaPlugin {
 
         permissionsManager.loadPermissions();
 
-//        CommandHelper.registerCommand(getSettingsManager().getCommandClan());
-//        CommandHelper.registerCommand(getSettingsManager().getCommandAccept());
-//        CommandHelper.registerCommand(getSettingsManager().getCommandDeny());
-//        CommandHelper.registerCommand(getSettingsManager().getCommandMore());
-//        CommandHelper.registerCommand(getSettingsManager().getCommandAlly());
-//        CommandHelper.registerCommand(getSettingsManager().getCommandGlobal());
-//
-//        getCommand(getSettingsManager().getCommandClan()).setExecutor(new ClanCommandExecutor());
-//        getCommand(getSettingsManager().getCommandAccept()).setExecutor(new AcceptCommandExecutor());
-//        getCommand(getSettingsManager().getCommandDeny()).setExecutor(new DenyCommandExecutor());
-//        getCommand(getSettingsManager().getCommandMore()).setExecutor(new MoreCommandExecutor());
-//        getCommand(getSettingsManager().getCommandAlly()).setExecutor(new AllyCommandExecutor());
-//        getCommand(getSettingsManager().getCommandGlobal()).setExecutor(new GlobalCommandExecutor());
-//
-//        getCommand(getSettingsManager().getCommandClan()).setTabCompleter(new PlayerNameTabCompleter());
-        PaperCommandManager commandManager = new PaperCommandManager(this) {
+        commandManager = new PaperCommandManager(this) {
             @Override
             public BukkitLocales getLocales() {
                 if (this.locales == null) {
@@ -137,11 +129,6 @@ public class SimpleClans extends JavaPlugin {
 
                 return this.locales;
             }
-
-            @Override
-            public String formatMessage(CommandIssuer issuer, MessageType type, MessageKeyProvider key, String... replacements) {
-                return super.formatMessage(issuer, type, key, replacements);
-            }
         };
         commandManager.registerDependency(ClanManager.class, clanManager);
         commandManager.registerDependency(SettingsManager.class, settingsManager);
@@ -149,7 +136,78 @@ public class SimpleClans extends JavaPlugin {
         commandManager.registerDependency(PermissionsManager.class, permissionsManager);
 
         commandManager.enableUnstableAPI("help");
+        commandManager.getCommandContexts().registerContext(Rank.class, context -> {
+            if (context.getIssuer().isPlayer()) {
+                Player player = context.getPlayer();
+                Clan clan = clanManager.getClanByPlayerUniqueId(player.getUniqueId());
+                if (clan == null) {
+                    throw new InvalidCommandArgument(lang("not.a.member.of.any.clan", player));
+                }
+                String rank = context.popFirstArg();
+                if (!clan.hasRank(rank)) {
+                    throw new InvalidCommandArgument(RED + lang("rank.0.does.not.exist", player, rank));
+                }
+                return clan.getRank(rank);
+            }
+            throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
+        });
+        commandManager.getCommandContexts().registerContext(ClanInput.class, context -> {
+            String arg = context.popFirstArg();
+            Clan clan = clanManager.getClan(arg);
+            if (clan == null) {
+                throw new InvalidCommandArgument(RED + lang("the.clan.does.not.exist", context.getSender()));
+            }
+            return new ClanInput(clan);
+        });
+        commandManager.getCommandContexts().registerContext(ClanPlayerInput.class, context -> {
+            String arg = context.popFirstArg();
+            @SuppressWarnings("deprecation")
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arg);
+            ClanPlayer cp = clanManager.getAnyClanPlayer(offlinePlayer.getUniqueId());
+            if (cp == null) {
+                throw new InvalidCommandArgument(RED + lang("no.player.matched", context.getSender()));
+            }
+            return new ClanPlayerInput(cp);
+        });
+        commandManager.getCommandContexts().registerIssuerOnlyContext(Clan.class, context -> {
+            if (context.getIssuer().isPlayer()) {
+                Player player = context.getPlayer();
+                Clan clan = clanManager.getClanByPlayerUniqueId(player.getUniqueId());
+                if (clan == null) {
+                    throw new InvalidCommandArgument(RED + lang("not.a.member.of.any.clan", player));
+                }
+                return clan;
+            }
+            throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
+        });
+        commandManager.getCommandContexts().registerIssuerOnlyContext(ClanPlayer.class, context -> {
+            if (context.getIssuer().isPlayer()) {
+                Player player = context.getPlayer();
+                return clanManager.getCreateClanPlayer(player.getUniqueId());
+            }
+            throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
+        });
+        registerCommandCompletions();
+        registerCommandConditions();
+        addCommandReplacements();
 
+        commandManager.registerCommand(new ClanCommand(), settingsManager.isForceCommandPriority());
+        // TODO Force priority (other commands) (config)
+
+        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
+        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
+        getLogger().info("Help us translate SimpleClans to your language! " +
+                "Access https://crowdin.com/project/simpleclans/");
+
+        startTasks();
+        startMetrics();
+        hookIntoPAPI();
+        new UpdateChecker(this).check();
+    }
+
+    private void registerCommandCompletions() {
+        commandManager.getCommandCompletions().registerAsyncCompletion("rank_permissions",
+                c -> Arrays.asList(Helper.fromPermissionArray()));
         commandManager.getCommandCompletions().registerAsyncCompletion("clans", c ->
                 clanManager.getClans().stream().map(Clan::getTag).collect(Collectors.toList()));
         commandManager.getCommandCompletions().registerAsyncCompletion("clan_members", c -> {
@@ -162,6 +220,42 @@ public class SimpleClans extends JavaPlugin {
                 }
             }
             return Collections.emptyList();
+        });
+        commandManager.getCommandCompletions().registerAsyncCompletion("ranks", context -> {
+            if (context.getIssuer().isPlayer()) {
+                Clan clan = clanManager.getClanByPlayerUniqueId(context.getPlayer().getUniqueId());
+                if (clan != null) {
+                    return clan.getRanks().stream().map(Rank::getName).collect(Collectors.toList());
+                }
+            }
+            return Collections.emptyList();
+        });
+    }
+
+    private void registerCommandConditions() {
+        commandManager.getCommandConditions().addCondition("not_blacklisted", context -> {
+            if (context.getIssuer().isPlayer()) {
+                World world = context.getIssuer().getPlayer().getLocation().getWorld();
+                if (world != null) {
+                    if (settingsManager.isBlacklistedWorld(world.getName())) {
+                        // TODO Check if it sends message
+                        throw new ConditionFailedException();
+                    }
+                }
+            }
+        });
+        commandManager.getCommandConditions().addCondition(ClanPlayerInput.class, "not_in_clan", (i, c, h) -> {
+            if (h.getClanPlayer().getClan() != null) {
+                throw new ConditionFailedException(RED + lang("the.player.is.already.member.of.another.clan",
+                        c.getSender()));
+            }
+        });
+        commandManager.getCommandConditions().addCondition(ClanPlayerInput.class, "not_banned", (i, c, h) -> {
+            UUID uniqueId = h.getClanPlayer().getUniqueId();
+            if (settingsManager.isBanned(uniqueId)) {
+                throw new ConditionFailedException(RED + lang("this.player.is.banned.from.using.clan.commands",
+                        c.getSender()));
+            }
         });
         commandManager.getCommandConditions().addCondition("not_banned", context -> {
             if (!context.getIssuer().isPlayer()) {
@@ -188,48 +282,6 @@ public class SimpleClans extends JavaPlugin {
                 throw new ConditionFailedException(MessageKeys.NOT_ALLOWED_ON_CONSOLE);
             }
         });
-        commandManager.getCommandContexts().registerIssuerAwareContext(Clan.class, context -> {
-            CommandSender sender = context.getSender();
-            if (context.hasFlag("other")) {
-                String input = context.popFirstArg();
-                if (input != null) {
-                    Clan clan = clanManager.getClan(input);
-                    if (clan == null) {
-                        throw new InvalidCommandArgument(ChatColor.RED + lang("the.clan.does.not.exist",
-                                sender), false);
-                    }
-                    return clan;
-                }
-            }
-            if (!context.getIssuer().isPlayer() && !context.isOptional()) {
-                throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
-            }
-            Clan clan = clanManager.getClanByPlayerUniqueId(context.getPlayer().getUniqueId());
-            if (clan == null) {
-                throw new InvalidCommandArgument(lang("not.a.member.of.any.clan", sender));
-            }
-            return clan;
-        });
-        commandManager.getCommandContexts().registerIssuerAwareContext(ClanPlayer.class, context -> {
-            CommandSender sender = context.getSender();
-            if (context.hasFlag("other") || context.hasFlag("other_only")) {
-                String input = context.popFirstArg();
-                if (input != null) {
-                    UUID uuid = UUIDMigration.getForcedPlayerUUID(input);
-                    if (uuid != null) {
-                        return clanManager.getCreateClanPlayer(uuid);
-                    }
-                }
-                if (context.hasFlag("other_only")) {
-                    throw new InvalidCommandArgument(ChatColor.RED + lang("no.player.matched", sender),
-                            false);
-                }
-            }
-            if (!context.getIssuer().isPlayer() && !context.isOptional()) {
-                throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE, false);
-            }
-            return clanManager.getCreateClanPlayer(context.getPlayer().getUniqueId());
-        });
         commandManager.getCommandConditions().addCondition(ClanPlayer.class, "same_clan", (context, execContext, value) -> {
             Player player = context.getIssuer().getPlayer();
             ClanPlayer clanPlayer = clanManager.getClanPlayer(player);
@@ -246,30 +298,43 @@ public class SimpleClans extends JavaPlugin {
                 throw new ConditionFailedException(lang("not.a.member.of.any.clan", player));
             }
         });
+        commandManager.getCommandConditions().addCondition("member_fee_enabled", context -> {
+            if (!settingsManager.isMemberFee()) {
+                throw new ConditionFailedException(ChatColor.RED + lang("disabled.command",
+                        context.getIssuer().getIssuer()));
+            }
+        });
+        commandManager.getCommandConditions().addCondition("leader", context -> {
+            if (context.getIssuer().isPlayer()) {
+                Player player = context.getIssuer().getPlayer();
+                ClanPlayer cp = clanManager.getAnyClanPlayer(player.getUniqueId());
+                if (cp == null || cp.getClan() == null) {
+                    throw new ConditionFailedException(lang("not.a.member.of.any.clan", player));
+                }
+                if (!cp.isLeader()) {
+                    throw new ConditionFailedException(ChatColor.RED + lang("no.leader.permissions", player));
+                }
+            } else {
+                throw new ConditionFailedException(MessageKeys.NOT_ALLOWED_ON_CONSOLE);
+            }
+        });
+    }
+
+    private void addCommandReplacements() {
         commandManager.getCommandReplacements().addReplacement("clan", getSettingsManager().getCommandClan());
 
-        List<String> subcommands = Arrays.asList("setbanner", "resetkdr", "place", "setrank", "home", "war",
+        List<String> subcommands = Arrays.asList("setbanner", "resetkdr", "place", "rank", "home", "war",
                 "mostkilled", "kills", "globalff", "reload", "unban", "ban", "verify", "disband", "resign", "ff",
                 "clanff", "demote", "promote", "untrust", "trust", "purge", "fee", "bank", "kick", "invite", "toggle",
-                "modtag", "bb", "clear", "rival", "ally", "stats", "coords", "vitals", "rivalries", "alliances", "leaderboard",
+                "modtag", "bb", "clear", "rival", "ally", "add", "remove", "stats", "coords", "vitals", "rivalries",
+                "alliances", "leaderboard", "allow", "block", "auto", "check", "assign", "unassign", "delete",
+                "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set",
                 "lookup", "roster", "profile", "list", "create", "description");
 
         subcommands.forEach(s ->
                 commandManager.getCommandReplacements().addReplacement(s, (lang(s + ".command") + "|" + s)));
-
-        commandManager.registerCommand(new ClanCommand(), settingsManager.isForceCommandPriority());
-        // TODO Force priority (config)
-
-        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
-        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
-        getLogger().info("Help us translate SimpleClans to your language! Access https://crowdin.com/project/simpleclans/");
-
-        startTasks();
-        startMetrics();
-        hookIntoPAPI();
-        new UpdateChecker(this).check();
     }
-    
+
     private void hookIntoPAPI() {
 		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
 			getLogger().info("PlaceholderAPI found. Registering hook...");
