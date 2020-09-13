@@ -2,25 +2,25 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
+import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -983,12 +983,27 @@ public final class ClanManager {
             }
         });
     }
-    
+
+    public long getMinutesBeforeRejoin(@NotNull ClanPlayer cp, @NotNull Clan clan) {
+        SettingsManager settings = plugin.getSettingsManager();
+        if (settings.isRejoinCooldown()) {
+            Long resign = cp.getResignTime(clan.getTag());
+            if (resign != null) {
+                long timePassed = Instant.ofEpochMilli(resign).until(Instant.now(), ChronoUnit.MINUTES);
+                int cooldown = settings.getRejoinCooldown();
+                if (timePassed < cooldown) {
+                    return cooldown - timePassed;
+                }
+            }
+        }
+        return 0;
+    }
+
     /**
      * Purchase member fee set
-     * 
+     *
      * @param player
-     * @return 
+     * @return
      */
     public boolean purchaseMemberFeeSet(Player player) {
         if (!plugin.getSettingsManager().isePurchaseMemberFeeSet()) {

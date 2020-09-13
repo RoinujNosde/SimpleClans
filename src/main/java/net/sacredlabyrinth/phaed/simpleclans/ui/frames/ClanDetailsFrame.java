@@ -249,11 +249,11 @@ public class ClanDetailsFrame extends SCFrame {
 		regroup.setVerifiedOnly(ClickType.LEFT);
 		regroup.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "home regroup", false));
 		regroup.setConfirmationRequired(ClickType.LEFT);
-		regroup.setPermission(ClickType.LEFT, RankPermission.HOME_REGROUP);
+		regroup.setPermission(ClickType.LEFT, RankPermission.REGROUP_HOME);
 		regroup.setVerifiedOnly(ClickType.RIGHT);
 		regroup.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "home regroup me", false));
 		regroup.setConfirmationRequired(ClickType.RIGHT);
-		regroup.setPermission(ClickType.RIGHT, RankPermission.HOME_REGROUP);
+		regroup.setPermission(ClickType.RIGHT, RankPermission.REGROUP_ME);
 		add(regroup);
 	}
 

@@ -51,20 +51,12 @@ settings:
     accept-other-alphabets-letters-on-tag: false
     min-to-verify: 1
     ranking-type: "DENSE"
+    list-default-order-by: kdr
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10
     enable-kill-delay: false
     delay-between-kills: 5
-list:
-    size: size
-    kdr: kdr
-    name: name
-    founded: founded
-    active: active
-    asc: asc
-    desc: desc
-    default: kdr
 commands:
     more: more
     ally: ally

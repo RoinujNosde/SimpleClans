@@ -12,7 +12,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author phaed
@@ -41,14 +40,7 @@ public final class SettingsManager {
     private boolean acceptOtherAlphabetsLettersOnTag;
     private int minToVerify;
     private int rejoinCooldown;
-    private String listDefault;
-    private String listSize;
-    private String listKdr;
-    private String listName;
-    private String listFounded;
-    private String listActive;
-    private String listAsc;
-    private String listDesc;
+    private String listDefaultOrderBy;
     private final List<Material> itemsList = new ArrayList<>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
@@ -259,15 +251,8 @@ public final class SettingsManager {
         acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
         minToVerify = getConfig().getInt("settings.min-to-verify", 1);
         rankingType = getConfig().getString("settings.ranking-type", "DENSE");
-        listActive = getConfig().getString("list.active", "active");
-        listKdr = getConfig().getString("list.kdr", "kdr");
-        listDefault = getConfig().getString("list.default", listKdr);
-        listSize = getConfig().getString("list.size", "size");
-        listName = getConfig().getString("list.name", "name");
-        listFounded = getConfig().getString("list.founded", "founded");
-        listAsc = getConfig().getString("list.asc", "asc");
-        listDesc = getConfig().getString("list.desc", "desc");
-        serverName = getConfig().getString("settings.server-name");
+        listDefaultOrderBy = getConfig().getString("settings.list-default-order-by", "kdr");
+        serverName = getConfig().getString("settings.server-name", "SimpleClans");
         chatTags = getConfig().getBoolean("settings.display-chat-tags");
         rivalLimitPercent = getConfig().getInt("settings.rival-limit-percent");
         ePurchaseCreation = getConfig().getBoolean("economy.purchase-clan-create");
@@ -808,37 +793,50 @@ public final class SettingsManager {
     public int getRejoinCooldown() {
     	return rejoinCooldown;
     }
-    
-    public String getListDefault() {
-		return listDefault;
+
+    @NotNull
+    public String getListDefaultOrderBy() {
+		return listDefaultOrderBy;
 	}
 
+	@Deprecated
+	public String getListDefault() {
+        return getListDefaultOrderBy();
+    }
+
+	@Deprecated
 	public String getListSize() {
-		return listSize;
+		return "size";
 	}
 
+	@Deprecated
 	public String getListKdr() {
-		return listKdr;
+		return "kdr";
 	}
 
+	@Deprecated
 	public String getListName() {
-		return listName;
+		return "name";
 	}
 
+	@Deprecated
 	public String getListFounded() {
-		return listFounded;
+		return "founded";
 	}
 
+    @Deprecated
 	public String getListActive() {
-		return listActive;
+		return "active";
 	}
 
+	@Deprecated
 	public String getListAsc() {
-		return listAsc;
+		return "asc";
 	}
 
+	@Deprecated
 	public String getListDesc() {
-		return listDesc;
+		return "desc";
 	}
 
 	/**
