@@ -5,6 +5,9 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
+import net.sacredlabyrinth.phaed.simpleclans.commands.data.ClanCoords;
+import net.sacredlabyrinth.phaed.simpleclans.commands.data.ClanProfile;
+import net.sacredlabyrinth.phaed.simpleclans.commands.data.ClanRoster;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResignPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.events.HomeRegroupEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
@@ -18,7 +21,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -49,6 +53,22 @@ public class ClanCommands extends BaseCommand {
             return;
         }
         plugin.getClanManager().processAllyChat(player, message);
+    }
+
+    @Subcommand("%profile")
+    @CommandPermission("simpleclans.member.profile")
+    @Conditions("verified")
+    public void profile(CommandSender sender, Clan clan) {
+        ClanProfile p = new ClanProfile(plugin, sender, clan);
+        p.send();
+    }
+
+    @Subcommand("%roster")
+    @CommandPermission("simpleclans.member.roster")
+    @Conditions("verified")
+    public void roster(Player player, Clan clan) {
+        ClanRoster r = new ClanRoster(plugin, player, clan);
+        r.send();
     }
 
     @Subcommand("%war %start")
@@ -559,15 +579,11 @@ public class ClanCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @Description("{@@command.description.ally.add}")
     // TODO See if other commands can have completions
-    public void addAlly(Player player, ClanPlayer cp, Clan clan, ClanInput other) {
+    public void addAlly(Player player, ClanPlayer cp, Clan clan, @Conditions("verified") ClanInput other) {
         Clan input = other.getClan();
         if (clan.getSize() < settings.getClanMinSizeToAlly()) {
             ChatBlock.sendMessage(player, RED +
                     lang("minimum.to.make.alliance", player, settings.getClanMinSizeToAlly()));
-            return;
-        }
-        if (!input.isVerified()) {
-            ChatBlock.sendMessage(player, RED + lang("cannot.ally.with.an.unverified.clan", player));
             return;
         }
         if (clan.isAlly(input.getTag())) {
@@ -602,7 +618,6 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=ALLY_REMOVE")
     @CommandPermission("simpleclans.leader.ally")
     @Description("{@@command.description.ally.remove}")
-    // TODO Refactor ally add and remove to a inner class
     public void removeAlly(Player player, Clan clan, ClanInput ally) {
         Clan allyInput = ally.getClan();
         if (!clan.isAlly(allyInput.getTag())) {
@@ -620,7 +635,6 @@ public class ClanCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.kick")
     @CommandCompletion("@clan_members")
     @Conditions("rank:name=KICK")
-    // TODO Update some usages of ClanPlayer (or Clan) as input
     @Description("{@@command.description.kick}")
     public void kick(@Conditions("clan_member") Player sender,
                      @Conditions("same_clan") @Flags("other") ClanPlayer clanPlayer) {
@@ -675,79 +689,22 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=COORDS")
     @HelpSearchTags("local location")
     @Description("{@@command.description.coords}")
-    public void coords(Player sender) {
-        String headColor = settings.getPageHeadingsColor();
-        String subColor = settings.getPageSubTitleColor();
-
-        ClanPlayer cp = cm.getClanPlayer(sender);
-        Clan clan = Objects.requireNonNull(cp.getClan());
-
-        ChatBlock chatBlock = new ChatBlock();
-
-        chatBlock.setFlexibility(true, false, false, false);
-        chatBlock.setAlignment("l", "c", "c", "c");
-
-        chatBlock.addRow("  " + headColor + lang("name", sender), lang("distance", sender),
-                lang("coords.upper", sender), lang("world", sender));
-
-        List<ClanPlayer> members = Helper.stripOffLinePlayers(clan.getMembers());
-
-        Map<Integer, List<String>> rows = new TreeMap<>();
-
-        for (ClanPlayer cpm : members) {
-            Player p = cpm.toPlayer();
-
-            if (p != null) {
-                String name = (cpm.isLeader() ? settings.getPageLeaderColor() : (cpm.isTrusted() ?
-                        settings.getPageTrustedColor() : settings.getPageUnTrustedColor())) + cpm.getName();
-                Location loc = p.getLocation();
-                int distance = (int) Math.ceil(loc.toVector().distance(sender.getLocation().toVector()));
-                String coords = loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ();
-                String world = loc.getWorld() == null ? "-" : loc.getWorld().getName();
-
-                List<String> cols = new ArrayList<>();
-                cols.add("  " + name);
-                cols.add(AQUA + "" + distance);
-                cols.add(WHITE + "" + coords);
-                cols.add(world);
-                rows.put(distance, cols);
-            }
-        }
-
-        if (rows.isEmpty()) {
-            ChatBlock.sendMessage(sender, RED + lang("you.are.the.only.member.online", sender));
+    public void coords(Player player, Clan clan) {
+        if (clan.getOnlineMembers().size() == 1) {
+            ChatBlock.sendMessage(player, RED + lang("you.are.the.only.member.online", player));
             return;
         }
-
-        for (List<String> col : rows.values()) {
-            chatBlock.addRow(col.get(0), col.get(1), col.get(2), col.get(3));
-        }
-
-        ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, settings.getPageClanNameColor() + clan.getName() + subColor + " " +
-                lang("coords", sender) + " " + headColor + Helper.generatePageSeparator(settings.getPageSep()));
-        ChatBlock.sendBlank(sender);
-
-        boolean more = chatBlock.sendBlock(sender, settings.getPageSize());
-
-        if (more) {
-            storage.addChatBlock(sender, chatBlock);
-            ChatBlock.sendBlank(sender);
-            ChatBlock.sendMessage(sender, headColor + lang("view.next.page", sender,
-                    settings.getCommandMore()));
-        }
-
-        ChatBlock.sendBlank(sender);
+        ClanCoords c = new ClanCoords(plugin, player, clan);
+        c.send();
     }
         // TODO Help search tags
 
     @Subcommand("%trust")
     @CommandPermission("simpleclans.leader.settrust")
     @Conditions("leader")
-    // TODO trusted clan member condition
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.trust}")
-    public void trust(Player player, Clan clan, ClanPlayerInput trusted) {
+    public void trust(Player player, Clan clan, @Conditions("same_clan") ClanPlayerInput trusted) {
         ClanPlayer trustedInput = trusted.getClanPlayer();
         if (player.getUniqueId().equals(trustedInput.getUniqueId())) {
             ChatBlock.sendMessage(player, RED + lang("you.cannot.trust.yourself", player));
@@ -772,8 +729,7 @@ public class ClanCommands extends BaseCommand {
     @Conditions("leader")
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.untrust}")
-    // TODO cp clan member
-    public void untrust(Player player, Clan clan, ClanPlayerInput trusted) {
+    public void untrust(Player player, Clan clan, @Conditions("same_clan") ClanPlayerInput trusted) {
         ClanPlayer trustedInput = trusted.getClanPlayer();
         if (trustedInput.getUniqueId().equals(player.getUniqueId())) {
             ChatBlock.sendMessage(player, RED + lang("you.cannot.untrust.yourself", player));
@@ -796,9 +752,8 @@ public class ClanCommands extends BaseCommand {
 
     @Subcommand("%resign")
     @CommandPermission("simpleclans.member.resign")
-    // TODO clan member condition
     @Description("{@@command.description.resign}")
-    public void resign(Player player) {
+    public void resign(@Conditions("clan_member") Player player) {
         new ConversationFactory(plugin)
                 .withFirstPrompt(new ResignPrompt())
                 .withLocalEcho(true)

@@ -734,24 +734,17 @@ public class Helper {
     }
 
     /**
-     * Sort hashmap by value
+     * Sorts a Map by value
      *
-     * @param map
-     * @return Map
+     * @param map the Map to sort
+     * @return the Map sorted
      */
-    public static Map sortByValue(Map map) {
-        List list = new LinkedList(map.entrySet());
-        Collections.sort(list, new Comparator() {
+    public static <K, V extends Comparable<V>> Map<K, V> sortByValue(Map<K, V> map) {
+        LinkedList<Map.Entry<K, V>> entryList = new LinkedList<>(map.entrySet());
+        entryList.sort(Entry.comparingByValue());
 
-            @Override
-            public int compare(Object o1, Object o2) {
-                return ((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
-            }
-        });
-
-        Map result = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Entry<K, V> entry : entryList) {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;

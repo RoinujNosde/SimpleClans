@@ -312,6 +312,7 @@ public class SimpleClans extends JavaPlugin {
     }
 
     private void registerCommandConditions() {
+        // TODO Extract some common conditions
         commandManager.getCommandConditions().addCondition("can_vote", context -> {
             Player player = context.getIssuer().getPlayer();
             if (player != null) {
@@ -431,6 +432,12 @@ public class SimpleClans extends JavaPlugin {
         commandManager.getCommandConditions().addCondition(ClanPlayerInput.class, "clan_member", (c, ec, v) -> {
             if (v.getClanPlayer().getClan() == null) {
                 throw new ConditionFailedException(RED + lang("player.not.a.member.of.any.clan", ec.getSender()));
+            }
+        });
+        commandManager.getCommandConditions().addCondition(ClanPlayer.class, "clan_member", (context, execContext, value) -> {
+            Player player = context.getIssuer().getPlayer();
+            if (clanManager.getClanPlayer(player) == null) {
+                throw new ConditionFailedException(lang("not.a.member.of.any.clan", player));
             }
         });
         commandManager.getCommandConditions().addCondition(Player.class, "clan_member", (context, execContext, value) -> {
@@ -606,7 +613,7 @@ public class SimpleClans extends JavaPlugin {
     }
     
     @NotNull
-    public static String lang(@NotNull String key, @NotNull CommandSender sender, Object... arguments) {
+    public static String lang(@NotNull String key, @Nullable CommandSender sender, Object... arguments) {
     	if (sender instanceof Player) {
             return lang(key, (Player) sender, arguments);
         } else {

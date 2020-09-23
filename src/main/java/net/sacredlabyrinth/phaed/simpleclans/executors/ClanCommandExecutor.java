@@ -22,15 +22,9 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
  */
 public final class ClanCommandExecutor implements CommandExecutor {
     private final SimpleClans plugin;
-    private final ProfileCommand profileCommand;
-    private final RosterCommand rosterCommand;
-    private final LookupCommand lookupCommand;
-    private final LeaderboardCommand leaderboardCommand;
     private final RivalriesCommand rivalriesCommand;
     private final VitalsCommand vitalsCommand;
     private final StatsCommand statsCommand;
-    private final KillsCommand killsCommand;
-    private final MostKilledCommand mostKilledCommand;
 
     /**
      *
@@ -39,15 +33,8 @@ public final class ClanCommandExecutor implements CommandExecutor {
         plugin = SimpleClans.getInstance();
         //table commands
         vitalsCommand = new VitalsCommand();
-        lookupCommand = new LookupCommand();
-        mostKilledCommand = new MostKilledCommand();
-        killsCommand = new KillsCommand();
         statsCommand = new StatsCommand();
         rivalriesCommand = new RivalriesCommand();
-        leaderboardCommand = new LeaderboardCommand();
-        rosterCommand = new RosterCommand();
-        profileCommand = new ProfileCommand();
-
     }
 
     @Override
@@ -64,24 +51,12 @@ public final class ClanCommandExecutor implements CommandExecutor {
                     String subcommand = args[0];
                     String[] subargs = Helper.removeFirst(args);
                     
-                    if (subcommand.equalsIgnoreCase(lang("profile.command",player)) || subcommand.equalsIgnoreCase("profile")) {
-                        profileCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("roster.command",player)) || subcommand.equalsIgnoreCase("roster")) {
-                        rosterCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("lookup.command",player)) || subcommand.equalsIgnoreCase("lookup")) {
-                        lookupCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("leaderboard.command",player)) || subcommand.equalsIgnoreCase("leaderboard")) {
-                        leaderboardCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("rivalries.command",player)) || subcommand.equalsIgnoreCase("rivalries")) {
+                    if (subcommand.equalsIgnoreCase(lang("rivalries.command",player)) || subcommand.equalsIgnoreCase("rivalries")) {
                         rivalriesCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("vitals.command",player)) || subcommand.equalsIgnoreCase("vitals")) {
                         vitalsCommand.execute(player, subargs);
                     } else if (subcommand.equalsIgnoreCase(lang("stats.command", player)) || subcommand.equalsIgnoreCase("stats")) {
                         statsCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("kills.command", player)) || subcommand.equalsIgnoreCase("kills")) {
-                        killsCommand.execute(player, subargs);
-                    } else if (subcommand.equalsIgnoreCase(lang("mostkilled.command", player)) || subcommand.equalsIgnoreCase("mostkilled")) {
-                        mostKilledCommand.execute(player, subargs);
                     } else {
                         ChatBlock.sendMessage(player, ChatColor.RED + lang("does.not.match", player));
                     }

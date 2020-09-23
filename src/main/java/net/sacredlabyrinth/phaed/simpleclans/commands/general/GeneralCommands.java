@@ -5,7 +5,13 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandParameter;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.annotation.*;
-import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
+import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
+import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
@@ -13,20 +19,13 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
-import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
-import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType.ORDINAL;
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
@@ -74,9 +73,60 @@ public class GeneralCommands extends BaseCommand {
         conversation.begin();
     }
 
+    @Subcommand("%leaderboard")
+    @CommandPermission("simpleclans.anyone.leaderboard")
+    public void leaderboard(CommandSender sender) {
+        Leaderboard l = new Leaderboard(plugin, sender);
+        l.send();
+    }
+
+    @Subcommand("%lookup")
+    @CommandCompletion("@players")
+    @CommandPermission("simpleclans.anyone.lookup")
+    // TODO Ops don't have permission?
+    public void lookup(CommandSender sender, OfflinePlayer player) {
+        Lookup l = new Lookup(plugin, sender, player.getUniqueId());
+        l.send();
+    }
+
+    @Subcommand("%lookup")
+    @CommandPermission("simpleclans.member.lookup")
+    public void lookup(Player sender) {
+        Lookup l = new Lookup(plugin, sender, sender.getUniqueId());
+        l.send();
+    }
+
+    @Subcommand("%kills")
+    @CommandPermission("simpleclans.member.kills")
+    @Conditions("verified|rank:name=KILLS")
+    @CommandCompletion("@players")
+    public void kills(Player sender, @Optional ClanPlayerInput player) {
+        String name = sender.getName();
+        if (player != null) {
+            name = player.getClanPlayer().getName();
+        }
+        Kills k = new Kills(plugin, sender, name);
+        k.send();
+    }
+
+    @Subcommand("%profile")
+    @CommandPermission("simpleclans.anyone.profile")
+    @CommandCompletion("@clans")
+    public void profile(CommandSender sender, @Conditions("verified") ClanInput clan) {
+        ClanProfile p = new ClanProfile(plugin, sender, clan.getClan());
+        p.send();
+    }
+
+    @Subcommand("%roster")
+    @CommandCompletion("@clans")
+    @CommandPermission("simpleclans.anyone.roster")
+    public void roster(CommandSender sender, @Conditions("verified") ClanInput clan) {
+        ClanRoster r = new ClanRoster(plugin, sender, clan.getClan());
+        r.send();
+    }
+
     @Subcommand("%ff %allow")
     @CommandPermission("simpleclans.member.ff")
-    // TODO cp clan member
     @Description("{@@command.description.ff.allow}")
     public void allowPersonalFf(Player player, ClanPlayer cp) {
         cp.setFriendlyFire(true);
@@ -87,7 +137,6 @@ public class GeneralCommands extends BaseCommand {
     @Subcommand("%ff %auto")
     @CommandPermission("simpleclans.member.ff")
     @Description("{@@command.description.ff.auto}")
-    // TODO cp clan member
     public void autoPersonalFf(Player player, ClanPlayer cp) {
         cp.setFriendlyFire(false);
         storage.updateClanPlayer(cp);
@@ -171,145 +220,30 @@ public class GeneralCommands extends BaseCommand {
         help.showHelp();
     }
 
+    @Subcommand("%mostkilled")
+    @CommandPermission("simpleclans.mod.mostkilled")
+    @Conditions("verified|rank:name=MOSTKILLED")
+    public void mostKilled(Player player) {
+        MostKilled mk = new MostKilled(plugin, player);
+        mk.send();
+    }
+
     @Subcommand("%list")
     @CommandPermission("simpleclans.anyone.list")
-    public class ListCommand extends BaseCommand {
-
-        private final String headColor = settings.getPageHeadingsColor();
-        private final String subColor = settings.getPageSubTitleColor();
-
-        @Default
-        @Description("{@@command.description.list}")
-        @CommandCompletion("@clan_list_type @order")
-        public void list(CommandSender sender, @Optional @Values("@clan_list_type") String type,
-                         @Optional @Single @Values("@order") String order) {
-            List<Clan> clans = getListableClans();
-            if (clans.isEmpty()) {
-                ChatBlock.sendMessage(sender, RED + lang("no.clans.have.been.created", sender));
-                return;
-            }
-            RankingNumberResolver<Clan, ? extends Comparable<?>> ranking = getRankingResolver(clans, type, order);
-            ChatBlock chatBlock = new ChatBlock();
-            sendHeader(sender, clans, chatBlock);
-            for (Clan clan : clans) {
-                addLine(chatBlock, ranking, clan);
-            }
-            // TODO Extract
-            boolean more = chatBlock.sendBlock(sender, settings.getPageSize());
-
-            if (more) {
-                plugin.getStorageManager().addChatBlock(sender, chatBlock);
-                ChatBlock.sendBlank(sender);
-                ChatBlock.sendMessage(sender, headColor + lang("view.next.page", sender, settings.getCommandMore()));
-            }
-
-            ChatBlock.sendBlank(sender);
-        }
-
-        private RankingNumberResolver<Clan, ? extends Comparable<?>> getRankingResolver(List<Clan> clans,
-                                                                                        @Nullable String type,
-                                                                                        @Nullable String order) {
-            boolean ascending = order == null || lang("list.order.asc").equalsIgnoreCase(order);
-            if (type == null) {
-                type = settings.getListDefaultOrderBy();
-            }
-            if (type.equalsIgnoreCase(lang("list.type.size"))) {
-                return new RankingNumberResolver<>(clans, Clan::getSize, order != null && ascending, ORDINAL);
-            }
-            if (type.equalsIgnoreCase(lang("list.type.active"))) {
-                return new RankingNumberResolver<>(clans, Clan::getLastUsed, order != null && ascending , ORDINAL);
-            }
-            if (type.equalsIgnoreCase(lang("list.type.founded"))) {
-                return new RankingNumberResolver<>(clans, Clan::getFounded, ascending , ORDINAL);
-            }
-            if (type.equalsIgnoreCase(lang("list.type.name"))) {
-                return new RankingNumberResolver<>(clans, Clan::getName, ascending , ORDINAL);
-            }
-            return new RankingNumberResolver<>(clans, clan -> KDRFormat.toBigDecimal(clan.getTotalKDR()),
-                        order != null && ascending , settings.getRankingType());
-        }
-
-        @NotNull
-        private List<Clan> getListableClans() {
-            List<Clan> clans = plugin.getClanManager().getClans();
-            clans = clans.stream().filter(clan -> clan.isVerified() || settings.isShowUnverifiedOnList())
-                    .collect(Collectors.toList());
-            return clans;
-        }
-
-        private void sendHeader(CommandSender sender, List<Clan> clans, ChatBlock chatBlock) {
-            ChatBlock.sendBlank(sender);
-            ChatBlock.saySingle(sender, settings.getServerName() + subColor + " " + lang("clans.lower", sender)
-                    + " " + headColor + Helper.generatePageSeparator(settings.getPageSep()));
-            ChatBlock.sendBlank(sender);
-            ChatBlock.sendMessage(sender, headColor + lang("total.clans", sender) + " " + subColor + clans.size());
-            ChatBlock.sendBlank(sender);
-            chatBlock.setAlignment("c", "l", "c", "c");
-            chatBlock.setFlexibility(false, true, false, false);
-            chatBlock.addRow("  " + headColor + lang("rank", sender), lang("name", sender),
-                    lang("kdr", sender), lang("members", sender));
-        }
-
-        @SuppressWarnings("deprecation")
-        private void addLine(ChatBlock chatBlock, RankingNumberResolver<Clan, ? extends Comparable<?>> ranking,
-                             Clan clan) {
-            String tag = settings.getClanChatBracketColor() + settings.getClanChatTagBracketLeft()
-                    + settings.getTagDefaultColor() + clan.getColorTag() + settings.getClanChatBracketColor()
-                    + settings.getClanChatTagBracketRight();
-            String name = (clan.isVerified() ? settings.getPageClanNameColor() : GRAY) + clan.getName();
-            String fullname = tag + " " + name;
-            String size = WHITE + "" + clan.getSize();
-            String kdr = clan.isVerified() ? YELLOW + "" + KDRFormat.format(clan.getTotalKDR()) : "";
-
-            chatBlock.addRow("  " + ranking.getRankingNumber(clan), fullname, kdr, size);
-        }
+    @Description("{@@command.description.list}")
+    @CommandCompletion("@clan_list_type @order")
+    public void listClans(CommandSender sender, @Optional @Values("@clan_list_type") String type,
+                          @Optional @Single @Values("@order") String order) {
+        ClanList list = new ClanList(plugin, sender, type, order);
+        list.send();
     }
 
-    // TODO Refactor list commands
     @Subcommand("%alliances")
     @CommandPermission("simpleclans.anyone.alliances")
-    public class AlliancesCommand extends BaseCommand {
-        private final String headColor = settings.getPageHeadingsColor();
-        private final String subColor = settings.getPageSubTitleColor();
-
-        @Default
-        @Description("{@@command.description.alliances}")
-        public void list(CommandSender sender) {
-            ChatBlock chatBlock = new ChatBlock();
-            List<Clan> clans = cm.getClans();
-            cm.sortClansByKDR(clans);
-            sendHeader(sender, chatBlock);
-
-            for (Clan clan : clans) {
-                if (!clan.isVerified()) {
-                    continue;
-                }
-
-                chatBlock.addRow("  " + AQUA + clan.getName(), clan.getAllyString(DARK_GRAY + ", "));
-            }
-
-            // TODO extract method
-            boolean more = chatBlock.sendBlock(sender, settings.getPageSize());
-
-            if (more) {
-                storage.addChatBlock(sender, chatBlock);
-                ChatBlock.sendBlank(sender);
-                ChatBlock.sendMessage(sender, headColor + lang("view.next.page", sender,
-                        settings.getCommandMore()));
-            }
-
-            ChatBlock.sendBlank(sender);
-        }
-
-        private void sendHeader(CommandSender sender, ChatBlock chatBlock) {
-            ChatBlock.sendBlank(sender);
-            ChatBlock.saySingle(sender, settings.getServerName() + subColor + " " +
-                    lang("alliances", sender) + " " + headColor +
-                    Helper.generatePageSeparator(settings.getPageSep()));
-            ChatBlock.sendBlank(sender);
-
-            chatBlock.setAlignment("l", "l");
-            chatBlock.addRow("  " + headColor + lang("clan", sender), lang("allies", sender));
-        }
+    @Description("{@@command.description.alliances}")
+    public void list(CommandSender sender) {
+        Alliances a = new Alliances(plugin, sender);
+        a.send();
     }
+
 }
