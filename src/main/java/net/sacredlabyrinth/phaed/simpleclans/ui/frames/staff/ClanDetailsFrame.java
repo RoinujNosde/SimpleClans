@@ -50,7 +50,7 @@ public class ClanDetailsFrame extends SCFrame {
 				Collections.singletonList(lang("gui.staffclandetails.disband.lore", getViewer())),
 				XMaterial.BARRIER, 34);
 		disband.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				"%disband", false, clan.getTag()));
+				"disband", false, clan.getTag()));
 		disband.setConfirmationRequired(ClickType.LEFT);
 		disband.setPermission(ClickType.LEFT, "simpleclans.mod.disband");
 		add(disband);
@@ -71,7 +71,7 @@ public class ClanDetailsFrame extends SCFrame {
 			verify.setPermission(ClickType.LEFT, "simpleclans.mod.verify");
 			verify.setConfirmationRequired(ClickType.LEFT);
 			verify.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					"%verify", false, clan.getTag()));
+					"verify", false, clan.getTag()));
 		}
 		add(verify);
 	}
@@ -84,10 +84,10 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title", getViewer()), lore,
 				XMaterial.MAGENTA_BED, 30);
 		home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				"%home %tp", false, clan.getTag()));
+				"home tp", false, clan.getTag()));
 		home.setPermission(ClickType.LEFT, "simpleclans.mod.hometp");
 		home.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-				"%home %set", false, clan.getTag()));
+				"home set", false, clan.getTag()));
 		home.setPermission(ClickType.RIGHT, "simpleclans.mod.home");
 		home.setConfirmationRequired(ClickType.RIGHT);
 		add(home);

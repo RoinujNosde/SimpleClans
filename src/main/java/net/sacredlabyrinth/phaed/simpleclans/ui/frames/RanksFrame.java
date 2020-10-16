@@ -47,7 +47,7 @@ public class RanksFrame extends SCFrame {
 		SCComponent create = new SCComponentImpl(lang("gui.ranks.create.title",getViewer()),
 				Collections.singletonList(lang("gui.ranks.create.lore",getViewer())), XMaterial.WHITE_WOOL, 4);
 		create.setVerifiedOnly(ClickType.LEFT);
-		create.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%rank %create", false));
+		create.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "rank create", false));
 		create.setPermission(ClickType.LEFT, "simpleclans.leader.rank.create");
 		add(create);
 
@@ -74,14 +74,14 @@ public class RanksFrame extends SCFrame {
 					XMaterial.FILLED_MAP, slot);
 			if (toEdit != null) {
 				c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-						"%rank %assign", true, toEdit.getName(), rank.getName()));
+						"rank assign", true, toEdit.getName(), rank.getName()));
 				c.setConfirmationRequired(ClickType.LEFT);
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.assign");
 			} else {
 				c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PermissionsFrame(this, getViewer(), rank)));
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.list");
 				c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-						"%rank %delete", true, rank.getName()));
+						"rank delete", true, rank.getName()));
 				c.setConfirmationRequired(ClickType.RIGHT);
 				c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.delete");
 			}

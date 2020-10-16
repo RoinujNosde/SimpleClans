@@ -123,7 +123,7 @@ public class Components {
         }
         if (clan == null) {
             c.setPermission(ClickType.LEFT, "simpleclans.leader.create");
-            c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(viewer, "%create", false));
+            c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(viewer, "create", false));
         }
 
         if (clan != null && clan.isMember(viewer)) {

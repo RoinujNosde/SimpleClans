@@ -52,7 +52,7 @@ public class AddRivalFrame extends SCFrame {
 					slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					"%rival %add", false, notRival.getTag()));
+					"rival add", false, notRival.getTag()));
 			c.setConfirmationRequired(ClickType.LEFT);
 			c.setPermission(ClickType.LEFT, RankPermission.RIVAL_ADD);
 			add(c);

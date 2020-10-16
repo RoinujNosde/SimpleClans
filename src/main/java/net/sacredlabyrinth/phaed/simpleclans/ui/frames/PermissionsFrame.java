@@ -51,7 +51,7 @@ public class PermissionsFrame extends SCFrame {
 			SCComponent c = new SCComponentImpl(lang("gui.permissions.permission.title",getViewer(), permission),
 					Collections.singletonList(lang("gui.permissions.permission.lore",getViewer())), XMaterial.PAPER, slot);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-					"%rank %permissions %remove", true, rank.getName(), permission));
+					"rank permissions remove", true, rank.getName(), permission));
 			c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.permissions.remove");
 			add(c);
 			slot++;

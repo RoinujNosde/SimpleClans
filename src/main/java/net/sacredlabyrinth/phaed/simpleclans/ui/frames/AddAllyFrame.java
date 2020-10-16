@@ -51,7 +51,7 @@ public class AddAllyFrame extends SCFrame {
 					slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					"%ally %add", false, notRival.getTag()));
+					"ally add", false, notRival.getTag()));
 			c.setPermission(ClickType.LEFT, RankPermission.ALLY_ADD);
 			add(c);
 			slot++;
