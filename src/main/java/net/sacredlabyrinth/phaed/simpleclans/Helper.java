@@ -37,6 +37,7 @@ public class Helper {
     /**
      * Dumps stacktrace to log
      */
+    @Deprecated
     public static void dumpStackTrace() {
         for (StackTraceElement el : Thread.currentThread().getStackTrace()) {
             SimpleClans.debug(el.toString());
@@ -775,8 +776,10 @@ public class Helper {
         return new ArrayList<>();
     }
 
+    @Deprecated
+    @Nullable
     public static Player getPlayer(String playerName) {
-    	return SimpleClans.getInstance().getServer().getPlayer(UUIDMigration.getForcedPlayerUUID(playerName));
+    	return Bukkit.getPlayerExact(playerName);
     }
 
     /**

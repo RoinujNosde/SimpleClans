@@ -99,24 +99,20 @@ public final class TeleportManager {
                 }
             }
         } else if (plugin.getSettingsManager().isKeepOnHome()) {
-            try {
-                PlayerInventory inv = player.getInventory();
-                ItemStack[] contents = inv.getContents().clone();
+            PlayerInventory inv = player.getInventory();
+            ItemStack[] contents = inv.getContents().clone();
 
-                for (ItemStack item : contents) {
-                    if (item == null) {
-                        continue;
-                    }
-
-                    List<Material> itemsList = plugin.getSettingsManager().getItemsList();
-
-                    if (!itemsList.contains(item.getType())) {
-                        player.getWorld().dropItemNaturally(player.getLocation(), item);
-                        inv.remove(item);
-                    }
+            for (ItemStack item : contents) {
+                if (item == null) {
+                    continue;
                 }
-            } catch (Exception ex) {
-                Helper.dumpStackTrace();
+
+                List<Material> itemsList = plugin.getSettingsManager().getItemsList();
+
+                if (!itemsList.contains(item.getType())) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    inv.remove(item);
+                }
             }
         }
     }

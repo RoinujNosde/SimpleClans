@@ -49,7 +49,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@players @clans")
     @HelpSearchTags("move put")
     @Description("{@@command.description.place}")
-    public void place(CommandSender sender, OnlinePlayer onlinePlayer, ClanInput clan) {
+    public void place(CommandSender sender, @Name("player") OnlinePlayer onlinePlayer, @Name("clan") ClanInput clan) {
         Player player = onlinePlayer.getPlayer();
         ClanPlayer oldCp = cm.getClanPlayer(player);
         Clan newClanInput = clan.getClan();
@@ -99,7 +99,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.home")
     @CommandCompletion("@clans")
     @Description("{@@command.description.mod.home.set}")
-    public void homeSet(Player player, ClanInput clan) {
+    public void homeSet(Player player, @Name("clan") ClanInput clan) {
         Location loc = player.getLocation();
 
         clan.getClan().setHomeLocation(loc);
@@ -111,7 +111,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@clans:has_home")
     @CommandPermission("simpleclans.mod.hometp")
     @Description("{@@command.description.mod.home.tp}")
-    public void homeTp(Player player, ClanInput clan) {
+    public void homeTp(Player player, @Name("clan") ClanInput clan) {
         Location loc = clan.getClan().getHomeLocation();
 
         if (loc == null) {
@@ -132,7 +132,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.ban")
     @CommandCompletion("@players")
     @Description("{@@command.description.ban}")
-    public void ban(CommandSender sender, OfflinePlayer player) {
+    public void ban(CommandSender sender, @Name("player") OfflinePlayer player) {
         UUID uuid = player.getUniqueId();
         if (settings.isBanned(uuid)) {
             ChatBlock.sendMessage(sender, RED + lang("this.player.is.already.banned", sender));
@@ -152,7 +152,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.ban")
     @CommandCompletion("@players")
     @Description("{@@command.description.unban}")
-    public void unban(CommandSender sender, OfflinePlayer player) {
+    public void unban(CommandSender sender, @Name("player") OfflinePlayer player) {
         UUID uuid = player.getUniqueId();
         if (!settings.isBanned(uuid)) {
             ChatBlock.sendMessage(sender, RED + lang("this.player.is.not.banned", sender));
@@ -199,7 +199,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.verify")
     @CommandCompletion("@clans:unverified")
     @Description("{@@command.description.mod.verify}")
-    public void verify(CommandSender sender, ClanInput clan) {
+    public void verify(CommandSender sender, @Name("clan") ClanInput clan) {
         Clan clanInput = clan.getClan();
 
         if (!clanInput.isVerified()) {
@@ -215,7 +215,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.admin.purge")
     @CommandCompletion("@players")
     @Description("{@@command.description.purge}")
-    public void purge(CommandSender sender, ClanPlayerInput player) {
+    public void purge(CommandSender sender, @Name("player") ClanPlayerInput player) {
         Player onlinePlayer = player.getClanPlayer().toPlayer();
         if (onlinePlayer != null && InventoryController.isRegistered(onlinePlayer)) {
             onlinePlayer.closeInventory();
@@ -233,7 +233,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.mod.disband")
     @Description("{@@command.description.mod.disband}")
-    public void disband(CommandSender sender, ClanInput clan) {
+    public void disband(CommandSender sender, @Name("clan") ClanInput clan) {
         cm.serverAnnounce(AQUA + lang("clan.has.been.disbanded", clan.getClan().getName()));
         clan.getClan().disband();
     }
@@ -242,7 +242,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@all_non_leaders")
     @CommandPermission("simpleclans.admin.promote")
     @Description("{@@command.description.admin.promote}")
-    public void promote(CommandSender sender, @Conditions("online|clan_member") ClanPlayerInput promote) {
+    public void promote(CommandSender sender, @Conditions("online|clan_member") @Name("player") ClanPlayerInput promote) {
         Player promotePl = Objects.requireNonNull(promote.getClanPlayer().toPlayer());
         if (!permissions.has(promotePl, "simpleclans.leader.promotable")) {
             ChatBlock.sendMessage(sender, RED + lang("the.player.does.not.have.the.permissions.to.lead.a.clan",
@@ -263,7 +263,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@all_leaders")
     @CommandPermission("simpleclans.admin.demote")
     @Description("{@@command.description.admin.demote}")
-    public void demote(CommandSender sender, @Conditions("clan_member") ClanPlayerInput other) {
+    public void demote(CommandSender sender, @Conditions("clan_member") @Name("leader") ClanPlayerInput other) {
         ClanPlayer otherCp = other.getClanPlayer();
         Clan clan = Objects.requireNonNull(otherCp.getClan());
         if (clan.getLeaders().size() == 1) {
@@ -290,7 +290,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.admin.resetkdr")
     @Description("{@@command.description.resetkdr.player}")
-    public void resetKdr(CommandSender sender, ClanPlayerInput player) {
+    public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput player) {
         ClanPlayer cp = player.getClanPlayer();
         cm.resetKdr(cp);
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));

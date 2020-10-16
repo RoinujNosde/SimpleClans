@@ -75,6 +75,7 @@ public class GeneralCommands extends BaseCommand {
 
     @Subcommand("%leaderboard")
     @CommandPermission("simpleclans.anyone.leaderboard")
+    @Description("{@@command.description.leaderboard}")
     public void leaderboard(CommandSender sender) {
         Leaderboard l = new Leaderboard(plugin, sender);
         l.send();
@@ -83,14 +84,15 @@ public class GeneralCommands extends BaseCommand {
     @Subcommand("%lookup")
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.anyone.lookup")
-    // TODO Ops don't have permission?
-    public void lookup(CommandSender sender, OfflinePlayer player) {
+    @Description("{@@command.description.lookup.other}")
+    public void lookup(CommandSender sender, @Name("player") OfflinePlayer player) {
         Lookup l = new Lookup(plugin, sender, player.getUniqueId());
         l.send();
     }
 
     @Subcommand("%lookup")
     @CommandPermission("simpleclans.member.lookup")
+    @Description("{@@command.description.lookup}")
     public void lookup(Player sender) {
         Lookup l = new Lookup(plugin, sender, sender.getUniqueId());
         l.send();
@@ -100,7 +102,8 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.member.kills")
     @Conditions("verified|rank:name=KILLS")
     @CommandCompletion("@players")
-    public void kills(Player sender, @Optional ClanPlayerInput player) {
+    @Description("{@@command.description.kills}")
+    public void kills(Player sender, @Optional @Name("player") ClanPlayerInput player) {
         String name = sender.getName();
         if (player != null) {
             name = player.getClanPlayer().getName();
@@ -112,7 +115,8 @@ public class GeneralCommands extends BaseCommand {
     @Subcommand("%profile")
     @CommandPermission("simpleclans.anyone.profile")
     @CommandCompletion("@clans")
-    public void profile(CommandSender sender, @Conditions("verified") ClanInput clan) {
+    @Description("{@@command.description.profile.other}")
+    public void profile(CommandSender sender, @Conditions("verified") @Name("clan") ClanInput clan) {
         ClanProfile p = new ClanProfile(plugin, sender, clan.getClan());
         p.send();
     }
@@ -120,7 +124,8 @@ public class GeneralCommands extends BaseCommand {
     @Subcommand("%roster")
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.anyone.roster")
-    public void roster(CommandSender sender, @Conditions("verified") ClanInput clan) {
+    @Description("{@@command.description.roster.other}")
+    public void roster(CommandSender sender, @Conditions("verified") @Name("player") ClanInput clan) {
         ClanRoster r = new ClanRoster(plugin, sender, clan.getClan());
         r.send();
     }
@@ -161,7 +166,6 @@ public class GeneralCommands extends BaseCommand {
     @Description("{@@command.description.accept}")
     @Conditions("can_vote")
     public void accept(Player player, ClanPlayer cp) {
-        player.sendMessage(getName());
         Clan clan = cp.getClan();
         if (clan != null) {
             clan.leaderAnnounce(GREEN + lang("voted.to.accept", player.getName()));
@@ -181,7 +185,7 @@ public class GeneralCommands extends BaseCommand {
     }
 
     @CommandAlias("%more")
-    @Description("{@@command.description.more")
+    @Description("{@@command.description.more}")
     public void more(Player player) {
         ChatBlock chatBlock = storage.getChatBlock(player);
 
@@ -203,12 +207,7 @@ public class GeneralCommands extends BaseCommand {
     @HelpCommand
     @Description("{@@command.description.help}")
     public void help(CommandSender sender, CommandHelp help) {
-        // TODO /help SimpleClans shows not replaced messages
-        // TODO Not showing correctly on console due to English language
-        // TODO Header footer
-        // TODO Change order?
         boolean inClan = sender instanceof Player && cm.getClanByPlayerUniqueId(((Player) sender).getUniqueId()) != null;
-        sender.sendMessage("SimpleClans Help"); // TODO Get from the messages file
         for (HelpEntry helpEntry : help.getHelpEntries()) {
             for (@SuppressWarnings("rawtypes") CommandParameter parameter : helpEntry.getParameters()) {
                 if (parameter.getType().equals(Clan.class) && !inClan) {
@@ -216,13 +215,13 @@ public class GeneralCommands extends BaseCommand {
                 }
             }
         }
-        System.out.println("create.command");
         help.showHelp();
     }
 
     @Subcommand("%mostkilled")
     @CommandPermission("simpleclans.mod.mostkilled")
     @Conditions("verified|rank:name=MOSTKILLED")
+    @Description("{@@command.description.mostkilled}")
     public void mostKilled(Player player) {
         MostKilled mk = new MostKilled(plugin, player);
         mk.send();
@@ -232,16 +231,24 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.anyone.list")
     @Description("{@@command.description.list}")
     @CommandCompletion("@clan_list_type @order")
-    public void listClans(CommandSender sender, @Optional @Values("@clan_list_type") String type,
-                          @Optional @Single @Values("@order") String order) {
+    public void list(CommandSender sender, @Optional @Values("@clan_list_type") String type,
+                     @Optional @Single @Values("@order") String order) {
         ClanList list = new ClanList(plugin, sender, type, order);
         list.send();
+    }
+
+    @Subcommand("%rivalries")
+    @CommandPermission("simpleclans.anyone.rivalries")
+    @Description("{@@command.description.rivalries}")
+    public void rivalries(CommandSender sender) {
+        Rivalries rivalries = new Rivalries(plugin, sender);
+        rivalries.send();
     }
 
     @Subcommand("%alliances")
     @CommandPermission("simpleclans.anyone.alliances")
     @Description("{@@command.description.alliances}")
-    public void list(CommandSender sender) {
+    public void alliances(CommandSender sender) {
         Alliances a = new Alliances(plugin, sender);
         a.send();
     }

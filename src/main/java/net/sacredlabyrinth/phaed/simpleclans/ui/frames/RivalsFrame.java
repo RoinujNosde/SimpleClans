@@ -57,7 +57,7 @@ public class RivalsFrame extends SCFrame {
 					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
 					Collections.singletonList(lang("gui.rivals.clan.lore",getViewer())), XMaterial.RED_BANNER, slot	);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rival %s %s", lang("remove", getViewer()), clan.getTag()), false));
+					"%rival %remove", false, clan.getTag()));
 			c.setPermission(ClickType.RIGHT, RankPermission.RIVAL_REMOVE);
 			add(c);
 			slot++;

@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.time.Instant;
@@ -214,7 +215,6 @@ public final class ClanManager {
      */
     public boolean isClan(String tag) {
         return clans.containsKey(Helper.cleanTag(tag));
-
     }
 
     /**
@@ -233,6 +233,7 @@ public final class ClanManager {
      * @param playerUniqueId
      * @return null if not in a clan
      */
+    @Nullable
     public Clan getClanByPlayerUniqueId(UUID playerUniqueId) {
         ClanPlayer cp = getClanPlayer(playerUniqueId);
 
@@ -350,6 +351,7 @@ public final class ClanManager {
      * @param playerUniqueId
      * @return
      */
+    @Nullable
     public ClanPlayer getAnyClanPlayer(UUID playerUniqueId) {
         return clanPlayers.get(playerUniqueId.toString());
     }
@@ -734,7 +736,6 @@ public final class ClanManager {
         	player = (Player) holder;
         }
 
-        // TODO get this data from a file?
         double count = getFoodPoints(inv, XMaterial.APPLE, 4, 2.4);
         count += getFoodPoints(inv, XMaterial.BAKED_POTATO, 5, 6);
         count += getFoodPoints(inv, XMaterial.BEETROOT, 1, 1.2);

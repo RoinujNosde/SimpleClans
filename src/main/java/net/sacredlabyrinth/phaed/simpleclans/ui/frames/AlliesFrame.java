@@ -58,7 +58,7 @@ public class AlliesFrame extends SCFrame {
 					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
 					Collections.singletonList(lang("gui.allies.clan.lore",getViewer())), XMaterial.CYAN_BANNER, slot);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("ally %s %s", lang("remove",getViewer()), clan.getTag()), false));
+					"%ally %remove", false, clan.getTag()));
 			c.setPermission(ClickType.RIGHT, RankPermission.ALLY_REMOVE);
 			add(c);
 			slot++;

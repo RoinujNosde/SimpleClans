@@ -57,8 +57,7 @@ public class InviteFrame extends SCFrame {
 				lang("gui.invite.player.title", getViewer(), player.getName()), lore, XMaterial.PLAYER_HEAD, slot);
 		OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
 		Components.setOwningPlayer(c.getItem(), offlinePlayer);
-		c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "invite " +
-				player.getName(), false));
+		c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%invite", false, player.getName()));
 		c.setPermission(ClickType.LEFT, RankPermission.INVITE);
 		return c;
 	}

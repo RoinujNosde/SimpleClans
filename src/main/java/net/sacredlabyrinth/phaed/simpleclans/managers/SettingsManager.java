@@ -7,11 +7,14 @@ import java.util.*;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author phaed
@@ -561,6 +564,14 @@ public final class SettingsManager {
      */
     public String getCommandClanChat() {
         return commandClanChat;
+    }
+
+    @Contract("null -> false")
+    public boolean isBlacklistedWorld(@Nullable World world) {
+        if (world != null) {
+            return isBlacklistedWorld(world.getName());
+        }
+        return false;
     }
 
     /**

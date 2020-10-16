@@ -73,7 +73,7 @@ public class StaffFrame extends SCFrame {
         reload.setPermission(ClickType.LEFT, "simpleclans.admin.reload");
         reload.setConfirmationRequired(ClickType.LEFT);
         reload.setListener(ClickType.LEFT, () ->
-                InventoryController.runSubcommand(getViewer(), "reload", false));
+                InventoryController.runSubcommand(getViewer(), "%reload", false));
         add(reload);
     }
 
@@ -87,13 +87,13 @@ public class StaffFrame extends SCFrame {
                 .withLoreLine(lang("gui.staff.global.ff.lore.toggle", getViewer())).build();
         globalFf.setPermission(ClickType.LEFT, "simpleclans.mod.globalff");
         globalFf.setListener(ClickType.LEFT, () -> {
-            String subcommand = "globalff ";
+            String arg;
             if (globalffAllowed) {
-                subcommand += lang("auto", getViewer());
+                arg = "%auto";
             } else {
-                subcommand += lang("allow", getViewer());
+                arg = "%allow";
             }
-            InventoryController.runSubcommand(getViewer(), subcommand, true);
+            InventoryController.runSubcommand(getViewer(), "%globalff", true, arg);
         });
         add(globalFf);
     }

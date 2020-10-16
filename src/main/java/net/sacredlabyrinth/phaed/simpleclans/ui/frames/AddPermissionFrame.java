@@ -51,7 +51,7 @@ public class AddPermissionFrame extends SCFrame {
 					Collections.singletonList(lang("gui.add.permission.permission.lore",getViewer())),
 					XMaterial.PAPER, slot);
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rank permissions %s add %s", rank.getName(), permission), true));
+					"%rank %permissions %add", true, rank.getName(), permission));
 			c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.add");
 			add(c);
 			slot++;

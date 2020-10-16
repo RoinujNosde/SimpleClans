@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -13,9 +14,13 @@ import static org.bukkit.ChatColor.*;
 
 public class Lookup extends Sendable {
 
+    @NotNull
     private final UUID targetUuid;
+    @Nullable
     private final ClanPlayer target;
+    @Nullable
     private final Clan senderClan;
+    @Nullable
     private final Clan targetClan;
 
     public Lookup(@NotNull SimpleClans plugin, @NotNull CommandSender sender, @NotNull UUID targetUuid) {
@@ -24,10 +29,9 @@ public class Lookup extends Sendable {
         target = cm.getAnyClanPlayer(targetUuid);
         ClanPlayer senderCp = !isPlayer() ? null : cm.getClanPlayer(getPlayer().getUniqueId());
         senderClan = senderCp == null ? null : senderCp.getClan();
-        targetClan = target.getClan();
+        targetClan = target != null ? target.getClan() : null;
     }
 
-    //TODO Test
     @Override
     public void send() {
         if (target != null) {
@@ -71,7 +75,7 @@ public class Lookup extends Sendable {
 
     @NotNull
     private String getPlayerStatus() {
-        return targetClan == null ? lang("free.agent", sender) : (target.isLeader() ?
+        return target == null || targetClan == null ? lang("free.agent", sender) : (target.isLeader() ?
                 sm.getPageLeaderColor() + lang("leader", sender) : (target.isTrusted() ?
                 sm.getPageTrustedColor() + lang("trusted", sender) : sm.getPageUnTrustedColor() +
                 lang("untrusted", sender)));

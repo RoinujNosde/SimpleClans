@@ -4,7 +4,6 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +51,7 @@ public class PermissionsFrame extends SCFrame {
 			SCComponent c = new SCComponentImpl(lang("gui.permissions.permission.title",getViewer(), permission),
 					Collections.singletonList(lang("gui.permissions.permission.lore",getViewer())), XMaterial.PAPER, slot);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rank permissions %s remove %s", rank.getName(), permission), true));
+					"%rank %permissions %remove", true, rank.getName(), permission));
 			c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.permissions.remove");
 			add(c);
 			slot++;

@@ -19,13 +19,13 @@ import static org.bukkit.ChatColor.*;
 
 public class ClanList extends Sendable {
 
-    private final String type;
-    private final String order;
+    private final @Nullable String type;
+    private final @Nullable String order;
 
     public ClanList(@NotNull SimpleClans plugin,
                     @NotNull CommandSender sender,
-                    @NotNull String type,
-                    @NotNull String order) {
+                    @Nullable String type,
+                    @Nullable String order) {
         super(plugin, sender);
         this.type = type;
         this.order = order;

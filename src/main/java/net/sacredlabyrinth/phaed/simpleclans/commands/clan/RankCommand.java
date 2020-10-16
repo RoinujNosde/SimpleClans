@@ -33,11 +33,13 @@ public class RankCommand extends BaseCommand {
     private PermissionsManager permissions;
 
     @Subcommand("%assign")
-    // TODO cp clan member
     @CommandPermission("simpleclans.leader.rank.assign")
     @CommandCompletion("@clan_members @ranks")
     @Description("{@@command.description.rank.assign}")
-    public void assign(Player player, Clan clan, ClanPlayerInput member, Rank rank) {
+    public void assign(Player player,
+                       Clan clan,
+                       @Name("member") @Conditions("same_clan") ClanPlayerInput member,
+                       @Name("rank") Rank rank) {
         ClanPlayer memberInput = member.getClanPlayer();
         if (memberInput.getRankId().equals(rank.getName())) {
             ChatBlock.sendMessage(player, lang("player.already.has.that.rank", player));
@@ -53,8 +55,7 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.unassign")
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.rank.unassign}")
-    // todo cp clan member
-    public void unassign(Player player, ClanPlayerInput cp) {
+    public void unassign(Player player, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
         ClanPlayer cpInput = cp.getClanPlayer();
         cpInput.setRank(null);
         storage.updateClanPlayer(cpInput);
@@ -75,7 +76,7 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.delete")
     @CommandCompletion("@ranks")
     @Description("{@@command.description.rank.delete}")
-    public void delete(Player player, Clan clan, Rank rank) {
+    public void delete(Player player, Clan clan, @Name("rank") Rank rank) {
         clan.deleteRank(rank.getName());
         storage.updateClan(clan, true);
         ChatBlock.sendMessage(player, AQUA + lang("rank.0.deleted", player, rank.getDisplayName()));
@@ -104,9 +105,9 @@ public class RankCommand extends BaseCommand {
 
     @Subcommand("%setdisplayname")
     @CommandPermission("simpleclans.leader.rank.setdisplayname")
-    @CommandCompletion("@ranks")
+    @CommandCompletion("@ranks @nothing")
     @Description("{@@command.description.rank.setdisplayname}")
-    public void setDisplayName(Player player, Clan clan, Rank rank, String displayName) {
+    public void setDisplayName(Player player, Clan clan, @Name("rank") Rank rank, @Name("displayname") String displayName) {
         if (displayName.contains("&") && !permissions.has(player, "simpleclans.leader.coloredrank")) {
             ChatBlock.sendMessage(player, RED + lang("you.cannot.set.colored.ranks", player));
             return;
@@ -132,7 +133,7 @@ public class RankCommand extends BaseCommand {
         @CommandPermission("simpleclans.leader.rank.permissions.list")
         @CommandCompletion("@ranks")
         @Description("{@@command.description.rank.permissions.rank}")
-        public void list(Player player, Rank rank) {
+        public void list(Player player, @Name("rank") Rank rank) {
             Set<String> permissions = rank.getPermissions();
             if (permissions.isEmpty()) {
                 ChatBlock.sendMessage(player, RED + lang("rank.no.permissions", player));
@@ -146,11 +147,14 @@ public class RankCommand extends BaseCommand {
         @CommandPermission("simpleclans.leader.rank.permissions.add")
         @CommandCompletion("@ranks @rank_permissions")
         @Description("{@@command.description.rank.permissions.add}")
-        public void add(Player player, Clan clan, Rank rank, @Values("@rank_permissions") String permission) {
+        public void add(Player player,
+                        Clan clan,
+                        @Name("rank") Rank rank,
+                        @Values("@rank_permissions") @Name("permission") String permission) {
             Set<String> permissions = rank.getPermissions();
             permissions.add(permission);
             ChatBlock.sendMessage(player, AQUA + lang("permission.0.added.to.rank.1", player, permission,
-                    rank));
+                    rank.getDisplayName()));
             storage.updateClan(clan, true);
         }
 
@@ -158,11 +162,14 @@ public class RankCommand extends BaseCommand {
         @CommandCompletion("@ranks @rank_permissions")
         @CommandPermission("simpleclans.leader.rank.permissions.remove")
         @Description("{@@command.description.rank.permissions.remove}")
-        public void remove(Player player, Clan clan, Rank rank, @Values("@rank_permissions") String permission) {
+        public void remove(Player player,
+                           Clan clan,
+                           @Name("rank") Rank rank,
+                           @Values("@rank_permissions") @Name("permission") String permission) {
             Set<String> permissions = rank.getPermissions();
             permissions.remove(permission);
             ChatBlock.sendMessage(player, AQUA + lang("permission.0.removed.from.rank.1", player,
-                    permission, rank));
+                    permission, rank.getDisplayName()));
             storage.updateClan(clan, true);
         }
     }

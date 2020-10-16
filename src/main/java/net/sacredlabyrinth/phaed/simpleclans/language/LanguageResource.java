@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LanguageResource {
 
-	private static final ResourceLoader LOADER = new ResourceLoader(SimpleClans.getInstance().getDataFolder());
+	private static final ResourceLoader DATA_FOLDER_LOADER = new ResourceLoader(SimpleClans.getInstance().getDataFolder());
 	private final Locale defaultLocale;
 	private static List<Locale> availableLocales;
 	private static final Map<Locale, Integer> TRANSLATION_STATUS = new HashMap<>();
@@ -29,9 +29,13 @@ public class LanguageResource {
 		this.defaultLocale = SimpleClans.getInstance().getSettingsManager().getLanguage();
 	}
 
+	@Nullable
 	public String getLang(@NotNull String key, @NotNull Locale locale) {
+		if (!key.startsWith("acf-core.parameter.") && key.startsWith("acf")) {
+			return getACFLang(key, locale);
+		}
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale, LOADER,
+			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale, DATA_FOLDER_LOADER,
 					new ResourceControl(defaultLocale, false));
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
@@ -45,10 +49,15 @@ public class LanguageResource {
 
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
-		// TODO Refactor
+
+		return null;
+	}
+
+	@Nullable
+	private String getACFMinecraftLang(@NotNull String key, @NotNull Locale locale) {
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("acf-core", locale,
-					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-minecraft", locale, DATA_FOLDER_LOADER,
+					new ResourceControl(defaultLocale, false));
 
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
@@ -60,7 +69,29 @@ public class LanguageResource {
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
 
-		return key;
+		return null;
+	}
+
+	@Nullable
+	private String getACFLang(@NotNull String key, @NotNull Locale locale) {
+		if (key.startsWith("acf-minecraft")) {
+			return getACFMinecraftLang(key, locale);
+		}
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-core", locale, DATA_FOLDER_LOADER,
+					new ResourceControl(defaultLocale, false));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-core", locale,
+					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		return null;
 	}
 
 	public static int getTranslationStatus(@NotNull Locale locale) {
@@ -77,7 +108,7 @@ public class LanguageResource {
 	}
 
 	public static void clearCache() {
-		ResourceBundle.clearCache(LOADER);
+		ResourceBundle.clearCache(DATA_FOLDER_LOADER);
 	}
 
 	public static List<Locale> getAvailableLocales() {

@@ -124,7 +124,7 @@ public class ClanDetailsFrame extends SCFrame {
 						lang("gui.clandetails.fee.toggle.lore", getViewer())),
 				XMaterial.GOLD_NUGGET, 41);
 		fee.setVerifiedOnly(ClickType.LEFT);
-		fee.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "toggle fee", true));
+		fee.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%toggle %fee", true));
 		fee.setPermission(ClickType.LEFT, RankPermission.FEE_ENABLE);
 		add(fee);
 	}
@@ -133,7 +133,7 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent disband = new SCComponentImpl(lang("gui.clandetails.disband.title", getViewer()),
 				Collections.singletonList(lang("gui.clandetails.disband.lore", getViewer())), XMaterial.BARRIER,
 				50);
-		disband.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
+		disband.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "%disband", false));
 		disband.setConfirmationRequired(ClickType.MIDDLE);
 		disband.setPermission(ClickType.MIDDLE, "simpleclans.leader.disband");
 		add(disband);
@@ -142,7 +142,7 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addResign() {
 		SCComponent resign = new SCComponentImpl(lang("gui.clandetails.resign.title", getViewer()),
 				Collections.singletonList(lang("gui.clandetails.resign.lore", getViewer())), XMaterial.IRON_DOOR, 48);
-		resign.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resign", false));
+		resign.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%resign", false));
 		resign.setConfirmationRequired(ClickType.LEFT);
 		resign.setPermission(ClickType.LEFT, "simpleclans.member.resign");
 		add(resign);
@@ -166,7 +166,7 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent verify = new SCComponentImpl(title, lore, material, 39);
 		if (!verified) {
 			verify.setPermission(ClickType.LEFT, "simpleclans.leader.verify");
-			verify.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "verify", false));
+			verify.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%verify", false));
 		}
 		add(verify);
 	}
@@ -183,11 +183,11 @@ public class ClanDetailsFrame extends SCFrame {
 				XMaterial.GOLD_INGOT, 34);
 		bank.setLorePermission(RankPermission.BANK_BALANCE);
 		bank.setVerifiedOnly(ClickType.MIDDLE);
-		bank.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "toggle withdraw", true));
+		bank.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "%toggle %withdraw", true));
 		bank.setConfirmationRequired(ClickType.MIDDLE);
 		bank.setPermission(ClickType.MIDDLE, "simpleclans.leader.withdraw-toggle");
 		bank.setVerifiedOnly(ClickType.RIGHT);
-		bank.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "toggle deposit", true));
+		bank.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "%toggle %deposit", true));
 		bank.setPermission(ClickType.RIGHT, "simpleclans.leader.deposit-toggle");
 
 		add(bank);
@@ -213,21 +213,21 @@ public class ClanDetailsFrame extends SCFrame {
 	private void toggleClanFf() {
 		String arg;
 		if (clan.isFriendlyFire()) {
-			arg = lang("block",getViewer());
+			arg = "%block";
 		} else {
-			arg = lang("allow",getViewer());
+			arg = "%allow";
 		}
-		InventoryController.runSubcommand(getViewer(), String.format("clanff %s", arg), true);
+		InventoryController.runSubcommand(getViewer(), "%clanff", true, arg);
 	}
 
 	private void togglePersonalFf() {
 		String arg;
 		if (cp.isFriendlyFire()) {
-			arg = lang("auto",getViewer());
+			arg = "%auto";
 		} else {
-			arg = lang("allow",getViewer());
+			arg = "%allow";
 		}
-		InventoryController.runSubcommand(getViewer(), String.format("ff %s", arg), true);
+		InventoryController.runSubcommand(getViewer(), "%ff", true, arg);
 	}
 
 	private void addRegroup() {
@@ -247,11 +247,11 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent regroup = new SCComponentImpl(lang("gui.clandetails.regroup.title", getViewer()), lore,
 				XMaterial.BEACON, 30);
 		regroup.setVerifiedOnly(ClickType.LEFT);
-		regroup.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "home regroup", false));
+		regroup.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%regroup %home", false));
 		regroup.setConfirmationRequired(ClickType.LEFT);
 		regroup.setPermission(ClickType.LEFT, RankPermission.REGROUP_HOME);
 		regroup.setVerifiedOnly(ClickType.RIGHT);
-		regroup.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "home regroup me", false));
+		regroup.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "%regroup %me", false));
 		regroup.setConfirmationRequired(ClickType.RIGHT);
 		regroup.setPermission(ClickType.RIGHT, RankPermission.REGROUP_ME);
 		add(regroup);
@@ -272,14 +272,14 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title", getViewer()), lore,
 				Objects.requireNonNull(XMaterial.MAGENTA_BED.parseMaterial()), 28);
 		home.setVerifiedOnly(ClickType.LEFT);
-		home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "home", false));
+		home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%home", false));
 		home.setPermission(ClickType.LEFT, RankPermission.HOME_TP);
 		home.setVerifiedOnly(ClickType.RIGHT);
-		home.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "home set", false));
+		home.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "%home %set", false));
 		home.setPermission(ClickType.RIGHT, RankPermission.HOME_SET);
 		home.setConfirmationRequired(ClickType.RIGHT);
 		home.setVerifiedOnly(ClickType.MIDDLE);
-		home.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "home clear", false));
+		home.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "%home %clear", false));
 		home.setPermission(ClickType.MIDDLE, RankPermission.HOME_SET);
 		home.setConfirmationRequired(ClickType.MIDDLE);
 		add(home);

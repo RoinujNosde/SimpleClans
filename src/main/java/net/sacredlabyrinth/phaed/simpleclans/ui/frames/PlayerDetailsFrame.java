@@ -1,22 +1,16 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
-import java.util.Arrays;
-
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
-import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
-import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
+import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -50,7 +44,7 @@ public class PlayerDetailsFrame extends SCFrame {
 		
 		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title",getViewer()), null, XMaterial.RED_WOOL,
 				28);
-		kick.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "kick " + subjectName, true));
+		kick.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "%kick", true, subjectName));
 		kick.setConfirmationRequired(ClickType.LEFT);
 		kick.setPermission(ClickType.LEFT, RankPermission.KICK);
 		add(kick);
@@ -61,10 +55,10 @@ public class PlayerDetailsFrame extends SCFrame {
 				XMaterial.GUNPOWDER, 30);
 		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
-				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, !plugin.getSettingsManager().isConfirmationForPromote()));
+				() -> InventoryController.runSubcommand(getViewer(), "%promote", !plugin.getSettingsManager().isConfirmationForPromote(), subjectName));
 		promoteDemote.setPermission(ClickType.LEFT, "simpleclans.leader.promote");
 		promoteDemote.setListener(ClickType.RIGHT,
-				() -> InventoryController.runSubcommand(getViewer(), "demote " + subjectName, !plugin.getSettingsManager().isConfirmationForDemote()));
+				() -> InventoryController.runSubcommand(getViewer(), "%demote", !plugin.getSettingsManager().isConfirmationForDemote(), subjectName));
 		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.leader.demote");
@@ -75,7 +69,7 @@ public class PlayerDetailsFrame extends SCFrame {
 				XMaterial.FEATHER, 32);
 		assignUnassign.setConfirmationRequired(ClickType.RIGHT);
 		assignUnassign.setListener(ClickType.RIGHT,
-				() -> InventoryController.runSubcommand(getViewer(), "rank unassign " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "%rank %unassign", true, subjectName));
 		assignUnassign.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.unassign");
 		assignUnassign.setListener(ClickType.LEFT,
 				() -> InventoryDrawer.open(new RanksFrame(this, getViewer(), clan, subject)));
@@ -88,10 +82,10 @@ public class PlayerDetailsFrame extends SCFrame {
 				XMaterial.CYAN_DYE, 34);
 		trustUntrust.setConfirmationRequired(ClickType.LEFT);
 		trustUntrust.setListener(ClickType.LEFT,
-				() -> InventoryController.runSubcommand(getViewer(), "trust " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "%trust", true, subjectName));
 		trustUntrust.setPermission(ClickType.LEFT, "simpleclans.leader.settrust");
 		trustUntrust.setListener(ClickType.RIGHT,
-				() -> InventoryController.runSubcommand(getViewer(), "untrust " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "%untrust", true, subjectName));
 		trustUntrust.setPermission(ClickType.RIGHT, "simpleclans.leader.settrust");
 		trustUntrust.setConfirmationRequired(ClickType.RIGHT);
 		add(trustUntrust);

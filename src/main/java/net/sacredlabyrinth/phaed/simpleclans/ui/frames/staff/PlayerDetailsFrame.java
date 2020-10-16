@@ -49,10 +49,10 @@ public class PlayerDetailsFrame extends SCFrame {
 				XMaterial.GUNPOWDER, 28);
 		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
-				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "%admin %promote", true, subjectName));
 		promoteDemote.setPermission(ClickType.LEFT, "simpleclans.admin.promote");
 		promoteDemote.setListener(ClickType.RIGHT,
-				() -> InventoryController.runSubcommand(getViewer(), "demote " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "%admin %demote", true, subjectName));
 		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.admin.demote");
@@ -64,7 +64,7 @@ public class PlayerDetailsFrame extends SCFrame {
 				lang("gui.playerdetails.purge.lore", getViewer())).build();
 		purge.setConfirmationRequired(ClickType.LEFT);
 		purge.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("purge %s", subjectName), false));
+				"%purge", false, subjectName));
 		purge.setPermission(ClickType.LEFT, "simpleclans.admin.purge");
 		add(purge);
 	}
@@ -74,7 +74,7 @@ public class PlayerDetailsFrame extends SCFrame {
 				.withSlot(30).withDisplayName(lang("gui.main.reset.kdr.title", getViewer()))
 				.withLoreLine(lang("gui.playerdetails.resetkdr.lore", getViewer())).build();
 		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("resetkdr %s", subjectName), false));
+				"%resetkdr", false, subjectName));
 		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.admin.resetkdr");
 		add(resetKdr);
@@ -100,9 +100,9 @@ public class PlayerDetailsFrame extends SCFrame {
 		banUnban.setPermission(ClickType.LEFT, "simpleclans.mod.ban");
 		banUnban.setPermission(ClickType.RIGHT, "simpleclans.mod.ban");
 		banUnban.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("ban %s", subjectName), false));
+				"%ban", false, subjectName));
 		banUnban.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("unban %s", subjectName), false));
+				"%unban", false, subjectName));
 		add(banUnban);
 	}
 
