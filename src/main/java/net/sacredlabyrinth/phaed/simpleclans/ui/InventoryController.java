@@ -4,6 +4,9 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import java.util.*;
+
+import net.sacredlabyrinth.phaed.simpleclans.events.ComponentClickEvent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.ConfirmationFrame;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.WarningFrame;
 import org.bukkit.Bukkit;
@@ -92,6 +95,12 @@ public class InventoryController implements Listener {
 		Bukkit.getScheduler().runTask(SimpleClans.getInstance(), () -> {
 			ItemStack currentItem = event.getCurrentItem();
 			if (currentItem == null) return;
+
+			ComponentClickEvent componentClickEvent = new ComponentClickEvent(((Player) entity), frame, component);
+			Bukkit.getPluginManager().callEvent(componentClickEvent);
+			if (componentClickEvent.isCancelled()) {
+				return;
+			}
 
 			ItemMeta itemMeta = currentItem.getItemMeta();
 			Objects.requireNonNull(itemMeta).setLore(Collections.singletonList(lang("gui.loading", (Player) entity)));

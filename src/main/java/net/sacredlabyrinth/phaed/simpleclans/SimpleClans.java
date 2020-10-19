@@ -7,10 +7,6 @@ import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.SCEntityListener;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.SCPlayerListener;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
-import net.sacredlabyrinth.phaed.simpleclans.tasks.CollectFeeTask;
-import net.sacredlabyrinth.phaed.simpleclans.tasks.CollectUpkeepTask;
-import net.sacredlabyrinth.phaed.simpleclans.tasks.SaveDataTask;
-import net.sacredlabyrinth.phaed.simpleclans.tasks.UpkeepWarningTask;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
@@ -164,6 +160,9 @@ public class SimpleClans extends JavaPlugin {
         if (getSettingsManager().isClanUpkeep()) {
             new CollectUpkeepTask().start();
             new UpkeepWarningTask().start();
+        }
+        if (getSettingsManager().isCachePlayerHeads()) {
+            new PlayerHeadCacheTask(this).start();
         }
     }
 

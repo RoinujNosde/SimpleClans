@@ -11,7 +11,7 @@ description: null
 
 ### Exemple
 
-```text
+```yaml
 settings:
     enable-auto-groups: false
 permissions:

@@ -1,13 +1,14 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.events.FrameOpenEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.util.ChatPaginator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +43,11 @@ public class InventoryDrawer {
                 return;
             }
             Bukkit.getScheduler().runTask(plugin, () -> {
+                FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return;
+                }
                 frame.getViewer().openInventory(inventory);
                 InventoryController.register(frame);
                 OPENING.remove(uuid);
@@ -99,8 +105,8 @@ public class InventoryDrawer {
             if (oldLore != null) {
                 ArrayList<String> newLore = new ArrayList<>();
                 for (String line : oldLore) {
-                    String[] split = line.split("\n");
-                    newLore.addAll(Arrays.asList(split));
+                    String[] strings = ChatPaginator.wordWrap(line, plugin.getSettingsManager().getLoreLength());
+                    newLore.addAll(Arrays.asList(strings));
                 }
                 itemMeta.setLore(newLore);
                 c.setItemMeta(itemMeta);
