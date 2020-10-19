@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResignPrompt;
+import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.conversations.ConversationFactory;
@@ -40,17 +41,17 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=WAR_START")
     @Description("{@@command.description.war.start}")
     @CommandCompletion("@rivals")
-    public void startWar(Player player, ClanPlayer cp, Clan clan, @Name("clan") ClanInput other) {
+    public void startWar(Player player, ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
         Clan war = other.getClan();
-        if (!clan.isRival(war.getTag())) {
+        if (!issuerClan.isRival(war.getTag())) {
             ChatBlock.sendMessage(player, RED + lang("you.can.only.start.war.with.rivals", player));
             return;
         }
-        if (!clan.isWarring(war.getTag())) {
-            List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(clan.getLeaders());
+        if (!issuerClan.isWarring(war.getTag())) {
+            List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(issuerClan.getLeaders());
 
             if (!onlineLeaders.isEmpty()) {
-                requestManager.addWarStartRequest(cp, war, clan);
+                requestManager.addWarStartRequest(cp, war, issuerClan);
                 ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
                         player, war.getName()));
             } else {
@@ -66,10 +67,10 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=WAR_END")
     @Description("{@@command.description.war.end}")
     @CommandCompletion("@warring_clans")
-    public void endWar(Player player, ClanPlayer cp, Clan clan, @Name("clan") ClanInput other) {
+    public void endWar(Player player, ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
         Clan war = other.getClan();
-        if (clan.isWarring(war.getTag())) {
-            requestManager.addWarEndRequest(cp, war, clan);
+        if (issuerClan.isWarring(war.getTag())) {
+            requestManager.addWarEndRequest(cp, war, issuerClan);
             ChatBlock.sendMessage(player, AQUA + lang("leaders.asked.to.end.rivalry", player, war.getName()));
         } else {
             ChatBlock.sendMessage(player, RED + lang("clans.not.at.war", player));
@@ -81,7 +82,13 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=MODTAG")
     @Description("{@@command.description.modtag}")
     public void modtag(Player player, Clan clan, @Single @Name("tag") String tag) {
-        String cleantag = Helper.cleanTag(tag);
+        TagChangeEvent event = new TagChangeEvent(player, clan, tag);
+        plugin.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        tag = event.getNewTag();
+        String cleanTag = Helper.cleanTag(tag);
 
         TagValidator validator = new TagValidator(plugin, player, tag);
         if (validator.getErrorMessage() != null) {
@@ -89,7 +96,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        if (!cleantag.equals(clan.getTag())) {
+        if (!cleanTag.equals(clan.getTag())) {
             ChatBlock.sendMessage(player, RED + lang("you.can.only.modify.the.color.and.case.of.the.tag",
                     player));
             return;
@@ -122,37 +129,37 @@ public class ClanCommands extends BaseCommand {
     @CommandCompletion("@non_members")
     @Conditions("rank:name=INVITE")
     @Description("{@@command.description.invite}")
-    public void invite(Player player, ClanPlayer cp, Clan clan,
-                       @Conditions("not_banned|not_in_clan") @Name("player") ClanPlayerInput invited) {
+    public void invite(Player sender, ClanPlayer cp, Clan clan,
+                       @Conditions("not_banned|not_in_clan|online") @Name("player") ClanPlayerInput invited) {
         Player invitedPlayer = invited.getClanPlayer().toPlayer();
         if (invitedPlayer == null) return;
         if (!permissions.has(invitedPlayer, "simpleclans.member.can-join")) {
-            ChatBlock.sendMessage(player, RED +
-                    lang("the.player.doesn.t.not.have.the.permissions.to.join.clans", player));
+            ChatBlock.sendMessage(sender, RED +
+                    lang("the.player.doesn.t.not.have.the.permissions.to.join.clans", sender));
             return;
         }
-        if (invitedPlayer.getUniqueId().equals(player.getUniqueId())) {
-            ChatBlock.sendMessage(player, RED + lang("you.cannot.invite.yourself", player));
+        if (invitedPlayer.getUniqueId().equals(sender.getUniqueId())) {
+            ChatBlock.sendMessage(sender, RED + lang("you.cannot.invite.yourself", sender));
             return;
         }
         long minutesBeforeRejoin = cm.getMinutesBeforeRejoin(invited.getClanPlayer(), clan);
         if (minutesBeforeRejoin != 0) {
-            ChatBlock.sendMessage(player, RED +
-                    lang("the.player.must.wait.0.before.joining.your.clan.again", player, minutesBeforeRejoin));
+            ChatBlock.sendMessage(sender, RED +
+                    lang("the.player.must.wait.0.before.joining.your.clan.again", sender, minutesBeforeRejoin));
             return;
         }
 
         if (clan.getSize() >= settings.getMaxMembers()) {
-            ChatBlock.sendMessage(player, RED + lang("the.clan.members.reached.limit", player));
+            ChatBlock.sendMessage(sender, RED + lang("the.clan.members.reached.limit", sender));
             return;
         }
-        if (!cm.purchaseInvite(player)) {
+        if (!cm.purchaseInvite(sender)) {
             return;
         }
 
         requestManager.addInviteRequest(cp, invitedPlayer.getName(), clan);
-        ChatBlock.sendMessage(player, AQUA + lang("has.been.asked.to.join",
-                player, invitedPlayer.getName(), clan.getName()));
+        ChatBlock.sendMessage(sender, AQUA + lang("has.been.asked.to.join",
+                sender, invitedPlayer.getName(), clan.getName()));
     }
 
     @Subcommand("%fee %check")
@@ -230,18 +237,18 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rivable|minimum_to_rival|rank:name=RIVAL_ADD")
     @CommandCompletion("@clans")
     @Description("{@@command.description.rival.add}")
-    public void addRival(Player player, Clan clan, @Conditions("verified|different") @Name("clan") ClanInput rival) {
+    public void addRival(Player player, Clan issuerClan, @Conditions("verified|different") @Name("clan") ClanInput rival) {
         Clan rivalInput = rival.getClan();
         if (settings.isUnrivable(rivalInput.getTag())) {
             ChatBlock.sendMessage(player, RED + lang("the.clan.cannot.be.rivaled", player));
             return;
         }
-        if (!clan.reachedRivalLimit()) {
-            if (!clan.isRival(rivalInput.getTag())) {
-                clan.addRival(rivalInput);
-                rivalInput.addBb(player.getName(), AQUA + lang("has.initiated.a.rivalry", clan.getName(),
+        if (!issuerClan.reachedRivalLimit()) {
+            if (!issuerClan.isRival(rivalInput.getTag())) {
+                issuerClan.addRival(rivalInput);
+                rivalInput.addBb(player.getName(), AQUA + lang("has.initiated.a.rivalry", issuerClan.getName(),
                         rivalInput.getName()), false);
-                clan.addBb(player.getName(), AQUA + lang("has.initiated.a.rivalry", player.getName(),
+                issuerClan.addBb(player.getName(), AQUA + lang("has.initiated.a.rivalry", player.getName(),
                         rivalInput.getName()));
             } else {
                 ChatBlock.sendMessage(player, RED + lang("your.clans.are.already.rivals", player));
@@ -258,11 +265,11 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.rival.remove}")
     public void removeRival(Player player,
                             ClanPlayer cp,
-                            Clan clan,
+                            Clan issuerClan,
                             @Conditions("different") @Name("clan") ClanInput rival) {
         Clan rivalInput = rival.getClan();
-        if (clan.isRival(rivalInput.getTag())) {
-            requestManager.addRivalryBreakRequest(cp, rivalInput, clan);
+        if (issuerClan.isRival(rivalInput.getTag())) {
+            requestManager.addRivalryBreakRequest(cp, rivalInput, issuerClan);
             ChatBlock.sendMessage(player, AQUA + lang("leaders.asked.to.end.rivalry", player,
                     rivalInput.getName()));
         } else {
@@ -277,16 +284,16 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.ally.add}")
     public void addAlly(Player player,
                         ClanPlayer cp,
-                        Clan clan,
+                        Clan issuerClan,
                         @Conditions("verified|different") @Name("clan") ClanInput other) {
         Clan input = other.getClan();
-        if (clan.isAlly(input.getTag())) {
+        if (issuerClan.isAlly(input.getTag())) {
             ChatBlock.sendMessage(player, RED + lang("your.clans.are.already.allies", player));
             return;
         }
         int maxAlliances = settings.getClanMaxAlliances();
         if (maxAlliances != -1) {
-            if (clan.getAllies().size() >= maxAlliances) {
+            if (issuerClan.getAllies().size() >= maxAlliances) {
                 ChatBlock.sendMessage(player, lang("your.clan.reached.max.alliances", player));
                 return;
             }
@@ -296,14 +303,14 @@ public class ClanCommands extends BaseCommand {
             }
         }
 
-        List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(clan.getLeaders());
+        List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(issuerClan.getLeaders());
         if (onlineLeaders.isEmpty()) {
             ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance",
                     player));
             return;
         }
 
-        requestManager.addAllyRequest(cp, input, clan);
+        requestManager.addAllyRequest(cp, input, issuerClan);
         ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.for.an.alliance",
                 player, input.getName()));
     }
@@ -313,12 +320,12 @@ public class ClanCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.ally")
     @Description("{@@command.description.ally.remove}")
     @CommandCompletion("@allied_clans")
-    public void removeAlly(Player player, Clan clan, @Conditions("different|allied_clan") @Name("clan") ClanInput ally) {
+    public void removeAlly(Player player, Clan issuerClan, @Conditions("different|allied_clan") @Name("clan") ClanInput ally) {
         Clan allyInput = ally.getClan();
-        clan.removeAlly(allyInput);
-        allyInput.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", clan.getName(),
+        issuerClan.removeAlly(allyInput);
+        allyInput.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", issuerClan.getName(),
                 allyInput.getName()), false);
-        clan.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", player.getName(),
+        issuerClan.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", player.getName(),
                 allyInput.getName()));
     }
 

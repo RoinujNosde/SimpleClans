@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.events;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -28,7 +29,7 @@ public class RivalClanRemoveEvent extends Event {
     }
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

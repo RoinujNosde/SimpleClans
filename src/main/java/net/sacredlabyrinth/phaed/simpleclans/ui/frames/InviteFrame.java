@@ -20,20 +20,22 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class InviteFrame extends SCFrame {
 
-	private Paginator paginator;
+	private final Paginator paginator;
 	private final SimpleClans plugin;
+	private final List<Player> players;
 
 	public InviteFrame(SCFrame parent, Player viewer) {
 		super(parent, viewer);
 		this.plugin = SimpleClans.getInstance();
+		ClanManager cm = plugin.getClanManager();
+		players = plugin.getServer().getOnlinePlayers().stream().filter(p -> cm.getClanPlayer(p) == null)
+				.collect(Collectors.toList());
+		paginator = new Paginator(getSize() - 9, players.size());
+
 	}
 
 	@Override
 	public void createComponents() {
-		ClanManager cm = plugin.getClanManager();
-		List<Player> players = plugin.getServer().getOnlinePlayers().stream().filter(p -> cm.getClanPlayer(p) == null).collect(Collectors.toList());
-		paginator = new Paginator(getSize() - 9, players.size());
-
 		addHeader();
 
 		int slot = 9;

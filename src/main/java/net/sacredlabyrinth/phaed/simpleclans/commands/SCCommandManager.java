@@ -44,18 +44,21 @@ public class SCCommandManager extends PaperCommandManager {
     }
     
     private void configure() {
-        registerDependency(ClanManager.class, plugin.getClanManager());
-        registerDependency(SettingsManager.class, plugin.getSettingsManager());
-        registerDependency(StorageManager.class, plugin.getStorageManager());
-        registerDependency(PermissionsManager.class, plugin.getPermissionsManager());
-        registerDependency(RequestManager.class, plugin.getRequestManager());
-
+        registerDependencies();
         enableUnstableAPI("help");
         addCommandReplacements();
         registerContexts();
         registerCommands();
         registerConditions();
         registerCompletions();
+    }
+
+    private void registerDependencies() {
+        registerDependency(ClanManager.class, plugin.getClanManager());
+        registerDependency(SettingsManager.class, plugin.getSettingsManager());
+        registerDependency(StorageManager.class, plugin.getStorageManager());
+        registerDependency(PermissionsManager.class, plugin.getPermissionsManager());
+        registerDependency(RequestManager.class, plugin.getRequestManager());
     }
 
     private void registerCompletions() {
@@ -128,7 +131,6 @@ public class SCCommandManager extends PaperCommandManager {
                 plugin.getLogger().log(Level.SEVERE, "Error registering context", ex);
             }
         }
-
     }
 
     private void registerCommands() {

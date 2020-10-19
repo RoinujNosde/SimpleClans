@@ -66,7 +66,7 @@ public class HomeCommands extends BaseCommand {
         processTeleport(player, cp, clan, location);
     }
 
-    @Subcommand("%home %tp")
+    @Subcommand("%home")
     @CommandPermission("simpleclans.member.home")
     @Conditions("rank:name=HOME_TP")
     @Description("{@@command.description.home.tp}")

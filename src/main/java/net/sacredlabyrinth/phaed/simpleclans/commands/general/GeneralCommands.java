@@ -125,7 +125,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.anyone.roster")
     @Description("{@@command.description.roster.other}")
-    public void roster(CommandSender sender, @Conditions("verified") @Name("player") ClanInput clan) {
+    public void roster(CommandSender sender, @Conditions("verified") @Name("clan") ClanInput clan) {
         ClanRoster r = new ClanRoster(plugin, sender, clan.getClan());
         r.send();
     }
