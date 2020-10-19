@@ -303,11 +303,13 @@ public final class StorageManager {
 
         for (Clan clan : clans) {
             if (clan.isVerified()) {
-                if (clan.getInactiveDays() > plugin.getSettingsManager().getPurgeClan()) {
+                int purgeClan = plugin.getSettingsManager().getPurgeClan();
+                if (clan.getInactiveDays() > purgeClan && purgeClan > 0) {
                     purge.add(clan);
                 }
             } else {
-                if (clan.getInactiveDays() > plugin.getSettingsManager().getPurgeUnverified()) {
+                int purgeUnverified = plugin.getSettingsManager().getPurgeUnverified();
+                if (clan.getInactiveDays() > purgeUnverified && purgeUnverified > 0) {
                     purge.add(clan);
                 }
             }
@@ -321,10 +323,14 @@ public final class StorageManager {
     }
 
     private void purgeClanPlayers(List<ClanPlayer> cps) {
+        int purgePlayers = plugin.getSettingsManager().getPurgePlayers();
+        if (purgePlayers < 1) {
+            return;
+        }
         List<ClanPlayer> purge = new ArrayList<>();
 
         for (ClanPlayer cp : cps) {
-            if (cp.getInactiveDays() > plugin.getSettingsManager().getPurgePlayers() && !cp.isLeader()) {
+            if (cp.getInactiveDays() > purgePlayers && !cp.isLeader()) {
                 purge.add(cp);
             }
         }
