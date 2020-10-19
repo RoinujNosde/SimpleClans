@@ -1,10 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.listeners;
 
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import net.sacredlabyrinth.phaed.simpleclans.executors.*;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,143 +10,38 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
 import java.util.Iterator;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
  */
 public class SCPlayerListener implements Listener {
 
-    private SimpleClans plugin;
+    private final SimpleClans plugin;
 
-    /**
-     *
-     */
     public SCPlayerListener() {
         plugin = SimpleClans.getInstance();
     }
 
-    /**
-     * @param event
-     */
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-
-        if (player == null) {
-            return;
-        }
-
-        if (plugin.getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld().getName())) {
-            return;
-        }
-
-        if (event.getMessage().length() == 0) {
-            return;
-        }
-
         String[] split = event.getMessage().substring(1).split(" ");
-
-        if (split.length == 0) {
-            return;
-        }
-
         String command = split[0];
 
-        if (plugin.getSettingsManager().isTagBasedClanChat() && plugin.getClanManager().isClan(command)) {
-            if (!plugin.getSettingsManager().getClanChatEnable()) {
+        if (plugin.getSettingsManager().isTagBasedClanChat()) {
+            Clan clan = plugin.getClanManager().getClan(command);
+            if (clan == null || !clan.isMember(event.getPlayer())) {
                 return;
             }
-
-            ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-
-            if (cp == null) {
-                return;
-            }
-
-            if (cp.getTag().equalsIgnoreCase(command)) {
-                event.setCancelled(true);
-                if (!plugin.getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.chat")) {
-                    ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + lang("insufficient.permissions",cp.toPlayer()));
-                    return;
-                }
-
-                if (split.length > 1) {
-                    plugin.getClanManager().processClanChat(player, cp.getTag(), Helper.toMessage(Helper.removeFirst(split)));
-                }
-            }
-        }
-        if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandClanChat())) {
-            if (!plugin.getSettingsManager().getClanChatEnable()) {
-                return;
-            }
-
-            ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-
-            if (cp == null) {
-                return;
-            }
-
-            event.setCancelled(true);
-
-            if (!plugin.getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.chat")) {
-                ChatBlock.sendMessage(cp.toPlayer(), ChatColor.RED + lang("insufficient.permissions",cp.toPlayer()));
-                return;
-            }
-            if (split.length > 1) {
-                plugin.getClanManager().processClanChat(player, cp.getTag(), Helper.toMessage(Helper.removeFirst(split)));
-            }
-        }
-
-        if (plugin.getSettingsManager().isForceCommandPriority()) {
-            if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandAlly())) {
-                if (!plugin.getServer().getPluginCommand(plugin.getSettingsManager().getCommandAlly()).equals(plugin.getCommand(plugin.getSettingsManager().getCommandAlly()))) {
-                    new AllyCommandExecutor().onCommand(player, null, null, Helper.removeFirst(split));
-                    event.setCancelled(true);
-                }
-            } else if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandGlobal())) {
-                if (!plugin.getServer().getPluginCommand(plugin.getSettingsManager().getCommandGlobal()).equals(plugin.getCommand(plugin.getSettingsManager().getCommandGlobal()))) {
-                    new GlobalCommandExecutor().onCommand(player, null, null, Helper.removeFirst(split));
-                    event.setCancelled(true);
-                }
-            } else if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandClan())) {
-                if (!plugin.getServer().getPluginCommand(plugin.getSettingsManager().getCommandClan()).equals(plugin.getCommand(plugin.getSettingsManager().getCommandClan()))) {
-                    new ClanCommandExecutor().onCommand(player, null, null, Helper.removeFirst(split));
-                    event.setCancelled(true);
-                }
-            } else if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandAccept())) {
-                if (!plugin.getServer().getPluginCommand(plugin.getSettingsManager().getCommandAccept()).equals(plugin.getCommand(plugin.getSettingsManager().getCommandAccept()))) {
-                    new AcceptCommandExecutor().onCommand(player, null, null, Helper.removeFirst(split));
-                    event.setCancelled(true);
-                }
-            } else if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandDeny())) {
-                if (!plugin.getServer().getPluginCommand(plugin.getSettingsManager().getCommandDeny()).equals(plugin.getCommand(plugin.getSettingsManager().getCommandDeny()))) {
-                    new DenyCommandExecutor().onCommand(player, null, null, Helper.removeFirst(split));
-                    event.setCancelled(true);
-                }
-            } else if (command.equalsIgnoreCase(plugin.getSettingsManager().getCommandMore())) {
-                if (!plugin.getServer().getPluginCommand(plugin.getSettingsManager().getCommandMore()).equals(plugin.getCommand(plugin.getSettingsManager().getCommandMore()))) {
-                    new MoreCommandExecutor().onCommand(player, null, null, Helper.removeFirst(split));
-                    event.setCancelled(true);
-                }
-            }
+            String replaced = event.getMessage().replaceFirst(command, plugin.getSettingsManager().getCommandClanChat());
+            event.setMessage(replaced);
         }
     }
 
-    /**
-     * @param event
-     */
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld().getName())) {
-            return;
-        }
-
-        if (event.getPlayer() == null) {
+        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
             return;
         }
 
@@ -229,14 +120,11 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    /**
-     * @param event
-     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        if (SimpleClans.getInstance().getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld().getName())) {
+        if (SimpleClans.getInstance().getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld())) {
             return;
         }
 
@@ -263,20 +151,11 @@ public class SCPlayerListener implements Listener {
         }
 
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
-
-        if (event.getPlayer().isOp()) {
-            for (String message : SimpleClans.getInstance().getMessages()) {
-                event.getPlayer().sendMessage(ChatColor.YELLOW + message);
-            }
-        }
     }
 
-    /**
-     * @param event
-     */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld().getName())) {
+        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
             return;
         }
 
@@ -295,12 +174,9 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    /**
-     * @param event
-     */
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld().getName())) {
+        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
             return;
         }
 
@@ -311,12 +187,9 @@ public class SCPlayerListener implements Listener {
         plugin.getRequestManager().endPendingRequest(event.getPlayer().getName());
     }
 
-    /**
-     * @param event
-     */
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld().getName())) {
+        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
             return;
         }
 

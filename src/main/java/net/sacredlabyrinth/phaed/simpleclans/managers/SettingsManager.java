@@ -2,20 +2,19 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
-import org.bukkit.Bukkit;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author phaed
@@ -44,15 +43,8 @@ public final class SettingsManager {
     private boolean acceptOtherAlphabetsLettersOnTag;
     private int minToVerify;
     private int rejoinCooldown;
-    private String listDefault;
-    private String listSize;
-    private String listKdr;
-    private String listName;
-    private String listFounded;
-    private String listActive;
-    private String listAsc;
-    private String listDesc;
-    private List<Material> itemsList = new ArrayList<Material>();
+    private String listDefaultOrderBy;
+    private final List<Material> itemsList = new ArrayList<>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
     private List<String> disallowedWords;
@@ -238,9 +230,9 @@ public final class SettingsManager {
         dropOnHome = getConfig().getBoolean("settings.drop-items-on-clan-home");
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
 		for (String material : getConfig().getStringList("settings.item-list")) {
-			Material type = Material.getMaterial(material);
-			if (type != null) {
-                itemsList.add(type);
+            Optional<XMaterial> x = XMaterial.matchXMaterial(material);
+            if (x.isPresent()) {
+                itemsList.add(x.get().parseMaterial());
             } else {
                 plugin.getLogger().warning("Error with Material: " + material);
             }
@@ -264,15 +256,8 @@ public final class SettingsManager {
         acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
         minToVerify = getConfig().getInt("clan.min-to-verify", 1);
         rankingType = getConfig().getString("settings.ranking-type", "DENSE");
-        listActive = getConfig().getString("list.active", "active");
-        listKdr = getConfig().getString("list.kdr", "kdr");
-        listDefault = getConfig().getString("list.default", listKdr);
-        listSize = getConfig().getString("list.size", "size");
-        listName = getConfig().getString("list.name", "name");
-        listFounded = getConfig().getString("list.founded", "founded");
-        listAsc = getConfig().getString("list.asc", "asc");
-        listDesc = getConfig().getString("list.desc", "desc");
-        serverName = getConfig().getString("settings.server-name");
+        listDefaultOrderBy = getConfig().getString("settings.list-default-order-by", "kdr");
+        serverName = getConfig().getString("settings.server-name", "SimpleClans");
         chatTags = getConfig().getBoolean("settings.display-chat-tags");
         rivalLimitPercent = getConfig().getInt("settings.rival-limit-percent");
         ePurchaseCreation = getConfig().getBoolean("economy.purchase-clan-create");
@@ -593,6 +578,14 @@ public final class SettingsManager {
         return commandClanChat;
     }
 
+    @Contract("null -> false")
+    public boolean isBlacklistedWorld(@Nullable World world) {
+        if (world != null) {
+            return isBlacklistedWorld(world.getName());
+        }
+        return false;
+    }
+
     /**
      * Check whether a worlds is blacklisted
      *
@@ -600,8 +593,8 @@ public final class SettingsManager {
      * @return whether the world is blacklisted
      */
     public boolean isBlacklistedWorld(String world) {
-        for (Object w : blacklistedWorlds) {
-            if (((String) w).equalsIgnoreCase(world)) {
+        for (String w : blacklistedWorlds) {
+            if (w.equalsIgnoreCase(world)) {
                 return true;
             }
         }
@@ -823,37 +816,50 @@ public final class SettingsManager {
     public int getRejoinCooldown() {
     	return rejoinCooldown;
     }
-    
-    public String getListDefault() {
-		return listDefault;
+
+    @NotNull
+    public String getListDefaultOrderBy() {
+		return listDefaultOrderBy;
 	}
 
+	@Deprecated
+	public String getListDefault() {
+        return getListDefaultOrderBy();
+    }
+
+	@Deprecated
 	public String getListSize() {
-		return listSize;
+		return "size";
 	}
 
+	@Deprecated
 	public String getListKdr() {
-		return listKdr;
+		return "kdr";
 	}
 
+	@Deprecated
 	public String getListName() {
-		return listName;
+		return "name";
 	}
 
+	@Deprecated
 	public String getListFounded() {
-		return listFounded;
+		return "founded";
 	}
 
+    @Deprecated
 	public String getListActive() {
-		return listActive;
+		return "active";
 	}
 
+	@Deprecated
 	public String getListAsc() {
-		return listAsc;
+		return "asc";
 	}
 
+	@Deprecated
 	public String getListDesc() {
-		return listDesc;
+		return "desc";
 	}
 
 	/**

@@ -2,12 +2,15 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -632,6 +635,10 @@ public class ChatBlock {
         for (String out : message) {
             receiver.sendMessage(out);
         }
+    }
+
+    public static void sendMessageKey(@NotNull CommandSender receiver, @NotNull String key) {
+        sendMessage(receiver, lang(key, receiver));
     }
 
     /**

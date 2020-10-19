@@ -1,0 +1,11 @@
+<root>
+    <item name='co.aikar.commands.BukkitCommandCompletionContext org.bukkit.entity.Player getPlayer()'>
+        <annotation name='org.jetbrains.annotations.Nullable'/>
+    </item>
+    <item name='co.aikar.commands.BukkitCommandExecutionContext org.bukkit.entity.Player getPlayer()'>
+        <annotation name='org.jetbrains.annotations.Nullable'/>
+    </item>
+    <item name='co.aikar.commands.BukkitCommandIssuer org.bukkit.entity.Player getPlayer()'>
+        <annotation name='org.jetbrains.annotations.Nullable'/>
+    </item>
+</root>

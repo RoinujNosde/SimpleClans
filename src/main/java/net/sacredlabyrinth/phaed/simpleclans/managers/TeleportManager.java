@@ -1,11 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import io.papermc.lib.PaperLib;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.*;
+
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import net.sacredlabyrinth.phaed.simpleclans.TeleportState;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,11 +17,12 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 public final class TeleportManager {
-    private SimpleClans plugin;
-    private HashMap<String, TeleportState> waitingPlayers = new HashMap<>();
+    private final SimpleClans plugin;
+    private final HashMap<String, TeleportState> waitingPlayers = new HashMap<>();
 
     /**
      *
@@ -40,13 +40,45 @@ public final class TeleportManager {
      * @param clanName
      */
     public void addPlayer(Player player, Location dest, String clanName) {
-		int secs = SimpleClans.getInstance().getSettingsManager().getWaitSecs();
-		waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, dest, clanName));
+        int secs = SimpleClans.getInstance().getSettingsManager().getWaitSecs();
+        waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, dest, clanName));
 
-		if (secs > 0) {
-			ChatBlock.sendMessage(player, ChatColor.AQUA
-					+ MessageFormat.format(lang("waiting.for.teleport.stand.still.for.0.seconds",player), secs));
-		}
+        if (secs > 0) {
+            ChatBlock.sendMessage(player, ChatColor.AQUA
+                    + MessageFormat.format(lang("waiting.for.teleport.stand.still.for.0.seconds", player), secs));
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public void teleport(Clan clan, Location location) {
+        List<ClanPlayer> members = clan.getOnlineMembers();
+        for (ClanPlayer cp : members) {
+            Player player = cp.toPlayer();
+            if (player == null) {
+                continue;
+            }
+            int x = location.getBlockX();
+            int z = location.getBlockZ();
+            player.sendBlockChange(new Location(location.getWorld(), x + 1, location.getBlockY(), z + 1),
+                    Material.GLASS, (byte) 0);
+            player.sendBlockChange(new Location(location.getWorld(), x - 1, location.getBlockY(), z - 1),
+                    Material.GLASS, (byte) 0);
+            player.sendBlockChange(new Location(location.getWorld(), x + 1, location.getBlockY(), z - 1),
+                    Material.GLASS, (byte) 0);
+            player.sendBlockChange(new Location(location.getWorld(), x - 1, location.getBlockY(), z + 1),
+                    Material.GLASS, (byte) 0);
+            Random r = new Random();
+            int xx = r.nextInt(2) - 1;
+            int zz = r.nextInt(2) - 1;
+            if (xx == 0 && zz == 0) {
+                xx = 1;
+            }
+            x = x + xx;
+            z = z + zz;
+
+            plugin.getTeleportManager().addPlayer(player, new Location(location.getWorld(), x + .5,
+                    location.getBlockY(), z + .5), clan.getName());
+        }
     }
 
     private void dropItems(Player player) {
@@ -67,34 +99,31 @@ public final class TeleportManager {
                 }
             }
         } else if (plugin.getSettingsManager().isKeepOnHome()) {
-            try {
-                PlayerInventory inv = player.getInventory();
-                ItemStack[] contents = inv.getContents().clone();
+            PlayerInventory inv = player.getInventory();
+            ItemStack[] contents = inv.getContents().clone();
 
-                for (ItemStack item : contents) {
-                    if (item == null) {
-                        continue;
-                    }
-
-                    List<Material> itemsList = plugin.getSettingsManager().getItemsList();
-
-                    if (!itemsList.contains(item.getType())) {
-                        player.getWorld().dropItemNaturally(player.getLocation(), item);
-                        inv.remove(item);
-                    }
+            for (ItemStack item : contents) {
+                if (item == null) {
+                    continue;
                 }
-            } catch (Exception ex) {
-                Helper.dumpStackTrace();
+
+                List<Material> itemsList = plugin.getSettingsManager().getItemsList();
+
+                if (!itemsList.contains(item.getType())) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    inv.remove(item);
+                }
             }
         }
     }
 
     private void startCounter() {
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            @SuppressWarnings("deprecation")
             @Override
             public void run() {
-                for (Iterator iter = waitingPlayers.values().iterator(); iter.hasNext(); ) {
-                    TeleportState state = (TeleportState) iter.next();
+                for (Iterator<TeleportState> iter = waitingPlayers.values().iterator(); iter.hasNext(); ) {
+                    TeleportState state = iter.next();
 
                     if (state.isProcessing()) {
                         continue;

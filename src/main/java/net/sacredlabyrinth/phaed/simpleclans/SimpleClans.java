@@ -1,42 +1,32 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import co.aikar.commands.BukkitCommandIssuer;
+import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
+import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
+import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
+import net.sacredlabyrinth.phaed.simpleclans.listeners.SCEntityListener;
+import net.sacredlabyrinth.phaed.simpleclans.listeners.SCPlayerListener;
+import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
+import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
+import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
+import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import net.sacredlabyrinth.phaed.simpleclans.executors.AcceptCommandExecutor;
-import net.sacredlabyrinth.phaed.simpleclans.executors.AllyCommandExecutor;
-import net.sacredlabyrinth.phaed.simpleclans.executors.ClanCommandExecutor;
-import net.sacredlabyrinth.phaed.simpleclans.executors.DenyCommandExecutor;
-import net.sacredlabyrinth.phaed.simpleclans.executors.GlobalCommandExecutor;
-import net.sacredlabyrinth.phaed.simpleclans.executors.MoreCommandExecutor;
-import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
-import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
-import net.sacredlabyrinth.phaed.simpleclans.listeners.SCEntityListener;
-import net.sacredlabyrinth.phaed.simpleclans.listeners.SCPlayerListener;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PlaceholdersManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.TeleportManager;
-import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
-import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.regex.Pattern;
 
 /**
  * @author Phaed
@@ -47,6 +37,7 @@ public class SimpleClans extends JavaPlugin {
     private static SimpleClans instance;
     private static LanguageResource languageResource;
     private static final Logger logger = Logger.getLogger("Minecraft");
+    private SCCommandManager commandManager;
     private ClanManager clanManager;
     private RequestManager requestManager;
     private StorageManager storageManager;
@@ -63,9 +54,6 @@ public class SimpleClans extends JavaPlugin {
         return logger;
     }
 
-    /**
-     * @param msg
-     */
     public static void debug(String msg) {
         if (getInstance().getSettingsManager().isDebugging()) {
             logger.log(Level.INFO, msg);
@@ -95,55 +83,50 @@ public class SimpleClans extends JavaPlugin {
         settingsManager = new SettingsManager();
         languageResource = new LanguageResource();
         this.hasUUID = UUIDMigration.canReturnUUID();
-        
+
         permissionsManager = new PermissionsManager();
         requestManager = new RequestManager();
         clanManager = new ClanManager();
         storageManager = new StorageManager();
         teleportManager = new TeleportManager();
-
-        ChatFormatMigration chatFormatMigration = new ChatFormatMigration();
-        chatFormatMigration.migrateAllyChat();
-        chatFormatMigration.migrateClanChat();
-        
-        getServer().getPluginManager().registerEvents(new SCEntityListener(), this);
-        getServer().getPluginManager().registerEvents(new SCPlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryController(), this);
-
+        migrateChatFormat();
+        registerEvents();
         permissionsManager.loadPermissions();
+        commandManager = new SCCommandManager(this);
 
-        CommandHelper.registerCommand(getSettingsManager().getCommandClan());
-        CommandHelper.registerCommand(getSettingsManager().getCommandAccept());
-        CommandHelper.registerCommand(getSettingsManager().getCommandDeny());
-        CommandHelper.registerCommand(getSettingsManager().getCommandMore());
-        CommandHelper.registerCommand(getSettingsManager().getCommandAlly());
-        CommandHelper.registerCommand(getSettingsManager().getCommandGlobal());
-
-        getCommand(getSettingsManager().getCommandClan()).setExecutor(new ClanCommandExecutor());
-        getCommand(getSettingsManager().getCommandAccept()).setExecutor(new AcceptCommandExecutor());
-        getCommand(getSettingsManager().getCommandDeny()).setExecutor(new DenyCommandExecutor());
-        getCommand(getSettingsManager().getCommandMore()).setExecutor(new MoreCommandExecutor());
-        getCommand(getSettingsManager().getCommandAlly()).setExecutor(new AllyCommandExecutor());
-        getCommand(getSettingsManager().getCommandGlobal()).setExecutor(new GlobalCommandExecutor());
-
-        getCommand(getSettingsManager().getCommandClan()).setTabCompleter(new PlayerNameTabCompleter());
-        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
-        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
-        getLogger().info("Help us translate SimpleClans to your language! Access https://crowdin.com/project/simpleclans/");
-        
+        logStatus();
         startTasks();
         startMetrics();
         hookIntoPAPI();
         new UpdateChecker(this).check();
     }
-    
-    private void hookIntoPAPI() {
-		if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-			getLogger().info("PlaceholderAPI found. Registering hook...");
-			new PlaceholdersManager(this).register();
-		}
+
+    private void logStatus() {
+        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
+        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
+        getLogger().info("Help us translate SimpleClans to your language! " +
+                "Access https://crowdin.com/project/simpleclans/");
     }
-    
+
+    private void registerEvents() {
+        getServer().getPluginManager().registerEvents(new SCEntityListener(), this);
+        getServer().getPluginManager().registerEvents(new SCPlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryController(), this);
+    }
+
+    private void migrateChatFormat() {
+        ChatFormatMigration chatFormatMigration = new ChatFormatMigration();
+        chatFormatMigration.migrateAllyChat();
+        chatFormatMigration.migrateClanChat();
+    }
+
+    private void hookIntoPAPI() {
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            getLogger().info("PlaceholderAPI found. Registering hook...");
+            new PlaceholdersManager(this).register();
+        }
+    }
+
     private void startMetrics() {
     	Metrics metrics = new Metrics(this, 7131);
     	SettingsManager sm = getSettingsManager();
@@ -230,6 +213,10 @@ public class SimpleClans extends JavaPlugin {
         return permissionsManager;
     }
 
+    public SCCommandManager getCommandManager() {
+        return commandManager;
+    }
+
     /**
      * @param key the path within the language file
      * @return the lang
@@ -244,8 +231,8 @@ public class SimpleClans extends JavaPlugin {
         return lang(key, player);
     }
 
-    @NotNull
-    public static String lang(@NotNull String key, @Nullable Player player, Object... arguments) {
+    @Nullable
+    public static String optionalLang(@NotNull String key, @Nullable Player player, Object... arguments) {
         Locale locale = getInstance().getSettingsManager().getLanguage();
         if (player != null && instance.getSettingsManager().isLanguagePerPlayer()) {
             Locale playerLocale = Helper.getLocale(player);
@@ -254,44 +241,63 @@ public class SimpleClans extends JavaPlugin {
             }
         }
 
-        return MessageFormat.format(
-                ChatColor.translateAlternateColorCodes(
-                        '&', languageResource.getLang(key, locale)), arguments);
+        String lang = languageResource.getLang(key, locale);
+        if (lang == null) {
+            return null;
+        }
+        String message = ChatColor.translateAlternateColorCodes('&', lang);
+        // contains acf placeholders like {commandprefix}
+        if (Pattern.compile("\\{(?<key>[a-zA-Z]+?)}").matcher(message).find()) {
+            return message;
+        }
+        return MessageFormat.format(message, arguments);
     }
-    
+
     @NotNull
-    public static String lang(@NotNull String key, @NotNull CommandSender sender, Object... arguments) {
-    	if (sender instanceof Player) {
+    public static String lang(@NotNull String key, @Nullable Player player, Object... arguments) {
+        String lang = optionalLang(key, player, arguments);
+        if (lang == null) {
+            return key;
+        }
+        return lang;
+    }
+
+    @NotNull
+    public static String lang(@NotNull String key, @Nullable CommandSender sender, Object... arguments) {
+        if (sender instanceof Player) {
             return lang(key, (Player) sender, arguments);
         } else {
-            return lang(key, null, arguments);
+            return lang(key, (Player) null, arguments);
         }
     }
 
     @NotNull
+    public static String lang(@NotNull String key, @Nullable BukkitCommandIssuer issuer, Object... arguments) {
+        if (issuer != null) {
+            return lang(key, issuer.getIssuer(), arguments);
+        }
+        return lang(key, arguments);
+    }
+
+    @NotNull
     public static String lang(@NotNull String key, Object... arguments) {
-        return lang(key, null, arguments);
+        return lang(key, (Player) null, arguments);
     }
 
     public TeleportManager getTeleportManager() {
         return teleportManager;
     }
 
+    @Deprecated
     public List<String> getMessages() {
         return messages;
     }
 
-    /**
-     * @return the hasUUID
-     */
     @Deprecated
     public boolean hasUUID() {
         return this.hasUUID;
     }
 
-    /**
-     * @param trueOrFalse
-     */
     public void setUUID(boolean trueOrFalse) {
         this.hasUUID = trueOrFalse;
     }

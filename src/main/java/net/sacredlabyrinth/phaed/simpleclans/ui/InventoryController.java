@@ -1,9 +1,14 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import java.util.*;
 
 import net.sacredlabyrinth.phaed.simpleclans.events.ComponentClickEvent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.ConfirmationFrame;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.WarningFrame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -16,13 +21,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.ui.frames.WarningFrame;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -139,7 +140,7 @@ public class InventoryController implements Listener {
 			boolean leaderPerm = permS.contains("simpleclans.leader") && !permS.equalsIgnoreCase("simpleclans.leader.create");
 			ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
 
-			return pm.has(player, permS) && (!leaderPerm || cp.isLeader());
+			return pm.has(player, permS) && (!leaderPerm || (cp != null && cp.isLeader()));
 		}
 		return pm.has(player, (RankPermission) permission, false);
 	}
@@ -172,14 +173,15 @@ public class InventoryController implements Listener {
 	 *
 	 * @author RoinujNosde
 	 */
-	public static void runSubcommand(@NotNull Player player, @NotNull String subcommand, boolean update) {
-		String baseCommand = SimpleClans.getInstance().getSettingsManager().getCommandClan();
-
+	public static void runSubcommand(@NotNull Player player, @NotNull String subcommand, boolean update, String... args) {
+		SimpleClans plugin = SimpleClans.getInstance();
+		String baseCommand = plugin.getSettingsManager().getCommandClan();
+		String finalCommand = String.format("%s %s ", baseCommand, subcommand) + String.join(" ", args);
 		new BukkitRunnable() {
 			
 			@Override
 			public void run() {
-				player.performCommand(String.format("%s %s", baseCommand, subcommand));
+				player.performCommand(finalCommand);
 				if (!update) {
 					player.closeInventory();
 				} else {
@@ -190,6 +192,6 @@ public class InventoryController implements Listener {
 					InventoryDrawer.open(currentFrame);
 				}
 			}
-		}.runTask(SimpleClans.getInstance());
+		}.runTask(plugin);
 	}
 }

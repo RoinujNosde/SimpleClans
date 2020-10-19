@@ -306,6 +306,10 @@ public class SCEntityListener implements Listener
 
         if (attacker != null && victim != null)
         {
+            if (attacker.getUniqueId().equals(victim.getUniqueId())) {
+                return;
+            }
+
             ClanPlayer acp = plugin.getClanManager().getClanPlayer(attacker);
             ClanPlayer vcp = plugin.getClanManager().getClanPlayer(victim);
 
