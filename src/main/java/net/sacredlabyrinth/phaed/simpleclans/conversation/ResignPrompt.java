@@ -6,11 +6,9 @@ import java.util.Objects;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -32,8 +30,11 @@ public class ResignPrompt extends StringPrompt {
         Player player = (Player) cc.getForWhom();
         String yes = lang("resign.yes", player);
         ClanManager cm = Objects.requireNonNull(plugin).getClanManager();
-        ClanPlayer cp = cm.getClanPlayer(player);
+        ClanPlayer cp = cm.getCreateClanPlayer(player.getUniqueId());
         Clan clan = cp.getClan();
+        if (clan == null) {
+            return END_OF_CONVERSATION;
+        }
         		
         if (yes.equalsIgnoreCase(input)) {
             if (!clan.isLeader(player) || clan.getLeaders().size() > 1) {
