@@ -1,11 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -23,8 +25,6 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
-
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 /**
  * @author phaed
@@ -750,8 +750,21 @@ public class Helper {
         }
         return result;
     }
-    
-    public static boolean isVanished(Player player) {
+
+    @Contract("_, null -> false")
+    public static boolean isVanished(@Nullable CommandSender viewer, @Nullable Player player) {
+        if (isVanished(player)) {
+            return true;
+        }
+        if (viewer instanceof Player && player != null) {
+            return !((Player) viewer).canSee(player);
+        }
+
+        return false;
+    }
+
+    @Contract("null -> false")
+    public static boolean isVanished(@Nullable Player player) {
         if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
             return player.getMetadata("vanished").get(0).asBoolean();
         }

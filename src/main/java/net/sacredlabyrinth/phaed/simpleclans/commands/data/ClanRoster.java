@@ -35,7 +35,7 @@ public class ClanRoster extends Sendable {
             Player p = cp.toPlayer();
 
             String name = (cp.isTrusted() ? sm.getPageTrustedColor() : sm.getPageUnTrustedColor()) + cp.getName();
-            String lastSeen = p != null && p.isOnline() && !Helper.isVanished(p) ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
+            String lastSeen = p != null && p.isOnline() && !Helper.isVanished(sender, p) ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
 
             chatBlock.addRow("  " + name, YELLOW + Helper.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
         }
@@ -48,7 +48,7 @@ public class ClanRoster extends Sendable {
             Player p = cp.toPlayer();
 
             String name = sm.getPageLeaderColor() + cp.getName();
-            String lastSeen = p != null && p.isOnline() && !Helper.isVanished(p) ? GREEN + lang("online", sender)
+            String lastSeen = p != null && p.isOnline() && !Helper.isVanished(sender, p) ? GREEN + lang("online", sender)
                     : WHITE + cp.getLastSeenDaysString(sender);
 
             chatBlock.addRow("  " + name, YELLOW + Helper.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
