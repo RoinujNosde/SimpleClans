@@ -8,7 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.Player;
 
 @CommandAlias("%clan_chat")
-@Conditions("%basic_conditions")
+@Conditions("%basic_conditions|clan_member")
 @CommandPermission("simpleclans.member.chat")
 @Description("{@@command.description.chat}")
 public class ChatCommand extends BaseCommand {

@@ -204,7 +204,8 @@ public class GeneralCommands extends BaseCommand {
         ChatBlock.sendBlank(player);
     }
 
-    @HelpCommand
+    @CatchUnknown
+    @Subcommand("%help")
     @Description("{@@command.description.help}")
     public void help(CommandSender sender, CommandHelp help) {
         boolean inClan = sender instanceof Player && cm.getClanByPlayerUniqueId(((Player) sender).getUniqueId()) != null;

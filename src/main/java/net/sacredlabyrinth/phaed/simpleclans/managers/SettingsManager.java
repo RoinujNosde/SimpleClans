@@ -303,13 +303,13 @@ public final class SettingsManager {
         bbLoginSize = getConfig().getInt("bb.login-size", bbSize);
         bbColor = getConfig().getString("bb.color");
         bbAccentColor = getConfig().getString("bb.accent-color");
-        commandClan = getConfig().getString("commands.clan");
-        commandAlly = getConfig().getString("commands.ally");
-        commandGlobal = getConfig().getString("commands.global");
-        commandMore = getConfig().getString("commands.more");
-        commandDeny = getConfig().getString("commands.deny");
-        commandAccept = getConfig().getString("commands.accept");
-        commandClanChat = getConfig().getString("commands.clan_chat");
+        commandClan = getConfig().getString("commands.clan", "clan");
+        commandAlly = getConfig().getString("commands.ally", "ally");
+        commandGlobal = getConfig().getString("commands.global", "global");
+        commandMore = getConfig().getString("commands.more", "more");
+        commandDeny = getConfig().getString("commands.deny", "deny");
+        commandAccept = getConfig().getString("commands.accept", "accept");
+        commandClanChat = getConfig().getString("commands.clan_chat", ".");
         forceCommandPriority = getConfig().getBoolean("commands.force-priority");
         homebaseSetOnce = getConfig().getBoolean("clan.homebase-can-be-set-only-once");
         waitSecs = getConfig().getInt("clan.homebase-teleport-wait-secs");
@@ -407,7 +407,7 @@ public final class SettingsManager {
         if (database.contains(":")) {
             String[] strings = database.split(":");
             database = strings[0];
-            port = Integer.valueOf(strings[1]);
+            port = Integer.parseInt(strings[1]);
         }
 
         save();
