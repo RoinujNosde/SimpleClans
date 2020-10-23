@@ -158,7 +158,7 @@ public class SCCommandManager extends PaperCommandManager {
                 "clan", sm.getCommandClan(),
                 "deny", sm.getCommandDeny(),
                 "more", sm.getCommandMore(),
-                "ally", sm.getCommandAlly(),
+                "ally_chat", sm.getCommandAlly(),
                 "accept", sm.getCommandAccept(),
                 "clan_chat", sm.getCommandClanChat()
         );
@@ -205,6 +205,6 @@ public class SCCommandManager extends PaperCommandManager {
                 "modtag", "bb", "clear", "rival", "ally", "add", "remove", "stats", "coords", "vitals", "rivalries",
                 "alliances", "leaderboard", "allow", "block", "auto", "check", "assign", "unassign", "delete", "me",
                 "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set", "status", "tp", "all", "everyone",
-                "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin");
+                "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help");
     }
 }

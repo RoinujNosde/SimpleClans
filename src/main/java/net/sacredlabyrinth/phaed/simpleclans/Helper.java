@@ -1,11 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -23,8 +25,6 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
-
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 /**
  * @author phaed
@@ -80,10 +80,10 @@ public class Helper {
     /**
      * Converts a JSON String to a list of Ranks
      * 
-     * @param json
+     * @param json the JSON String
      * @return a list of ranks or null if the JSON String is null/empty
      */
-	public static List<Rank> ranksFromJson(String json) {
+	public static @Nullable List<Rank> ranksFromJson(String json) {
     	if (json != null && !json.isEmpty()) {
 	    	try {
 				JSONObject jo = (JSONObject) new JSONParser().parse(json);
@@ -750,8 +750,21 @@ public class Helper {
         }
         return result;
     }
-    
-    public static boolean isVanished(Player player) {
+
+    @Contract("_, null -> false")
+    public static boolean isVanished(@Nullable CommandSender viewer, @Nullable Player player) {
+        if (isVanished(player)) {
+            return true;
+        }
+        if (viewer instanceof Player && player != null) {
+            return !((Player) viewer).canSee(player);
+        }
+
+        return false;
+    }
+
+    @Contract("null -> false")
+    public static boolean isVanished(@Nullable Player player) {
         if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
             return player.getMetadata("vanished").get(0).asBoolean();
         }
@@ -808,13 +821,12 @@ public class Helper {
     }
 
     private static String replacePlaceholders(String messageFormat, ClanPlayer cp, String leaderColor, String memberColor, String rankFormat, String msg) {
-        String message = ChatColor.translateAlternateColorCodes('&', messageFormat)
-                .replace("%clan%", cp.getClan().getColorTag())
+        return ChatColor.translateAlternateColorCodes('&', messageFormat)
+                .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
                 .replace("%nick-color%", (cp.isLeader() ? leaderColor : memberColor))
                 .replace("%player%", cp.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", msg);
-        return message;
     }
 
     /**

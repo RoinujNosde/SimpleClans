@@ -206,7 +206,7 @@ permissions:
       simpleclans.mod.staffgui: true
   simpleclans.anyone.*:
     description: Permissions for anyone
-    default: false
+    default: true
     children:
       simpleclans.anyone.list: true
       simpleclans.anyone.profile: true
@@ -217,7 +217,7 @@ permissions:
       simpleclans.anyone.rivalries: true
   simpleclans.member.*:
     description: Permissions for those who can be clan members
-    default: false
+    default: true
     children:
       simpleclans.member.can-join: true
       simpleclans.member.profile: true
@@ -241,7 +241,7 @@ permissions:
       simpleclans.member.fee-check: true
   simpleclans.leader.*:
     description: Permissions for those who can be clan leaders
-    default: false
+    default: true
     children:
       simpleclans.leader.create: true
       simpleclans.leader.verify: true

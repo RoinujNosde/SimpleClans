@@ -6,7 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.Player;
 
-@CommandAlias("%ally")
+@CommandAlias("%ally_chat")
 @Description("{@@command.description.ally}")
 @CommandPermission("simpleclans.member.ally")
 @Conditions("%basic_conditions|clan_member|rank:name=ALLY_CHAT")

@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.staff;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
-import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
@@ -19,11 +18,9 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static org.bukkit.ChatColor.AQUA;
@@ -119,13 +116,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        PaperLib.teleportAsync(player, loc, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
-            if (result) {
-                ChatBlock.sendMessage(player, AQUA + lang("now.at.homebase", player, clan.getClan().getName()));
-            } else {
-                plugin.getLogger().log(Level.WARNING, "An error occurred while teleporting a player");
-            }
-        });
+        plugin.getTeleportManager().teleportToHome(player, clan.getClan());
     }
 
     @Subcommand("%ban")
