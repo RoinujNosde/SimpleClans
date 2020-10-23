@@ -18,8 +18,8 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
  * @author phaed
  */
 public final class RequestManager {
-    private SimpleClans plugin;
-    private HashMap<String, Request> requests = new HashMap<>();
+    private final SimpleClans plugin;
+    private final HashMap<String, Request> requests = new HashMap<>();
 
     /**
      *
@@ -29,23 +29,10 @@ public final class RequestManager {
         askerTask();
     }
 
-    /**
-     * Check whether the clan has a pending request
-     *
-     * @param tag
-     * @return
-     */
     public boolean hasRequest(String tag) {
         return requests.containsKey(tag);
     }
 
-    /**
-     * Add a demotion request
-     *
-     * @param requester
-     * @param demotedName
-     * @param clan
-     */
     public void addDemoteRequest(ClanPlayer requester, String demotedName, Clan clan) {
     	if (requests.containsKey(clan.getTag())) {
     		return;
@@ -63,13 +50,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Add a promotion request
-     *
-     * @param requester
-     * @param promotedName
-     * @param clan
-     */
     public void addPromoteRequest(ClanPlayer requester, String promotedName, Clan clan) {
     	if (requests.containsKey(clan.getTag())) {
     		return;
@@ -84,12 +64,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Add a clan disband request
-     *
-     * @param requester
-     * @param clan
-     */
     public void addDisbandRequest(ClanPlayer requester, Clan clan) {
     	if (requests.containsKey(clan.getTag())) {
     		return;
@@ -126,13 +100,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Add an clan war request
-     *
-     * @param requester
-     * @param warClan
-     * @param requestingClan
-     */
     public void addWarStartRequest(ClanPlayer requester, Clan warClan, Clan requestingClan) {
     	if (requests.containsKey(warClan.getTag())) {
     		return;
@@ -147,13 +114,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Add an war end request
-     *
-     * @param requester
-     * @param warClan
-     * @param requestingClan
-     */
     public void addWarEndRequest(ClanPlayer requester, Clan warClan, Clan requestingClan) {
     	if (requests.containsKey(warClan.getTag())) {
     		return;
@@ -168,13 +128,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Add an clan alliance request
-     *
-     * @param requester
-     * @param allyClan
-     * @param requestingClan
-     */
     public void addAllyRequest(ClanPlayer requester, Clan allyClan, Clan requestingClan) {
     	if (requests.containsKey(allyClan.getTag())) {
     		return;
@@ -189,13 +142,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Add an clan rivalry break request
-     *
-     * @param requester
-     * @param rivalClan
-     * @param requestingClan
-     */
     public void addRivalryBreakRequest(ClanPlayer requester, Clan rivalClan, Clan requestingClan) {
        	if (requests.containsKey(rivalClan.getTag())) {
     		return;
@@ -210,11 +156,6 @@ public final class RequestManager {
         ask(req);
     }
 
-    /**
-     * Record one player's accept vote
-     *
-     * @param cp
-     */
     public void accept(ClanPlayer cp) {
         Request req = requests.get(cp.getTag());
 
@@ -230,11 +171,6 @@ public final class RequestManager {
         }
     }
 
-    /**
-     * Record one player's deny vote
-     *
-     * @param cp
-     */
     public void deny(ClanPlayer cp) {
         Request req = requests.get(cp.getTag());
 
@@ -250,12 +186,6 @@ public final class RequestManager {
         }
     }
 
-    /**
-     * Process the answer from an invite and add the player to the clan if accepted
-     *
-     * @param req
-     * @param vote
-     */
     public void processInvite(Request req, VoteResult vote) {
         Clan clan = req.getClan();
         String invited = req.getTarget();
@@ -275,12 +205,7 @@ public final class RequestManager {
 
         requests.remove(req.getTarget().toLowerCase());
     }
-    
-    /**
-     * Check to see if votes are complete and process the result
-     *
-     * @param req
-     */
+
     public void processResults(Request req) {
     	Clan requesterClan = req.getClan();
     	ClanPlayer requesterCp = req.getRequester();
@@ -484,7 +409,7 @@ public final class RequestManager {
         final String message = tag + " " + plugin.getSettingsManager().getRequestMessageColor() + req.getMsg();
 
         if (req.getType().equals(ClanRequest.INVITE)) {
-            Player player = Helper.getPlayer(req.getTarget());
+            Player player = Bukkit.getPlayerExact(req.getTarget());
 
             if (player != null) {
                 String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());

@@ -1,5 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,16 +18,13 @@ public final class Request {
     private ClanPlayer requester;
     private int askCount;
 
-    /**
-     * @param plugin
-     * @param type
-     * @param acceptors
-     * @param msg
-     * @param requester
-     * @param clan
-     * @param target
-     */
-    public Request(SimpleClans plugin, ClanRequest type, List<ClanPlayer> acceptors, ClanPlayer requester, String target, Clan clan, String msg) {
+    public Request(SimpleClans plugin,
+                   ClanRequest type,
+                   @Nullable List<ClanPlayer> acceptors,
+                   ClanPlayer requester,
+                   String target,
+                   Clan clan,
+                   String msg) {
         this.type = type;
         this.target = target;
         this.clan = clan;
@@ -108,25 +107,15 @@ public final class Request {
         this.target = target;
     }
 
-    /**
-     * Used for leader voting
-     *
-     * @param playerNAme
-     * @param vote
-     */
-    public void vote(String playerNAme, VoteResult vote) {
+    public void vote(String playerName, VoteResult vote) {
         for (ClanPlayer cp : acceptors) {
-            if (cp.getName().equalsIgnoreCase(playerNAme)) {
+            if (cp.getName().equalsIgnoreCase(playerName)) {
                 cp.setVote(vote);
             }
         }
     }
 
-    /**
-     * Check whether all leaders have voted
-     *
-     * @return
-     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean votingFinished() {
         for (ClanPlayer cp : acceptors) {
             if (cp.getVote() == null) {
@@ -137,11 +126,6 @@ public final class Request {
         return true;
     }
 
-    /**
-     * Returns the players who have denied the request
-     *
-     * @return
-     */
     public List<String> getDenies() {
         List<String> out = new ArrayList<>();
 
@@ -154,11 +138,6 @@ public final class Request {
         return out;
     }
 
-    /**
-     * Returns the players who have denied the request
-     *
-     * @return
-     */
     public List<String> getAccepts() {
         List<String> out = new ArrayList<>();
 

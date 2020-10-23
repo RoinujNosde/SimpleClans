@@ -80,10 +80,10 @@ public class Helper {
     /**
      * Converts a JSON String to a list of Ranks
      * 
-     * @param json
+     * @param json the JSON String
      * @return a list of ranks or null if the JSON String is null/empty
      */
-	public static List<Rank> ranksFromJson(String json) {
+	public static @Nullable List<Rank> ranksFromJson(String json) {
     	if (json != null && !json.isEmpty()) {
 	    	try {
 				JSONObject jo = (JSONObject) new JSONParser().parse(json);
@@ -821,13 +821,12 @@ public class Helper {
     }
 
     private static String replacePlaceholders(String messageFormat, ClanPlayer cp, String leaderColor, String memberColor, String rankFormat, String msg) {
-        String message = ChatColor.translateAlternateColorCodes('&', messageFormat)
-                .replace("%clan%", cp.getClan().getColorTag())
+        return ChatColor.translateAlternateColorCodes('&', messageFormat)
+                .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
                 .replace("%nick-color%", (cp.isLeader() ? leaderColor : memberColor))
                 .replace("%player%", cp.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", msg);
-        return message;
     }
 
     /**

@@ -2,37 +2,31 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class TeleportState {
-    private UUID playerUniqueId;
-    private Location playerLocation;
-    private Location destination;
+    private final UUID playerUniqueId;
+    private final Location playerLocation;
+    private final Location destination;
     private int counter;
-    private String clanName;
+    private final String clanName;
     private boolean processing;
 
-    public TeleportState(Player player, Location dest, String clanName) {
-        this.destination = dest;
+    public TeleportState(Player player, Location destination, String clanName) {
+        this.destination = destination;
         this.playerLocation = player.getLocation();
         this.clanName = clanName;
         this.counter = SimpleClans.getInstance().getSettingsManager().getWaitSecs();
         this.playerUniqueId = player.getUniqueId();
     }
 
-    /**
-     * @return
-     */
+
     public Location getLocation() {
         return this.playerLocation;
     }
 
-    /**
-     * Whether its time for teleport
-     *
-     * @return
-     */
     public boolean isTeleportTime() {
         if (this.counter > 1) {
             this.counter--;
@@ -45,16 +39,16 @@ public class TeleportState {
     /**
      * The player that is waiting for teleport
      *
-     * @return
+     * @return the player
      */
-    public Player getPlayer() {
+    public @Nullable Player getPlayer() {
     	return SimpleClans.getInstance().getServer().getPlayer(this.playerUniqueId);
     }
 
     /**
      * Get seconds left before teleport
      *
-     * @return
+     * @return the counter
      */
     public int getCounter() {
         return this.counter;
