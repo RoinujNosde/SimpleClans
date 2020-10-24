@@ -9,9 +9,13 @@ Full featured clan system for PVP Minecraft Servers!
 [![Crowdin](https://badges.crowdin.net/simpleclans/localized.svg)](https://crowdin.com/project/simpleclans)
 [![Discord](https://img.shields.io/discord/719557355917934613?label=discord&logo=discord)](https://discord.gg/CkNwgdE)
 
-Spigot resource page: https://www.spigotmc.org/resources/simpleclans.71242/
+#### Documentation 
 
-Wiki page: https://github.com/RoinujNosde/SimpleClans/wiki
+[Documentation!](https://simpleclans.gitbook.io/simpleclans/)
+[Permissions!](https://simpleclans.gitbook.io/simpleclans/commands-and-permissions/permissions)
+[Commands!](https://simpleclans.gitbook.io/simpleclans/commands-and-permissions/commands)
+
+Spigot resource page: https://www.spigotmc.org/resources/simpleclans.71242/
 
 #### Developers
 
