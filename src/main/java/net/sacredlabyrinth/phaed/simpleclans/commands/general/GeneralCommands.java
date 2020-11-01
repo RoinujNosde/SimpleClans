@@ -153,7 +153,7 @@ public class GeneralCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr}")
     public void resetKdr(Player player, ClanPlayer cp) {
         if (!settings.isAllowResetKdr()) {
-            ChatBlock.sendMessage(player, RED + lang("insufficient.permissions", player));
+            ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
             return;
         }
         if (cm.purchaseResetKdr(player)) {

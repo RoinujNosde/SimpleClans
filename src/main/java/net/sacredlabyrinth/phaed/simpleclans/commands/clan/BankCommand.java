@@ -49,9 +49,7 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(player, RED + message);
             return;
         }
-        if (amount < 0) {
-            amount = amount * -1;
-        }
+        amount = Math.abs(amount);
         clan.withdraw(amount, player);
     }
 
@@ -78,9 +76,7 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(player, RED + message);
             return;
         }
-        if (amount < 0) {
-            amount = amount * -1;
-        }
+        amount = Math.abs(amount);
         clan.deposit(amount, player);
     }
 }

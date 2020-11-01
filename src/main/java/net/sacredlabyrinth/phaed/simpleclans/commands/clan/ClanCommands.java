@@ -179,6 +179,7 @@ public class ClanCommands extends BaseCommand {
     @Conditions("rank:name=FEE_SET")
     @Description("{@@command.description.fee.set}")
     public void setFee(Player player, Clan clan, @Name("fee") double fee) {
+        fee = Math.abs(fee);
         double maxFee = settings.getMaxMemberFee();
         if (fee > maxFee) {
             ChatBlock.sendMessage(player, RED

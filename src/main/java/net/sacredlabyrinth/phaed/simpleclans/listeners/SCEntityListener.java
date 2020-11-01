@@ -5,25 +5,25 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Kill;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.AddKillEvent;
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager.DataCallback;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.logging.Level;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -90,15 +90,15 @@ public class SCEntityListener implements Listener
                 if (attacker.getUniqueId().equals(victim.getUniqueId())) {
                     return;
                 }
-            	if (SimpleClans.getInstance().getSettingsManager().isDenySameIPKills()) 
+            	if (SimpleClans.getInstance().getSettingsManager().isDenySameIPKills())
             	{
-            		if (attacker.getAddress().getHostString().equals(victim.getAddress().getHostString())) 
+            		if (attacker.getAddress().getHostString().equals(victim.getAddress().getHostString()))
             		{
             			plugin.getLogger().log(Level.INFO, "Blocked same IP kill calculating: {0} killed {1}. IP: {2}", new Object[]{
                                     attacker.getDisplayName(), victim.getDisplayName(), attacker.getAddress().getHostString()
                                 });
             			return;
-            			
+
             		}
             	}
             	String kdrExempt = "simpleclans.other.kdr-exempt";
@@ -165,10 +165,10 @@ public class SCEntityListener implements Listener
     	if (plugin.getSettingsManager().isDelayBetweenKills() && plugin.getClanManager().isKillBeforeDelay(kill)) {
     		return;
     	}
-    	
+
     	if (plugin.getSettingsManager().isMaxKillsPerVictim()) {
     		plugin.getStorageManager().getKillsPerPlayer(attacker.getName(), new DataCallback<Map<String,Integer>>() {
-				
+
 				@Override
 				public void onResultReady(Map<String, Integer> data) {
 		    		final int max = plugin.getSettingsManager().getMaxKillsPerVictim();
@@ -192,71 +192,12 @@ public class SCEntityListener implements Listener
 		killer.addKill(type);
 		plugin.getStorageManager().insertKill(killer, victim, type.getShortname());
 	}
-    
-    /**
-     * @param event
-     */
-    @EventHandler(priority = EventPriority.LOW)
-    public void onPlayerInteract(PlayerInteractEntityEvent event)
-    {
-        if (event.isCancelled())
-        {
-            return;
-        }
-
-        if (plugin.getSettingsManager().isTamableMobsSharing() && event.getRightClicked() instanceof Tameable)
-        {
-        	Entity entity = event.getRightClicked();
-            Player player = event.getPlayer();
-            ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-            Tameable tamed = (Tameable) entity;
-
-            if (tamed.isTamed())
-            {
-                if(entity instanceof Wolf && !((Wolf) entity).isSitting())
-                {
-                	return;
-                }
-                if (cp.getClan().isMember((Player) tamed.getOwner()))
-                {
-                    tamed.setOwner(player);
-                }
-            }
-        }
-    }
 
     /**
      * @param event
      */
-    @EventHandler(priority = EventPriority.LOW)
-    public void onEntityTarget(EntityTargetLivingEntityEvent event)
-    {
-        if (plugin.getSettingsManager().isTamableMobsSharing())
-        {
-            if (event.getEntity() instanceof Tameable && event.getTarget() instanceof Player)
-            {
-                ClanPlayer cp = plugin.getClanManager().getClanPlayer((Player) event.getTarget());
-                Tameable wolf = (Tameable) event.getEntity();
-
-                if (wolf.isTamed() && cp.getClan().isMember((Player) wolf.getOwner()))
-                {
-                	// cancels the event if the attacker is one out of his clan
-                    event.setCancelled(true);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param event
-     */
-    @EventHandler(priority = EventPriority.LOW)
-    public void onEntityDamage(EntityDamageEvent event)
-    {
-        if (event.isCancelled())
-        {
-            return;
-        }
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
 
         Player attacker = null;
         Player victim = null;
@@ -270,21 +211,6 @@ public class SCEntityListener implements Listener
             {
                 attacker = (Player) sub.getDamager();
                 victim = (Player) sub.getEntity();
-            }
-
-            if (plugin.getSettingsManager().isTamableMobsSharing())
-            {
-                if (sub.getEntity() instanceof Wolf && sub.getDamager() instanceof Player)
-                {
-                    attacker = (Player) sub.getDamager();
-                    Wolf wolf = (Wolf) sub.getEntity();
-                    ClanPlayer cp = plugin.getClanManager().getClanPlayer(attacker);
-                    if (wolf.isTamed() && cp.getClan().isMember((Player) wolf.getOwner()))
-                    {
-                    	// Sets the wolf to friendly if the attacker is one out of his clan
-                        wolf.setAngry(false);
-                    }
-                }
             }
 
             if (sub.getEntity() instanceof Player && sub.getDamager() instanceof Projectile)
@@ -361,9 +287,9 @@ public class SCEntityListener implements Listener
                     {
                         return;
                     }
-                    
+
                     // global ff enabled, allow damage
-                    
+
                     if (plugin.getSettingsManager().isGlobalff())
                     {
                         return;
