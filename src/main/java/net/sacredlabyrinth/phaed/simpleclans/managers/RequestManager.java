@@ -195,11 +195,12 @@ public final class RequestManager {
             if (cp == null) {
                 return;
             }
-
+            ChatBlock.sendMessageKey(Bukkit.getPlayerExact(invited), "accepted.invitation", clan.getName());
             clan.addBb(ChatColor.AQUA + lang("joined.the.clan", invited));
             plugin.getClanManager().serverAnnounce(lang("has.joined", invited, clan.getName()));
             clan.addPlayerToClan(cp);
         } else {
+            ChatBlock.sendMessageKey(Bukkit.getPlayerExact(invited), "denied.invitation", clan.getName());
             clan.leaderAnnounce(ChatColor.RED + lang("membership.invitation", invited));
         }
 
