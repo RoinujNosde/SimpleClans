@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
@@ -7,10 +8,9 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.RosterFrame;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,9 +48,9 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addDisband() {
 		SCComponent disband = new SCComponentImpl(lang("gui.clandetails.disband.title", getViewer()),
 				Collections.singletonList(lang("gui.staffclandetails.disband.lore", getViewer())),
-				Material.BARRIER, 34);
+				XMaterial.BARRIER, 34);
 		disband.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("disband %s", clan.getTag()), false));
+				"disband", false, clan.getTag()));
 		disband.setConfirmationRequired(ClickType.LEFT);
 		disband.setPermission(ClickType.LEFT, "simpleclans.mod.disband");
 		add(disband);
@@ -59,7 +59,7 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addVerify() {
 		boolean verified = clan.isVerified();
 
-		Material material = verified ? Material.REDSTONE_TORCH : Material.LEVER;
+		XMaterial material = verified ? XMaterial.REDSTONE_TORCH : XMaterial.LEVER;
 		String title = verified ? lang("gui.clandetails.verified.title", getViewer())
 				: lang("gui.clandetails.not.verified.title", getViewer());
 		List<String> lore = verified ? null : new ArrayList<>();
@@ -71,7 +71,7 @@ public class ClanDetailsFrame extends SCFrame {
 			verify.setPermission(ClickType.LEFT, "simpleclans.mod.verify");
 			verify.setConfirmationRequired(ClickType.LEFT);
 			verify.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("verify %s", clan.getTag()), false));
+					"verify", false, clan.getTag()));
 		}
 		add(verify);
 	}
@@ -82,12 +82,12 @@ public class ClanDetailsFrame extends SCFrame {
 		lore.add(lang("gui.staffclandetails.home.lore.set", getViewer()));
 
 		SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title", getViewer()), lore,
-				Material.MAGENTA_BED, 30);
+				XMaterial.MAGENTA_BED, 30);
 		home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("home tp %s", clan.getTag()), false));
+				"home tp", false, clan.getTag()));
 		home.setPermission(ClickType.LEFT, "simpleclans.mod.hometp");
 		home.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("home set %s", clan.getTag()), false));
+				"home set", false, clan.getTag()));
 		home.setPermission(ClickType.RIGHT, "simpleclans.mod.home");
 		home.setConfirmationRequired(ClickType.RIGHT);
 		add(home);
@@ -95,14 +95,16 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addRoster() {
 		SCComponent roster = new SCComponentImpl(lang("gui.clandetails.roster.title", getViewer()),
-				Collections.singletonList(lang("gui.staffclandetails.roster.lore", getViewer())), Material.PLAYER_HEAD, 28);
-		if (roster.getItemMeta() != null) {
-			SkullMeta itemMeta = (SkullMeta) roster.getItemMeta();
-			List<ClanPlayer> members = clan.getMembers();
-			itemMeta.setOwningPlayer(Bukkit.getOfflinePlayer(
-					members.get((int) (Math.random() * members.size())).getUniqueId()));
-			roster.setItemMeta(itemMeta);
+				Collections.singletonList(lang("gui.staffclandetails.roster.lore", getViewer())),
+				XMaterial.PLAYER_HEAD, 28);
+
+		List<ClanPlayer> members = clan.getMembers();
+		if (members.size() != 0) {
+			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(
+					members.get((int) (Math.random() * members.size())).getUniqueId());
+			Components.setOwningPlayer(roster.getItem(), offlinePlayer);
 		}
+
 		roster.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new RosterFrame(getViewer(), this, clan, true)));
 		add(roster);
 	}

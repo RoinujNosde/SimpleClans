@@ -2,20 +2,19 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
-import org.bukkit.Bukkit;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author phaed
@@ -44,15 +43,8 @@ public final class SettingsManager {
     private boolean acceptOtherAlphabetsLettersOnTag;
     private int minToVerify;
     private int rejoinCooldown;
-    private String listDefault;
-    private String listSize;
-    private String listKdr;
-    private String listName;
-    private String listFounded;
-    private String listActive;
-    private String listAsc;
-    private String listDesc;
-    private List<Material> itemsList = new ArrayList<Material>();
+    private String listDefaultOrderBy;
+    private final List<Material> itemsList = new ArrayList<>();
     private List<String> blacklistedWorlds;
     private List<String> bannedPlayers;
     private List<String> disallowedWords;
@@ -198,8 +190,10 @@ public final class SettingsManager {
 	private String language;
 	private boolean languagePerPlayer;
 	private boolean savePeriodically;
+	private boolean cachePlayerHeads;
 	private int saveInterval;
 	private String rankingType;
+	private int loreLength;
 
     /**
      *
@@ -236,9 +230,9 @@ public final class SettingsManager {
         dropOnHome = getConfig().getBoolean("settings.drop-items-on-clan-home");
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
 		for (String material : getConfig().getStringList("settings.item-list")) {
-			Material type = Material.getMaterial(material);
-			if (type != null) {
-                itemsList.add(type);
+            Optional<XMaterial> x = XMaterial.matchXMaterial(material);
+            if (x.isPresent()) {
+                itemsList.add(x.get().parseMaterial());
             } else {
                 plugin.getLogger().warning("Error with Material: " + material);
             }
@@ -260,17 +254,10 @@ public final class SettingsManager {
         rejoinCooldown = getConfig().getInt("settings.rejoin-cooldown");
         rejoinCooldownEnabled = getConfig().getBoolean("settings.rejoin-cooldown-enabled");
         acceptOtherAlphabetsLettersOnTag = getConfig().getBoolean("settings.accept-other-alphabets-letters-on-tag");
-        minToVerify = getConfig().getInt("settings.min-to-verify", 1);
+        minToVerify = getConfig().getInt("clan.min-to-verify", 1);
         rankingType = getConfig().getString("settings.ranking-type", "DENSE");
-        listActive = getConfig().getString("list.active", "active");
-        listKdr = getConfig().getString("list.kdr", "kdr");
-        listDefault = getConfig().getString("list.default", listKdr);
-        listSize = getConfig().getString("list.size", "size");
-        listName = getConfig().getString("list.name", "name");
-        listFounded = getConfig().getString("list.founded", "founded");
-        listAsc = getConfig().getString("list.asc", "asc");
-        listDesc = getConfig().getString("list.desc", "desc");
-        serverName = getConfig().getString("settings.server-name");
+        listDefaultOrderBy = getConfig().getString("settings.list-default-order-by", "kdr");
+        serverName = getConfig().getString("settings.server-name", "SimpleClans");
         chatTags = getConfig().getBoolean("settings.display-chat-tags");
         rivalLimitPercent = getConfig().getInt("settings.rival-limit-percent");
         ePurchaseCreation = getConfig().getBoolean("economy.purchase-clan-create");
@@ -316,13 +303,13 @@ public final class SettingsManager {
         bbLoginSize = getConfig().getInt("bb.login-size", bbSize);
         bbColor = getConfig().getString("bb.color");
         bbAccentColor = getConfig().getString("bb.accent-color");
-        commandClan = getConfig().getString("commands.clan");
-        commandAlly = getConfig().getString("commands.ally");
-        commandGlobal = getConfig().getString("commands.global");
-        commandMore = getConfig().getString("commands.more");
-        commandDeny = getConfig().getString("commands.deny");
-        commandAccept = getConfig().getString("commands.accept");
-        commandClanChat = getConfig().getString("commands.clan_chat");
+        commandClan = getConfig().getString("commands.clan", "clan");
+        commandAlly = getConfig().getString("commands.ally", "ally");
+        commandGlobal = getConfig().getString("commands.global", "global");
+        commandMore = getConfig().getString("commands.more", "more");
+        commandDeny = getConfig().getString("commands.deny", "deny");
+        commandAccept = getConfig().getString("commands.accept", "accept");
+        commandClanChat = getConfig().getString("commands.clan_chat", ".");
         forceCommandPriority = getConfig().getBoolean("commands.force-priority");
         homebaseSetOnce = getConfig().getBoolean("clan.homebase-can-be-set-only-once");
         waitSecs = getConfig().getInt("clan.homebase-teleport-wait-secs");
@@ -404,10 +391,12 @@ public final class SettingsManager {
         AutoGroupGroupName = getConfig().getBoolean("permissions.auto-group-groupname");
         tamableMobsSharing = getConfig().getBoolean("settings.tameable-mobs-sharing");
         allowReGroupCommand = getConfig().getBoolean("settings.allow-regroup-command");
+        loreLength = getConfig().getInt("settings.lore-length", 38);
         savePeriodically = getConfig().getBoolean("performance.save-periodically");
         saveInterval = getConfig().getInt("performance.save-interval");
         useThreads = getConfig().getBoolean("performance.use-threads");
         useBungeeCord = getConfig().getBoolean("performance.use-bungeecord");
+        cachePlayerHeads = getConfig().getBoolean("performance.cache-player-heads");
         maxMembers = getConfig().getInt("clan.max-members");
         maxKillsPerVictim = getConfig().getInt("kdr-grinding-prevention.max-kills-per-victim");
         maxKillsPerVictimEnabled = getConfig().getBoolean("kdr-grinding-prevention.enable-max-kills");
@@ -418,7 +407,7 @@ public final class SettingsManager {
         if (database.contains(":")) {
             String[] strings = database.split(":");
             database = strings[0];
-            port = Integer.valueOf(strings[1]);
+            port = Integer.parseInt(strings[1]);
         }
 
         save();
@@ -431,6 +420,14 @@ public final class SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getLoreLength() {
+        return loreLength;
+    }
+
+    public boolean isCachePlayerHeads() {
+        return cachePlayerHeads;
     }
     
     public boolean isEnableGUI() {
@@ -581,6 +578,14 @@ public final class SettingsManager {
         return commandClanChat;
     }
 
+    @Contract("null -> false")
+    public boolean isBlacklistedWorld(@Nullable World world) {
+        if (world != null) {
+            return isBlacklistedWorld(world.getName());
+        }
+        return false;
+    }
+
     /**
      * Check whether a worlds is blacklisted
      *
@@ -588,8 +593,8 @@ public final class SettingsManager {
      * @return whether the world is blacklisted
      */
     public boolean isBlacklistedWorld(String world) {
-        for (Object w : blacklistedWorlds) {
-            if (((String) w).equalsIgnoreCase(world)) {
+        for (String w : blacklistedWorlds) {
+            if (w.equalsIgnoreCase(world)) {
                 return true;
             }
         }
@@ -811,37 +816,50 @@ public final class SettingsManager {
     public int getRejoinCooldown() {
     	return rejoinCooldown;
     }
-    
-    public String getListDefault() {
-		return listDefault;
+
+    @NotNull
+    public String getListDefaultOrderBy() {
+		return listDefaultOrderBy;
 	}
 
+	@Deprecated
+	public String getListDefault() {
+        return getListDefaultOrderBy();
+    }
+
+	@Deprecated
 	public String getListSize() {
-		return listSize;
+		return "size";
 	}
 
+	@Deprecated
 	public String getListKdr() {
-		return listKdr;
+		return "kdr";
 	}
 
+	@Deprecated
 	public String getListName() {
-		return listName;
+		return "name";
 	}
 
+	@Deprecated
 	public String getListFounded() {
-		return listFounded;
+		return "founded";
 	}
 
+    @Deprecated
 	public String getListActive() {
-		return listActive;
+		return "active";
 	}
 
+	@Deprecated
 	public String getListAsc() {
-		return listAsc;
+		return "asc";
 	}
 
+	@Deprecated
 	public String getListDesc() {
-		return listDesc;
+		return "desc";
 	}
 
 	/**

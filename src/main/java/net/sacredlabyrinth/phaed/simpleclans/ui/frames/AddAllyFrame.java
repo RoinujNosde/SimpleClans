@@ -1,11 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +46,12 @@ public class AddAllyFrame extends SCFrame {
 
 			Clan notRival = notAllies.get(i);
 			SCComponent c = new SCComponentImpl(
-					lang("gui.clanlist.clan.title",getViewer(), notRival.getColorTag(), notRival.getName()),
-					Collections.singletonList(lang("gui.add.ally.clan.lore",getViewer())), Material.CYAN_BANNER, slot);
+					lang("gui.clanlist.clan.title", getViewer(), notRival.getColorTag(), notRival.getName()),
+					Collections.singletonList(lang("gui.add.ally.clan.lore", getViewer())), XMaterial.CYAN_BANNER,
+					slot);
 
 			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("ally %s %s", lang("add", getViewer()), notRival.getTag()), false));
+					"ally add", false, notRival.getTag()));
 			c.setPermission(ClickType.LEFT, RankPermission.ALLY_ADD);
 			add(c);
 			slot++;
@@ -70,7 +71,7 @@ public class AddAllyFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     private long joinDate;
     private Set<String> pastClans = new HashSet<>();
     private final Map<String, Long> resignTimes = new HashMap<>();
-    private VoteResult vote;
+    private @Nullable VoteResult vote;
     private Channel channel;
 
     private boolean useChatShortcut = false;
@@ -284,25 +285,29 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     }
 
     /**
-     * @param viewer the Player viewing the last seen days
+     * @param sender the Player viewing the last seen days
      * @return a verbal representation of how many days ago a player was last seen
      */
-    public String getLastSeenDaysString(@Nullable Player viewer)
+    public String getLastSeenDaysString(@Nullable CommandSender sender)
     {
         double days = Dates.differenceInDays(new Timestamp(lastSeen), new Timestamp((new Date()).getTime()));
 
         if (days < 1)
         {
-            return lang("today", viewer);
+            return lang("today", sender);
         }
         else if (Math.round(days) == 1)
         {
-            return lang("1.color.day", viewer, ChatColor.GRAY);
+            return lang("1.color.day", sender, ChatColor.GRAY);
         }
         else
         {
-            return lang("many.color.days", viewer, Math.round(days), ChatColor.GRAY);
+            return lang("many.color.days", sender, Math.round(days), ChatColor.GRAY);
         }
+    }
+
+    public String getLastSeenDaysString(@Nullable Player viewer) {
+        return getLastSeenDaysString((CommandSender) viewer);
     }
 
     /**
@@ -443,7 +448,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      *
      * @return the vote
      */
-    public VoteResult getVote()
+    public @Nullable VoteResult getVote()
     {
         return vote;
     }
@@ -453,7 +458,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      *
      * @param vote the vote to set
      */
-    public void setVote(VoteResult vote)
+    public void setVote(@Nullable VoteResult vote)
     {
         this.vote = vote;
     }
@@ -565,8 +570,13 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      * @return a string representation of the last seen date
      */
     public String getLastSeenString(@Nullable Player viewer) {
-        if (toPlayer() != null) {
-            return lang("online", viewer);
+        return getLastSeenString((CommandSender) viewer);
+    }
+
+    public String getLastSeenString(@Nullable CommandSender sender) {
+        Player player = toPlayer();
+        if (player != null && player.isOnline() && !Helper.isVanished(sender, player)) {
+            return lang("online", sender);
         }
         return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(this.lastSeen));
     }
@@ -1049,7 +1059,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
      * 
      * @param rank the rank id
      */
-    public void setRank(String rank)
+    public void setRank(@Nullable String rank)
     {
     	if (rank == null) {
     		rank = "";

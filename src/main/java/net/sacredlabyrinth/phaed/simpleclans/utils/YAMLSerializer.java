@@ -29,15 +29,13 @@ public class YAMLSerializer {
         return serialized;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends ConfigurationSerializable> @Nullable T deserialize(@Nullable String cs,
                                                                                 @NotNull Class<T> clazz) {
         YamlConfiguration config = new YamlConfiguration();
         if (cs != null) {
             try {
-                config.loadFromString(cs);
-                return config.getObject("cs", clazz);
-            } catch (NoSuchMethodError ex) {
-                LOGGER.warning("Error deserializing... Are you using the correct version?");
+                return (T) config.get("cs");
             } catch (Exception e) {
                 LOGGER.warning(String.format(
                         "Error deserializing %s... Content: %s", clazz, cs));

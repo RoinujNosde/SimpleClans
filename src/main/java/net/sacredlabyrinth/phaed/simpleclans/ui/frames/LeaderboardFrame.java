@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
@@ -10,11 +11,9 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -64,13 +63,9 @@ public class LeaderboardFrame extends SCFrame {
 											cp.getClan().getColorTag(), cp.getClan().getName()),
 							lang("gui.playerdetails.player.lore.kdr",getViewer(), KDRFormat.format(cp.getKDR())),
 							lang("gui.playerdetails.player.lore.last.seen",getViewer(), cp.getLastSeenString(getViewer()))),
-					Material.PLAYER_HEAD, slot);
-			SkullMeta itemMeta = (SkullMeta) c.getItemMeta();
+					XMaterial.PLAYER_HEAD, slot);
 			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
-			if (itemMeta != null) {
-				itemMeta.setOwningPlayer(offlinePlayer);
-				c.setItemMeta(itemMeta);
-			}
+			Components.setOwningPlayer(c.getItem(), offlinePlayer);
 			c.setListener(ClickType.LEFT,
 					() -> InventoryDrawer.open(new PlayerDetailsFrame(getViewer(), this, offlinePlayer)));
 			c.setLorePermission("simpleclans.anyone.leaderboard");

@@ -1,11 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -24,8 +26,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
 
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
-
 /**
  * @author phaed
  */
@@ -37,6 +37,7 @@ public class Helper {
     /**
      * Dumps stacktrace to log
      */
+    @Deprecated
     public static void dumpStackTrace() {
         for (StackTraceElement el : Thread.currentThread().getStackTrace()) {
             SimpleClans.debug(el.toString());
@@ -79,10 +80,10 @@ public class Helper {
     /**
      * Converts a JSON String to a list of Ranks
      * 
-     * @param json
+     * @param json the JSON String
      * @return a list of ranks or null if the JSON String is null/empty
      */
-	public static List<Rank> ranksFromJson(String json) {
+	public static @Nullable List<Rank> ranksFromJson(String json) {
     	if (json != null && !json.isEmpty()) {
 	    	try {
 				JSONObject jo = (JSONObject) new JSONParser().parse(json);
@@ -465,13 +466,13 @@ public class Helper {
      * @return
      */
     public static String toMessage(String[] args) {
-        String out = "";
+        StringBuilder out = new StringBuilder();
 
         for (String arg : args) {
-            out += arg + " ";
+            out.append(arg).append(" ");
         }
 
-        return out.trim();
+        return out.toString().trim();
     }
 
     /**
@@ -734,30 +735,36 @@ public class Helper {
     }
 
     /**
-     * Sort hashmap by value
+     * Sorts a Map by value
      *
-     * @param map
-     * @return Map
+     * @param map the Map to sort
+     * @return the Map sorted
      */
-    public static Map sortByValue(Map map) {
-        List list = new LinkedList(map.entrySet());
-        Collections.sort(list, new Comparator() {
+    public static <K, V extends Comparable<V>> Map<K, V> sortByValue(Map<K, V> map) {
+        LinkedList<Map.Entry<K, V>> entryList = new LinkedList<>(map.entrySet());
+        entryList.sort(Entry.comparingByValue());
 
-            @Override
-            public int compare(Object o1, Object o2) {
-                return ((Comparable) ((Map.Entry) (o2)).getValue()).compareTo(((Map.Entry) (o1)).getValue());
-            }
-        });
-
-        Map result = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            Map.Entry entry = (Map.Entry) it.next();
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Entry<K, V> entry : entryList) {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;
     }
-    
-    public static boolean isVanished(Player player) {
+
+    @Contract("_, null -> false")
+    public static boolean isVanished(@Nullable CommandSender viewer, @Nullable Player player) {
+        if (isVanished(player)) {
+            return true;
+        }
+        if (viewer instanceof Player && player != null) {
+            return !((Player) viewer).canSee(player);
+        }
+
+        return false;
+    }
+
+    @Contract("null -> false")
+    public static boolean isVanished(@Nullable Player player) {
         if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
             return player.getMetadata("vanished").get(0).asBoolean();
         }
@@ -782,8 +789,10 @@ public class Helper {
         return new ArrayList<>();
     }
 
+    @Deprecated
+    @Nullable
     public static Player getPlayer(String playerName) {
-    	return SimpleClans.getInstance().getServer().getPlayer(UUIDMigration.getForcedPlayerUUID(playerName));
+    	return Bukkit.getPlayerExact(playerName);
     }
 
     /**
@@ -812,13 +821,12 @@ public class Helper {
     }
 
     private static String replacePlaceholders(String messageFormat, ClanPlayer cp, String leaderColor, String memberColor, String rankFormat, String msg) {
-        String message = ChatColor.translateAlternateColorCodes('&', messageFormat)
-                .replace("%clan%", cp.getClan().getColorTag())
+        return ChatColor.translateAlternateColorCodes('&', messageFormat)
+                .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
                 .replace("%nick-color%", (cp.isLeader() ? leaderColor : memberColor))
                 .replace("%player%", cp.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", msg);
-        return message;
     }
 
     /**

@@ -97,8 +97,10 @@ permissions:
     description: Can verify his clan
   simpleclans.leader.home-set:
     description: Can set home base
-  simpleclans.leader.home-regroup:
+  simpleclans.leader.regroup.home:
     description: Can tp entire clan to homebase
+  simpleclans.leader.regroup.me:
+    description: Can tp their entire clan to themself
   simpleclans.leader.ally:
     description: Can ally his clan with other simpleclans
   simpleclans.leader.rival:
@@ -204,7 +206,7 @@ permissions:
       simpleclans.mod.staffgui: true
   simpleclans.anyone.*:
     description: Permissions for anyone
-    default: false
+    default: true
     children:
       simpleclans.anyone.list: true
       simpleclans.anyone.profile: true
@@ -215,7 +217,7 @@ permissions:
       simpleclans.anyone.rivalries: true
   simpleclans.member.*:
     description: Permissions for those who can be clan members
-    default: false
+    default: true
     children:
       simpleclans.member.can-join: true
       simpleclans.member.profile: true
@@ -239,7 +241,7 @@ permissions:
       simpleclans.member.fee-check: true
   simpleclans.leader.*:
     description: Permissions for those who can be clan leaders
-    default: false
+    default: true
     children:
       simpleclans.leader.create: true
       simpleclans.leader.verify: true
@@ -260,7 +262,8 @@ permissions:
       simpleclans.leader.settrust: true
       simpleclans.leader.war: true
       simpleclans.leader.home-set: true
-      simpleclans.leader.home-regroup: true
+      simpleclans.leader.regroup.home: true
+      simpleclans.leader.regroup.me: true
       simpleclans.leader.setrank: true
       simpleclans.leader.coloredtag: true
       simpleclans.leader.coloredrank: true

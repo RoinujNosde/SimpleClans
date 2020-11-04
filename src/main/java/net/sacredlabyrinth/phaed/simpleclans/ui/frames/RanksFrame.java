@@ -1,12 +1,12 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -45,7 +45,7 @@ public class RanksFrame extends SCFrame {
 		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
 		SCComponent create = new SCComponentImpl(lang("gui.ranks.create.title",getViewer()),
-				Collections.singletonList(lang("gui.ranks.create.lore",getViewer())), Material.WHITE_WOOL, 4);
+				Collections.singletonList(lang("gui.ranks.create.lore",getViewer())), XMaterial.WHITE_WOOL, 4);
 		create.setVerifiedOnly(ClickType.LEFT);
 		create.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "rank create", false));
 		create.setPermission(ClickType.LEFT, "simpleclans.leader.rank.create");
@@ -71,17 +71,17 @@ public class RanksFrame extends SCFrame {
 						lang("gui.ranks.rank.assign.lore",getViewer(), toEdit.getName()));
 			}
 			SCComponent c = new SCComponentImpl(lang("gui.ranks.rank.title",getViewer(), rank.getName()), lore,
-					Material.FILLED_MAP, slot);
+					XMaterial.FILLED_MAP, slot);
 			if (toEdit != null) {
 				c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-						String.format("rank assign %s %s", toEdit.getName(), rank.getName()), true));
+						"rank assign", true, toEdit.getName(), rank.getName()));
 				c.setConfirmationRequired(ClickType.LEFT);
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.assign");
 			} else {
 				c.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PermissionsFrame(this, getViewer(), rank)));
 				c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.list");
 				c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-						String.format("rank delete %s", rank.getName()), true));
+						"rank delete", true, rank.getName()));
 				c.setConfirmationRequired(ClickType.RIGHT);
 				c.setPermission(ClickType.RIGHT, "simpleclans.leader.rank.delete");
 			}
@@ -105,7 +105,7 @@ public class RanksFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

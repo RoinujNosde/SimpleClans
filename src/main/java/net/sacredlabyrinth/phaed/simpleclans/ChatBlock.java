@@ -2,12 +2,16 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -170,6 +174,7 @@ public class ChatBlock {
         }
 
 
+        List<String> messages = new ArrayList<>();
         // size up all sections
 
         for (int i = 0; i < amount; i++) {
@@ -285,11 +290,12 @@ public class ChatBlock {
                 msg = color + msg;
             }
 
-            player.sendMessage(msg);
+            messages.add(msg);
 
             prefix_used = true;
         }
 
+        player.sendMessage(messages.toArray(new String[0]));
         return !rows.isEmpty();
     }
 
@@ -620,7 +626,7 @@ public class ChatBlock {
      * @param receiver
      * @param msg
      */
-    public static void sendMessage(CommandSender receiver, String msg) {
+    public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
             return;
         }
@@ -630,6 +636,10 @@ public class ChatBlock {
         for (String out : message) {
             receiver.sendMessage(out);
         }
+    }
+
+    public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
+        sendMessage(receiver, lang(key, receiver, args));
     }
 
     /**

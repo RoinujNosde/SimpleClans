@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LanguageResource {
 
-	private static final ResourceLoader LOADER = new ResourceLoader(SimpleClans.getInstance().getDataFolder());
+	private static final ResourceLoader DATA_FOLDER_LOADER = new ResourceLoader(SimpleClans.getInstance().getDataFolder());
 	private final Locale defaultLocale;
 	private static List<Locale> availableLocales;
 	private static final Map<Locale, Integer> TRANSLATION_STATUS = new HashMap<>();
@@ -29,9 +29,13 @@ public class LanguageResource {
 		this.defaultLocale = SimpleClans.getInstance().getSettingsManager().getLanguage();
 	}
 
+	@Nullable
 	public String getLang(@NotNull String key, @NotNull Locale locale) {
+		if (!key.startsWith("acf-core.parameter.") && key.startsWith("acf")) {
+			return getACFLang(key, locale);
+		}
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale, LOADER,
+			ResourceBundle bundle = ResourceBundle.getBundle("messages", locale, DATA_FOLDER_LOADER,
 					new ResourceControl(defaultLocale, false));
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
@@ -46,7 +50,48 @@ public class LanguageResource {
 			return bundle.getString(key);
 		} catch (MissingResourceException ignored) {}
 
-		return key;
+		return null;
+	}
+
+	@Nullable
+	private String getACFMinecraftLang(@NotNull String key, @NotNull Locale locale) {
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-minecraft", locale, DATA_FOLDER_LOADER,
+					new ResourceControl(defaultLocale, false));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-minecraft", locale,
+					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		return null;
+	}
+
+	@Nullable
+	private String getACFLang(@NotNull String key, @NotNull Locale locale) {
+		if (key.startsWith("acf-minecraft")) {
+			return getACFMinecraftLang(key, locale);
+		}
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-core", locale, DATA_FOLDER_LOADER,
+					new ResourceControl(defaultLocale, false));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("acf-core", locale,
+					SimpleClans.getInstance().getClass().getClassLoader(), new ResourceControl(defaultLocale));
+
+			return bundle.getString(key);
+		} catch (MissingResourceException ignored) {}
+
+		return null;
 	}
 
 	public static int getTranslationStatus(@NotNull Locale locale) {
@@ -63,7 +108,7 @@ public class LanguageResource {
 	}
 
 	public static void clearCache() {
-		ResourceBundle.clearCache(LOADER);
+		ResourceBundle.clearCache(DATA_FOLDER_LOADER);
 	}
 
 	public static List<Locale> getAvailableLocales() {
@@ -179,6 +224,9 @@ public class LanguageResource {
 			if (!defaultAsFallback && candidateLocales.size() != 1) {
 				candidateLocales.remove(Locale.ROOT);
 			}
+			if (baseName.startsWith("acf") && !candidateLocales.contains(Locale.ENGLISH) && defaultAsFallback) {
+				candidateLocales.add(Locale.ENGLISH);
+			}
 			return candidateLocales;
 		}
 
@@ -220,11 +268,12 @@ public class LanguageResource {
 			if (!defaultAsFallback) {
 				return null;
 			}
-			if (!locale.equals(defaultLocale) && !locale.equals(Locale.ROOT)) {
+			Locale root = baseName.startsWith("acf") ? Locale.ENGLISH : Locale.ROOT;
+			if (!locale.equals(defaultLocale) && !locale.equals(root)) {
 				return defaultLocale;
 			}
-			if (locale.equals(defaultLocale) && !defaultLocale.equals(Locale.ROOT)) {
-				return Locale.ROOT;
+			if (locale.equals(defaultLocale) && !defaultLocale.equals(root)) {
+				return root;
 			}
 
 			return null;

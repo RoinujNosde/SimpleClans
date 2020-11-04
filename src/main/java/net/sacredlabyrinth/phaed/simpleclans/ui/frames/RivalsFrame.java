@@ -1,11 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ public class RivalsFrame extends SCFrame {
 
 		add(Components.getBackComponent(getParent(), 2, getViewer()));
 
-		SCComponent add = new SCComponentImpl(lang("gui.rivals.add.title",getViewer()), null, Material.RED_WOOL, 4);
+		SCComponent add = new SCComponentImpl(lang("gui.rivals.add.title",getViewer()), null, XMaterial.RED_WOOL, 4);
 		add.setVerifiedOnly(ClickType.LEFT);
 		add.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new AddRivalFrame(this, getViewer(), subject)));
 		add.setPermission(ClickType.LEFT, RankPermission.RIVAL_ADD);
@@ -55,9 +55,9 @@ public class RivalsFrame extends SCFrame {
 				continue;
 			SCComponent c = new SCComponentImpl(
 					lang("gui.clanlist.clan.title",getViewer(), clan.getColorTag(), clan.getName()),
-					Collections.singletonList(lang("gui.rivals.clan.lore",getViewer())), Material.RED_BANNER, slot	);
+					Collections.singletonList(lang("gui.rivals.clan.lore",getViewer())), XMaterial.RED_BANNER, slot	);
 			c.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-					String.format("rival %s %s", lang("remove", getViewer()), clan.getTag()), false));
+					"rival remove", false, clan.getTag()));
 			c.setPermission(ClickType.RIGHT, RankPermission.RIVAL_REMOVE);
 			add(c);
 			slot++;
@@ -77,7 +77,7 @@ public class RivalsFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

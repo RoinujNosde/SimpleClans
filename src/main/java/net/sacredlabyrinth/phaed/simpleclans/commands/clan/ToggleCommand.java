@@ -1,0 +1,84 @@
+package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
+
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.function.Consumer;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static org.bukkit.ChatColor.AQUA;
+
+@CommandAlias("%clan")
+@Subcommand("%toggle")
+@Conditions("%basic_conditions|verified")
+public class ToggleCommand extends BaseCommand {
+
+    @Dependency
+    private StorageManager storage;
+
+    @Subcommand("%bb")
+    @CommandPermission("simpleclans.member.bb-toggle")
+    @Description("{@@command.description.toggle.bb}")
+    public void bb(Player player, ClanPlayer cp) {
+        toggle(player, "bbon", "bboff", cp.isBbEnabled(), cp::setBbEnabled);
+
+        storage.updateClanPlayer(cp);
+    }
+
+    @Subcommand("%tag")
+    @CommandPermission("simpleclans.member.tag-toggle")
+    @Description("{@@command.description.toggle.tag}")
+    public void tag(Player player, ClanPlayer cp) {
+        toggle(player, "tagon", "tagoff", cp.isTagEnabled(), cp::setTagEnabled);
+
+        storage.updateClanPlayer(cp);
+    }
+
+    @Subcommand("%deposit")
+    @CommandPermission("simpleclans.leader.deposit-toggle")
+    @Conditions("leader")
+    @Description("{@@command.description.toggle.deposit}")
+    public void deposit(Player player, Clan clan) {
+        toggle(player, "depositon", "depositoff", clan.isAllowDeposit(),
+                clan::setAllowDeposit);
+
+        storage.updateClan(clan);
+    }
+
+    @Subcommand("%fee")
+    @CommandPermission("simpleclans.leader.fee")
+    @Conditions("rank:name=FEE_ENABLE")
+    @Description("{@@command.description.toggle.fee}")
+    public void fee(Player player, Clan clan) {
+        toggle(player, "feeon", "feeoff", clan.isMemberFeeEnabled(),
+                clan::setMemberFeeEnabled);
+
+        storage.updateClan(clan);
+    }
+
+    @Subcommand("%withdraw")
+    @CommandPermission("simpleclans.leader.withdraw-toggle")
+    @Conditions("leader")
+    @Description("{@@command.description.toggle.withdraw}")
+    public void withdraw(Player player, Clan clan) {
+        toggle(player, "withdrawon", "withdrawoff", clan.isAllowWithdraw(),
+                clan::setAllowWithdraw);
+
+        storage.updateClan(clan);
+    }
+
+    private void toggle(CommandSender sender, String onMessageKey, String offMessageKey, boolean status,
+                        Consumer<Boolean> consumer) {
+        String messageOn = AQUA + lang(onMessageKey, sender);
+        String messageOff = AQUA + lang(offMessageKey, sender);
+
+        ChatBlock.sendMessage(sender, status ? messageOff : messageOn);
+        consumer.accept(!status);
+    }
+}

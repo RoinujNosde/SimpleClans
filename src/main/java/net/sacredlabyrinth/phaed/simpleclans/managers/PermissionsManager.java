@@ -369,6 +369,9 @@ public final class PermissionsManager {
     	
     	ClanPlayer clanPlayer = plugin.getClanManager().getClanPlayer(player);
     	if (clanPlayer == null) {
+    	    if (notify) {
+    	        player.sendMessage(ChatColor.RED + lang("not.a.member.of.any.clan", player));
+            }
     		return false;
     	}
     	

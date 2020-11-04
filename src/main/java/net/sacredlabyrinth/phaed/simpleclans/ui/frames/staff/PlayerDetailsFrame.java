@@ -1,8 +1,8 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -46,42 +46,42 @@ public class PlayerDetailsFrame extends SCFrame {
 		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click", getViewer()),
 						lang("gui.playerdetails.demote.lore.right.click", getViewer())),
-				Material.GUNPOWDER, 28);
+				XMaterial.GUNPOWDER, 28);
 		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
-				() -> InventoryController.runSubcommand(getViewer(), "promote " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "admin promote", true, subjectName));
 		promoteDemote.setPermission(ClickType.LEFT, "simpleclans.admin.promote");
 		promoteDemote.setListener(ClickType.RIGHT,
-				() -> InventoryController.runSubcommand(getViewer(), "demote " + subjectName, true));
+				() -> InventoryController.runSubcommand(getViewer(), "admin demote", true, subjectName));
 		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.admin.demote");
 	}
 
 	private void addPurge() {
-		SCComponent purge = new SCComponentImpl.Builder(Material.LAVA_BUCKET).withSlot(34).withDisplayName(
+		SCComponent purge = new SCComponentImpl.Builder(XMaterial.LAVA_BUCKET).withSlot(34).withDisplayName(
 				lang("gui.playerdetails.purge.title", getViewer())).withLoreLine(
 				lang("gui.playerdetails.purge.lore", getViewer())).build();
 		purge.setConfirmationRequired(ClickType.LEFT);
 		purge.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("purge %s", subjectName), false));
+				"purge", false, subjectName));
 		purge.setPermission(ClickType.LEFT, "simpleclans.admin.purge");
 		add(purge);
 	}
 
 	private void addResetKDR() {
-		SCComponent resetKdr = new SCComponentImpl.Builder(Material.ANVIL)
+		SCComponent resetKdr = new SCComponentImpl.Builder(XMaterial.ANVIL)
 				.withSlot(30).withDisplayName(lang("gui.main.reset.kdr.title", getViewer()))
 				.withLoreLine(lang("gui.playerdetails.resetkdr.lore", getViewer())).build();
 		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("resetkdr %s", subjectName), false));
+				"resetkdr", false, subjectName));
 		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.admin.resetkdr");
 		add(resetKdr);
 	}
 
 	private void addPlace() {
-		SCComponent place = new SCComponentImpl.Builder(Material.MINECART).withSlot(32)
+		SCComponent place = new SCComponentImpl.Builder(XMaterial.MINECART).withSlot(32)
 				.withDisplayName(lang("gui.playerdetails.place.title", getViewer()))
 				.withLoreLine(lang("gui.playerdetails.place.lore", getViewer())).build();
 		place.setPermission(ClickType.LEFT, "simpleclans.mod.place");
@@ -91,7 +91,7 @@ public class PlayerDetailsFrame extends SCFrame {
 	}
 
 	private void addBanUnban() {
-		SCComponent banUnban = new SCComponentImpl.Builder(Material.BARRIER).withSlot(40)
+		SCComponent banUnban = new SCComponentImpl.Builder(XMaterial.BARRIER).withSlot(40)
 				.withDisplayName(lang("gui.playerdetails.ban.unban.title", getViewer()))
 				.withLore(Arrays.asList(lang("gui.playerdetails.ban.left.click", getViewer()),
 						lang("gui.playerdetails.unban.right.click", getViewer()))).build();
@@ -100,9 +100,9 @@ public class PlayerDetailsFrame extends SCFrame {
 		banUnban.setPermission(ClickType.LEFT, "simpleclans.mod.ban");
 		banUnban.setPermission(ClickType.RIGHT, "simpleclans.mod.ban");
 		banUnban.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("ban %s", subjectName), false));
+				"ban", false, subjectName));
 		banUnban.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(),
-				String.format("unban %s", subjectName), false));
+				"unban", false, subjectName));
 		add(banUnban);
 	}
 

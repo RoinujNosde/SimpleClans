@@ -26,7 +26,7 @@ public class CreateRankNamePrompt extends StringPrompt {
         if (clan == null || plugin == null) return END_OF_CONVERSATION;
         if (input == null) return this;
 
-        String rank = input.toLowerCase();
+        String rank = input.toLowerCase().replace(" ", "_");
         if (clan.hasRank(rank)) {
             return new MessagePromptImpl(ChatColor.RED + lang("rank.already.exists", player), this);
         }
