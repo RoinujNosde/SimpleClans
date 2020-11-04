@@ -92,7 +92,7 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.main.title",getViewer());
+		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getServerName());
 	}
 
 	@Override

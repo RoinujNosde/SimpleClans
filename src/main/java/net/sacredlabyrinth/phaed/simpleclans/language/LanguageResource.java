@@ -224,6 +224,9 @@ public class LanguageResource {
 			if (!defaultAsFallback && candidateLocales.size() != 1) {
 				candidateLocales.remove(Locale.ROOT);
 			}
+			if (baseName.startsWith("acf") && !candidateLocales.contains(Locale.ENGLISH) && defaultAsFallback) {
+				candidateLocales.add(Locale.ENGLISH);
+			}
 			return candidateLocales;
 		}
 
@@ -265,11 +268,12 @@ public class LanguageResource {
 			if (!defaultAsFallback) {
 				return null;
 			}
-			if (!locale.equals(defaultLocale) && !locale.equals(Locale.ROOT)) {
+			Locale root = baseName.startsWith("acf") ? Locale.ENGLISH : Locale.ROOT;
+			if (!locale.equals(defaultLocale) && !locale.equals(root)) {
 				return defaultLocale;
 			}
-			if (locale.equals(defaultLocale) && !defaultLocale.equals(Locale.ROOT)) {
-				return Locale.ROOT;
+			if (locale.equals(defaultLocale) && !defaultLocale.equals(root)) {
+				return root;
 			}
 
 			return null;
