@@ -96,6 +96,8 @@ These super permission nodes are automatically given to everyone, if you wish to
 | `simpleclans.leader.settrust` | Can set trust levels for members |
 | `simpleclans.leader.war` | Can start wars |
 | `simpleclans.leader.setbanner` | Can set his clan's banner |
+| `simpleclans.leader.withdraw-toggle:` | Can toggle clan bank withdraw |
+| `simpleclans.leader.deposit-toggle:` | Can toggle clan bank deposit |
 
 ### Mod Nodes
 
