@@ -4,7 +4,9 @@ description: null
 
 # Permissions
 
-## SuperPerms Nodes
+## SuperPerms Nodes (Auto added)
+
+These super permission nodes are automatically given to everyone, if you wish to setup individual permissions you will need to deny these first and setup permissions one by one after.
 
 | Permission | Description |
 | :--- | :--- |
