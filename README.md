@@ -11,10 +11,10 @@ Full featured clan system for PVP Minecraft Servers!
 [![Crowdin](https://badges.crowdin.net/simpleclans/localized.svg)](https://crowdin.com/project/simpleclans)
 [![Discord](https://img.shields.io/discord/719557355917934613?label=discord&logo=discord)](https://discord.gg/CkNwgdE)
 
-#### Download  
+#### Download Links
 
 * [Spigot Resource](https://www.spigotmc.org/resources/simpleclans.71242/)
-* [GitHub Releases](https://github.com/RoinujNosde/SimpleClans/releases)
+* [GitHub Releases](https://github.com/RoinujNosde/SimpleClans/releases/latest)
 
 #### Documentation 
 
