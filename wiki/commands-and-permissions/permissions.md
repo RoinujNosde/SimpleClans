@@ -10,11 +10,11 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 
 | Permission | Description |
 | :--- | :--- |
-| `simpleclans.anyone.* (Auto added)` | Permissions for anyone |
-| `simpleclans.member.* (Auto added)` | Permissions for those who can be clan members |
-| `simpleclans.leader.* (Auto added)` | Permissions for those who can be clan leaders |
-| `simpleclans.mod.* (Auto added to OPS)` | Permissions for moderators |
-| `simpleclans.admin.* (Auto added to OPS)` | Permissions for admins |
+| `simpleclans.anyone.*` (Auto added) | Permissions for anyone |
+| `simpleclans.member.*` (Auto added) | Permissions for those who can be clan members |
+| `simpleclans.leader.*` (Auto added) | Permissions for those who can be clan leaders |
+| `simpleclans.mod.*` (Auto added to OPS) | Permissions for moderators |
+| `simpleclans.admin.*` (Auto added to OPS) | Permissions for admins |
 
 ## Individual Nodes
 
