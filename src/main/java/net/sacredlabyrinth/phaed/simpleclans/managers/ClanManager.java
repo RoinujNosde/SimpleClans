@@ -1278,7 +1278,7 @@ public final class ClanManager {
             plugin.getStorageManager().updateClanPlayer(cp);
             ChatBlock.sendMessage(player, lang("left.clan.chat", player));
         } else if (command.equals(lang("mute",player))) {
-            if (cp.isMuted()) {
+            if (!cp.isMuted()) {
                 cp.setMuted(true);
                 ChatBlock.sendMessage(player, lang("muted.clan.chat", player));
             } else {

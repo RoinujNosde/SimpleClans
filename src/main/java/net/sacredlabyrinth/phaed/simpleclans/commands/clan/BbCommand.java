@@ -40,7 +40,7 @@ public class BbCommand extends BaseCommand {
         ChatBlock.sendMessage(player, RED + lang("cleared.bb", player));
     }
 
-    @Subcommand("%bb")
+    @Subcommand("%bb %add")
     @CommandPermission("simpleclans.member.bb-add")
     @Conditions("rank:name=BB_ADD")
     @Description("{@@command.description.bb.post}")

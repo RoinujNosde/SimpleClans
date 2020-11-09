@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
     <artifactId>SimpleClans</artifactId>
-    <version>2.14.2</version>
+    <version>2.14.3</version>
     <name>SimpleClans</name>
     <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
 
@@ -159,6 +159,12 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -79,6 +79,7 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 | `simpleclans.leader.kick` | Can kick players form his clan |
 | `simpleclans.leader.modtag` | Can modify his clan's tag |
 | `simpleclans.leader.coloredtag` | Can use color codes in tags |
+| `simpleclans.leader.coloredrank` | Can use color codes in rank display names |
 | `simpleclans.leader.promotable` | Can be promoted to clan leader |
 | `simpleclans.leader.promote` | Can promote players to clan leaders |
 | `simpleclans.leader.rank.assign` | Can assign a rank to a user |

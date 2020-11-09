@@ -44,7 +44,7 @@ public class MainFrame extends SCFrame {
 		addResetKdr();
 		if (plugin.getPermissionsManager().has(getViewer(), "simpleclans.mod.staffgui")) {
 			SCComponent staff = new SCComponentImpl.Builder(XMaterial.COMMAND_BLOCK).withSlot(6).withDisplayName(
-					lang("gui.main.staff.title", getViewer())).build();
+					lang("gui.main.staff.title", getViewer())).withLore(Arrays.asList(lang("gui.main.staff.lore", getViewer()))).build();
 			staff.setPermission(ClickType.LEFT, "simpleclans.mod.staffgui");
 			staff.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new StaffFrame(this, getViewer())));
 			add(staff);
@@ -92,7 +92,7 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.main.title",getViewer());
+		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getServerName());
 	}
 
 	@Override
