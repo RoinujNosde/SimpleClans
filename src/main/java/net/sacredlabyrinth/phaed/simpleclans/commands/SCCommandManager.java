@@ -163,8 +163,15 @@ public class SCCommandManager extends PaperCommandManager {
                 "clan_chat", sm.getCommandClanChat()
         );
 
-        SUBCOMMANDS.forEach(s ->
-                getCommandReplacements().addReplacement(s, (lang(s + ".command") + "|" + s)));
+        SUBCOMMANDS.forEach(s -> {
+            String command = optionalLang(s + ".command", null);
+            if (command == null) {
+                command = s;
+            }
+            command = command.replace(" ", "");
+            String replacement = command.equals(s) ? s : command + "|" + s;
+            getCommandReplacements().addReplacement(s, replacement);
+        });
     }
     
     @Override

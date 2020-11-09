@@ -4,8 +4,7 @@ import co.aikar.commands.BukkitCommandIssuer;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
-import net.sacredlabyrinth.phaed.simpleclans.listeners.SCEntityListener;
-import net.sacredlabyrinth.phaed.simpleclans.listeners.SCPlayerListener;
+import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
@@ -16,6 +15,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,9 +109,13 @@ public class SimpleClans extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new SCEntityListener(), this);
-        getServer().getPluginManager().registerEvents(new SCPlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryController(), this);
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new PlayerDeath(), this);
+        pm.registerEvents(new SCPlayerListener(), this);
+        pm.registerEvents(new InventoryController(), this);
+        pm.registerEvents(new TamableMobsSharing(this), this);
+        pm.registerEvents(new PvPOnlyInWar(this), this);
+        pm.registerEvents(new FriendlyFire(this), this);
     }
 
     private void migrateChatFormat() {

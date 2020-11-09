@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -625,7 +626,7 @@ public class ChatBlock {
      * @param receiver
      * @param msg
      */
-    public static void sendMessage(CommandSender receiver, String msg) {
+    public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
             return;
         }
@@ -637,8 +638,8 @@ public class ChatBlock {
         }
     }
 
-    public static void sendMessageKey(@NotNull CommandSender receiver, @NotNull String key) {
-        sendMessage(receiver, lang(key, receiver));
+    public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
+        sendMessage(receiver, lang(key, receiver, args));
     }
 
     /**
