@@ -30,7 +30,7 @@ Full featured clan system for PVP Minecraft Servers!
   * [Clan Upkeep](https://simpleclans.gitbook.io/simpleclans/how-to-setup/clan-upkeep)
   * [Clan name above players head](https://simpleclans.gitbook.io/simpleclans/how-to-setup/clan-below-players-name)
   * [Clan name on Tablist](https://simpleclans.gitbook.io/simpleclans/how-to-setup/clan-on-tablist)
-* Developers
+* Plugins & Development 
   * [SimpleClans API Example](https://simpleclans.gitbook.io/simpleclans/other/simpleclans-api)
   * [PlaceholderAPI Placeholders](https://simpleclans.gitbook.io/simpleclans/other/placeholderapi-support)
   * [Land Protection Plugins](https://simpleclans.gitbook.io/simpleclans/other/land-claims)
