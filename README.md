@@ -71,3 +71,5 @@ dependencies {
     compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.12.2"
 }
 ```
+#### API Examples
+* [Examples of how to use the API](https://simpleclans.gitbook.io/simpleclans/other/simpleclans-api)
