@@ -950,31 +950,37 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
         return channel;
     }
 
+    @Deprecated
     public boolean isGlobalChat()
     {
         return globalChat;
     }
 
+    @Deprecated
     public boolean isAllyChat()
     {
         return allyChat;
     }
 
+    @Deprecated
     public boolean isClanChat()
     {
         return clanChat;
     }
 
+    @Deprecated
     public void setGlobalChat(boolean globalChat)
     {
         this.globalChat = globalChat;
     }
 
+    @Deprecated
     public void setAllyChat(boolean allyChat)
     {
         this.allyChat = allyChat;
     }
 
+    @Deprecated
     public void setClanChat(boolean clanChat)
     {
         this.clanChat = clanChat;

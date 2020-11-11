@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.events.PreCreateClanEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
@@ -31,8 +32,13 @@ public class CreateClanNamePrompt extends StringPrompt {
         if (errorPrompt != null) return errorPrompt;
 
         Bukkit.getScheduler().runTask(plugin, () -> {
+            String tag = (String) context.getSessionData("tag");
             //noinspection ConstantConditions
-            processClanCreation(plugin, player, (String) context.getSessionData("tag"), clanName);
+            PreCreateClanEvent event = new PreCreateClanEvent(player, tag, clanName);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                processClanCreation(plugin, player, tag, clanName);
+            }
         });
 
         return END_OF_CONVERSATION;
