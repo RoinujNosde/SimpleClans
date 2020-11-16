@@ -41,7 +41,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     private Set<String> pastClans = new HashSet<>();
     private final Map<String, Long> resignTimes = new HashMap<>();
     private @Nullable VoteResult vote;
-    private Channel channel;
+    private @NotNull Channel channel;
 
     private boolean useChatShortcut = false;
     private boolean globalChat = true;
@@ -945,7 +945,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
         }
     }
 
-    public Channel getChannel()
+    public @NotNull Channel getChannel()
     {
         return channel;
     }
@@ -986,7 +986,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
         this.clanChat = clanChat;
     }
 
-    public void setChannel(Channel channel)
+    public void setChannel(@NotNull Channel channel)
     {
         this.channel = channel;
     }

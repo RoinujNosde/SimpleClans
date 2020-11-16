@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.cryptomorin.xseries.XMaterial;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.World;
@@ -753,6 +754,11 @@ public final class SettingsManager {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
+    public boolean isBanned(String playerName) {
+        return isBanned(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Check whether a player is banned
      *
@@ -783,6 +789,11 @@ public final class SettingsManager {
         save();
     }
 
+    @SuppressWarnings("deprecation")
+    public void addBanned(String playerName) {
+        addBanned(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Remove a player from the banned list
      *
@@ -793,6 +804,11 @@ public final class SettingsManager {
         
         getConfig().set("settings.banned-players", bannedPlayers);
         save();
+    }
+
+    @SuppressWarnings("deprecation")
+    public void removeBanned(String playerName) {
+        removeBanned(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 
     /**

@@ -35,6 +35,7 @@ public class YAMLSerializer {
         YamlConfiguration config = new YamlConfiguration();
         if (cs != null) {
             try {
+                config.loadFromString(cs);
                 return (T) config.get("cs");
             } catch (Exception e) {
                 LOGGER.warning(String.format(

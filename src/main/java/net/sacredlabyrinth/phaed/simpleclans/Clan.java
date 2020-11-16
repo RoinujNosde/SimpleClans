@@ -299,7 +299,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Check if the player is a member of this clan
      *
-     * @param player
+     * @param player the Player
      * @return confirmation
      */
     public boolean isMember(Player player) {
@@ -309,13 +309,17 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Check if the player is a member of this clan
      *
-     * @param playerUniqueId
+     * @param playerUniqueId the Player's UUID
      * @return confirmation
      */
     public boolean isMember(UUID playerUniqueId) {
         return this.members.contains(playerUniqueId.toString());
     }
 
+    @SuppressWarnings("deprecation")
+    public boolean isMember(String playerName) {
+        return isMember(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
 
     /**
      * Returns a list with the contents of the bulletin board
@@ -719,6 +723,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
+    public boolean isLeader(String playerName) {
+        return isLeader(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Get all members that must pay the fee (that excludes leaders and players with the permission to bypass it)
      * 
@@ -1057,6 +1066,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerJoinedClanEvent(this, cp));
     }
 
+    @SuppressWarnings("deprecation")
+    public void removePlayerFromClan(String playerName) {
+        removePlayerFromClan(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Remove a player from a clan
      *
@@ -1090,6 +1104,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerKickedClanEvent(this, cp));
     }
 
+    @SuppressWarnings("deprecation")
+    public void promote(String playerName) {
+        promote(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Promote a member to a leader of a clan
      *
@@ -1107,6 +1126,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerPromoteEvent(this, cp));
+    }
+
+    @SuppressWarnings("deprecation")
+    public void demote(String playerName) {
+        demote(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 
     /**
