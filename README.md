@@ -58,7 +58,7 @@ Including SimpleClans with Maven:
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.12.2</version>
+        <version>2.14.3</version> <!-- You can find the latest version at the bottom -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -72,8 +72,12 @@ repositories {
     }
 }
 dependencies {
-    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.12.2"
+    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.14.3" // You can find the latest version at the bottom
 }
 ```
-#### API Examples
+
+##### Latest version:
+[![Bintray](https://img.shields.io/bintray/v/roinujnosde/bukkit-plugins/SimpleClans)](https://bintray.com/roinujnosde/bukkit-plugins/SimpleClans/_latestVersion)
+
+##### API Examples
 * [Examples of how to use the API](https://simpleclans.gitbook.io/simpleclans/other/simpleclans-api)
