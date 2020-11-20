@@ -86,6 +86,10 @@
               <pattern>com.cryptomorin.xseries</pattern>
               <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.xseries</shadedPattern>
             </relocation>
+            <relocation>
+              <pattern>org.reflections</pattern>
+              <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.reflections</shadedPattern>
+            </relocation>
           </relocations>
           <artifactSet>
             <excludes>
