@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +25,7 @@ public class ClanProfile extends Sendable {
                 .replace("%clan_description%", getDescription())
                 .replace("%clan_verified%", getVerifiedStatus())
                 .replace("%clan_leaders%", clan.getLeadersString(sm.getPageLeaderColor(), subColor + ", "))
-                .replace("%clan_online_count%", String.valueOf(clan.getOnlineMembers().size()))
+                .replace("%clan_online_count%", String.valueOf(VanishUtils.getNonVanished(sender, clan).size()))
                 .replace("%clan_size%", String.valueOf(clan.getSize()))
                 .replace("%clan_kdr%", KDRFormat.format(clan.getTotalKDR()))
                 .replace("%clan_rival_kills%", String.valueOf(clan.getTotalRival()))

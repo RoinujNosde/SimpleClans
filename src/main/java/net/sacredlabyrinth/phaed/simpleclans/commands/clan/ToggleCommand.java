@@ -53,7 +53,7 @@ public class ToggleCommand extends BaseCommand {
 
     @Subcommand("%fee")
     @CommandPermission("simpleclans.leader.fee")
-    @Conditions("rank:name=FEE_ENABLE")
+    @Conditions("rank:name=FEE_ENABLE|change_fee")
     @Description("{@@command.description.toggle.fee}")
     public void fee(Player player, Clan clan) {
         toggle(player, "feeon", "feeoff", clan.isMemberFeeEnabled(),

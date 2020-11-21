@@ -9,12 +9,12 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -36,7 +36,7 @@ public class CoordsFrame extends SCFrame {
 
 	@Override
 	public void createComponents() {
-		List<ClanPlayer> allMembers = subject.getOnlineMembers();
+		List<ClanPlayer> allMembers = VanishUtils.getNonVanished(getViewer(), subject);
 		allMembers.sort((cp1, cp2) -> Boolean.compare(cp1.isLeader(), cp2.isLeader()));
 
 		paginator = new Paginator(getSize() - 9, allMembers.size());

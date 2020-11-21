@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -1198,8 +1199,9 @@ public final class ClanManager {
         }
 
         double price = plugin.getSettingsManager().getHomeRegroupPrice();
+        Clan clan = Objects.requireNonNull(cp.getClan());
         if (!plugin.getSettingsManager().iseUniqueTaxOnRegroup()) {
-            price = price * cp.getClan().getOnlineMembers().size();
+            price = price * VanishUtils.getNonVanished(player, clan).size();
         }
 
         if (plugin.getSettingsManager().iseIssuerPaysRegroup()) {
@@ -1213,7 +1215,6 @@ public final class ClanManager {
                 }
             }
         } else {
-            Clan clan = cp.getClan();
             double balance = clan.getBalance();
             if (price > balance) {
                 player.sendMessage(ChatColor.RED + lang("clan.bank.not.enough.money",player));

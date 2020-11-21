@@ -64,6 +64,7 @@ public class SCCommandManager extends PaperCommandManager {
     private void registerCompletions() {
         Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.completions");
         Set<Class<? extends AbstractCompletion>> completions = reflections.getSubTypesOf(AbstractCompletion.class);
+        plugin.getLogger().info(String.format("Registering %d command completions...", completions.size()));
         for (Class<? extends AbstractCompletion> c : completions) {
             if (Modifier.isAbstract(c.getModifiers())) {
                 continue;
@@ -90,6 +91,7 @@ public class SCCommandManager extends PaperCommandManager {
     private void registerConditions() {
         Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.conditions");
         Set<Class<? extends AbstractCondition>> conditions = reflections.getSubTypesOf(AbstractCondition.class);
+        plugin.getLogger().info(String.format("Registering %d command conditions...", conditions.size()));
         for (Class<? extends AbstractCondition> c : conditions) {
             if (Modifier.isAbstract(c.getModifiers())) {
                 continue;
@@ -115,6 +117,7 @@ public class SCCommandManager extends PaperCommandManager {
     private void registerContexts() {
         Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.contexts");
         Set<Class<? extends AbstractContextResolver>> resolvers = reflections.getSubTypesOf(AbstractContextResolver.class);
+        plugin.getLogger().info(String.format("Registering %d command contexts...", resolvers.size()));
         for (Class<? extends AbstractContextResolver> cr : resolvers) {
             if (Modifier.isAbstract(cr.getModifiers())) {
                 continue;
@@ -137,6 +140,7 @@ public class SCCommandManager extends PaperCommandManager {
         boolean forceCommandPriority = plugin.getSettingsManager().isForceCommandPriority();
         Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands");
         Set<Class<? extends BaseCommand>> commands = reflections.getSubTypesOf(BaseCommand.class);
+        plugin.getLogger().info(String.format("Registering %d base commands...", commands.size()));
         for (Class<? extends BaseCommand> c : commands) {
             //ACF already registers nested classes
             if (c.isMemberClass() || Modifier.isStatic(c.getModifiers())) {

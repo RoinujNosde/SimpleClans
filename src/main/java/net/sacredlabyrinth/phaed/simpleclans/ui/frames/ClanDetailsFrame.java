@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -235,7 +236,7 @@ public class ClanDetailsFrame extends SCFrame {
 		if (plugin.getSettingsManager().isePurchaseHomeRegroup()) {
 			price = plugin.getSettingsManager().getHomeRegroupPrice();
 			if (!plugin.getSettingsManager().iseUniqueTaxOnRegroup()) {
-				price = price * clan.getOnlineMembers().size();
+				price = price * VanishUtils.getNonVanished(getViewer(), clan).size();
 			}
 		}
 

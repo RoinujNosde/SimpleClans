@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -751,6 +752,10 @@ public class Helper {
         return result;
     }
 
+    /**
+     * @deprecated use {@link VanishUtils#isVanished(CommandSender, Player)}
+     */
+    @Deprecated
     @Contract("_, null -> false")
     public static boolean isVanished(@Nullable CommandSender viewer, @Nullable Player player) {
         if (isVanished(player)) {
@@ -763,6 +768,9 @@ public class Helper {
         return false;
     }
 
+    /**
+     * @deprecated use {@link VanishUtils#isVanished(CommandSender, Player)}
+     */
     @Contract("null -> false")
     public static boolean isVanished(@Nullable Player player) {
         if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {

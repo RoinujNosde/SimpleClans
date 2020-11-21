@@ -117,6 +117,12 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param player
      */
     public void deposit(double amount, Player player) {
+        BankDepositEvent event = new BankDepositEvent(player, this, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        amount = event.getAmount();
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
                 player.sendMessage(ChatColor.AQUA + lang("player.clan.deposit", player, amount));
@@ -138,6 +144,12 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param player
      */
     public void withdraw(double amount, Player player) {
+        BankWithdrawEvent event = new BankWithdrawEvent(player, this, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        amount = event.getAmount();
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                 player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));

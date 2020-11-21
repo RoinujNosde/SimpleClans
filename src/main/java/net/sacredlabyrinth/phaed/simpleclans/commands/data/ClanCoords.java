@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ public class ClanCoords extends Sendable {
 
     private void populateRows() {
         Map<Integer, List<String>> rows = new TreeMap<>();
-        for (ClanPlayer cpm : clan.getOnlineMembers()) {
+        for (ClanPlayer cpm : VanishUtils.getNonVanished(player, clan)) {
             Player p = cpm.toPlayer();
 
             if (p != null) {

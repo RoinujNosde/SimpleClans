@@ -1,7 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.listeners;
 
-import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -11,9 +14,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
-import java.util.Iterator;
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
+import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
@@ -45,13 +49,13 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld())) {
+        ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
+        if (cp == null || plugin.getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld())) {
             return;
         }
 
-        ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
-        Channel channel = cp != null && cp.getClan() != null ? cp.getChannel() : null;
-        if (channel != null) {
+        Channel channel = cp.getChannel();
+        if (channel != NONE) {
             PermissionsManager pm = plugin.getPermissionsManager();
             if ((channel == Channel.ALLY && !pm.has(player, "simpleclans.member.ally")) ||
                     (channel == CLAN && !pm.has(player, "simpleclans.member.chat"))) {
@@ -66,27 +70,31 @@ public class SCPlayerListener implements Listener {
                     plugin.getClanManager().processAllyChat(player, event.getMessage());
             }
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void handleChatTags(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
+        if (cp == null || plugin.getSettingsManager().isBlacklistedWorld(player.getWorld())) {
             return;
         }
-
-        if (plugin.getSettingsManager().isCompatMode()) {
-            if (plugin.getSettingsManager().isChatTags()) {
-                if (cp != null && cp.isTagEnabled()) {
-
-                    String tagLabel = cp.getClan().getTagLabel(cp.isLeader());
-
-                    if (player.getDisplayName().contains("{clan}")) {
-                        player.setDisplayName(player.getDisplayName().replace("{clan}", tagLabel));
-                    } else if (event.getFormat().contains("{clan}")) {
-                        event.setFormat(event.getFormat().replace("{clan}", tagLabel));
-                    } else {
-                        String format = event.getFormat();
-                        event.setFormat(tagLabel + format);
-                    }
+        Clan clan = Objects.requireNonNull(cp.getClan());
+        if (plugin.getSettingsManager().isCompatMode() && plugin.getSettingsManager().isChatTags()) {
+            if (cp.isTagEnabled()) {
+                String tagLabel = clan.getTagLabel(cp.isLeader());
+                if (player.getDisplayName().contains("{clan}")) {
+                    player.setDisplayName(player.getDisplayName().replace("{clan}", tagLabel));
+                } else if (event.getFormat().contains("{clan}")) {
+                    event.setFormat(event.getFormat().replace("{clan}", tagLabel));
                 } else {
-                    event.setFormat(event.getFormat().replace("{clan}", ""));
-                    event.setFormat(event.getFormat().replace("tagLabel", ""));
+                    String format = event.getFormat();
+                    event.setFormat(tagLabel + format);
                 }
+            } else {
+                event.setFormat(event.getFormat().replace("{clan}", ""));
+                event.setFormat(event.getFormat().replace("tagLabel", ""));
             }
         } else {
             plugin.getClanManager().updateDisplayName(player);
