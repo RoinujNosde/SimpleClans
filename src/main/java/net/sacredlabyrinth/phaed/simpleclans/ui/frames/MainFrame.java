@@ -27,34 +27,46 @@ public class MainFrame extends SCFrame {
 		add(Components.getPlayerComponent(this, getViewer(), getViewer(), 0, false));
 		add(Components.getClanComponent(this, getViewer(),
 				plugin.getClanManager().getCreateClanPlayer(getViewer().getUniqueId()).getClan(), 1, true));
+		addLeaderboard();
+		addClanList();
+		addResetKdr();
+		addStaff();
+		addLanguageSelector();
+		addOtherCommands();
+	}
 
+	private void addOtherCommands() {
+		SCComponent otherCommands = new SCComponentImpl(lang("gui.main.other.commands.title",getViewer()),
+				Collections.singletonList(lang("gui.main.other.commands.lore",getViewer())), XMaterial.BOOK, 8);
+		otherCommands.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "help", false));
+		add(otherCommands);
+	}
+
+	private void addStaff() {
+		if (plugin.getPermissionsManager().has(getViewer(), "simpleclans.mod.staffgui")) {
+			SCComponent staff = new SCComponentImpl.Builder(XMaterial.COMMAND_BLOCK).withSlot(6).withDisplayName(
+					lang("gui.main.staff.title", getViewer())).withLore(Collections.singletonList(lang("gui.main.staff.lore", getViewer()))).build();
+			staff.setPermission(ClickType.LEFT, "simpleclans.mod.staffgui");
+			staff.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new StaffFrame(this, getViewer())));
+			add(staff);
+		}
+	}
+
+	private void addLeaderboard() {
 		SCComponent leaderboard = new SCComponentImpl(lang("gui.main.leaderboard.title",getViewer()),
 				Collections.singletonList(lang("gui.main.leaderboard.lore",getViewer())), XMaterial.PAINTING, 3);
 		leaderboard.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new LeaderboardFrame(getViewer(), this)));
 		leaderboard.setPermission(ClickType.LEFT, "simpleclans.anyone.leaderboard");
 		add(leaderboard);
+	}
 
+	private void addClanList() {
 		SCComponent clanList = new SCComponentImpl(lang("gui.main.clan.list.title", getViewer()),
 				Collections.singletonList(lang("gui.main.clan.list.lore", getViewer())), XMaterial.PURPLE_BANNER,
 				4);
 		clanList.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanListFrame(this, getViewer())));
 		clanList.setPermission(ClickType.LEFT, "simpleclans.anyone.list");
 		add(clanList);
-
-		addResetKdr();
-		if (plugin.getPermissionsManager().has(getViewer(), "simpleclans.mod.staffgui")) {
-			SCComponent staff = new SCComponentImpl.Builder(XMaterial.COMMAND_BLOCK).withSlot(6).withDisplayName(
-					lang("gui.main.staff.title", getViewer())).withLore(Arrays.asList(lang("gui.main.staff.lore", getViewer()))).build();
-			staff.setPermission(ClickType.LEFT, "simpleclans.mod.staffgui");
-			staff.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new StaffFrame(this, getViewer())));
-			add(staff);
-		}
-		addLanguageSelector();
-
-		SCComponent otherCommands = new SCComponentImpl(lang("gui.main.other.commands.title",getViewer()),
-				Collections.singletonList(lang("gui.main.other.commands.lore",getViewer())), XMaterial.BOOK, 8);
-		otherCommands.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "help", false));
-		add(otherCommands);
 	}
 
 	private void addLanguageSelector() {

@@ -19,6 +19,7 @@ public class AllyChatCommand extends BaseCommand {
 
     @Default
     @HelpSearchTags("chat")
+    @CommandCompletion("@chat_subcommands")
     public void sendMessage(Player player, @Name("message") String message) {
         if (!settingsManager.isAllyChatEnable()) {
             return;

@@ -176,7 +176,7 @@ public class ClanCommands extends BaseCommand {
 
     @Subcommand("%fee %set")
     @CommandPermission("simpleclans.leader.fee")
-    @Conditions("rank:name=FEE_SET")
+    @Conditions("rank:name=FEE_SET|change_fee")
     @Description("{@@command.description.fee.set}")
     public void setFee(Player player, Clan clan, @Name("fee") double fee) {
         fee = Math.abs(fee);

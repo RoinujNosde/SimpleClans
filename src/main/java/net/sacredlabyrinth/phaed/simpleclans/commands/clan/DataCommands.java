@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -58,7 +59,7 @@ public class DataCommands extends BaseCommand {
     @HelpSearchTags("local location")
     @Description("{@@command.description.coords}")
     public void coords(Player player, Clan clan) {
-        if (clan.getOnlineMembers().size() == 1) {
+        if (VanishUtils.getNonVanished(player, clan).size() == 1) {
             ChatBlock.sendMessage(player, RED + lang("you.are.the.only.member.online", player));
             return;
         }

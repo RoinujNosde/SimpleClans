@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -63,8 +64,7 @@ public final class TeleportManager {
         }
     }
 
-    public void teleport(Clan clan, Location location) {
-        List<ClanPlayer> members = clan.getOnlineMembers();
+    private void teleport(Clan clan, Location location, List<ClanPlayer> members) {
         for (ClanPlayer cp : members) {
             Player player = cp.toPlayer();
             if (player == null) {
@@ -86,6 +86,14 @@ public final class TeleportManager {
             plugin.getTeleportManager().addPlayer(player, new Location(location.getWorld(), x + .5,
                     location.getBlockY(), z + .5), clan.getName());
         }
+    }
+
+    public void teleport(@NotNull Player requester, @NotNull Clan clan, @NotNull Location location) {
+        teleport(clan, location, VanishUtils.getNonVanished(requester, clan));
+    }
+
+    public void teleport(Clan clan, Location location) {
+        teleport(clan, location, VanishUtils.getNonVanished(null, clan));
     }
 
     private void dropItems(Player player) {

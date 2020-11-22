@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.HomeRegroupEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -38,14 +39,14 @@ public class HomeCommands extends BaseCommand {
     }
 
     private void processTeleport(Player player, ClanPlayer cp, Clan clan, Location location) {
-        HomeRegroupEvent homeRegroupEvent = new HomeRegroupEvent(clan, cp, clan.getOnlineMembers(), location);
+        HomeRegroupEvent homeRegroupEvent = new HomeRegroupEvent(clan, cp, VanishUtils.getNonVanished(player, clan), location);
         plugin.getServer().getPluginManager().callEvent(homeRegroupEvent);
 
         if (homeRegroupEvent.isCancelled() || !cm.purchaseHomeRegroup(player)) {
             return;
         }
 
-        plugin.getTeleportManager().teleport(clan, location);
+        plugin.getTeleportManager().teleport(player, clan, location);
     }
 
     @Subcommand("%regroup %home")

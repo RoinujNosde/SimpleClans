@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -227,6 +228,12 @@ public final class ClanManager {
         return clans.get(Helper.cleanTag(tag));
     }
 
+    @SuppressWarnings("deprecation")
+    @Nullable
+    public Clan getClanByPlayerName(String playerName) {
+        return getClanByPlayerUniqueId(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Get a player's clan
      *
@@ -315,6 +322,12 @@ public final class ClanManager {
         return cp;
     }
 
+    @SuppressWarnings("deprecation")
+    @Nullable
+    public ClanPlayer getClanPlayer(String playerName) {
+        return getClanPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan
@@ -356,6 +369,11 @@ public final class ClanManager {
         return clanPlayers.get(playerUniqueId.toString());
     }
 
+    @SuppressWarnings("deprecation")
+    @Nullable
+    public ClanPlayer getAnyClanPlayer(String playerName) {
+        return getAnyClanPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      *
@@ -388,6 +406,12 @@ public final class ClanManager {
         importClanPlayer(cp);
 
         return cp;
+    }
+
+    @SuppressWarnings("deprecation")
+    @NotNull
+    public ClanPlayer getCreateClanPlayer(String playerName) {
+        return getCreateClanPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 
     /**
@@ -469,6 +493,11 @@ public final class ClanManager {
                 plugin.getStorageManager().updateClan(clan);
             }
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public void ban(String playerName) {
+        ban(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 	
     /**
@@ -1170,8 +1199,9 @@ public final class ClanManager {
         }
 
         double price = plugin.getSettingsManager().getHomeRegroupPrice();
+        Clan clan = Objects.requireNonNull(cp.getClan());
         if (!plugin.getSettingsManager().iseUniqueTaxOnRegroup()) {
-            price = price * cp.getClan().getOnlineMembers().size();
+            price = price * VanishUtils.getNonVanished(player, clan).size();
         }
 
         if (plugin.getSettingsManager().iseIssuerPaysRegroup()) {
@@ -1185,7 +1215,6 @@ public final class ClanManager {
                 }
             }
         } else {
-            Clan clan = cp.getClan();
             double balance = clan.getBalance();
             if (price > balance) {
                 player.sendMessage(ChatColor.RED + lang("clan.bank.not.enough.money",player));
@@ -1261,15 +1290,7 @@ public final class ClanManager {
 
         String command = split[0];
 
-        if (command.equals(lang("on",player))) {
-            cp.setClanChat(true);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("enabled.clan.chat", player));
-        } else if (command.equals(lang("off",player))) {
-            cp.setClanChat(false);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("disabled.clan.chat", player));
-        } else if (command.equals(lang("join",player))) {
+        if (command.equals(lang("join",player))) {
             cp.setChannel(ClanPlayer.Channel.CLAN);
             plugin.getStorageManager().updateClanPlayer(cp);
             ChatBlock.sendMessage(player, lang("joined.clan.chat", player));
@@ -1364,23 +1385,15 @@ public final class ClanManager {
 
         String command = split[0];
 
-        if (command.equals(lang("on",player))) {
-            cp.setAllyChat(true);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("enabled.ally.chat", player));
-        } else if (command.equals(lang("off",player))) {
-            cp.setAllyChat(false);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("disabled.ally.chat", player));
-        } else if (command.equals(lang("join",player))) {
+        if (command.equals(lang("join", player))) {
             cp.setChannel(ClanPlayer.Channel.ALLY);
             plugin.getStorageManager().updateClanPlayer(cp);
             ChatBlock.sendMessage(player, lang("joined.ally.chat", player));
-        } else if (command.equals(lang("leave",player))) {
+        } else if (command.equals(lang("leave", player))) {
             cp.setChannel(ClanPlayer.Channel.NONE);
             plugin.getStorageManager().updateClanPlayer(cp);
             ChatBlock.sendMessage(player, lang("left.ally.chat", player));
-        } else if (command.equals(lang("mute",player))) {
+        } else if (command.equals(lang("mute", player))) {
             if (!cp.isMutedAlly()) {
                 cp.setMutedAlly(true);
                 ChatBlock.sendMessage(player, lang("muted.ally.chat", player));

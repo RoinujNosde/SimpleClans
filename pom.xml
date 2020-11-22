@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
     <artifactId>SimpleClans</artifactId>
-    <version>2.14.3</version>
+    <version>2.14.4</version>
     <name>SimpleClans</name>
     <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
 
@@ -83,6 +83,10 @@
                         <relocation>
                             <pattern>com.cryptomorin.xseries</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.xseries</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.reflections</pattern>
+                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.reflections</shadedPattern>
                         </relocation>
                     </relocations>
                     <artifactSet>

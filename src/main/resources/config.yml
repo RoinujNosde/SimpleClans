@@ -88,6 +88,7 @@ economy:
     purchase-member-fee-set: false
     member-fee-set-price: 1000.0
     member-fee-enabled: false
+    member-fee-last-minute-change-interval: 8
     max-member-fee: 200.0
     upkeep: 200.0
     upkeep-enabled: false

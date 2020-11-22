@@ -20,6 +20,7 @@ public class ChatCommand extends BaseCommand {
 
     @Default
     @HelpSearchTags("chat")
+    @CommandCompletion("@chat_subcommands")
     public void sendMessage(Player player, ClanPlayer cp, @Name("message") String message) {
         if (!settingsManager.getClanChatEnable()) {
             return;

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 import com.cryptomorin.xseries.XMaterial;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.World;
@@ -74,6 +75,7 @@ public final class SettingsManager {
     private double eResetKdr;
     private double eMaxMemberFee;
     private double eMemberFeeSetPrice;
+    private int eMemberFeeLastMinuteChangeInterval;
     private double eClanUpkeep;
     private String serverName;
     private boolean chatTags;
@@ -269,6 +271,7 @@ public final class SettingsManager {
         ePurchaseResetKdr = getConfig().getBoolean("economy.purchase-reset-kdr");
         ePurchaseMemberFeeSet = getConfig().getBoolean("economy.purchase-member-fee-set");
         eMemberFeeSetPrice = getConfig().getDouble("economy.member-fee-set-price");
+        eMemberFeeLastMinuteChangeInterval = getConfig().getInt("member-fee-last-minute-change-interval", 8);
         eResetKdr = getConfig().getDouble("economy.reset-kdr-price");
         eCreationPrice = getConfig().getDouble("economy.creation-price");
         eVerificationPrice = getConfig().getDouble("economy.verification-price");
@@ -691,7 +694,11 @@ public final class SettingsManager {
     public double geteMemberFeeSetPrice() {
         return eMemberFeeSetPrice;
     }
-    
+
+    public int geteMemberFeeLastMinuteChangeInterval() {
+        return eMemberFeeLastMinuteChangeInterval;
+    }
+
     /**
      * Do leaders need to pay for setting the member fee?
      * @return true if so
@@ -753,6 +760,11 @@ public final class SettingsManager {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
+    public boolean isBanned(String playerName) {
+        return isBanned(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Check whether a player is banned
      *
@@ -783,6 +795,11 @@ public final class SettingsManager {
         save();
     }
 
+    @SuppressWarnings("deprecation")
+    public void addBanned(String playerName) {
+        addBanned(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+    }
+
     /**
      * Remove a player from the banned list
      *
@@ -793,6 +810,11 @@ public final class SettingsManager {
         
         getConfig().set("settings.banned-players", bannedPlayers);
         save();
+    }
+
+    @SuppressWarnings("deprecation")
+    public void removeBanned(String playerName) {
+        removeBanned(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 
     /**

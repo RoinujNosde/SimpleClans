@@ -1126,22 +1126,27 @@ public final class StorageManager {
             query = "ALTER TABLE sc_kills ADD victim_uuid VARCHAR( 255 ) DEFAULT NULL;";
             core.execute(query);
         }
+        boolean useMysql = plugin.getSettingsManager().isUseMysql();
         if (!core.existsColumn("sc_players", "uuid")) {
             query = "ALTER TABLE sc_players ADD uuid VARCHAR( 255 ) DEFAULT NULL;";
             core.execute(query);
 
-            if (plugin.getSettingsManager().isUseMysql()) {
+            if (useMysql) {
                 query = "ALTER TABLE `sc_players` ADD UNIQUE `uq_player_uuid` (`uuid`);";
                 core.execute(query);
             }
 
             updatePlayersToUUID();
 
-            query = "ALTER TABLE sc_players DROP INDEX uq_sc_players_1;";
+            if (useMysql) {
+                query = "ALTER TABLE sc_players DROP INDEX uq_sc_players_1;";
+            } else {
+                query = "DROP INDEX IF EXISTS uq_sc_players_1;";
+            }
             core.execute(query);
         }
 
-        if (core.existsColumn("sc_players", "uuid") && !plugin.getSettingsManager().isUseMysql()) {
+        if (core.existsColumn("sc_players", "uuid") && !useMysql) {
             query = "CREATE UNIQUE INDEX IF NOT EXISTS `uq_player_uuid` ON `sc_players` (`uuid`);";
             core.execute(query);
         }

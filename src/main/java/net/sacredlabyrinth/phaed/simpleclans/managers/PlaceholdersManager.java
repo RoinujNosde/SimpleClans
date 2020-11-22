@@ -5,6 +5,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -372,7 +373,8 @@ public final class PlaceholdersManager extends PlaceholderExpansion {
 				return String.valueOf(clan.getInactiveDays());
 			}
 			case "clan_onlinemembers_count": {
-				return String.valueOf(clan.getOnlineMembers().size());
+				return String.valueOf(VanishUtils.getNonVanished(player == null ? null : player.toPlayer(),
+						clan).size());
 			}
 			case "clan_allies_count": {
 				return String.valueOf(clan.getAllies().size());
