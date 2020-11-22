@@ -46,7 +46,7 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
@@ -73,7 +73,7 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
@@ -134,7 +134,7 @@ public class SCPlayerListener implements Listener {
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (!plugin.getSettingsManager().isTeleportOnSpawn() ||
