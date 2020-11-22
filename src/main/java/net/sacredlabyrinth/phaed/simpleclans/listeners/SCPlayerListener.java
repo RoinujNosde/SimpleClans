@@ -136,21 +136,17 @@ public class SCPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
+        Player player = event.getPlayer();
+        if (!plugin.getSettingsManager().isTeleportOnSpawn() ||
+                plugin.getSettingsManager().isBlacklistedWorld(player.getWorld())) {
             return;
         }
 
-        if (plugin.getSettingsManager().isTeleportOnSpawn()) {
-            Player player = event.getPlayer();
-
-            ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-
-            if (cp != null) {
-                Location loc = cp.getClan().getHomeLocation();
-
-                if (loc != null) {
-                    event.setRespawnLocation(loc);
-                }
+        Clan clan = plugin.getClanManager().getClanByPlayerUniqueId(player.getUniqueId());
+        if (clan != null) {
+            Location home = clan.getHomeLocation();
+            if (home != null) {
+                event.setRespawnLocation(home);
             }
         }
     }

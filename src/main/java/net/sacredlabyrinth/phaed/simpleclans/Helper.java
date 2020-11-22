@@ -769,8 +769,9 @@ public class Helper {
     }
 
     /**
-     * @deprecated use {@link VanishUtils#isVanished(CommandSender, Player)}
+     * @deprecated use {@link VanishUtils#isVanished(Player)}
      */
+    @Deprecated
     @Contract("null -> false")
     public static boolean isVanished(@Nullable Player player) {
         if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {

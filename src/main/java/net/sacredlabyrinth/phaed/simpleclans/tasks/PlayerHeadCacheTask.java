@@ -38,6 +38,10 @@ public class PlayerHeadCacheTask extends BukkitRunnable {
         players.sort(Comparator.comparing(ClanPlayer::getName));
 
         for (ClanPlayer player : players) {
+            if (isCancelled()) {
+                plugin.getLogger().info("Player heads caching task cancelled!");
+                return;
+            }
             ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
             if (itemMeta != null) {
