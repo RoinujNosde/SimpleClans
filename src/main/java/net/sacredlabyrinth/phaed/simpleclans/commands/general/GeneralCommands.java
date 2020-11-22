@@ -25,7 +25,11 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanNamePrompt.NAME_KEY;
+import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
@@ -59,7 +63,7 @@ public class GeneralCommands extends BaseCommand {
     @Subcommand("%create")
     @CommandPermission("simpleclans.leader.create")
     @Description("{@@command.description.create}")
-    public void create(Player player) {
+    public void create(Player player, @Optional @Name("tag") String tag, @Optional @Name("name") String name) {
         ClanPlayer cp = cm.getAnyClanPlayer(player.getUniqueId());
 
         if (cp != null && cp.getClan() != null) {
@@ -67,9 +71,11 @@ public class GeneralCommands extends BaseCommand {
                     cp.getClan().getName()));
             return;
         }
-
+        HashMap<Object, Object> initialData = new HashMap<>();
+        initialData.put(TAG_KEY, tag);
+        initialData.put(NAME_KEY, name);
         Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateClanTagPrompt())
-                .withLocalEcho(true).buildConversation(player);
+                .withLocalEcho(true).withInitialSessionData(initialData).buildConversation(player);
         conversation.begin();
     }
 

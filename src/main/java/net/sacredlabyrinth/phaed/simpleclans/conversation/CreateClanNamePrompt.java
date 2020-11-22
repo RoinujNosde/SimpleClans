@@ -15,29 +15,43 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
 
 public class CreateClanNamePrompt extends StringPrompt {
+    public static final String NAME_KEY = "name";
+
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
+        if (context.getSessionData(NAME_KEY) != null) {
+            return "";
+        }
         return lang("insert.clan.name", (Player) context.getForWhom());
+    }
+
+    @Override
+    public boolean blocksForInput(@NotNull ConversationContext context) {
+        return context.getSessionData(NAME_KEY) == null;
     }
 
     @Override
     public @Nullable Prompt acceptInput(@NotNull ConversationContext context, @Nullable String clanName) {
         SimpleClans plugin = (SimpleClans) context.getPlugin();
         Player player = (Player) context.getForWhom();
+        clanName = clanName != null ? clanName : (String) context.getSessionData(NAME_KEY);
+        context.setSessionData(NAME_KEY, null);
         if (plugin == null || clanName == null) return this;
 
         Prompt errorPrompt = validateName(plugin, player, clanName);
         if (errorPrompt != null) return errorPrompt;
 
+        String finalClanName = clanName;
         Bukkit.getScheduler().runTask(plugin, () -> {
-            String tag = (String) context.getSessionData("tag");
+            String tag = (String) context.getSessionData(TAG_KEY);
             //noinspection ConstantConditions
-            PreCreateClanEvent event = new PreCreateClanEvent(player, tag, clanName);
+            PreCreateClanEvent event = new PreCreateClanEvent(player, tag, finalClanName);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
-                processClanCreation(plugin, player, tag, clanName);
+                processClanCreation(plugin, player, tag, finalClanName);
             }
         });
 
