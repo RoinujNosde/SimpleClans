@@ -4,15 +4,17 @@ description: null
 
 # Permissions
 
-## SuperPerms Nodes
+## SuperPerms Nodes \(Some auto added\)
+
+These super permission nodes are a quick way to setup SimpleClans, some are automatically given \(See Auto Added\). If you wish to setup individual permissions to groups you will need to deny these auto added super permission nodes and setup permissions one by one after.
 
 | Permission | Description |
 | :--- | :--- |
-| `simpleclans.anyone.*` | Permissions for anyone |
-| `simpleclans.member.*` | Permissions for those who can be clan members |
-| `simpleclans.leader.*` | Permissions for those who can be clan leaders |
-| `simpleclans.mod.*` | Permissions for moderators |
-| `simpleclans.admin.*` | Permissions for admins |
+| `simpleclans.anyone.*` \(Auto added\) | Permissions for anyone |
+| `simpleclans.member.*` \(Auto added\) | Permissions for those who can be clan members |
+| `simpleclans.leader.*` \(Auto added\) | Permissions for those who can be clan leaders |
+| `simpleclans.mod.*` \(Auto added to OPS\) | Permissions for moderators |
+| `simpleclans.admin.*` \(Auto added to OPS\) | Permissions for admins |
 
 ## Individual Nodes
 
@@ -77,6 +79,7 @@ description: null
 | `simpleclans.leader.kick` | Can kick players form his clan |
 | `simpleclans.leader.modtag` | Can modify his clan's tag |
 | `simpleclans.leader.coloredtag` | Can use color codes in tags |
+| `simpleclans.leader.coloredrank` | Can use color codes in rank display names |
 | `simpleclans.leader.promotable` | Can be promoted to clan leader |
 | `simpleclans.leader.promote` | Can promote players to clan leaders |
 | `simpleclans.leader.rank.assign` | Can assign a rank to a user |
@@ -94,6 +97,8 @@ description: null
 | `simpleclans.leader.settrust` | Can set trust levels for members |
 | `simpleclans.leader.war` | Can start wars |
 | `simpleclans.leader.setbanner` | Can set his clan's banner |
+| `simpleclans.leader.withdraw-toggle:` | Can toggle clan bank withdraw |
+| `simpleclans.leader.deposit-toggle:` | Can toggle clan bank deposit |
 
 ### Mod Nodes
 

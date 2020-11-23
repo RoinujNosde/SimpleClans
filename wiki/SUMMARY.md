@@ -22,6 +22,7 @@
 
 ## Other
 
+* [Known issues](other/known-issues.md)
 * [SimpleClans API Example](other/simpleclans-api.md)
 * [PlaceholderAPI Support](other/placeholderapi-support.md)
 * [Land Claims Plugins](other/land-claims.md)

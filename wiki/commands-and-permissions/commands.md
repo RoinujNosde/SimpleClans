@@ -67,3 +67,10 @@ description: null
 
 ## Admin Commands
 
+| Command | Description |
+| :--- | :--- |
+| /clan admin demote \[player\] | Demotes a leader from any clan |
+| /clan admin promote \[player\] | Promotes a member from any clan |
+
+
+
