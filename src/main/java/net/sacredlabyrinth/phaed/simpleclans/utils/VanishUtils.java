@@ -31,21 +31,24 @@ public class VanishUtils {
         return nonVanished;
     }
 
-    @Contract("_, null -> false")
+    @Contract("_, null -> true")
     public static boolean isVanished(@Nullable CommandSender viewer, @Nullable Player player) {
         if (isVanished(player)) {
             return true;
         }
-        if (viewer instanceof Player && player != null) {
+        if (viewer instanceof Player) {
             return !((Player) viewer).canSee(player);
         }
 
         return false;
     }
 
-    @Contract("null -> false")
+    @Contract("null -> true")
     public static boolean isVanished(@Nullable Player player) {
-        if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
+        if (player == null || !player.isOnline()) {
+            return true;
+        }
+        if (player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
             return player.getMetadata("vanished").get(0).asBoolean();
         }
         return false;
