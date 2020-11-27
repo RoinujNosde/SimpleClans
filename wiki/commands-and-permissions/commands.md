@@ -41,6 +41,11 @@ description: null
 | `/clan mostkilled` | Shows server-wide most killed counts | Yes |
 | `/clan resign` | Resigns from the clan | No |
 | `/clan fee check` | Checks if the fee is enabled and how much it costs | Yes |
+| `/clan vitals` | Shows your clan's vitals | Yes |
+| `/clan stats` | Shows your clan's stats | Yes |
+| `/clan profile` | Shows your clan's profile | Yes |
+| `/clan roster` | Shows your clan's roster | Yes |
+| `/clan coords` | Shows your clan's coords | Yes |
 
 ### Chat Commands
 
@@ -63,10 +68,19 @@ description: null
 | `/clan promote (member)` | Promotes a member to leader | No |
 | `/clan demote (leader)` | Demotes a leader to member | No |
 | `/clan setbanner` | Sets the clan's banner | Yes |
+| `/clan modtag (tag)` | Modifies your clan's tag \(only colors and case\) |  |
 | `/clan clanff (allow|block)` | Toggles clan's friendly fire | No |
 | `/clan war (start|end) (tag)` | Starts or ends a war | Yes |
+| `/clan rival (add|remove) (tag)` | Adds or removes a rival | Yes |
+| `/clan ally (add|remove) (tag)` | Adds or removes an ally | Yes |
+| `/clan verify` | Verifies your clan | No |
 | `/clan disband` | Disbands your clan | No |
 | `/clan fee set (amount)` | Sets the clan's member fee | No |
+| `/clan regroup me` | Regroups your clan members to your location | Yes |
+| `/clan regroup home` | Regroups your clan members to your clan's home | Yes |
+| `/clan home` | Teleports to your clan's home | Yes |
+| `/clan home clear` | Clears your clan's home | Yes |
+| `/clan home set` | Sets your clan's home | Yes |
 | `/clan rank create` | Creates a rank | Yes |
 | `/clan rank setdisplayname (rank) (displayname)` | Sets the display name of the rank \(it can contain colors and multiple words\) | Yes |
 | `/clan rank assign (player) (rank)` | Assigns a user to a rank | Yes |
