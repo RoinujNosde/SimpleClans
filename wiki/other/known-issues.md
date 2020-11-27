@@ -20,3 +20,9 @@ character-set-server=utf8mb4
 collation-server=utf8mb4_unicode_ci
 ```
 
+#### KDR is not counted
+
+Players report that their KDR is not changing.
+
+**Solution:** deny the permission `simpleclans.other.kdr-exempt`. In some permission plugins, just add a `-` before the node. Others accept the `false` value.
+
