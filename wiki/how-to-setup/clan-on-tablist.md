@@ -2,16 +2,16 @@
 description: null
 ---
 
-# Clan on Tablist
+# Клан в табе
 
-## Plugins needed
+## Необходимые плагины
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [PlayerListPlus](https://www.spigotmc.org/resources/%E2%99%9B-playerlistplus-%E2%99%9B-1-8-1-14-3-tablist-editor.55878/) \(you can use a different tablist plugin, as long as it supports PlaceholderAPI\)
+* [PlayerListPlus](https://www.spigotmc.org/resources/%E2%99%9B-playerlistplus-%E2%99%9B-1-8-1-14-3-tablist-editor.55878/) \(Вы можете использовать и другие плагины на таб, если он поддерживает PlaceholderAPI\)
 
-## Step by step
+## Пошагово
 
-1. Open PlayerListPlus config and edit the formats adding `%simpleclans_clan_color_tag%`:
+1. Откройте конфиг PlayerListPlus и измените format, добавив`%simpleclans_clan_color_tag%`:
 
 {% code title="Example:" %}
 ```yaml
@@ -26,9 +26,9 @@ slot-items:
 ```
 {% endcode %}
 
-2. Restart \(or reload\) and enjoy!
+2. Перезапустите сервер \(или перезагрузите конфиг\) и наслаждайтесь!
 
-## Screenshot
+## Скриншот
 
 ![](../.gitbook/assets/clans-tablist.png)
 

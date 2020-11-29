@@ -2,7 +2,7 @@
 description: null
 ---
 
-# SimpleClans API Example
+# Пример SimpleClans API
 
 You can hook into SimpleClans plugin like so:
 

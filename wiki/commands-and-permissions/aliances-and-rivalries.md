@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Clan Alliances and Rivalries
+# Союзники и соперники
 
 Any clan leader can send an request to start an alliance with any other clan with `/clan ally add`. If the request is accepted by a leader of the second clan, the alliance is formed. The alliance can be broken by any leader of either clan at any time with `/clan ally remove`, no one needs to accept the removal of an alliance.
 

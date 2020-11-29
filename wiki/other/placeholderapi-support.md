@@ -2,7 +2,7 @@
 description: null
 ---
 
-# PlaceholderAPI Support
+# Поддержка PlaceholderAPI
 
 ## Available placeholders
 

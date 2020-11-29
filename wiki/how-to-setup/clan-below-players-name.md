@@ -2,16 +2,16 @@
 description: null
 ---
 
-# Clan Below Player's Name
+# Клан под ником игрока
 
-## Plugins needed
+## Необходимые плагины
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [TAB](https://www.spigotmc.org/resources/tab-1-5-x-1-15-x-free-version.57806/) \(you can use a different tablist plugin, as long as it supports PlaceholderAPI\)
+* [TAB](https://www.spigotmc.org/resources/tab-1-5-x-1-15-x-free-version.57806/) \(Вы можете использовать и другие плагины на таб, если он поддерживает PlaceholderAPI\)
 
-## Step by step
+## Пошагово
 
-1. Open TAB's config and edit the Groups section adding `%simpleclans_clan_color_tag%` to `belowname`:
+1. Откройте конфиг TAB и измените раздел groups, добавив %simpleclans\_clan\_color\_tag% к blowname:
 
 {% code title="Example:" %}
 ```yaml
@@ -26,13 +26,13 @@ _OTHER_:
 ```
 {% endcode %}
 
-2. Find the option `belowname` or `classic-vanilla-belowname` and disable it.
+2. Найдите параметр `belowname` или `classic-vanilla-belowname` и выключите его.
 
-3. Find the option `unlimited-nametag-prefix-suffix-mode` and enable it.
+3. Найдите параметр `unlimited-nametag-prefix-suffix-mode` и включите его.
 
-4. Restart \(or reload\) and enjoy!
+4. Перезапустите сервер \(или перезагрузите конфиг `/tab reload`\) и наслаждайтесь!
 
-## Screenshot
+## Скриншот
 
 ![](../.gitbook/assets/clans-below-name.png)
 

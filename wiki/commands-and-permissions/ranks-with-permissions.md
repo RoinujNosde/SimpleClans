@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Ranks with Permissions
+# Ранги с разрешениями
 
 ## How does it work?
 

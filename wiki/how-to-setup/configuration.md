@@ -2,17 +2,17 @@
 description: null
 ---
 
-# Configuration
+# Конфигурация
 
-[The main configuration file for SimpleClans can be found here.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
+[Главный конфигурационный файл для SimpleClans можно найти здесь.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
 
-## General Settings
+## Главные настройки
 
-* `enable-gui` - Enables the GUI. 
-* `disable-messages` - This will disable broadcasts from the plugin such as "Clan created", "Clan disbanded", etc. 
+* `enable-gui` - Включить GUI. 
+* `disable-messages` - Отключить такие оповещения, как "Клан создан", "Клан расформирован", и другие. 
 * `tameable-mobs-sharing` -  
 * `teleport-blocks` -  
-* `teleport-home-on-spawn` - Players will be teleported to their clan's home when they respawn. 
+* `teleport-home-on-spawn` - При возрождении игроки будут телепортированы на базу клана. 
 * `drop-items-on-clan-home` -  
 * `keep-items-on-clan-home` -  
 * `item-list` -  
@@ -37,12 +37,12 @@ description: null
 * `allow-reset-kdr` -  
 * `rejoin-cooldown` -  
 * `rejoin-cooldown-enabled` -  
-* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\) 
-* `ranking-type` - Valid options: ORDINAL and DENSE
-  * `DENSE`: if players have the same KDR, they will have the same rank position. Ex.: 12234
-  * `ORDINAL`: Every player will have a different rank position. Ex.: 12345
+* `min-to-verify` - Количество игроков в клане, чтобы можно было пройти подтверждение \(Модераторы могут обойти это ограничение\). 
+* `ranking-type` - Допустимые параметры: ORDINAL или DENSE
+  * `DENSE`: Если у игроков будет одинаковый KDR, их ранговая позиция будет одинаковой. Пример: 12234
+  * `ORDINAL`: Каждый игрок будет иметь разную ранговую позицию.  Пример: 12345
 
-#### Example
+#### Пример
 
 ```yaml
 settings:
@@ -85,9 +85,9 @@ settings:
     ranking-type: DENSE
 ```
 
-## Tags Format
+## Фомат тегов
 
-#### Example
+#### Пример
 
 * `default-color` - 
 * `max-length` - 
@@ -118,7 +118,7 @@ tag:
         char: ' .'
 ```
 
-## General Commands
+## Главные команды
 
 * `more` - 
 * `ally` - 
@@ -129,7 +129,7 @@ tag:
 * `clan_chat` - 
 * `force-priority` - 
 
-#### Example
+#### Пример
 
 ```yaml
 commands:
@@ -143,14 +143,14 @@ commands:
     force-priority: true
 ```
 
-## KDR Grinding Prevention
+## Защита от набивания KDR
 
 * `enable-max-kills` - 
 * `max-kills-per-victim` - 
 * `enable-kill-delay` - 
 * `delay-between-kills` - 
 
-#### Example
+#### Пример
 
 ```yaml
 kdr-grinding-prevention:
@@ -160,7 +160,7 @@ kdr-grinding-prevention:
     delay-between-kills: 5
 ```
 
-## List Commands
+## Список команд
 
 * `size` - 
 * `kdr` - 
@@ -171,7 +171,7 @@ kdr-grinding-prevention:
 * `desc` - 
 * `default` - 
 
-#### Example
+#### Пример
 
 ```yaml
 list:
@@ -185,7 +185,7 @@ list:
     default: kdr
 ```
 
-## Economy
+## Экономика
 
 * `creation-price` - 
 * `purchase-clan-create` - 
@@ -214,7 +214,7 @@ list:
 * `multiply-upkeep-by-clan-size` - 
 * `charge-upkeep-only-if-member-fee-enabled` - 
 
-#### Example
+#### Пример
 
 ```yaml
 economy:
@@ -246,14 +246,14 @@ economy:
     charge-upkeep-only-if-member-fee-enabled: true
 ```
 
-## Kill Weights
+## Вес убийств
 
 * `rival` - 
 * `civilian` - 
 * `neutral` - 
 * `deny-same-ip-kills` - 
 
-#### Example
+#### Пример
 
 ```yaml
 kill-weights:
@@ -263,7 +263,7 @@ kill-weights:
     deny-same-ip-kills: false
 ```
 
-## Clan Settings
+## Настройки клана
 
 * `homebase-teleport-wait-secs` - 
 * `homebase-can-be-set-only-once` - 
@@ -280,7 +280,7 @@ kill-weights:
 * `min-length` - 
 * `min-size-to-set-ally` - 
 
-#### Example
+#### Пример
 
 ```yaml
 clan:
@@ -300,7 +300,7 @@ clan:
     min-size-to-set-ally: 3
 ```
 
-## Tasks
+## Запланированные задачи
 
 * `collect-upkeep` - 
   * `hour` - 
@@ -312,7 +312,7 @@ clan:
   * `hour` - 
   * `minute` - 
 
-#### Example
+#### Пример
 
 ```yaml
 tasks:
@@ -327,7 +327,7 @@ tasks:
         minute: 0
 ```
 
-## Page
+## Страницы
 
 * `untrusted-color` - 
 * `clan-name-color` - 
@@ -338,7 +338,7 @@ tasks:
 * `separator` - 
 * `size` - 
 
-#### Example
+#### Пример
 
 ```yaml
 page:
@@ -352,7 +352,7 @@ page:
     size: 100
 ```
 
-## Clan Chat
+## Чат клана
 
 * `enable` - 
 * `tag-based-clan-chat` - 
@@ -363,7 +363,7 @@ page:
 * `trusted-color` - 
 * `member-color` - 
 
-#### Example
+#### Пример
 
 ```yaml
 clanchat:
@@ -377,13 +377,13 @@ clanchat:
     member-color: '7'
 ```
 
-## Request
+## Запросы
 
 * `message-color` - 
 * `ask-frequency-secs` - 
 * `max-asks-per-request` - 
 
-#### Example
+#### Пример
 
 ```yaml
 request:
@@ -392,7 +392,7 @@ request:
     max-asks-per-request: 1440
 ```
 
-## Bulletin Board
+## Доска объявлений клана
 
 * `color` - 
 * `accent-color` - 
@@ -400,7 +400,7 @@ request:
 * `size` - 
 * `login-size` - 
 
-#### Example
+#### Пример
 
 ```yaml
 bb:
@@ -411,7 +411,7 @@ bb:
     login-size: 6
 ```
 
-## Ally Chat
+## Союзный чат
 
 * `enable` - 
 * `format` - 
@@ -420,7 +420,7 @@ bb:
 * `trusted-color` - 
 * `member-color` - 
 
-#### Example
+#### Пример
 
 ```yaml
 allychat:
@@ -432,13 +432,13 @@ allychat:
     member-color: '7'
 ```
 
-## Purge Data
+## Очистка данных
 
 * `inactive-player-data-days` - 
 * `inactive-clan-days` - 
 * `unverified-clan-days` - 
 
-#### Example
+#### Пример
 
 ```yaml
 purge:
@@ -447,7 +447,7 @@ purge:
     unverified-clan-days: 2
 ```
 
-## mySQL Settings
+## MySQL настройки
 
 * `username` - 
 * `host` - 
@@ -456,7 +456,7 @@ purge:
 * `password` - 
 * `database` - 
 
-#### Example
+#### Пример
 
 ```yaml
 mysql:
@@ -468,11 +468,11 @@ mysql:
     database: ''
 ```
 
-## Permissions
+## Разрешения
 
 * `auto-group-groupname` - 
 
-#### Example
+#### Пример
 
 ```yaml
 permissions:
@@ -481,14 +481,14 @@ permissions:
   - test.permission
 ```
 
-## Performance
+## Производительность
 
-* `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true. 
-* `save-interval` - The interval **in minutes** in which changes are written to the database. 
-* `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true. 
+* `save-periodically` - Плагин будет периодически сохранять данные, а не сразу. **Рекомендуется** установить данный параметр на `true`. 
+* `save-interval` - Интервал **в минутах**, в течение которого изменения записываются в базу данных. 
+* `use-threads` - Плагин не будет использовать основной поток для подключения к БД. **Рекомендуется** установить данный параметр на `true`. 
 * `use-bungeecord` - 
 
-#### Example
+#### Пример
 
 ```yaml
 performance:
@@ -498,11 +498,11 @@ performance:
   use-bungeecord: false
 ```
 
-## Safe Civilians
+## Защита мирных игроков
 
-* `safe-civilians` - Civilians are safe from PvP, even civilian vs civilian combat is disabled
+* `safe-civilians` - Мирные игроки\(без клана\) будут защищены от PVP.
 
-#### Example
+#### Пример
 
 ```yaml
 safe-civilians: false

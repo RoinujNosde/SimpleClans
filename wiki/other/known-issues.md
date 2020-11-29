@@ -2,7 +2,7 @@
 description: List of the plugin's known issues and possible solutions.
 ---
 
-# Known issues
+# Известные проблемы
 
 #### MySQL \#1366 - Incorrect string value
 

@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Permissions
+# Разрешения
 
 ## SuperPerms Nodes \(Some auto added\)
 

@@ -1,24 +1,24 @@
 ---
-description: Welcome to the SimpleClans Wiki!
+description: Добро пожаловать на SimpleClans Wiki!
 ---
 
-# Introduction
+# Вступление
 
-Here you will find a complete set of documentation including installation, configuration, permissions and usage for SimpleClans.
+Здесь вы найдете полную документацию о плагине, включая установку, настройку, разрешения и использование SimpleClans.
 
-## Support
+## Поддержка
 
-`1) The Wiki`
+`1) Документация`
 
-You should always check this wiki carefully for the answer to your question! Even if it seems hidden, it may be here!
+Всегда тщательно проверяйте эту документацию! Даже если кажется, что ответа нет, он может быть здесь!
 
-`2) The Discord`
+`2) Дискорд`
 
-If the wiki does not have your answer, feel free to join [the discord](https://discord.gg/CkNwgdE) server to ask for help.
+Если вы не нашли ответа на свой вопрос, то можете найти его в [нашем дискорд канале](https://discord.gg/CkNwgdE), задав свой вопрос.
 
-## Bugs and Suggestions
+## Ошибки и предложения по улучшению
 
 `Issue Tracker`
 
-If you believe you have found a bug in the plugin, feel free to make an issue on the [issue tracker!](https://github.com/RoinujNosde/SimpleClans/issues) Bugs will be looked into and addressed at the earliest opportunity.
+Если вы уверены в том, что нашли ошибку в плагине или хотите предложить свои идеи, воспользуйтесь [Issue Tracker](https://github.com/RoinujNosde/SimpleClans/issues)! Ошибки будут рассмотрены и устранены при первой же возможности.
 

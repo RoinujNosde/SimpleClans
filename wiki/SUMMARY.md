@@ -1,29 +1,28 @@
 # Table of contents
 
-* [Introduction](README.md)
-* [Discord Support](https://discord.gg/CkNwgdE)
-* [Bugs and Suggestions](https://github.com/RoinujNosde/SimpleClans/issues)
+* [Вступление](README.md)
+* [Дискорд \| Поддержка](https://discord.gg/CkNwgdE)
+* [Ошибки и предложения](https://github.com/RoinujNosde/SimpleClans/issues)
 
-## How to Setup
+## Настройка <a id="how-to-setup"></a>
 
-* [Configuration](how-to-setup/configuration.md)
-* [Translation](how-to-setup/translation.md)
-* [Member Fee](how-to-setup/member-fee.md)
-* [Clan Upkeep](how-to-setup/clan-upkeep.md)
-* [Clan Below Player's Name](how-to-setup/clan-below-players-name.md)
-* [Clan on Tablist](how-to-setup/clan-on-tablist.md)
+* [Конфигурация](how-to-setup/configuration.md)
+* [Перевод](how-to-setup/translation.md)
+* [Комиссия в клане](how-to-setup/komissiya-v-klane.md)
+* [Клан под ником игрока](how-to-setup/clan-below-players-name.md)
+* [Клан в табе](how-to-setup/clan-on-tablist.md)
 
-## Commands and Permissions
+## Команды и разрешения <a id="commands-and-permissions"></a>
 
-* [Commands](commands-and-permissions/commands.md)
-* [Permissions](commands-and-permissions/permissions.md)
-* [Clan Alliances and Rivalries](commands-and-permissions/aliances-and-rivalries.md)
-* [Ranks with Permissions](commands-and-permissions/ranks-with-permissions.md)
+* [Команды](commands-and-permissions/commands.md)
+* [Разрешения](commands-and-permissions/permissions.md)
+* [Союзники и соперники](commands-and-permissions/aliances-and-rivalries.md)
+* [Ранги с разрешениями](commands-and-permissions/ranks-with-permissions.md)
 
-## Other
+## Другое <a id="other"></a>
 
-* [Known issues](other/known-issues.md)
-* [SimpleClans API Example](other/simpleclans-api.md)
-* [PlaceholderAPI Support](other/placeholderapi-support.md)
+* [Известные проблемы](other/known-issues.md)
+* [Пример SimpleClans API](other/simpleclans-api.md)
+* [Поддержка PlaceholderAPI](other/placeholderapi-support.md)
 * [Land Claims Plugins](other/land-claims.md)
 
