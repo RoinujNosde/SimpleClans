@@ -527,9 +527,9 @@ public class Helper {
      * @return
      */
     public static String stripColors(String msg) {
-        String out = msg.replaceAll("[&][0-9a-fk-or]", "");
+        String out = msg.replaceAll("[&][0-9A-Za-z]", "");
         out = out.replaceAll(String.valueOf((char) 194), "");
-        return out.replaceAll("[\u00a7][0-9a-fk-or]", "");
+        return out.replaceAll("[\u00a7][0-9A-Za-z]", "");
     }
 
     /*
