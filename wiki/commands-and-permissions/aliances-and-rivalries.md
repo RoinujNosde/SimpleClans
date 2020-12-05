@@ -2,32 +2,32 @@
 description: null
 ---
 
-# Союзники и соперники
+# Союзники и противники
 
-Any clan leader can send an request to start an alliance with any other clan with `/clan ally add`. If the request is accepted by a leader of the second clan, the alliance is formed. The alliance can be broken by any leader of either clan at any time with `/clan ally remove`, no one needs to accept the removal of an alliance.
+Любой лидер клана может отправить запрос на формирование союза с любым другим кланом, с помощью `/clan ally add`. Если запрос был принят, то союз будет сформирован. Союз может разорвать любой лидер из кланов в любое время, с помощью `/clan ally remove`. Это действие не требует подтверждение.
 
-Clan rivalries can be started by any clan at any time, no request is needed, rivalries are automatically formed once a clan leader decides he wants one by using `/clan rival add`. If someone has pissed you off and you want them as rivals, their permission is not needed. To break a clan rivalry on the other hand, you need the acceptance of the other clan, you must use `/clan rival remove` to send the other clan a request, once one of their leaders accept the rivalry is broken.
+Вражда между кланами может быть начата в любой момент. Вражда будет сформирована автоматически, когда какой-либо клан лидер напишет `/clan rival add`. Если вас кто-то раздражает и вы хотите видеть их как своих врагов, их подтверждение не потребуется. Чтобы прекратить враждовать между кланами,  вы должны использовать `/clan rival remove`, чтобы отправить им запрос на прекращение вражды.
 
-You can view a list of all clans and their allies with the `/clan alliances` command, or their rivals with the `/clan rivalries` command.
+Также, вы можете посмотреть список всех кланов и их союзов, с помощью команды `/clan alliances`или их врагов: `/clan rivalries`
 
-## Commands
+## Команды
 
-| Commands | Description |
+| Команда | Описание |
 | :--- | :--- |
-| `/clan ally add [tag]` | Send an request to start an alliance \(acceptance is required\) |
-| `/clan ally remove [tag]` | Remove alliance \(no acceptance is required\) |
-| `/clan rival add [tag]` | Starting a rivalry \(no acceptance is required\) |
-| `/clan rival remove [tag]` | Remove a rivalry \(acceptance is required\) |
-| `/clan alliances` | List all clans and their allies |
-| `/clan rivalries` | List all clans and their rivals |
+| `/clan ally add [tag]` | Отправить запрос на формирование союза \(Требуется принятие с другой стороны\) |
+| `/clan ally remove [tag]` | Расформировать союз \(Не требуется принятие\) |
+| `/clan rival add [tag]` | Начать вражду \(Не требуется принятие\) |
+| `/clan rival remove [tag]` | Удалить противника \(Требуется принятие с другой стороны\) |
+| `/clan alliances` | Список всех кланов и их союзников |
+| `/clan rivalries` | Список всех кланов и их противников |
 
-## Permissions
+## Разрешения
 
-| Permission | Description |
+| Права | Описание |
 | :--- | :--- |
-| `simpleclans.member.ally` | Can use ally chat |
-| `simpleclans.leader.ally` | Can ally his clan with other simpleclans |
-| `simpleclans.leader.rival` | Can start a rivalry with another clan |
-| `simpleclans.anyone.alliances` | Can view alliances by clan |
-| `simpleclans.anyone.rivalries` | Can view rivalries by clan |
+| `simpleclans.member.ally` | Может использовать союзный чат |
+| `simpleclans.leader.ally` | Может отправить запрос на союз с другими кланами |
+| `simpleclans.leader.rival` | Может отправить запрос на вражду с другими кланами |
+| `simpleclans.anyone.alliances` | Может видеть союзников кланов |
+| `simpleclans.anyone.rivalries` | Может видеть противников кланов |
 

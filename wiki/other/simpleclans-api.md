@@ -2,9 +2,9 @@
 description: null
 ---
 
-# Пример SimpleClans API
+# Пример использования SimpleClans API
 
-You can hook into SimpleClans plugin like so:
+Вы можете использовать плагин SimpleClans вот так:
 
 ```java
 private SimpleClans sc;
@@ -53,9 +53,9 @@ public void doClanStuff(Player player)
 }
 ```
 
-Every player has a **ClanPlayer** object which holds all his information, including his clan, and can be used to perform various operations on the player.
+Каждый игрок имеет объект **ClanPlayer**, который хранит в себе информацию о нём, включая информацию о его клане, и может быть использован для исполнения различных операций на игроке.
 
-The **Clan** object holds all the information for a clan and can be used to perform various operations on the clan.
+Объект **Clan** хранит в себе всю информацию о клане и и может быть использован для исполнения различных операций на клане.
 
-The **ClanManager** holds all the **Clans** and **ClanPlayers** and contains methods that allow you to retrieve them.
+**ClanManager** хранит в себе всю информацию об объектах Clan и ClanPlayer и содержит методы, которые позволяют получить их.
 

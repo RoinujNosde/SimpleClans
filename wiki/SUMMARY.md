@@ -16,13 +16,13 @@
 
 * [Команды](commands-and-permissions/commands.md)
 * [Разрешения](commands-and-permissions/permissions.md)
-* [Союзники и соперники](commands-and-permissions/aliances-and-rivalries.md)
+* [Союзники и противники](commands-and-permissions/aliances-and-rivalries.md)
 * [Ранги с разрешениями](commands-and-permissions/ranks-with-permissions.md)
 
 ## Другое <a id="other"></a>
 
 * [Известные проблемы](other/known-issues.md)
-* [Пример SimpleClans API](other/simpleclans-api.md)
+* [Пример использования SimpleClans API](other/simpleclans-api.md)
 * [Поддержка PlaceholderAPI](other/placeholderapi-support.md)
-* [Land Claims Plugins](other/land-claims.md)
+* [GriefPrevention, WorldGuard и другие](other/land-claims.md)
 

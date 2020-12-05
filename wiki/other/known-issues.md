@@ -1,16 +1,16 @@
 ---
-description: List of the plugin's known issues and possible solutions.
+description: Список известных проблем плагина и возможных решений.
 ---
 
 # Известные проблемы
 
-#### MySQL \#1366 - Incorrect string value
+#### MySQL \#1366 - Некорректное string значение
 
-This error happens when you try to insert characters that MySQL's current encoding doesn't support.
+Эта ошибка возникает тогда, когда вы пытаетесь вставить символы, которые не поддерживаются кодировкой MySQL.
 
-**Solution:** change MySQL's encoding to `utf8mb4`.  
-1. Open MySQL's `my.cnf`.  
-2. Add these configurations, save and restart MySQL:
+**Решение:** измените кодировку MySQL на `utf8mb4`.  
+1. Откройте файл MySQL `my.cnf`.  
+2. Добавьте эту конфигурацию, сохраните и перезапустите MySQL:
 
 ```text
 [mysql]
@@ -20,9 +20,9 @@ character-set-server=utf8mb4
 collation-server=utf8mb4_unicode_ci
 ```
 
-#### KDR is not counted
+#### KDR не подсчитывается
 
-Players report that their KDR is not changing.
+Игроки жалуются, что их KDR не изменяется.
 
-**Solution:** deny the permission `simpleclans.other.kdr-exempt`. In some permission plugins, just add a `-` before the node. Others accept the `false` value.
+**Решение:** отрицайте разрешение`simpleclans.other.kdr-exempt`. В некоторых плагинах на права, просто добавьте `-` перед правом. Другие принимают `false` значение.
 

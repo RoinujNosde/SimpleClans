@@ -4,54 +4,54 @@ description: null
 
 # Поддержка PlaceholderAPI
 
-## Available placeholders
+## Доступные заполнители
 
-| Placeholder | Result | Description |  |
+| Заполнитель | Результат | Описание |  |
 | :--- | :--- | :--- | :--- |
-| %simpleclans\_neutral\_kills% | INTEGER |  |  |
-| %simpleclans\_rival\_kills% | INTEGER |  |  |
-| %simpleclans\_civilian\_kills% | INTEGER |  |  |
-| %simpleclans\_total\_kills% | INTEGER |  |  |
-| %simpleclans\_weighted\_kills% | INTEGER |  |  |
-| %simpleclans\_deaths% | INTEGER |  |  |
+| %simpleclans\_neutral\_kills% | Числовой |  |  |
+| %simpleclans\_rival\_kills% | Числовой |  |  |
+| %simpleclans\_civilian\_kills% | Числовой |  |  |
+| %simpleclans\_total\_kills% | Числовой |  |  |
+| %simpleclans\_weighted\_kills% | Числовой |  |  |
+| %simpleclans\_deaths% | Числовой |  |  |
 | %simpleclans\_kdr% | FLOAT |  |  |
-| %simpleclans\_in\_clan% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_leader% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_trusted% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_member% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_bb\_enabled% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_usechatshortcut% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_allychat% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_clanchat% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_globalchat% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_cape\_enabled% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_tag\_enabled% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_friendlyfire\_on% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_muted% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_mutedally% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_join\_date% | DATE | Month, Day, Year, Hour |  |
-| %simpleclans\_inactive\_days% | INTEGER |  |  |
-| %simpleclans\_lastseen% | INTEGER |  |  |
-| %simpleclans\_lastseendays% | INTEGER |  |  |
-| %simpleclans\_tag% | STRING | lowerscored Clan tag without color |  |
-| %simpleclans\_tag\_label% | STRING | Clan tag with correct mayus, color and at the end &c |  |
-| %simpleclans\_rank% | STRING |  |  |
-| %simpleclans\_rank\_displayname% | STRING |  |  |
+| %simpleclans\_in\_clan% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_leader% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_trusted% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_member% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_bb\_enabled% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_usechatshortcut% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_allychat% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_clanchat% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_globalchat% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_cape\_enabled% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_tag\_enabled% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_friendlyfire\_on% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_muted% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_is\_mutedally% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_join\_date% | Дата | Месяц, День, Год, Час |  |
+| %simpleclans\_inactive\_days% | Числовой |  |  |
+| %simpleclans\_lastseen% | Числовой |  |  |
+| %simpleclans\_lastseendays% | Числовой |  |  |
+| %simpleclans\_tag% | Строковый | lowerscored Clan tag without color |  |
+| %simpleclans\_tag\_label% | Строковый | Clan tag with correct mayus, color and at the end &c |  |
+| %simpleclans\_rank% | Строковый |  |  |
+| %simpleclans\_rank\_displayname% | Строковый |  |  |
 | %simpleclans\_clanchat\_player\_color% |  |  |  |
 | %simpleclans\_allychat\_player\_color% |  |  |  |
-| %simpleclans\_clan\_total\_neutral% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_civilian% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_rival% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_kills% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_deaths% | INTEGER |  |  |
+| %simpleclans\_clan\_total\_neutral% | Числовой |  |  |
+| %simpleclans\_clan\_total\_civilian% | Числовой |  |  |
+| %simpleclans\_clan\_total\_rival% | Числовой |  |  |
+| %simpleclans\_clan\_total\_kills% | Числовой |  |  |
+| %simpleclans\_clan\_total\_deaths% | Числовой |  |  |
 | %simpleclans\_clan\_total\_kdr% | FLOAT |  |  |
-| %simpleclans\_clan\_average\_wk% | INTEGER |  |  |
-| %simpleclans\_clan\_leader\_size% | INTEGER |  |  |
-| %simpleclans\_clan\_balance% | INTEGER |  |  |
-| %simpleclans\_clan\_allow\_withdraw% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_clan\_allow\_deposit% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_clan\_size% | INTEGER |  |  |
-| %simpleclans\_clan\_name% | STRING |  |  |
+| %simpleclans\_clan\_average\_wk% | Числовой |  |  |
+| %simpleclans\_clan\_leader\_size% | Числовой |  |  |
+| %simpleclans\_clan\_balance% | Числовой |  |  |
+| %simpleclans\_clan\_allow\_withdraw% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_clan\_allow\_deposit% | Логический \(Да/Нет\) |  |  |
+| %simpleclans\_clan\_size% | Числовой |  |  |
+| %simpleclans\_clan\_name% | Строковый |  |  |
 | %simpleclans\_clan\_color\_tag% |  |  |  |
 | %simpleclans\_clan\_tag% |  |  |  |
 | %simpleclans\_clan\_founded% |  |  |  |

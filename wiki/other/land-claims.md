@@ -2,14 +2,14 @@
 description: null
 ---
 
-# Land Claims Plugins
+# GriefPrevention, WorldGuard и другие
 
-## Configuration
+## Конфигурация
 
 * `enable-auto-groups` - 
 * `auto-group-groupname`- 
 
-### Exemple
+### Пример
 
 ```yaml
 settings:
@@ -22,17 +22,17 @@ permissions:
 
 ## GriefPrevention
 
-You can replace `<clantag>` with ANY clan tag \(ally, rival, etc\)
+Вы можете заменить `<clantag>` с любым клан тегом \(будь то союзник, противник, или прочее\)
 
-| Command | Description |
+| Команда | Описание |
 | :--- | :--- |
-| `/Trust group.<clantag>` | Gives the Clan members permission to edit in your claim |
-| `/AccessTrust group.<clantag>` | Gives the Clan members permission to use your buttons, levers, and beds |
-| `/ContainerTrust group.<clantag>` | Gives the Clan members permission to use your buttons, levers, beds, crafting gear, containers, and animals |
-| `/PermissionTrust group.<clantag>` | Gives the Clan members permission to share their permission level with others |
-| `/UnTrust group.<clantag>` | Revokes any permissions granted to a Clan in your claim |
+| `/Trust group.<clantag>` | Даёт право участникам вашего клана изменять ваш регион |
+| `/AccessTrust group.<clantag>` | Даёт право участникам вашего клана использовать рычаги, кнопки и кровати, расположенные на вашем регионе |
+| `/ContainerTrust group.<clantag>` | Даёт право участникам вашего клана использовать рычаги, кнопки и кровати, столы для крафтов, сундуки и животных. |
+| `/PermissionTrust group.<clantag>` | Даёт право участникам вашего клана делиться их уровнем доступа с другими |
+| `/UnTrust group.<clantag>` | Забрать любые права, гарантированные ваших сокланавцам, на вашем регионе |
 
-## Note
+## Заметка
 
-After the permission is given, the player must reconnect.
+После того, как вы дали право, игроки должны перезайти.
 

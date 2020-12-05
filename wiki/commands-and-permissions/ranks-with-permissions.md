@@ -4,81 +4,81 @@ description: null
 
 # Ранги с разрешениями
 
-## How does it work?
+## Как это работает?
 
-Leaders have the ability to create ranks and give them permissions to perform several actions inside the clan. Unlike `/clan trust`, ranks with permissions allows leaders to have a finer control of who can do what. Ex.: A rank can handle invites \(`invite` permission\), another takes care of moderation \(`kick` permission\), etc
+Лидеры кланов имеют возможность создавать ранги и выдавать им права для совершения некоторых действий внутри клана. В отличие от `/clan trust`, ранги с правами позволяют лидерам контролировать обязанности каждого.  Например, ранг с правом на приглашение в клан, ранг, который заботиться о модерировании клана \(право кика\), и так далее.
 
-## Suggested ranks
+## Рекомендуемые ранги
 
-| Ranks | Description | Permission |
+| Ранг | Описание | Права |
 | :--- | :--- | :---: |
-| **Coleader** | Helps take care of the clan | `all` |
-| **Treasurer** | Manages the clan's bank account | `bank.balance`, `bank.deposit`, `bank.withdraw` |
-| **Ambassador** | Manages the clan's relations with other clans | `ally.chat`, `ally.add`, `ally.remove`, `rival.add`, `rival.remove`, `war.end`, `war.start` |
-| **Recruit** | A member in trial | `stats`, `kills`, `mostkilled`, `rank.list` |
+| **Заместитель лидера** | Заботиться о клане, пока нет лидера | `all` |
+| **Казначей** | Управляет балансом клана | `bank.balance`, `bank.deposit`, `bank.withdraw` |
+| **Посол** | Отвечает за отношения с другими кланами | `ally.chat`, `ally.add`, `ally.remove`, `rival.add`, `rival.remove`, `war.end`, `war.start` |
+| **Новобранец** | Участник клана | `stats`, `kills`, `mostkilled`, `rank.list` |
 
-## Ranks Commands
+## Команды рангов
 
-| Command | Description |
+| Команда | Описание |
 | :--- | :--- |
-| `/clan rank create` | Creates a rank with this name |
-| `/clan rank setdisplayname [rank] [displayname]` | Sets the display name of the rank \(it can be more than one word and colored\) |
-| `/clan rank assign (player) (rank)` | Assigns a user to a rank |
-| `/clan rank unassign (player)` | Unassigns a user from a rank |
-| `/clan rank delete (rank)` | Deletes a rank |
-| `/clan rank list` | Lists the clan's ranks |
-| `/clan rank permissions` | Lists the available permissions for ranks |
-| `/clan rank permissions (rank)` | Lists the rank's permissions |
-| `/clan rank permissions add (rank) (permission)` | Adds a permission to the rank |
-| `/clan rank permissions remove (rank) (permission)` | Removes a permission from the rank |
+| `/clan rank create` | Создать ранг с заданным именем |
+| `/clan rank setdisplayname [ранг] [отобр. имя]` | Установить отображаемое имя ранга \(Может быть длиннее чем одно слово и цветным\) |
+| `/clan rank assign (игрок) (ранг)` | Назначить ранг участнику |
+| `/clan rank unassign (игрок)` | Убрать ранг у участника |
+| `/clan rank delete (ранг)` | Удалить ранг |
+| `/clan rank list` | Список рангов клана |
+| `/clan rank permissions` | Список доступных прав рангов |
+| `/clan rank permissions (ранг)` | Список прав рангов |
+| `/clan rank permissions add (ранг) (право)` | Добавить право к рангу |
+| `/clan rank permissions remove (ранг) (право)` | Удалить право у ранга |
 
-## Available permissions for ranks
+## Доступные права для рангов
 
-A player can view those permissions in-game using `/clan rank permissions`
+Игрок может посмотреть эти права в игре: `/clan rank permissions`
 
-| Rank Permission | Description |
+| Право ранга | Описание |
 | :--- | :--- |
-| `ally.add` | can add an ally |
-| `ally.remove` | can remove an ally |
-| `ally.chat` | can use ally chat |
-| `bank.balance` | can view the bank balance |
-| `bank.deposit` | can deposit money |
-| `bank.withdraw` | can withdraw money |
-| `bb.add` | can add a message to bb |
-| `bb.clear` | can clear the bb |
-| `coords` | can view the clan's coords |
-| `fee.enable` | can enable the member fee |
-| `fee.set` | can change the fee value |
-| `home.regroup` | can regroup the clan |
-| `home.set` | can set the clan home |
-| `home.tp` | can tp to the clan home |
-| `invite` | can invite someone to the clan |
-| `kick` | can kick someone from the clan |
-| `modtag` | can modify the clan tag |
-| `rank.displayname` | can modify a rank's display name |
-| `rank.list` | can list the ranks |
-| `rival.add` | can add a rival |
-| `rival.remove` | can remove a rival |
-| `war.end` | can end a war |
-| `war.start` | can start a war |
-| `vitals` | can view the clan's vitals |
-| `stats` | can view the clan's stats |
-| `kills` | can view his or other's kills |
-| `mostkilled` | can view the mostkilled |
-| `description` | can change the clan's description |
+| `ally.add` | Может добавлять союзников |
+| `ally.remove` | Может удалять союзников |
+| `ally.chat` | Может использовать клановый чат |
+| `bank.balance` | Может посмотреть баланс клана |
+| `bank.deposit` | Может вносить деньги в банк клана |
+| `bank.withdraw` | Может выводить деньги из банка клана |
+| `bb.add` | Может добавить сообщение на доске объявлений |
+| `bb.clear` | Может очистить доску объявлений |
+| `coords` | Может посмотреть координаты клана |
+| `fee.enable` | Может включить комиссию участника |
+| `fee.set` | Может изменить размер комиссии |
+| `home.regroup` | Может перегруппировать \(телепортировать\) участников клана |
+| `home.set` | Может поставить точку базы клана |
+| `home.tp` | Может телепортироваться на точку базы клана |
+| `invite` | Может приглашать кого-либо в клан |
+| `kick` | Может кикнуть кого-либо из клана |
+| `modtag` | Может изменять тег клана |
+| `rank.displayname` | Может изменять отображаемое имя рангов |
+| `rank.list` | Может посмотреть список рангов клана |
+| `rival.add` | Может добавить противника |
+| `rival.remove` | Может удалить противника |
+| `war.end` | Может окончить войну |
+| `war.start` | Может начать войну |
+| `vitals` | Может посмотреть боеспособность клана |
+| `stats` | Может посмотреть статистику клана |
+| `kills` | Может посмотреть убийства его или других |
+| `mostkilled` | Может посмотреть список участников по наибольшему количеству убийств |
+| `description` | Может изменять описание клана |
 
-## Permissions to use the rank commands
+## Права для использования команды рангов
 
-| Permission | Description |
+| Право | Описание |
 | :--- | :--- |
-| `simpleclans.leader.rank.assign` | Can assign a rank to a user |
-| `simpleclans.leader.rank.unassign` | Can unassign a player from a rank |
-| `simpleclans.leader.rank.create` | Can create a new rank |
-| `simpleclans.leader.rank.delete` | Can delete a new rank |
-| `simpleclans.leader.rank.list` | Can list all the ranks |
-| `simpleclans.leader.rank.setdisplayname` | Can set the display name of the rank |
-| `simpleclans.leader.rank.permissions.add` | Can add permissions to a rank |
-| `simpleclans.leader.rank.permissions.available` | Can list all available permissions |
-| `simpleclans.leader.rank.permissions.list` | Can list the rank's permissions |
-| `simpleclans.leader.rank.permissions.remove` | Can remove permissions from a rank |
+| `simpleclans.leader.rank.assign` | Может назначить ранг участнику |
+| `simpleclans.leader.rank.unassign` | Может убрать ранг у участника |
+| `simpleclans.leader.rank.create` | Может создать новый ранг |
+| `simpleclans.leader.rank.delete` | Может удалить новый ранг |
+| `simpleclans.leader.rank.list` | Может посмотреть список всех рангов |
+| `simpleclans.leader.rank.setdisplayname` | Может устанавливать отображаемое имя ранга |
+| `simpleclans.leader.rank.permissions.add` | Может добавлять права рангу |
+| `simpleclans.leader.rank.permissions.available` | Может посмотреть список доступных прав ранга |
+| `simpleclans.leader.rank.permissions.list` | Может посмотреть список прав ранга |
+| `simpleclans.leader.rank.permissions.remove` | Может удалить право у ранга |
 
