@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestFinishedEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -406,6 +407,7 @@ public final class RequestManager {
      * @param req the Request
      */
     public void ask(final Request req) {
+        // TODO Make this customizable
         final String tag = plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketLeft() + plugin.getSettingsManager().getTagDefaultColor() + req.getClan().getColorTag() + plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketRight();
         final String message = tag + " " + plugin.getSettingsManager().getRequestMessageColor() + req.getMsg();
 
@@ -413,11 +415,12 @@ public final class RequestManager {
             Player player = Bukkit.getPlayerExact(req.getTarget());
 
             if (player != null) {
-                String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
+                //String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
 
                 ChatBlock.sendBlank(player);
                 ChatBlock.sendMessage(player, message);
-                ChatBlock.sendMessage(player, options);
+                player.spigot().sendMessage(ChatUtils.toBaseComponents(player, lang("accept.or.deny", player)));
+                //ChatBlock.sendMessage(player, options);
                 ChatBlock.sendBlank(player);
             }
         } else {
@@ -426,11 +429,12 @@ public final class RequestManager {
                     Player player = cp.toPlayer();
 
                     if (player != null) {
-                        String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
+                        //String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
 
                         ChatBlock.sendBlank(player);
                         ChatBlock.sendMessage(player, message);
-                        ChatBlock.sendMessage(player, options);
+                        player.spigot().sendMessage(ChatUtils.toBaseComponents(player, lang("accept.or.deny", player)));
+                        //ChatBlock.sendMessage(player, options);
                         ChatBlock.sendBlank(player);
                     }
                 }
