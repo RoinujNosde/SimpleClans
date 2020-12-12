@@ -119,6 +119,8 @@ permissions:
     description: Can keep items when teleporting home
   simpleclans.mod.place:
     description: Can manually place players in clans
+  simpleclans.mod.modtag:
+    description: Can change a clan's tag
   simpleclans.mod.staffgui:
     description: Can open the staff gui
   simpleclans.leader.fee:
@@ -192,6 +194,7 @@ permissions:
       simpleclans.mod.nopvpinwar: true
       simpleclans.mod.place: true
       simpleclans.mod.staffgui: true
+      simpleclans.mod.modtag: true
   simpleclans.anyone.*:
     description: Permissions for anyone
     default: true

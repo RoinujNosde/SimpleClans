@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class TagChangeEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final @NotNull  Clan clan;
+    private final @NotNull Clan clan;
     private @NotNull String newTag;
     private boolean cancelled;
 

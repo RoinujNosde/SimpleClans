@@ -6,12 +6,14 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
+import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
+import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,7 +43,7 @@ public class StaffCommands extends BaseCommand {
     @Dependency
     private StorageManager storage;
 
-    @Subcommand("%place")
+    @Subcommand("%mod %place")
     @CommandPermission("simpleclans.mod.place")
     @CommandCompletion("@players @clans")
     @HelpSearchTags("move put")
@@ -75,7 +77,37 @@ public class StaffCommands extends BaseCommand {
         newClanInput.addPlayerToClan(cp);
     }
 
-    @Subcommand("%reload")
+    @Subcommand("%mod %modtag")
+    @CommandPermission("simpleclans.mod.modtag")
+    @Description("{@@command.description.modtag.other}")
+    public void modtag(Player player, @Name("clan") ClanInput clanInput, @Single @Name("tag") String tag) {
+        Clan clan = clanInput.getClan();
+        TagChangeEvent event = new TagChangeEvent(player, clan, tag);
+        plugin.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        tag = event.getNewTag();
+        String cleanTag = Helper.cleanTag(tag);
+
+        TagValidator validator = new TagValidator(plugin, player, tag);
+        if (validator.getErrorMessage() != null) {
+            ChatBlock.sendMessage(player, validator.getErrorMessage());
+            return;
+        }
+
+        if (!cleanTag.equals(clan.getTag())) {
+            ChatBlock.sendMessage(player, RED + lang("you.can.only.modify.the.color.and.case.of.the.tag",
+                    player));
+            return;
+        }
+
+        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", Helper.parseColors(tag)));
+        clan.changeClanTag(tag);
+        player.sendMessage(lang("0.tag.changed.to.1", player, clan.getTag(), tag));
+    }
+
+    @Subcommand("%admin %reload")
     @CommandPermission("simpleclans.admin.reload")
     @Description("{@@command.description.reload}")
     public void reload(CommandSender sender) {
@@ -92,7 +124,7 @@ public class StaffCommands extends BaseCommand {
         ChatBlock.sendMessage(sender, AQUA + lang("configuration.reloaded", sender));
     }
 
-    @Subcommand("%home %set")
+    @Subcommand("%mod %home %set")
     @CommandPermission("simpleclans.mod.home")
     @CommandCompletion("@clans")
     @Description("{@@command.description.mod.home.set}")
@@ -104,7 +136,7 @@ public class StaffCommands extends BaseCommand {
                 ChatColor.YELLOW + Helper.toLocationString(loc));
     }
 
-    @Subcommand("%home %tp")
+    @Subcommand("%mod %home %tp")
     @CommandCompletion("@clans:has_home")
     @CommandPermission("simpleclans.mod.hometp")
     @Description("{@@command.description.mod.home.tp}")
@@ -119,7 +151,7 @@ public class StaffCommands extends BaseCommand {
         plugin.getTeleportManager().teleportToHome(player, clan.getClan());
     }
 
-    @Subcommand("%ban")
+    @Subcommand("%mod %ban")
     @CommandPermission("simpleclans.mod.ban")
     @CommandCompletion("@players")
     @Description("{@@command.description.ban}")
@@ -139,7 +171,7 @@ public class StaffCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("%unban")
+    @Subcommand("%mod %unban")
     @CommandPermission("simpleclans.mod.ban")
     @CommandCompletion("@players")
     @Description("{@@command.description.unban}")
@@ -159,7 +191,7 @@ public class StaffCommands extends BaseCommand {
         ChatBlock.sendMessage(sender, AQUA + lang("player.removed.from.the.banned.list", sender));
     }
 
-    @Subcommand("%globalff %allow")
+    @Subcommand("%mod %globalff %allow")
     @CommandPermission("simpleclans.mod.globalff")
     @Description("{@@command.description.globalff.allow}")
     public void allowGlobalFf(CommandSender sender) {
@@ -171,7 +203,7 @@ public class StaffCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("%globalff %auto")
+    @Subcommand("%mod %globalff %auto")
     @CommandPermission("simpleclans.mod.globalff")
     @Description("{@@command.description.globalff.auto}")
     public void autoGlobalFf(CommandSender sender) {
@@ -186,7 +218,7 @@ public class StaffCommands extends BaseCommand {
     }
 
 
-    @Subcommand("%verify")
+    @Subcommand("%mod %verify")
     @CommandPermission("simpleclans.mod.verify")
     @CommandCompletion("@clans:unverified")
     @Description("{@@command.description.mod.verify}")
@@ -202,7 +234,7 @@ public class StaffCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("%purge")
+    @Subcommand("%admin %purge")
     @CommandPermission("simpleclans.admin.purge")
     @CommandCompletion("@players")
     @Description("{@@command.description.purge}")
@@ -220,7 +252,7 @@ public class StaffCommands extends BaseCommand {
         ChatBlock.sendMessage(sender, AQUA + lang("player.purged", sender));
     }
 
-    @Subcommand("%disband")
+    @Subcommand("%mod %disband")
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.mod.disband")
     @Description("{@@command.description.mod.disband}")
@@ -267,7 +299,7 @@ public class StaffCommands extends BaseCommand {
         ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.demoted", sender));
     }
 
-    @Subcommand("%resetkdr %everyone")
+    @Subcommand("%admin %resetkdr %everyone")
     @CommandPermission("simpleclans.admin.resetkdr")
     @Description("{@@command.description.resetkdr.everyone}")
     public void resetKdr(CommandSender sender) {
@@ -277,7 +309,7 @@ public class StaffCommands extends BaseCommand {
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.kdr.of.all.players", sender));
     }
 
-    @Subcommand("%resetkdr")
+    @Subcommand("%admin %resetkdr")
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.admin.resetkdr")
     @Description("{@@command.description.resetkdr.player}")
