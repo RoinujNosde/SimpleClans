@@ -75,10 +75,19 @@ public class Lookup extends Sendable {
 
     @NotNull
     private String getPlayerStatus() {
-        return target == null || targetClan == null ? lang("free.agent", sender) : (target.isLeader() ?
-                sm.getPageLeaderColor() + lang("leader", sender) : (target.isTrusted() ?
-                sm.getPageTrustedColor() + lang("trusted", sender) : sm.getPageUnTrustedColor() +
-                lang("untrusted", sender)));
+        if (target == null || targetClan == null) {
+            return lang("free.agent", sender);
+        }
+        if (target.isLeader()) {
+            return sm.getPageLeaderColor() + lang("leader", sender);
+        }
+        if (target.isTrusted()) {
+            return sm.getPageTrustedColor() + lang("trusted", sender);
+        }
+        if (target.getRankId() != null && !target.getRankId().isEmpty()) {
+            return sm.getPageTrustedColor() + lang("in.rank", sender);
+        }
+        return sm.getPageUnTrustedColor() + lang("untrusted", sender);
     }
 
     @NotNull

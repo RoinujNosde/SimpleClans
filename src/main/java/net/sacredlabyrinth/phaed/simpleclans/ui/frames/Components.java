@@ -41,9 +41,7 @@ public class Components {
                                                  boolean openDetails) {
         SimpleClans pl = SimpleClans.getInstance();
 
-        String status = cp.getClan() == null ? lang("free.agent",viewer)
-                : (cp.isLeader() ? lang("leader",viewer)
-                : (cp.isTrusted() ? lang("trusted",viewer) : lang("untrusted",viewer)));
+        String status = getPlayerStatus(viewer, cp);
         SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title",viewer, cp.getName()),
                 Arrays.asList(
                         cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan",viewer)
@@ -76,6 +74,23 @@ public class Components {
                     () -> InventoryDrawer.open(new PlayerDetailsFrame(viewer, frame, offlinePlayer)));
         }
         return c;
+    }
+
+    @NotNull
+    private static String getPlayerStatus(Player viewer, ClanPlayer cp) {
+	    if (cp.getClan() == null) {
+	        return lang("free.agent", viewer);
+        }
+	    if (cp.isLeader()) {
+	        return lang("leader", viewer);
+        }
+	    if (cp.isTrusted()) {
+	        return lang("trusted", viewer);
+        }
+	    if (cp.getRankId() != null && !cp.getRankId().isEmpty()) {
+	        return lang("in.rank", viewer);
+        }
+        return lang("untrusted", viewer);
     }
 
     public static SCComponent getClanComponent(@NotNull SCFrame frame, @NotNull Player viewer,
