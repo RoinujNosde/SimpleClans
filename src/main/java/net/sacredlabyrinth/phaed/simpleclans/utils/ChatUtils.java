@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,7 @@ public class ChatUtils {
         String[] split = PLACEHOLDER_PATTERN.split(text);
         for (int i = 0; i < split.length; i++) {
             builder.appendLegacy(split[i]);
-            if (placeholders.size() == i) {
+            if (i >= placeholders.size()) {
                 continue;
             }
             appendPlaceholder(receiver, builder, placeholders.get(i));
@@ -44,10 +45,9 @@ public class ChatUtils {
             return;
         }
         placeholder = matcher.group(2);
-        builder.appendLegacy(lang("clickable." + placeholder, receiver))
+        builder.retain(FormatRetention.FORMATTING).appendLegacy(lang("clickable." + placeholder, receiver))
                 .event(new ClickEvent(RUN_COMMAND, "/" + placeholder))
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]
                         {new TextComponent(lang("hover.click.to." + placeholder, receiver))}));
-
     }
 }
