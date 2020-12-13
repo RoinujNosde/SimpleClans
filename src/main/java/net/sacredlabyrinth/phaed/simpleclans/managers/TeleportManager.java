@@ -84,7 +84,7 @@ public final class TeleportManager {
             z = z + zz;
 
             plugin.getTeleportManager().addPlayer(player, new Location(location.getWorld(), x + .5,
-                    location.getBlockY(), z + .5), clan.getName());
+                    location.getBlockY(), z + .5, location.getYaw(), location.getPitch()), clan.getName());
         }
     }
 

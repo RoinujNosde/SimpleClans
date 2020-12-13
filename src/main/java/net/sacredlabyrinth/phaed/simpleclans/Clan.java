@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +53,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     private int homeX = 0;
     private int homeY = 0;
     private int homeZ = 0;
-    private String homeWorld = "";
+    private float homeYaw = 0;
+    private float homePitch = 0;
+    private @Nullable String homeWorld = "";
     private boolean allowWithdraw = false;
     private boolean allowDeposit = true;
     private boolean feeEnabled;
@@ -1633,6 +1637,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         json.put("homeX", homeX);
         json.put("homeY", homeY);
         json.put("homeZ", homeZ);
+        json.put("homePitch", homePitch);
+        json.put("homeYaw", homeYaw);
         json.put("homeWorld", homeWorld == null ? "" : homeWorld);
 
         return json.toString();
@@ -1674,16 +1680,19 @@ public class Clan implements Serializable, Comparable<Clan> {
                         if (flag.equals("homeZ")) {
                             homeZ = ((Long) flags.get(flag)).intValue();
                         }
-
+                        if (flag.equals("homeYaw")) {
+                            homeYaw = ((Double) flags.get(flag)).floatValue();
+                        }
+                        if (flag.equals("homePitch")) {
+                            homePitch = ((Double) flags.get(flag)).floatValue();
+                        }
                         if (flag.equals("homeWorld")) {
                             homeWorld = (String) flags.get(flag);
                         }
                     } catch (Exception ex) {
-                        for (StackTraceElement el : ex.getStackTrace()) {
-                            System.out.print("Failed reading flag: " + flag);
-                            System.out.print("Value: " + flags.get(flag));
-                            System.out.print(el.toString());
-                        }
+                        Logger logger = SimpleClans.getInstance().getLogger();
+                        logger.log(Level.SEVERE, String.format("Failed reading flag: %s, value: %s", flag,
+                                flags.get(flag)), ex);
                     }
                 }
             }
@@ -1710,6 +1719,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             homeY = 0;
             homeX = 0;
             homeZ = 0;
+            homePitch = 0;
+            homeYaw = 0;
             homeWorld = null;
         } else {
             home.setY(home.getBlockY() + 1);
@@ -1717,7 +1728,9 @@ public class Clan implements Serializable, Comparable<Clan> {
             homeX = home.getBlockX();
             homeY = home.getBlockY();
             homeZ = home.getBlockZ();
-            homeWorld = home.getWorld().getName();
+            homeYaw = home.getYaw();
+            homePitch = home.getPitch();
+            homeWorld = home.getWorld() == null ? null : home.getWorld().getName();
         }
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
@@ -1736,9 +1749,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (!(world.getBlockAt(homeX, homeY, homeZ).getType().equals(XMaterial.AIR.parseMaterial())) ||
                 !(world.getBlockAt(homeX, homeY + 1, homeZ).getType().equals(XMaterial.AIR.parseMaterial()))
                 || homeY == 0) {
-            return new Location(world, homeX, world.getHighestBlockYAt(homeX, homeZ), homeZ);
+            return new Location(world, homeX, world.getHighestBlockYAt(homeX, homeZ), homeZ, homeYaw, homePitch);
         } else {
-            return new Location(world, homeX, homeY, homeZ);
+            return new Location(world, homeX, homeY, homeZ, homeYaw, homePitch);
         }
     }
 

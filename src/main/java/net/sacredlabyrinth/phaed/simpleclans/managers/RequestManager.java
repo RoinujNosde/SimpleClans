@@ -413,7 +413,9 @@ public final class RequestManager {
             recipients.add(Bukkit.getPlayerExact(req.getTarget()));
         } else {
             for (ClanPlayer cp : req.getAcceptors()) {
-                recipients.add(cp.toPlayer());
+                if (cp.getVote() == null) {
+                    recipients.add(cp.toPlayer());
+                }
             }
         }
 
