@@ -1,6 +1,8 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
@@ -202,7 +204,8 @@ public class Helper {
         List<Player> players = SimpleClans.getInstance().getServer().matchPlayer(playerName);
 
         if (players.size() == 1) {
-            return SimpleClans.getInstance().getPermissionsManager().getPrefix(players.get(0)) + players.get(0).getName() + SimpleClans.getInstance().getPermissionsManager().getSuffix(players.get(0));
+            PermissionsManager pm = SimpleClans.getInstance().getPermissionsManager();
+            return pm.getPrefix(players.get(0)) + players.get(0).getName() + pm.getSuffix(players.get(0));
         }
 
         return playerName;
@@ -375,6 +378,9 @@ public class Helper {
         if (hexValue == null) {
             return "";
         }
+        if (hexValue.startsWith("&#")) {
+            return ChatUtils.parseColors(hexValue);
+        }
 
         ChatColor color = ChatColor.getByChar(hexValue);
         if (color == null) {
@@ -511,25 +517,21 @@ public class Helper {
     }
 
     /**
-     * Convert color hex values with ampersand to special character
-     *
-     * @param msg
-     * @return
+     * @deprecated use {@link ChatUtils#parseColors(String)}
      */
+    @Deprecated
     public static String parseColors(String msg) {
-        return msg.replace("&", "\u00a7");
+        return ChatUtils.parseColors(msg);
     }
 
     /**
      * Removes color codes from strings
      *
-     * @param msg
-     * @return
+     * @deprecated use {@link ChatUtils#stripColors(String)}
      */
+    @Deprecated
     public static String stripColors(String msg) {
-        String out = msg.replaceAll("[&][0-9A-Za-z]", "");
-        out = out.replaceAll(String.valueOf((char) 194), "");
-        return out.replaceAll("[\u00a7][0-9A-Za-z]", "");
+        return ChatUtils.stripColors(msg);
     }
 
     /*
@@ -817,8 +819,8 @@ public class Helper {
 
         String leaderColor = sm.getAllyChatLeaderColor();
         String memberColor = sm.getAllyChatMemberColor();
-        String rank = cp.getRankId().isEmpty() ? null : ChatColor.translateAlternateColorCodes('&', cp.getRankDisplayName());
-        String rankFormat = rank != null ? ChatColor.translateAlternateColorCodes('&', sm.getAllyChatRank()).replace("%rank%", rank) : "";
+        String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
+        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getAllyChatRank()).replace("%rank%", rank) : "";
 
         String message = replacePlaceholders(sm.getAllyChatFormat(), cp, leaderColor, memberColor, rankFormat, msg);
         if (placeholders != null) {
@@ -829,8 +831,13 @@ public class Helper {
         return message;
     }
 
-    private static String replacePlaceholders(String messageFormat, ClanPlayer cp, String leaderColor, String memberColor, String rankFormat, String msg) {
-        return ChatColor.translateAlternateColorCodes('&', messageFormat)
+    private static String replacePlaceholders(String messageFormat,
+                                              ClanPlayer cp,
+                                              String leaderColor,
+                                              String memberColor,
+                                              String rankFormat,
+                                              String msg) {
+        return ChatUtils.parseColors(messageFormat)
                 .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
                 .replace("%nick-color%", (cp.isLeader() ? leaderColor : memberColor))
                 .replace("%player%", cp.getName())
@@ -851,8 +858,8 @@ public class Helper {
 
         String leaderColor = sm.getClanChatLeaderColor();
         String memberColor = sm.getClanChatMemberColor();
-        String rank = cp.getRankId().isEmpty() ? null : ChatColor.translateAlternateColorCodes('&', cp.getRankDisplayName());
-        String rankFormat = rank != null ? ChatColor.translateAlternateColorCodes('&', sm.getClanChatRank()).replace("%rank%", rank) : "";
+        String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
+        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getClanChatRank()).replace("%rank%", rank) : "";
 
         String message = replacePlaceholders(sm.getClanChatFormat(), cp, leaderColor, memberColor, rankFormat, msg);
         

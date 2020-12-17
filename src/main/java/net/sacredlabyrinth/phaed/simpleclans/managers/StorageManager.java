@@ -86,20 +86,20 @@ public final class StorageManager {
                 	plugin.getLogger().info("Creating table: sc_clans");
 
                     String query = "CREATE TABLE IF NOT EXISTS `sc_clans` ("
-                    		+ " `id` bigint(20) NOT NULL auto_increment,"
-                    		+ " `verified` tinyint(1) default '0',"
-                    		+ " `tag` varchar(25) NOT NULL,"
-                    		+ " `color_tag` varchar(25) NOT NULL,"
-                    		+ " `name` varchar(100) NOT NULL,"
-                    		+ " `description` varchar(255),"
-                    		+ " `friendly_fire` tinyint(1) default '0',"
-                    		+ " `founded` bigint NOT NULL,"
-                    		+ " `last_used` bigint NOT NULL,"
-                    		+ " `packed_allies` text NOT NULL,"
-                    		+ " `packed_rivals` text NOT NULL,"
-                    		+ " `packed_bb` mediumtext NOT NULL,"
-                    		+ " `cape_url` varchar(255) NOT NULL,"
-                    		+ " `flags` text NOT NULL,"
+                            + " `id` bigint(20) NOT NULL auto_increment,"
+                            + " `verified` tinyint(1) default '0',"
+                            + " `tag` varchar(25) NOT NULL,"
+                            + " `color_tag` varchar(255) NOT NULL,"
+                            + " `name` varchar(100) NOT NULL,"
+                            + " `description` varchar(255),"
+                            + " `friendly_fire` tinyint(1) default '0',"
+                            + " `founded` bigint NOT NULL,"
+                            + " `last_used` bigint NOT NULL,"
+                            + " `packed_allies` text NOT NULL,"
+                            + " `packed_rivals` text NOT NULL,"
+                            + " `packed_bb` mediumtext NOT NULL,"
+                            + " `cape_url` varchar(255) NOT NULL,"
+                            + " `flags` text NOT NULL,"
                     		+ " `balance` double(64,2),"
                     		+ " `fee_enabled` tinyint(1) default '0',"
                     		+ " `fee_value` double(64,2),"
@@ -162,20 +162,20 @@ public final class StorageManager {
                 	plugin.getLogger().info("Creating table: sc_clans");
 
                     String query = "CREATE TABLE IF NOT EXISTS `sc_clans` ("
-                    		+ " `id` bigint(20),"
-                    		+ " `verified` tinyint(1) default '0',"
-                    		+ " `tag` varchar(25) NOT NULL,"
-                    		+ " `color_tag` varchar(25) NOT NULL,"
-                    		+ " `name` varchar(100) NOT NULL,"
-                    		+ " `description` varchar(255),"
-                    		+ " `friendly_fire` tinyint(1) default '0',"
-                    		+ " `founded` bigint NOT NULL,"
-                    		+ " `last_used` bigint NOT NULL,"
-                    		+ " `packed_allies` text NOT NULL,"
-                    		+ " `packed_rivals` text NOT NULL,"
-                    		+ " `packed_bb` mediumtext NOT NULL,"
-                    		+ " `cape_url` varchar(255) NOT NULL,"
-                    		+ " `flags` text NOT NULL,"
+                            + " `id` bigint(20),"
+                            + " `verified` tinyint(1) default '0',"
+                            + " `tag` varchar(25) NOT NULL,"
+                            + " `color_tag` varchar(255) NOT NULL,"
+                            + " `name` varchar(100) NOT NULL,"
+                            + " `description` varchar(255),"
+                            + " `friendly_fire` tinyint(1) default '0',"
+                            + " `founded` bigint NOT NULL,"
+                            + " `last_used` bigint NOT NULL,"
+                            + " `packed_allies` text NOT NULL,"
+                            + " `packed_rivals` text NOT NULL,"
+                            + " `packed_bb` mediumtext NOT NULL,"
+                            + " `cape_url` varchar(255) NOT NULL,"
+                            + " `flags` text NOT NULL,"
                     		+ " `balance` double(64,2) default 0.0,"
                     		+ " `fee_enabled` tinyint(1) default '0',"
                     		+ " `fee_value` double(64,2),"
@@ -1062,15 +1062,15 @@ public final class StorageManager {
     private void updateDatabase() {
         String query = null;
 
-        /**
+        /*
          * From 2.2.6.3 to 2.3
          */
         if (!core.existsColumn("sc_clans", "balance")) {
             query = "ALTER TABLE sc_clans ADD COLUMN `balance` double(64,2);";
             core.execute(query);
         }
-        
-        /**
+
+        /*
          * From 2.7.16 to 2.7.17
          */
         if (!core.existsColumn("sc_clans", "fee_enabled")) {
@@ -1081,24 +1081,24 @@ public final class StorageManager {
             query = "ALTER TABLE sc_clans ADD COLUMN `fee_value` double(64,2);";
             core.execute(query);
         }
-        
-        /**
+
+        /*
          * From 2.7.21 to 2.7.22
          */
         if (!core.existsColumn("sc_clans", "description")) {
         	query = "ALTER TABLE sc_clans ADD COLUMN `description` varchar(255);";
         	core.execute(query);
         }
-        
-        /**
+
+        /*
          * From 2.7.22 to 2.7.23
          */
         if (!core.existsColumn("sc_players", "resign_times")) {
         	query = "ALTER TABLE sc_players ADD COLUMN `resign_times` text;";
         	core.execute(query);
         }
-        
-        /**
+
+        /*
          * From 2.8.2 to 2.9
          */
         if (!core.existsColumn("sc_clans", "ranks")) {
@@ -1115,7 +1115,11 @@ public final class StorageManager {
             core.execute("ALTER TABLE sc_clans ADD COLUMN `banner` text;");
         }
 
-        /**
+        if (plugin.getSettingsManager().isUseMysql()) {
+            core.execute("ALTER TABLE sc_clans MODIFY color_tag VARCHAR(255);");
+        }
+
+        /*
          * Bukkit 1.7.5+ UUID Migration
          */
         if (!core.existsColumn("sc_kills", "attacker_uuid")) {

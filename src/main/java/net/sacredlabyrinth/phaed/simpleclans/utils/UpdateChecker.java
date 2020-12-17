@@ -14,6 +14,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 
@@ -52,7 +53,7 @@ public class UpdateChecker {
 					if (parse.isJsonObject()) {
 						String latestVersion = parse.getAsJsonObject().get("name").getAsString();
 
-						if (!version.equals(latestVersion)) {
+						if (compareVersions(version, latestVersion) < 0) {
 							plugin.getLogger().info(String.format("You're running an outdated version (%s).", version));
 							plugin.getLogger().info(String.format("The latest version is %s. Download it at:", latestVersion));
 							plugin.getLogger().info("https://www.spigotmc.org/resources/simpleclans.71242/");
@@ -67,6 +68,20 @@ public class UpdateChecker {
 				}
 			}
 		}.runTaskAsynchronously(plugin);
+	}
+
+	public static int compareVersions(@NotNull String a, @NotNull String b) {
+		String[] aSplit = a.split("\\.");
+		String[] bSplit = b.split("\\.");
+		int length = Math.max(aSplit.length, bSplit.length);
+		for (int i = 0; i < length; i++) {
+			int aPart = aSplit.length > i ? Integer.parseInt(aSplit[i]) : 0;
+			int bPart = bSplit.length > i ? Integer.parseInt(bSplit[i]) : 0;
+			if (aPart != bPart) {
+				return Integer.compare(aPart, bPart);
+			}
+		}
+		return 0;
 	}
 
 }

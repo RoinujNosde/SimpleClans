@@ -1,7 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,8 +18,51 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class ChatUtils {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#(\\w{5}[0-9A-Fa-f])");
+    private static boolean supportsHexColors;
+
+    static {
+        try {
+            ChatColor.class.getDeclaredMethod("of", String.class);
+            supportsHexColors = true;
+        } catch (NoSuchMethodException e) {
+            supportsHexColors = false;
+        }
+    }
 
     private ChatUtils() {
+    }
+
+    public static String parseColors(@NotNull String text) {
+        // Special thanks to the Spigot community!
+        // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
+        if (supportsHexColors) {
+            Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
+            StringBuffer buffer = new StringBuffer();
+            while (matcher.find()) {
+                matcher.appendReplacement(buffer, ChatColor.of("#" + matcher.group(1)).toString());
+            }
+            text = matcher.appendTail(buffer).toString();
+        }
+        return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    public static String stripColors(String text) {
+        if (supportsHexColors) {
+            Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
+            StringBuffer buffer = new StringBuffer();
+            while (matcher.find()) {
+                matcher.appendReplacement(buffer, "");
+            }
+            text = matcher.appendTail(buffer).toString();
+        }
+        return oldStripColors(text);
+    }
+
+    private static String oldStripColors(String text) {
+        return text.replaceAll("[&][0-9A-Za-z]", "")
+                .replaceAll(String.valueOf((char) 194), "") //don't know why
+                .replaceAll("[\u00a7][0-9A-Za-z]", "");
     }
 
     public static BaseComponent[] toBaseComponents(@Nullable CommandSender receiver, @NotNull String text) {
@@ -47,7 +92,7 @@ public class ChatUtils {
         placeholder = matcher.group(2);
         builder.retain(FormatRetention.FORMATTING).appendLegacy(lang("clickable." + placeholder, receiver))
                 .event(new ClickEvent(RUN_COMMAND, "/" + placeholder))
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]
-                        {new TextComponent(lang("hover.click.to." + placeholder, receiver))}));
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(lang("hover.click.to." + placeholder,
+                        receiver))));
     }
 }

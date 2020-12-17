@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.MessageFormat;
-
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class TagValidator {
@@ -31,9 +29,9 @@ public class TagValidator {
      */
     @Nullable
     public String getErrorMessage() {
-        String cleanTag = Helper.stripColors(this.tag);
-        if (tag.length() > 25) {
-            return lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 25);
+        String cleanTag = ChatUtils.stripColors(this.tag);
+        if (tag.length() > 255 && plugin.getSettingsManager().isUseMysql()) {
+            return lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255);
         }
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
