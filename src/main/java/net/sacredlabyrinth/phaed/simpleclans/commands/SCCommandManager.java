@@ -216,6 +216,6 @@ public class SCCommandManager extends PaperCommandManager {
                 "modtag", "bb", "clear", "rival", "ally", "add", "remove", "stats", "coords", "vitals", "rivalries",
                 "alliances", "leaderboard", "allow", "block", "auto", "check", "assign", "unassign", "delete", "me",
                 "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set", "status", "tp", "all", "everyone",
-                "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help");
+                "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help", "mod");
     }
 }

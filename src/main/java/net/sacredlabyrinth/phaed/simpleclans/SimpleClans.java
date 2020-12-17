@@ -9,10 +9,10 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -249,7 +249,7 @@ public class SimpleClans extends JavaPlugin {
         if (lang == null) {
             return null;
         }
-        String message = ChatColor.translateAlternateColorCodes('&', lang);
+        String message = ChatUtils.parseColors(lang);
         // contains acf placeholders like {commandprefix}
         if (Pattern.compile("\\{(?<key>[a-zA-Z]+?)}").matcher(message).find()) {
             return message;

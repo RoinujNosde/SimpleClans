@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestFinishedEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -406,42 +407,24 @@ public final class RequestManager {
      * @param req the Request
      */
     public void ask(final Request req) {
-        final String tag = plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketLeft() + plugin.getSettingsManager().getTagDefaultColor() + req.getClan().getColorTag() + plugin.getSettingsManager().getClanChatBracketColor() + plugin.getSettingsManager().getClanChatTagBracketRight();
-        final String message = tag + " " + plugin.getSettingsManager().getRequestMessageColor() + req.getMsg();
-
-        if (req.getType().equals(ClanRequest.INVITE)) {
-            Player player = Bukkit.getPlayerExact(req.getTarget());
-
-            if (player != null) {
-                String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
-
-                ChatBlock.sendBlank(player);
-                ChatBlock.sendMessage(player, message);
-                ChatBlock.sendMessage(player, options);
-                ChatBlock.sendBlank(player);
-            }
+        String message = lang("request.message", req.getClan().getColorTag(), req.getMsg());
+        ArrayList<Player> recipients = new ArrayList<>();
+        if (req.getType() == ClanRequest.INVITE) {
+            recipients.add(Bukkit.getPlayerExact(req.getTarget()));
         } else {
             for (ClanPlayer cp : req.getAcceptors()) {
                 if (cp.getVote() == null) {
-                    Player player = cp.toPlayer();
-
-                    if (player != null) {
-                        String options = lang("accept.or.deny", player, ChatBlock.makeEmpty(Helper.stripColors(tag)) + " " + ChatColor.DARK_GREEN + "/" + plugin.getSettingsManager().getCommandAccept() + plugin.getSettingsManager().getPageHeadingsColor(), ChatColor.DARK_RED + "/" + plugin.getSettingsManager().getCommandDeny());
-
-                        ChatBlock.sendBlank(player);
-                        ChatBlock.sendMessage(player, message);
-                        ChatBlock.sendMessage(player, options);
-                        ChatBlock.sendBlank(player);
-                    }
+                    recipients.add(cp.toPlayer());
                 }
             }
         }
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                SimpleClans.getInstance().getServer().getPluginManager().callEvent(new RequestEvent(req));
+        for (Player recipient : recipients) {
+            if (recipient != null) {
+                recipient.spigot().sendMessage(ChatUtils.toBaseComponents(recipient, message));
             }
-        }.runTask(plugin);
+        }
+
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getPluginManager().callEvent(new RequestEvent(req)));
     }
 }

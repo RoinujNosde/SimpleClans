@@ -14,8 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
-import java.util.Objects;
-
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -76,14 +74,15 @@ public class SCPlayerListener implements Listener {
     @EventHandler
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
-        if (cp == null || plugin.getSettingsManager().isBlacklistedWorld(player.getWorld())) {
+        if (plugin.getSettingsManager().isBlacklistedWorld(player.getWorld())) {
             return;
         }
-        Clan clan = Objects.requireNonNull(cp.getClan());
+
+        ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
+        String tagLabel = cp != null && cp.isTagEnabled() ? cp.getTagLabel() : null;
+
         if (plugin.getSettingsManager().isCompatMode() && plugin.getSettingsManager().isChatTags()) {
-            if (cp.isTagEnabled()) {
-                String tagLabel = clan.getTagLabel(cp.isLeader());
+            if (tagLabel != null) {
                 if (player.getDisplayName().contains("{clan}")) {
                     player.setDisplayName(player.getDisplayName().replace("{clan}", tagLabel));
                 } else if (event.getFormat().contains("{clan}")) {

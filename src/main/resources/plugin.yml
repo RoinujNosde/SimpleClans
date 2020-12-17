@@ -8,8 +8,6 @@ authors:
   - RoinujNosde
 website: https://www.spigotmc.org/resources/simpleclans.71242/
 permissions:
-  simpleclans.admin.permissions:
-    description: Can grant clans permissions
   simpleclans.admin.reload:
     description: Can reload configuration
   simpleclans.admin.purge:
@@ -30,10 +28,6 @@ permissions:
     description: Can disband any clan
   simpleclans.mod.globalff:
     description: Can turn off global friendly fire protection
-  simpleclans.mod.nohide:
-    description: Messages from these players cannot be hidden via chat commands
-  simpleclans.mod.home:
-    description: Can set other clan's home
   simpleclans.mod.hometp:
     description: Can teleport to all clans homes
   simpleclans.mod.bypass:
@@ -109,14 +103,10 @@ permissions:
     description: Can modify his clan's tag
   simpleclans.leader.description:
     description: Can modify his clan's description
-  simpleclans.leader.cape:
-    description: Can set his clan's cape url
   simpleclans.leader.bb-clear:
     description: Can clear his clan's bb
   simpleclans.leader.setbanner:
     description: Can set his clan's banner
-  simpleclans.member.cape-toggle:
-    description: Can toggle his cape on/off
   simpleclans.member.kills:
     description: Can view his and other's kills
   simpleclans.member.tag-toggle:
@@ -129,6 +119,8 @@ permissions:
     description: Can keep items when teleporting home
   simpleclans.mod.place:
     description: Can manually place players in clans
+  simpleclans.mod.modtag:
+    description: Can change a clan's tag
   simpleclans.mod.staffgui:
     description: Can open the staff gui
   simpleclans.leader.fee:
@@ -151,8 +143,6 @@ permissions:
     description: Can set trust levels for members
   simpleclans.leader.war:
     description: Can start wars
-  simpleclans.leader.setrank:
-    description: Can set ranks
   simpleclans.leader.coloredrank:
     description: Can set colored ranks
     default: true
@@ -204,6 +194,7 @@ permissions:
       simpleclans.mod.nopvpinwar: true
       simpleclans.mod.place: true
       simpleclans.mod.staffgui: true
+      simpleclans.mod.modtag: true
   simpleclans.anyone.*:
     description: Permissions for anyone
     default: true
