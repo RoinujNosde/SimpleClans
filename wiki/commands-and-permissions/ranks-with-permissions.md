@@ -8,29 +8,29 @@ description: null
 
 Leaders have the ability to create ranks and give them permissions to perform several actions inside the clan. Unlike `/clan trust`, ranks with permissions allows leaders to have a finer control of who can do what. Ex.: A rank can handle invites \(`invite` permission\), another takes care of moderation \(`kick` permission\), etc
 
-## Suggestions of ranks
+## Suggested ranks
 
 | Ranks | Description | Permission |
 | :--- | :--- | :---: |
-| **Coleader** | helps take care of the clan | `all` |
-| **Treasurer** | manages the clan's bank account; | `bank.balance`, `bank.deposit`, `bank.withdraw` |
-| **Ambassador** | manages the clan's relations with other clans; | `ally.chat`, `ally.add`, `ally.remove`, `rival.add`, `rival.remove`, `war.end`, `war.start` |
-| **Recruit** | a member in trial | `stats`, `kills`, `mostkilled`, `rank.list` |
+| **Coleader** | Helps take care of the clan | `all` |
+| **Treasurer** | Manages the clan's bank account | `bank.balance`, `bank.deposit`, `bank.withdraw` |
+| **Ambassador** | Manages the clan's relations with other clans | `ally.chat`, `ally.add`, `ally.remove`, `rival.add`, `rival.remove`, `war.end`, `war.start` |
+| **Recruit** | A member in trial | `stats`, `kills`, `mostkilled`, `rank.list` |
 
 ## Ranks Commands
 
 | Command | Description |
 | :--- | :--- |
-| `/clan rank create [rank]` | creates a rank with this name |
-| `/clan rank setdisplayname [rank] [displayname]` | sets the display name of the rank \(it can be more than one word and colored\) |
-| `/clan rank assign [player] [rank]` | assigns a user to a rank |
-| `/clan rank unassign [player]` | unassigns a user from a rank |
-| `/clan rank delete [rank]` | deletes a rank |
-| `/clan rank list` | lists the clan's ranks |
-| `/clan rank permissions` | lists the available permissions for ranks |
-| `/clan rank permissions [rank]` | lists the rank's permissions |
-| `/clan rank permissions [rank] add [permission]` | adds a permission to the rank |
-| `/clan rank permissions [rank] remove [permission]` | removes a permission from the rank |
+| `/clan rank create` | Creates a rank with this name |
+| `/clan rank setdisplayname [rank] [displayname]` | Sets the display name of the rank \(it can be more than one word and colored\) |
+| `/clan rank assign (player) (rank)` | Assigns a user to a rank |
+| `/clan rank unassign (player)` | Unassigns a user from a rank |
+| `/clan rank delete (rank)` | Deletes a rank |
+| `/clan rank list` | Lists the clan's ranks |
+| `/clan rank permissions` | Lists the available permissions for ranks |
+| `/clan rank permissions (rank)` | Lists the rank's permissions |
+| `/clan rank permissions add (rank) (permission)` | Adds a permission to the rank |
+| `/clan rank permissions remove (rank) (permission)` | Removes a permission from the rank |
 
 ## Available permissions for ranks
 
