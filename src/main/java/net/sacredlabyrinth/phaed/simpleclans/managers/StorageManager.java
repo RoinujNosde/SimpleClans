@@ -7,6 +7,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.storage.DBCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.MySQLCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.YAMLSerializer;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDFetcher;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -360,7 +362,7 @@ public final class StorageManager {
                         boolean verified = res.getBoolean("verified");
                         boolean friendly_fire = res.getBoolean("friendly_fire");
                         String tag = res.getString("tag");
-                        String color_tag = Helper.parseColors(res.getString("color_tag"));
+                        String color_tag = ChatUtils.parseColors(res.getString("color_tag"));
                         String name = res.getString("name");
                         String description = res.getString("description");
                         String packed_allies = res.getString("packed_allies");
@@ -368,7 +370,7 @@ public final class StorageManager {
                         String packed_bb = res.getString("packed_bb");
                         String cape_url = res.getString("cape_url");
                         String flags = res.getString("flags");
-                        String ranks = res.getString("ranks");
+                        JSONObject ranks = Helper.parseJson(res.getString("ranks"));
                         long founded = res.getLong("founded");
                         long last_used = res.getLong("last_used");
                         double balance = res.getDouble("balance");
@@ -402,6 +404,7 @@ public final class StorageManager {
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
+                        clan.setDefaultRank(Helper.defaultRankFromJson(ranks));
                         clan.setBanner(banner);
 
                         out.add(clan);
@@ -440,7 +443,7 @@ public final class StorageManager {
                         boolean verified = res.getBoolean("verified");
                         boolean friendly_fire = res.getBoolean("friendly_fire");
                         String tag = res.getString("tag");
-                        String color_tag = Helper.parseColors(res.getString("color_tag"));
+                        String color_tag = ChatUtils.parseColors(res.getString("color_tag"));
                         String name = res.getString("name");
                         String description = res.getString("description");
                         String packed_allies = res.getString("packed_allies");
@@ -448,7 +451,7 @@ public final class StorageManager {
                         String packed_bb = res.getString("packed_bb");
                         String cape_url = res.getString("cape_url");
                         String flags = res.getString("flags");
-                        String ranks = res.getString("ranks");
+                        JSONObject ranks = Helper.parseJson(res.getString("ranks"));
                         long founded = res.getLong("founded");
                         long last_used = res.getLong("last_used");
                         double balance = res.getDouble("balance");
@@ -482,6 +485,7 @@ public final class StorageManager {
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
+                        clan.setDefaultRank(Helper.defaultRankFromJson(ranks));
                         clan.setBanner(banner);
 
                         out = clan;
@@ -528,7 +532,7 @@ public final class StorageManager {
                         long last_seen = res.getLong("last_seen");
                         long join_date = res.getLong("join_date");
                         String flags = res.getString("flags");
-                        String packed_past_clans = Helper.parseColors(res.getString("packed_past_clans"));
+                        String packed_past_clans = ChatUtils.parseColors(res.getString("packed_past_clans"));
                         String resign_times = res.getString("resign_times");
                         Locale locale = Helper.forLanguageTag(res.getString("locale"));
 
@@ -699,7 +703,7 @@ public final class StorageManager {
                 "`packed_bb`, `cape_url`, `flags`, `balance`) ";
         String values = "VALUES ( '"
                                     + Helper.escapeQuotes(YAMLSerializer.serialize(clan.getBanner())) + "','"
-        							+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks())) + "','"
+        							+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks(), clan.getDefaultRank())) + "','"
         							+ Helper.escapeQuotes(clan.getDescription())+ "'," 
         							+ (clan.isMemberFeeEnabled() ? 1 : 0) +","
         							+ Helper.escapeQuotes(String.valueOf(clan.getMemberFee())) + "," 
@@ -787,7 +791,7 @@ public final class StorageManager {
     
     private String getUpdateClanQuery(Clan clan) {
         String query = "UPDATE `sc_clans`" +
-                " SET ranks = '"+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks())) +"'," +
+                " SET ranks = '"+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks(), clan.getDefaultRank())) +"'," +
                 " banner = '" + Helper.escapeQuotes(YAMLSerializer.serialize(clan.getBanner())) + "'," +
                 " description = '" + Helper.escapeQuotes(clan.getDescription())+ "'," +
                 " fee_enabled = "+ (clan.isMemberFeeEnabled() ? 1 : 0) +"," +
