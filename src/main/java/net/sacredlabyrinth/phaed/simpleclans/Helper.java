@@ -80,7 +80,7 @@ public class Helper {
         return null;
     }
 
-   public static @Nullable JSONObject parseJson(String json) {
+    public static @Nullable JSONObject parseJson(String json) {
         if (json != null && !json.isEmpty()) {
             try {
                 return (JSONObject) new JSONParser().parse(json);
@@ -97,8 +97,8 @@ public class Helper {
      * @param jo the JSON Object
      * @return a list of ranks or null if the JSON String is null/empty
      */
-    public static @Nullable List<Rank> ranksFromJson(JSONObject jo) {
-        if (jo != null && !jo.isEmpty()) {
+	public static @Nullable List<Rank> ranksFromJson(JSONObject jo) {
+    	if (jo != null && !jo.isEmpty()) {
             Object ranks = jo.get("ranks");
             if (ranks != null) {
                 JSONArray array = (JSONArray) ranks;
@@ -118,7 +118,7 @@ public class Helper {
                 return rankList;
             }
         }
-        return null;
+    	return null;
     }
 
     /**
@@ -128,14 +128,14 @@ public class Helper {
      * @return the default rank or null if not found and/or it does not exist
      */
     public static @Nullable String defaultRankFromJson(JSONObject jo) {
-        if (jo != null && !jo.isEmpty()) {
+	    if (jo != null && !jo.isEmpty()) {
             if (!jo.containsKey("defaultRank")) {
                 return null;
             } else {
                 return (String) jo.get("defaultRank");
             }
         }
-        return null;
+	    return null;
     }
     
     /**
@@ -146,27 +146,27 @@ public class Helper {
      * @return a JSON String
      */
     @SuppressWarnings("unchecked")
-    public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
-        if (ranks == null)
-            ranks = new ArrayList<Rank>();
-
-        JSONArray array = new JSONArray();
-        for (Rank rank : ranks) {
-            JSONObject o = new JSONObject();
-            o.put("name", rank.getName());
-            o.put("displayName", rank.getDisplayName());
-            JSONArray permArray = new JSONArray();
-            for (String p : rank.getPermissions()) {
-                permArray.add(p);
-            }
-            o.put("permissions", permArray);
-            array.add(o);
-        }
-
-        JSONObject object = new JSONObject();
-        object.put("ranks", array);
-        object.put("defaultRank", defaultRank);
-        return object.toJSONString();
+	public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
+    	if (ranks == null)
+    		ranks = new ArrayList<Rank>();
+    	
+    	JSONArray array = new JSONArray();
+    	for (Rank rank : ranks) {
+    		JSONObject o = new JSONObject();
+    		o.put("name", rank.getName());
+    		o.put("displayName", rank.getDisplayName());
+    		JSONArray permArray = new JSONArray();
+    		for (String p : rank.getPermissions()) {
+    			permArray.add(p);
+    		}
+    		o.put("permissions", permArray);
+    		array.add(o);
+    	}
+    	
+    	JSONObject object = new JSONObject();
+    	object.put("ranks", array);
+    	object.put("defaultRank", defaultRank);
+    	return object.toJSONString();
     }
     
     /**
@@ -176,7 +176,7 @@ public class Helper {
      * @return a JSON String
      */
     public static String resignTimesToJson(Map<String, Long> resignTimes) {
-        return JSONObject.toJSONString(resignTimes);
+    	return JSONObject.toJSONString(resignTimes);
     }
     
     /**
@@ -186,15 +186,15 @@ public class Helper {
      * @return a map
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, Long> resignTimesFromJson(String json) {
-        if (json != null) {
-            try {
-                return (Map<String, Long>) new JSONParser().parse(json);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+	public static Map<String, Long> resignTimesFromJson(String json) {
+    	if (json != null) {
+	    	try {
+				return (Map<String, Long>) new JSONParser().parse(json);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}	
+    	}
+    	return null;
     }
     
     /**
@@ -205,8 +205,8 @@ public class Helper {
      * @return the delay in seconds
      */
     public static long getDelayTo(int hour, int minute) {
-        if (hour < 0 || hour > 23) hour = 1;
-        if (minute < 0 || minute > 59) minute = 0;
+    	if (hour < 0 || hour > 23) hour = 1;
+    	if (minute < 0 || minute > 59) minute = 0;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime d = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hour, minute));
         long delay;
