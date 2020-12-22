@@ -117,6 +117,23 @@ public class RankCommand extends BaseCommand {
         ChatBlock.sendMessage(player, ChatColor.AQUA + lang("rank.displayname.updated", player));
     }
 
+    @Subcommand("%setdefault")
+    @CommandPermission("simpleclans.leader.rank.setdefault")
+    @CommandCompletion("@ranks")
+    @Description("{@@command.description.rank.setdefault}")
+    public void setDefault(Player player, Clan clan, @Name("rank") Rank rank) {
+        clan.setDefaultRank(rank.getName());
+        ChatBlock.sendMessage(player, AQUA + lang("rank.setdefault", player, rank.getDisplayName()));
+    }
+
+    @Subcommand("%removedefault")
+    @CommandPermission("simpleclans.leader.rank.removedefault")
+    @Description("{@@command.description.rank.removedefault}")
+    public void removeDefault(Player player, Clan clan) {
+        clan.setDefaultRank(null);
+        ChatBlock.sendMessage(player, AQUA + lang("rank.removedefault", player));
+    }
+
     @Subcommand("%permissions")
     public class PermissionsCommand extends BaseCommand {
         private final String validPermissionsToMessage = Helper.toMessage(Helper.fromPermissionArray(), ",");
