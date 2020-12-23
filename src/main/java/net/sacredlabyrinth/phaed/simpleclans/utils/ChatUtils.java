@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans.utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +73,8 @@ public class ChatUtils {
         }
         String[] split = PLACEHOLDER_PATTERN.split(text);
         for (int i = 0; i < split.length; i++) {
-            builder.appendLegacy(split[i]);
+            builder.append(split[i]);
+            //builder.appendLegacy(split[i]);
             if (i >= placeholders.size()) {
                 continue;
             }
@@ -84,15 +84,16 @@ public class ChatUtils {
         return builder.create();
     }
 
+    @SuppressWarnings("deprecation")
     private static void appendPlaceholder(@Nullable CommandSender receiver, ComponentBuilder builder, String placeholder) {
         Matcher matcher = PLACEHOLDER_PATTERN.matcher(placeholder);
         if (!matcher.find()) {
             return;
         }
         placeholder = matcher.group(2);
-        builder.retain(FormatRetention.FORMATTING).appendLegacy(lang("clickable." + placeholder, receiver))
+        builder.retain(FormatRetention.FORMATTING).append(lang("clickable." + placeholder, receiver))
                 .event(new ClickEvent(RUN_COMMAND, "/" + placeholder))
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(lang("hover.click.to." + placeholder,
-                        receiver))));
+                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
+                        (lang("hover.click.to." + placeholder, receiver)))));
     }
 }
