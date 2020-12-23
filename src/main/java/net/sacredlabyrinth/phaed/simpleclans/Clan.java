@@ -60,6 +60,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     private boolean allowDeposit = true;
     private boolean feeEnabled;
     private List<Rank> ranks = new ArrayList<>();
+    private String defaultRank = null;
     private @Nullable ItemStack banner;
 
     /**
@@ -1064,6 +1065,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         cp.setClan(this);
         cp.setLeader(false);
         cp.setTrusted(SimpleClans.getInstance().getSettingsManager().isClanTrustByDefault());
+        if (defaultRank != null) {
+            cp.setRank(defaultRank);
+        }
 
         importMember(cp);
 
@@ -1899,6 +1903,29 @@ public class Clan implements Serializable, Comparable<Clan> {
 		}
 		return null;
 	}
+
+    /**
+     * Sets the default rank for this clan.
+     *
+     * @param name The name of the rank to be set as default
+     */
+	public void setDefaultRank(@Nullable String name) {
+	    // I don't know how this could happen, but if it somehow does, here's a check for it
+	    if (!hasRank(name)) {
+	        defaultRank = null;
+        } else {
+            defaultRank = name;
+        }
+    }
+
+    /**
+     * Gets the default rank for this clan.
+     *
+     * @return The default rank or null if there is no default
+     */
+    public @Nullable String getDefaultRank() {
+	    return defaultRank;
+    }
 
     public void setBanner(@Nullable ItemStack banner) {
 	    if (banner == null) {

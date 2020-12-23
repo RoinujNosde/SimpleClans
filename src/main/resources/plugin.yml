@@ -168,6 +168,10 @@ permissions:
     description: Can remove permissions from a rank
   simpleclans.leader.rank.setdisplayname:
     description: Can set the rank displayname
+  simpleclans.leader.rank.setdefault:
+    description: Can set the default rank
+  simpleclans.leader.rank.removedefault:
+    description: Can remove the default rank
   simpleclans.member.bank:
     description: Can use banks
   simpleclans.admin.*:
@@ -260,6 +264,8 @@ permissions:
       simpleclans.leader.coloredrank: true
       simpleclans.leader.bb-clear: true
       simpleclans.leader.rank.setdisplayname: true
+      simpleclans.leader.rank.setdefault: true
+      simpleclans.leader.rank.removedefault: true
       simpleclans.leader.rank.list: true
       simpleclans.leader.rank.create: true
       simpleclans.leader.rank.assign: true
