@@ -4,11 +4,11 @@ import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.events.FrameOpenEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.ChatPaginator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,7 +105,7 @@ public class InventoryDrawer {
             if (oldLore != null) {
                 ArrayList<String> newLore = new ArrayList<>();
                 for (String line : oldLore) {
-                    String[] strings = ChatPaginator.wordWrap(line, plugin.getSettingsManager().getLoreLength());
+                    String[] strings = ChatUtils.wordWrap(line, plugin.getSettingsManager().getLoreLength());
                     newLore.addAll(Arrays.asList(strings));
                 }
                 itemMeta.setLore(newLore);
