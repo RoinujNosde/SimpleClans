@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -177,7 +178,7 @@ public final class SettingsManager {
     private boolean moneyperkill;
     private double KDRMultipliesPerKill;
     private boolean teleportBlocks;
-    private boolean AutoGroupGroupName;
+    private boolean autoGroupGroupName;
     private boolean tamableMobsSharing;
     private boolean allowReGroupCommand;
     private boolean useThreads;
@@ -205,6 +206,7 @@ public final class SettingsManager {
         config = plugin.getConfig();
         main = new File(plugin.getDataFolder() + File.separator + "config.yml");
         load();
+        warnAboutAutoGroupGroupName();
     }
 
     /**
@@ -391,7 +393,7 @@ public final class SettingsManager {
         teleportBlocks = getConfig().getBoolean("settings.teleport-blocks");
         language = getConfig().getString("settings.language", "");
         languagePerPlayer = getConfig().getBoolean("settings.user-language-selector", true);
-        AutoGroupGroupName = getConfig().getBoolean("permissions.auto-group-groupname");
+        autoGroupGroupName = getConfig().getBoolean("permissions.auto-group-groupname");
         tamableMobsSharing = getConfig().getBoolean("settings.tameable-mobs-sharing");
         allowReGroupCommand = getConfig().getBoolean("settings.allow-regroup-command");
         loreLength = getConfig().getInt("settings.lore-length", 38);
@@ -422,6 +424,15 @@ public final class SettingsManager {
             getConfig().save(main);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void warnAboutAutoGroupGroupName() {
+        Plugin luckPerms = Bukkit.getServer().getPluginManager().getPlugin("LuckPerms");
+        if (luckPerms != null && autoGroupGroupName) {
+            plugin.getLogger().warning("LuckPerms was found and the setting auto-group-groupname is enabled.");
+            plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
+                    " that matches their clan tag.");
         }
     }
 
@@ -1681,7 +1692,7 @@ public final class SettingsManager {
      * @return the AutoGroupGroupName
      */
     public boolean isAutoGroupGroupName() {
-        return AutoGroupGroupName;
+        return autoGroupGroupName;
     }
 
     /**
