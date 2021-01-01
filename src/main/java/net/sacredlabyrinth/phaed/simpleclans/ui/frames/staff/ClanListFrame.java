@@ -60,7 +60,7 @@ public class ClanListFrame extends SCFrame {
 			} else {
 				if (toPlace != null) {
 					c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-							"place", false, toPlace.getName(), clan.getTag()));
+							"mod place", false, toPlace.getName(), clan.getTag()));
 					c.setConfirmationRequired(ClickType.LEFT);
 					c.setPermission(ClickType.LEFT, "simpleclans.mod.place");
 				}
@@ -83,7 +83,7 @@ public class ClanListFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

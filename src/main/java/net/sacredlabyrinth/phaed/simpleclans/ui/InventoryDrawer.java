@@ -69,6 +69,10 @@ public class InventoryDrawer {
         return inventory;
     }
 
+    /**
+     *
+     * @deprecated use {@link InventoryDrawer#open(SCFrame)}
+     */
     @Deprecated
     public static void update(@NotNull SCFrame frame) {
         open(frame);
