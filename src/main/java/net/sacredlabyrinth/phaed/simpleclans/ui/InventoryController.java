@@ -23,8 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**

@@ -7,6 +7,7 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
@@ -67,7 +68,7 @@ public class RankCommand extends BaseCommand {
     @Description("{@@command.description.rank.create}")
     public void create(Player player, Clan clan) {
         Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateRankNamePrompt())
-                .withLocalEcho(true).buildConversation(player);
+                .withLocalEcho(true).withTimeout(60).buildConversation(player);
         conversation.getContext().setSessionData("clan", clan);
         conversation.begin();
     }
@@ -98,7 +99,7 @@ public class RankCommand extends BaseCommand {
         int count = 1;
         for (Rank rank : ranks) {
             ChatBlock.sendMessage(player, AQUA + lang("ranks.list.item", player, count,
-                    Helper.parseColors(rank.getDisplayName()) + AQUA, rank.getName()));
+                    ChatUtils.parseColors(rank.getDisplayName()) + AQUA, rank.getName()));
             count++;
         }
     }

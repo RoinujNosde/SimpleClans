@@ -13,6 +13,7 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -102,7 +103,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", Helper.parseColors(tag)));
+        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
         clan.changeClanTag(tag);
         player.sendMessage(lang("0.tag.changed.to.1", player, clan.getTag(), tag));
     }
@@ -280,6 +281,7 @@ public class StaffCommands extends BaseCommand {
 
         clan.addBb(sender.getName(), AQUA + lang("promoted.to.leader", promotePl.getName()));
         clan.promote(promotePl.getUniqueId());
+        ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.promoted", sender));
     }
 
     @Subcommand("%admin %demote")

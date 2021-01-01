@@ -3,9 +3,9 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -48,7 +48,7 @@ public class Components {
                                 : lang("gui.playerdetails.player.lore.clan",viewer, cp.getClan().getColorTag(),
                                 cp.getClan().getName()),
                         lang("gui.playerdetails.player.lore.rank",viewer,
-                                Helper.parseColors(cp.getRankDisplayName())),
+                                ChatUtils.parseColors(cp.getRankDisplayName())),
                         lang("gui.playerdetails.player.lore.status",viewer, status),
                         lang("gui.playerdetails.player.lore.kdr",viewer,
                                 new DecimalFormat("#.#").format(cp.getKDR())),
@@ -182,6 +182,7 @@ public class Components {
         return c;
     }
 
+    @SuppressWarnings("deprecation")
     public static void setOwningPlayer(@NotNull ItemStack item, @NotNull OfflinePlayer player) {
         SkullMeta itemMeta = (SkullMeta) item.getItemMeta();
         if (itemMeta == null) {
