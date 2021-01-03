@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
@@ -18,17 +19,19 @@ public class PlayerDetailsFrame extends SCFrame {
 
 	private final SimpleClans plugin = SimpleClans.getInstance();
 	private final OfflinePlayer subject;
+	private final String subjectName;
 	private final Clan clan;
 
 	public PlayerDetailsFrame(Player viewer, SCFrame parent, OfflinePlayer subject) {
 		super(parent, viewer);
 		this.subject = subject;
-		clan = plugin.getClanManager().getAnyClanPlayer(viewer.getUniqueId()).getClan();
+		ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(viewer.getUniqueId());
+		subjectName = cp.getName();
+		clan = cp.getClan();
 	}
 
 	@Override
 	public void createComponents() {
-		String subjectName = subject.getName();
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 4)
 				continue;
@@ -93,7 +96,7 @@ public class PlayerDetailsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.playerdetails.title",getViewer(), subject.getName());
+		return lang("gui.playerdetails.title",getViewer(), subjectName);
 	}
 
 	@Override

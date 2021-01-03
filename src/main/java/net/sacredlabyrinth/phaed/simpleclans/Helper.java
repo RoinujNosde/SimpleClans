@@ -79,51 +79,74 @@ public class Helper {
         }
         return null;
     }
-    
-    /**
-     * Converts a JSON String to a list of Ranks
-     * 
-     * @param json the JSON String
-     * @return a list of ranks or null if the JSON String is null/empty
-     */
-	public static @Nullable List<Rank> ranksFromJson(String json) {
-    	if (json != null && !json.isEmpty()) {
-	    	try {
-				JSONObject jo = (JSONObject) new JSONParser().parse(json);
-				Object ranks = jo.get("ranks");
-				if (ranks != null) {
-					JSONArray array = (JSONArray) ranks;
-					List<Rank> rankList = new ArrayList<>();
-					for (Object o : array) {
-						JSONObject r = (JSONObject) o;
-						String name = (String) r.get("name");
-						String displayName = (String) r.get("displayName");
-						Set<String> permissions = new HashSet<>();
-						for (Object p : (JSONArray) r.get("permissions")) {
-							permissions.add((String) p);
-						}
-						Rank rank = new Rank(name, displayName, permissions);
-						rankList.add(rank);
-					}
-					
-					return rankList;
-					
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-    	}
-    	return null;
+
+    public static @Nullable JSONObject parseJson(String json) {
+        if (json != null && !json.isEmpty()) {
+            try {
+                return (JSONObject) new JSONParser().parse(json);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
     
     /**
-     * Converts a list of Ranks to a JSON String
+     * Parses a list of ranks from the specified JSONObject
      * 
-     * @param ranks
+     * @param jo the JSON Object
+     * @return a list of ranks or null if the JSON String is null/empty
+     */
+	public static @Nullable List<Rank> ranksFromJson(JSONObject jo) {
+    	if (jo != null && !jo.isEmpty()) {
+            Object ranks = jo.get("ranks");
+            if (ranks != null) {
+                JSONArray array = (JSONArray) ranks;
+                List<Rank> rankList = new ArrayList<>();
+                for (Object o : array) {
+                    JSONObject r = (JSONObject) o;
+                    String name = (String) r.get("name");
+                    String displayName = (String) r.get("displayName");
+                    Set<String> permissions = new HashSet<>();
+                    for (Object p : (JSONArray) r.get("permissions")) {
+                        permissions.add((String) p);
+                    }
+                    Rank rank = new Rank(name, displayName, permissions);
+                    rankList.add(rank);
+                }
+
+                return rankList;
+            }
+        }
+    	return null;
+    }
+
+    /**
+     * Parses the default rank from the specified JSONObject
+     *
+     * @param jo the JSON object
+     * @return the default rank or null if not found and/or it does not exist
+     */
+    public static @Nullable String defaultRankFromJson(JSONObject jo) {
+	    if (jo != null && !jo.isEmpty()) {
+            if (!jo.containsKey("defaultRank")) {
+                return null;
+            } else {
+                return (String) jo.get("defaultRank");
+            }
+        }
+	    return null;
+    }
+    
+    /**
+     * Converts a list of ranks and the default rank to a JSON String
+     * 
+     * @param ranks the ranks
+     * @param defaultRank the default rank
      * @return a JSON String
      */
     @SuppressWarnings("unchecked")
-	public static String ranksToJson(List<Rank> ranks) {
+	public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
     	if (ranks == null)
     		ranks = new ArrayList<Rank>();
     	
@@ -142,6 +165,7 @@ public class Helper {
     	
     	JSONObject object = new JSONObject();
     	object.put("ranks", array);
+    	object.put("defaultRank", defaultRank);
     	return object.toJSONString();
     }
     
