@@ -62,9 +62,8 @@ public class StaffCommands extends BaseCommand {
             }
 
             if (oldClan.isLeader(player) && oldClan.getLeaders().size() <= 1) {
-                oldClan.clanAnnounce(player.getName(), AQUA + lang("clan.has.been.disbanded",
-                        oldClan.getName()));
-                oldClan.disband();
+                ChatBlock.sendMessage(sender, RED + lang("you.cannot.move.the.last.leader", sender));
+                return;
             } else {
                 oldClan.addBb(player.getName(), AQUA + lang("0.has.resigned", player.getName()));
                 oldClan.removePlayerFromClan(player.getUniqueId());

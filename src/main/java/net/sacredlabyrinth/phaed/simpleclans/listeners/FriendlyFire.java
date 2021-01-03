@@ -12,9 +12,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class FriendlyFire implements Listener {
 
     private final SimpleClans plugin;
+    private final Map<UUID, Long> warned = new HashMap<>();
+    private static final long WARN_DELAY = 10000;
 
     public FriendlyFire(@NotNull SimpleClans plugin) {
         this.plugin = plugin;
@@ -59,14 +65,24 @@ public class FriendlyFire implements Listener {
         }
 
         if (victimClan.equals(attackerClan)) {
-            ChatBlock.sendMessageKey(attacker, "cannot.attack.clan.member");
+            warn(attacker, "cannot.attack.clan.member");
             event.setCancelled(true);
             return;
         }
 
         if (victimClan.isAlly(attackerClan.getTag())) {
-            ChatBlock.sendMessageKey(attacker, "cannot.attack.ally");
+            warn(attacker, "cannot.attack.ally");
             event.setCancelled(true);
+        }
+    }
+
+    private void warn(Player attacker, String messageKey) {
+        long timestamp = warned.getOrDefault(attacker.getUniqueId(), 0L);
+        long currentTimeMillis = System.currentTimeMillis();
+
+        if (timestamp + WARN_DELAY <= currentTimeMillis) {
+            ChatBlock.sendMessageKey(attacker, messageKey);
+            warned.put(attacker.getUniqueId(), currentTimeMillis);
         }
     }
 }

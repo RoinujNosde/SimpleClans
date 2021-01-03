@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PvPOnlyInWar implements Listener {
 
@@ -39,7 +40,8 @@ public class PvPOnlyInWar implements Listener {
         }
     }
 
-    private void process(EntityDamageEvent event, Player attacker, Player victim, Clan attackerClan, Clan victimClan) {
+    private void process(EntityDamageEvent event, Player attacker, Player victim, @Nullable Clan attackerClan,
+                         @Nullable Clan victimClan) {
         if (attackerClan == null || victimClan == null) {
             ChatBlock.sendMessageKey(attacker, "must.be.in.clan.to.pvp", victim.getName());
             event.setCancelled(true);
