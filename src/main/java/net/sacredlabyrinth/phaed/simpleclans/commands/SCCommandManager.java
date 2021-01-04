@@ -160,10 +160,10 @@ public class SCCommandManager extends PaperCommandManager {
         getCommandReplacements().addReplacements(
                 "basic_conditions", "not_blacklisted|not_banned",
                 "clan", sm.getCommandClan(),
-                "deny", sm.getCommandDeny(),
+                "deny", sm.getCommandDeny() + "|deny",
                 "more", sm.getCommandMore(),
                 "ally_chat", sm.getCommandAlly(),
-                "accept", sm.getCommandAccept(),
+                "accept", sm.getCommandAccept() + "|accept",
                 "clan_chat", sm.getCommandClanChat()
         );
 
