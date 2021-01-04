@@ -25,7 +25,7 @@ public class PlayerDetailsFrame extends SCFrame {
 	public PlayerDetailsFrame(Player viewer, SCFrame parent, OfflinePlayer subject) {
 		super(parent, viewer);
 		this.subject = subject;
-		ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(viewer.getUniqueId());
+		ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(subject.getUniqueId());
 		subjectName = cp.getName();
 		clan = cp.getClan();
 	}
