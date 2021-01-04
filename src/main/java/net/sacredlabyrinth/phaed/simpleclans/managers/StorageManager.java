@@ -318,7 +318,7 @@ public final class StorageManager {
         }
 
         for (Clan clan : purge) {
-        	plugin.getLogger().info(MessageFormat.format(lang("purging.clan"), clan.getName()));
+        	plugin.getLogger().info(lang("purging.clan", clan.getName()));
             deleteClan(clan);
             clans.remove(clan);
         }
@@ -338,7 +338,7 @@ public final class StorageManager {
         }
 
         for (ClanPlayer cp : purge) {
-        	plugin.getLogger().info(MessageFormat.format(lang("purging.player.data"), cp.getName()));
+        	plugin.getLogger().info(lang("purging.player.data", cp.getName()));
             deleteClanPlayer(cp);
             cps.remove(cp);
         }
