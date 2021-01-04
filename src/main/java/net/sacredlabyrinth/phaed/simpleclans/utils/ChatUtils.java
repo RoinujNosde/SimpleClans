@@ -77,7 +77,6 @@ public class ChatUtils {
         String[] split = PLACEHOLDER_PATTERN.split(text);
         for (int i = 0; i < split.length; i++) {
             builder.append(split[i]);
-            //builder.appendLegacy(split[i]);
             if (i >= placeholders.size()) {
                 continue;
             }
