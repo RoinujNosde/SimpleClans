@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
@@ -45,6 +46,7 @@ public class SimpleClans extends JavaPlugin {
     private PermissionsManager permissionsManager;
     private TeleportManager teleportManager;
     private boolean hasUUID;
+    private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
     /**
      * @return the logger
@@ -127,7 +129,7 @@ public class SimpleClans extends JavaPlugin {
     private void hookIntoPAPI() {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("PlaceholderAPI found. Registering hook...");
-            new PlaceholdersManager(this).register();
+            new SimpleClansExpansion(this).register();
         }
     }
 
@@ -251,7 +253,7 @@ public class SimpleClans extends JavaPlugin {
         }
         String message = ChatUtils.parseColors(lang);
         // contains acf placeholders like {commandprefix}
-        if (Pattern.compile("\\{(?<key>[a-zA-Z]+?)}").matcher(message).find()) {
+        if (ACF_PLACEHOLDER_PATTERN.matcher(message).find()) {
             return message;
         }
         return MessageFormat.format(message, arguments);
