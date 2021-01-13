@@ -498,14 +498,11 @@ public class ChatBlock {
     /**
      * Cuts the message apart into whole words short enough to fit on one line
      *
-     * @param msg
-     * @return
      */
     private static String[] wordWrap(String msg) {
         // Split each word apart
 
-        ArrayList<String> split = new ArrayList<>();
-        split.addAll(Arrays.asList(msg.split(" ")));
+        ArrayList<String> split = new ArrayList<>(Arrays.asList(msg.split(" ")));
 
         // Create an array list for the output
 
@@ -545,18 +542,16 @@ public class ChatBlock {
 
             // Merge the words into a sentence (that now fits into a single chat line) and add them to the output array.
 
-            String merged = combineSplit(words.toArray(new String[words.size()]));
+            String merged = combineSplit(words.toArray(new String[0]));
             out.add(merged);
         }
 
         // Convert to an array and return
 
-        return out.toArray(new String[out.size()]);
+        return out.toArray(new String[0]);
     }
 
     /**
-     * @param string
-     * @return
      */
     private static String combineSplit(String[] string) {
         StringBuilder builder = new StringBuilder();
@@ -572,9 +567,6 @@ public class ChatBlock {
     /**
      * Cuts apart a word that is too long to fit on one line
      *
-     * @param lengthBefore
-     * @param str
-     * @return
      */
     private static String[] wordCut(int lengthBefore, String str) {
         int length = lengthBefore;
@@ -609,8 +601,6 @@ public class ChatBlock {
     /**
      * Outputs a single line out, crops overflow
      *
-     * @param receiver
-     * @param msg
      */
     public static void saySingle(CommandSender receiver, String msg) {
         if (receiver == null) {
@@ -623,8 +613,6 @@ public class ChatBlock {
     /**
      * Outputs a message to a user
      *
-     * @param receiver
-     * @param msg
      */
     public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
@@ -642,19 +630,13 @@ public class ChatBlock {
         sendMessage(receiver, lang(key, receiver, args));
     }
 
-    /**
-     * Send blank lie
-     *
-     * @param color
-     */
     public void startColor(String color) {
         this.color = color;
     }
 
     /**
-     * Send blank lie
+     * Send blank line
      *
-     * @param receiver
      */
     public static void sendBlank(CommandSender receiver) {
         if (receiver == null) {
@@ -667,8 +649,6 @@ public class ChatBlock {
     /**
      * Colors each line
      *
-     * @param message
-     * @return
      */
     public static String[] say(String message) {
         return colorize(wordWrap(message));
@@ -678,10 +658,6 @@ public class ChatBlock {
         return colorize(wordWrap(msg));
     }
 
-    /**
-     * @param message
-     * @return
-     */
     private static String[] colorize(String[] message) {
         try {
             return colorizeBase(message);
@@ -690,21 +666,12 @@ public class ChatBlock {
         }
     }
 
-    /**
-     * @param message
-     * @return
-     */
-    public static String colorize(String message) {
-        return colorizeBase(new String[]{
-                message
-        })[0];
+    public static @Nullable String colorize(String message) {
+        return colorizeBase(new String[]{ message })[0];
     }
 
-    /**
-     * @param message
-     * @return
-     */
-    private static String[] colorizeBase(String[] message) {
+
+    private static @Nullable String[] colorizeBase(String[] message) {
         if (message != null && message[0] != null && !message[0].isEmpty()) {
             // Go through each line
 
@@ -720,9 +687,8 @@ public class ChatBlock {
                         // advance x to the next character
                         x += 1;
 
-                        try {
-                            lastColor = ChatColor.getByChar(msg.charAt(x)) + "";
-                        } catch (Exception ignored) {
+                        if (x < msg.length()) {
+                            lastColor = ChatColor.COLOR_CHAR + "" + msg.charAt(x);
                         }
                     }
                 }
@@ -734,6 +700,7 @@ public class ChatBlock {
             }
         }
 
+        //noinspection ConstantConditions
         return message;
     }
 }
