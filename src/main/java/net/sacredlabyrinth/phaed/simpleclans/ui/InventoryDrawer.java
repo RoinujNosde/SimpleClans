@@ -109,6 +109,9 @@ public class InventoryDrawer {
             if (oldLore != null) {
                 ArrayList<String> newLore = new ArrayList<>();
                 for (String line : oldLore) {
+                    if (line.isEmpty()) {
+                        continue;
+                    }
                     String[] strings = ChatUtils.wordWrap(line, plugin.getSettingsManager().getLoreLength());
                     newLore.addAll(Arrays.asList(strings));
                 }
