@@ -1,18 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
-import com.cryptomorin.xseries.XMaterial;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -29,6 +22,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -52,9 +47,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     private List<String> bb = new ArrayList<>();
     private final List<String> members = new ArrayList<>();
     private final HashMap<String, Clan> warringClans = new HashMap<>();
-    private int homeX = 0;
-    private int homeY = 0;
-    private int homeZ = 0;
+    private double homeX = 0;
+    private double homeY = 0;
+    private double homeZ = 0;
     private float homeYaw = 0;
     private float homePitch = 0;
     private @Nullable String homeWorld = "";
@@ -1620,7 +1615,6 @@ public class Clan implements Serializable, Comparable<Clan> {
                     try {
                         if (flag.equals("warring")) {
                             JSONArray clans = (JSONArray) flags.get(flag);
-
                             if (clans != null) {
                                 for (Object tag : clans) {
                                     SimpleClans.debug("warring added: " + tag.toString());
@@ -1628,23 +1622,20 @@ public class Clan implements Serializable, Comparable<Clan> {
                                 }
                             }
                         }
-
                         if (flag.equals("homeX")) {
-                            homeX = ((Long) flags.get(flag)).intValue();
+                            homeX = ((Number) flags.get(flag)).doubleValue();
                         }
-
                         if (flag.equals("homeY")) {
-                            homeY = ((Long) flags.get(flag)).intValue();
+                            homeY = ((Number) flags.get(flag)).doubleValue();
                         }
-
                         if (flag.equals("homeZ")) {
-                            homeZ = ((Long) flags.get(flag)).intValue();
+                            homeZ = ((Number) flags.get(flag)).doubleValue();
                         }
                         if (flag.equals("homeYaw")) {
-                            homeYaw = ((Double) flags.get(flag)).floatValue();
+                            homeYaw = ((Number) flags.get(flag)).floatValue();
                         }
                         if (flag.equals("homePitch")) {
-                            homePitch = ((Double) flags.get(flag)).floatValue();
+                            homePitch = ((Number) flags.get(flag)).floatValue();
                         }
                         if (flag.equals("homeWorld")) {
                             homeWorld = (String) flags.get(flag);
@@ -1683,11 +1674,9 @@ public class Clan implements Serializable, Comparable<Clan> {
             homeYaw = 0;
             homeWorld = null;
         } else {
-            home.setY(home.getBlockY() + 1);
-
-            homeX = home.getBlockX();
-            homeY = home.getBlockY();
-            homeZ = home.getBlockZ();
+            homeX = home.getX();
+            homeY = home.getY();
+            homeZ = home.getZ();
             homeYaw = home.getYaw();
             homePitch = home.getPitch();
             homeWorld = home.getWorld() == null ? null : home.getWorld().getName();
@@ -1699,20 +1688,17 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (homeWorld == null) {
             return null;
         }
-
-        World world = SimpleClans.getInstance().getServer().getWorld(homeWorld);
-
+        World world = Bukkit.getWorld(homeWorld);
         if (world == null) {
             return null;
         }
 
-        if (!(world.getBlockAt(homeX, homeY, homeZ).getType().equals(XMaterial.AIR.parseMaterial())) ||
-                !(world.getBlockAt(homeX, homeY + 1, homeZ).getType().equals(XMaterial.AIR.parseMaterial()))
-                || homeY == 0) {
-            return new Location(world, homeX, world.getHighestBlockYAt(homeX, homeZ), homeZ, homeYaw, homePitch);
-        } else {
-            return new Location(world, homeX, homeY, homeZ, homeYaw, homePitch);
+        Location location = new Location(world, homeX, homeY, homeZ, homeYaw, homePitch);
+        if (location.getBlock().getType() != Material.AIR ||
+                location.clone().add(0, 1, 0).getBlock().getType() != Material.AIR) {
+            location.setY(world.getHighestBlockYAt(location) + 1);
         }
+        return location;
     }
 
     public String getTagLabel(boolean isLeader) {
