@@ -2,10 +2,11 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -21,21 +22,19 @@ import java.util.List;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class RanksFrame extends SCFrame {
-	private Paginator paginator;
-	private final Clan subject;
+	private final Paginator paginator;
 	private final OfflinePlayer toEdit;
+	private final List<Rank> ranks;
 
 	public RanksFrame(SCFrame parent, Player viewer, Clan subject, @Nullable OfflinePlayer toEdit) {
 		super(parent, viewer);
-		this.subject = subject;
 		this.toEdit = toEdit;
+		ranks = subject != null ? subject.getRanks() : new ArrayList<>();
+		paginator = new Paginator(getSize() - 9, ranks.size());
 	}
 
 	@Override
 	public void createComponents() {
-		List<Rank> ranks = subject != null ? subject.getRanks() : new ArrayList<>();
-		paginator = new Paginator(getSize() - 9, ranks.size());
-
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 2 || slot == 4 || slot == 6 || slot == 7)
 				continue;
@@ -61,13 +60,13 @@ public class RanksFrame extends SCFrame {
 			if (toEdit == null) {
 				lore = Arrays.asList(
 						lang("gui.ranks.rank.displayname.lore",getViewer(),
-								Helper.parseColors(rank.getDisplayName())),
+								ChatUtils.parseColors(rank.getDisplayName())),
 						lang("gui.ranks.rank.edit.permissions.lore",getViewer()),
 						lang("gui.ranks.rank.remove.lore",getViewer()));
 			} else {
 				lore = Arrays.asList(
 						lang("gui.ranks.rank.displayname.lore",getViewer(),
-								Helper.parseColors(rank.getDisplayName())),
+								ChatUtils.parseColors(rank.getDisplayName())),
 						lang("gui.ranks.rank.assign.lore",getViewer(), toEdit.getName()));
 			}
 			SCComponent c = new SCComponentImpl(lang("gui.ranks.rank.title",getViewer(), rank.getName()), lore,
@@ -111,7 +110,8 @@ public class RanksFrame extends SCFrame {
 	@Override
 	public @NotNull String getTitle() {
 		if (toEdit != null) {
-			String rank = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(toEdit.getUniqueId()).getRankId();
+			ClanManager clanManager = SimpleClans.getInstance().getClanManager();
+			String rank = clanManager.getCreateClanPlayer(toEdit.getUniqueId()).getRankId();
 			return lang("gui.ranks.title.set.rank",getViewer(), rank);
 		}
 		return lang("gui.ranks.title",getViewer());

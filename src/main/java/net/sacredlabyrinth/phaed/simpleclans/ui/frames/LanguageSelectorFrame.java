@@ -24,12 +24,15 @@ public class LanguageSelectorFrame extends SCFrame {
 
     private final ClanPlayer clanPlayer;
     private final SimpleClans plugin;
-    private Paginator paginator;
+    private final Paginator paginator;
+    private final List<Locale> languages;
 
     public LanguageSelectorFrame(@Nullable SCFrame parent, @NotNull Player viewer) {
         super(parent, viewer);
         plugin = SimpleClans.getInstance();
         clanPlayer = plugin.getClanManager().getCreateClanPlayer(viewer.getUniqueId());
+        languages = LanguageResource.getAvailableLocales();
+        paginator = new Paginator(getSize() - 9, languages.size());
     }
 
     @Override
@@ -44,8 +47,6 @@ public class LanguageSelectorFrame extends SCFrame {
 
     @Override
     public void createComponents() {
-        List<Locale> languages = LanguageResource.getAvailableLocales();
-        paginator = new Paginator(getSize() - 9, languages.size());
         addHeader();
         int slot = 9;
         for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {

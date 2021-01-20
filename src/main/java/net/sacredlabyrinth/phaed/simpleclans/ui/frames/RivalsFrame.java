@@ -17,18 +17,19 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class RivalsFrame extends SCFrame {
 	private final SimpleClans plugin = SimpleClans.getInstance();
-	private Paginator paginator;
+	private final Paginator paginator;
 	private final Clan subject;
+	private final List<String> rivals;
 
 	public RivalsFrame(Player viewer, SCFrame parent, Clan subject) {
 		super(parent, viewer);
 		this.subject = subject;
+		rivals = subject.getRivals();
+		paginator = new Paginator(getSize() - 9, rivals.size());
 	}
 
 	@Override
 	public void createComponents() {
-		List<String> rivals = subject.getRivals();
-		paginator = new Paginator(getSize() - 9, rivals.size());
 
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 2 || slot == 4 || slot == 6 || slot == 7)
