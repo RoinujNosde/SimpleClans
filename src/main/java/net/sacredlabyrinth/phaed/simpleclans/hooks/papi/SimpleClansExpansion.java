@@ -140,8 +140,8 @@ public class SimpleClansExpansion extends PlaceholderExpansion {
                     }
                 }
             }
+            plugin.getLogger().warning(String.format("Placeholder %s not found", placeholder));
         }
-        plugin.getLogger().warning(String.format("Placeholder %s not found", placeholder));
         return "";
     }
 
