@@ -1119,6 +1119,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void promote(UUID playerUniqueId) {
         ClanPlayer cp = SimpleClans.getInstance().getClanManager().getCreateClanPlayer(playerUniqueId);
 
+        cp.setLeader(true);
         cp.setTrusted(true);
 
         SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
