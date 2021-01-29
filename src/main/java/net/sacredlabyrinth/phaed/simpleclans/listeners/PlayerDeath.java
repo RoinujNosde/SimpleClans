@@ -36,9 +36,11 @@ public class PlayerDeath implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onEntityDeath(PlayerDeathEvent event) {
+        SimpleClans.debug("A player died");
         Player victim = event.getEntity();
         if (plugin.getSettingsManager().isBlacklistedWorld(victim.getLocation().getWorld())
                 || victim.hasMetadata("NPC")) {
+            SimpleClans.debug("Blacklisted world");
             return;
         }
 
@@ -93,6 +95,7 @@ public class PlayerDeath implements Listener {
     @Contract("_, null -> true")
     private boolean isInvalidKill(@NotNull Player victim, @Nullable Player attacker) {
         if (attacker == null || attacker.getUniqueId().equals(victim.getUniqueId())) {
+            SimpleClans.debug("Attacker is not a player or victim and attacker have the same UUID");
             return true;
         }
 

@@ -257,14 +257,18 @@ public final class PermissionsManager {
      */
     public boolean has(Player player, String perm) {
         if (player == null) {
+            SimpleClans.debug("null player");
             return false;
         }
 
+        boolean hasPermission;
         if (permission != null) {
-            return permission.has(player, perm);
+            hasPermission = permission.has(player, perm);
         } else {
-            return player.hasPermission(perm);
+            hasPermission = player.hasPermission(perm);
         }
+        SimpleClans.debug(String.format("Permission %s is %s for %s", perm, hasPermission, player.getName()));
+        return hasPermission;
     }
     
     /**

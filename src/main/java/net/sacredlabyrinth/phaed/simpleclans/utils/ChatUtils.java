@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -178,8 +179,13 @@ public class ChatUtils {
         }
 
         // Iterate over the wrapped lines, applying the last color from one line to the beginning of the next
-        applyLastColorToFollowingLines(lines);
-
+        // TODO Fix me
+        try {
+            applyLastColorToFollowingLines(lines);
+        } catch (StringIndexOutOfBoundsException ex) {
+            Logger.getLogger("SimpleClans").warning(String.format("Error wrapping string: %s", rawString));
+            return new String[] {rawString};
+        }
         return lines.toArray(new String[0]);
     }
 

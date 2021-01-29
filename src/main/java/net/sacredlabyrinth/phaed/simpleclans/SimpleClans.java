@@ -37,7 +37,7 @@ public class SimpleClans extends JavaPlugin {
     private final ArrayList<String> messages = new ArrayList<>();
     private static SimpleClans instance;
     private static LanguageResource languageResource;
-    private static final Logger logger = Logger.getLogger("Minecraft");
+    private static final Logger logger = Logger.getLogger("SimpleClans");
     private SCCommandManager commandManager;
     private ClanManager clanManager;
     private RequestManager requestManager;
