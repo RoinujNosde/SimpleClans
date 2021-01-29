@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -619,11 +620,12 @@ public class ChatBlock {
             return;
         }
 
-        String[] message = colorize(wordWrap(msg));
-
-        for (String out : message) {
-            receiver.sendMessage(out);
-        }
+        receiver.sendMessage(ChatUtils.parseColors(msg));
+//        String[] message = colorize(wordWrap(msg));
+//
+//        for (String out : message) {
+//            receiver.sendMessage(out);
+//        }
     }
 
     public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
