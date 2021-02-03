@@ -26,13 +26,7 @@ public class ChatBlock {
     private String color = "";
     private boolean cropRight = true;
     private boolean padRight = true;
-    
-    /**
-     *
-     */
-    public static final Logger LOG = Logger.getLogger("Minecraft");
 
-    
     public void setCropRight(boolean cropRight) {
     	this.cropRight = cropRight;
     }

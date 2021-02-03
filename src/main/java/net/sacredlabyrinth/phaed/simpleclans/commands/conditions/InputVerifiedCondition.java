@@ -24,7 +24,7 @@ public class InputVerifiedCondition extends AbstractParameterCondition<ClanInput
                                   BukkitCommandExecutionContext execContext,
                                   ClanInput value)
             throws InvalidCommandArgument {
-        if (!value.getClan().isVerified()) {
+        if (!value.getClan().isVerified() && !context.getIssuer().hasPermission("simpleclans.mod.bypass")) {
             throw new ConditionFailedException(lang("other.clan.not.verified", execContext.getSender()));
         }
     }
