@@ -217,7 +217,6 @@ public class StaffCommands extends BaseCommand {
         }
     }
 
-
     @Subcommand("%mod %verify")
     @CommandPermission("simpleclans.mod.verify")
     @CommandCompletion("@clans:unverified")
@@ -250,6 +249,23 @@ public class StaffCommands extends BaseCommand {
         }
         cm.deleteClanPlayer(player.getClanPlayer());
         ChatBlock.sendMessage(sender, AQUA + lang("player.purged", sender));
+    }
+
+    @Subcommand("%mod %kick")
+    @Description("{@@command.description.mod.kick}")
+    @CommandPermission("simpleclans.mod.kick")
+    @CommandCompletion("@all_non_leaders|@all_leaders")
+    public void kick(CommandSender sender, @Conditions("clan_member") @Name("player") ClanPlayerInput cp) {
+        ClanPlayer clanPlayer = cp.getClanPlayer();
+        Clan clan = Objects.requireNonNull(clanPlayer.getClan());
+        if (clan.getLeaders().size() == 1) {
+            ChatBlock.sendMessageKey(sender, "cannot.kick.last.leader");
+            return;
+        }
+
+        clan.addBb(sender.getName(), AQUA + lang("has.been.kicked.by", clanPlayer.getName(),
+                sender.getName(), sender));
+        clan.removePlayerFromClan(clanPlayer.getUniqueId());
     }
 
     @Subcommand("%mod %disband")

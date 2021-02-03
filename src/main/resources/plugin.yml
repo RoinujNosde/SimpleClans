@@ -26,6 +26,8 @@ permissions:
     description: Can ban players from the entire plugin
   simpleclans.mod.disband:
     description: Can disband any clan
+  simpleclans.mod.kick:
+    description: Can kick any player
   simpleclans.mod.globalff:
     description: Can turn off global friendly fire protection
   simpleclans.mod.hometp:
@@ -190,6 +192,7 @@ permissions:
       simpleclans.mod.verify: true
       simpleclans.mod.ban: true
       simpleclans.mod.disband: true
+      simpleclans.mod.kick: true
       simpleclans.mod.globalff: true
       simpleclans.mod.bypass: true
       simpleclans.mod.home: true
