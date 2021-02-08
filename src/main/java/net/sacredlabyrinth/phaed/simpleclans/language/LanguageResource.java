@@ -163,8 +163,14 @@ public class LanguageResource {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		int lineCount = 0;
 		try {
-			while (reader.readLine() != null) {
-				lineCount++;
+			while (true) {
+				String line = reader.readLine();
+				if (line == null) {
+					break;
+				}
+				if (!line.startsWith("#")) {
+					lineCount++;
+				}
 			}
 		} catch (IOException ex) {
 			lineCount = -1;

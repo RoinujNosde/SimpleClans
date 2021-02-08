@@ -14,17 +14,18 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class PermissionsFrame extends SCFrame {
 	private final Rank rank;
-	private Paginator paginator;
+	private final Paginator paginator;
+	private final String[] permissions;
 
 	public PermissionsFrame(SCFrame parent, Player viewer, Rank rank) {
 		super(parent, viewer);
 		this.rank = rank;
+		permissions = rank.getPermissions().toArray(new String[0]);
+		paginator = new Paginator(getSize() - 9, permissions.length);
 	}
 
 	@Override
 	public void createComponents() {
-		String[] permissions = rank.getPermissions().toArray(new String[0]);
-		paginator = new Paginator(getSize() - 9, permissions.length);
 
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 2 || slot == 4 || slot == 6 || slot == 7)
@@ -71,7 +72,7 @@ public class PermissionsFrame extends SCFrame {
 	}
 
 	private void updateFrame() {
-		InventoryDrawer.update(this);
+		InventoryDrawer.open(this);
 	}
 
 	@Override

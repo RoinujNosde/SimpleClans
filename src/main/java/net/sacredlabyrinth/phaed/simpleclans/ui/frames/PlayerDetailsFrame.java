@@ -25,7 +25,7 @@ public class PlayerDetailsFrame extends SCFrame {
 	public PlayerDetailsFrame(Player viewer, SCFrame parent, OfflinePlayer subject) {
 		super(parent, viewer);
 		this.subject = subject;
-		ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(viewer.getUniqueId());
+		ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(subject.getUniqueId());
 		subjectName = cp.getName();
 		clan = cp.getClan();
 	}
@@ -44,14 +44,23 @@ public class PlayerDetailsFrame extends SCFrame {
 		if (!isSameClan()) {
 			return;
 		}
-		
+
+		addKick();
+		addPromoteDemote();
+		addAssignUnassign();
+		addTrustUntrust();
+	}
+
+	private void addKick() {
 		SCComponent kick = new SCComponentImpl(lang("gui.playerdetails.kick.title",getViewer()), null, XMaterial.RED_WOOL,
 				28);
 		kick.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "kick", true, subjectName));
 		kick.setConfirmationRequired(ClickType.LEFT);
 		kick.setPermission(ClickType.LEFT, RankPermission.KICK);
 		add(kick);
+	}
 
+	private void addPromoteDemote() {
 		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click",getViewer()),
 						lang("gui.playerdetails.demote.lore.right.click",getViewer())),
@@ -65,7 +74,9 @@ public class PlayerDetailsFrame extends SCFrame {
 		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.leader.demote");
+	}
 
+	private void addAssignUnassign() {
 		SCComponentImpl assignUnassign = new SCComponentImpl(lang("gui.playerdetails.assign.unassign.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.assign.lore.left.click",getViewer()),
 						lang("gui.playerdetails.unassign.lore.right.click",getViewer())),
@@ -78,7 +89,9 @@ public class PlayerDetailsFrame extends SCFrame {
 				() -> InventoryDrawer.open(new RanksFrame(this, getViewer(), clan, subject)));
 		add(assignUnassign);
 		assignUnassign.setPermission(ClickType.LEFT, "simpleclans.leader.rank.assign");
+	}
 
+	private void addTrustUntrust() {
 		SCComponent trustUntrust = new SCComponentImpl(lang("gui.playerdetails.trust.untrust.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.trust.lore.left.click",getViewer()),
 						lang("gui.playerdetails.untrust.lore.right.click",getViewer())),

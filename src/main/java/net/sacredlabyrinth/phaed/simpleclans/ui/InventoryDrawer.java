@@ -2,9 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.events.FrameOpenEvent;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.utils.WordWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -109,8 +109,11 @@ public class InventoryDrawer {
             if (oldLore != null) {
                 ArrayList<String> newLore = new ArrayList<>();
                 for (String line : oldLore) {
-                    String[] strings = ChatUtils.wordWrap(line, plugin.getSettingsManager().getLoreLength());
-                    newLore.addAll(Arrays.asList(strings));
+                    if (line.isEmpty()) {
+                        continue;
+                    }
+                    WordWrapper wrapper = new WordWrapper(line, plugin.getSettingsManager().getLoreLength());
+                    newLore.addAll(Arrays.asList(wrapper.wrap()));
                 }
                 itemMeta.setLore(newLore);
                 c.setItemMeta(itemMeta);

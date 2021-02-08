@@ -8,6 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResignPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
@@ -102,7 +103,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", Helper.parseColors(tag)));
+        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
         clan.changeClanTag(tag);
         cm.updateDisplayName(player);
     }

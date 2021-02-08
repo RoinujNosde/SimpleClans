@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 
 import com.cryptomorin.xseries.XMaterial;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
 import org.bukkit.OfflinePlayer;
@@ -21,7 +22,7 @@ public class PlayerDetailsFrame extends SCFrame {
 	public PlayerDetailsFrame(@NotNull Player viewer, SCFrame parent, @NotNull OfflinePlayer subject) {
 		super(parent, viewer);
 		this.subject = subject;
-		subjectName = subject.getName();
+		subjectName = SimpleClans.getInstance().getClanManager().getCreateClanPlayer(subject.getUniqueId()).getName();
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class PlayerDetailsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.playerdetails.title", getViewer(), subject.getName());
+		return lang("gui.playerdetails.title", getViewer(), subjectName);
 	}
 
 	@Override

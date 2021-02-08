@@ -4,18 +4,8 @@
   <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
   <artifactId>SimpleClans</artifactId>
   <name>SimpleClans</name>
-  <version>2.14.6</version>
+  <version>2.14.7</version>
   <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
-  <ciManagement>
-    <system>jenkins</system>
-    <url>http://104.236.246.108:8080</url>
-  </ciManagement>
-  <scm>
-    <connection>scm:git:git:@github.com:marcelo-mason/SimpleClans.git</connection>
-    <developerConnection>scm:git:git:@github.com:marcelo-mason/SimpleClans.git</developerConnection>
-    <tag>SimpleClans</tag>
-    <url>http://github.com/marcelo-mason/SimpleClans.git/tree/master/</url>
-  </scm>
   <build>
     <resources>
       <resource>
