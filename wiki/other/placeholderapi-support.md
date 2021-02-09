@@ -64,29 +64,18 @@ description: null
 | %simpleclans\_clan\_onlinemembers\_count% |  |  |  |
 | %simpleclans\_clan\_allies\_count% |  |  |  |
 | %simpleclans\_clan\_rivals\_count% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_neutral% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_civilian% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_rival% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_kills% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_deaths% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_kdr% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_average\_wk% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_leader\_size% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_balance% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_allow\_withdraw% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_allow\_deposit% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_size% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_name% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_color\_tag% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_tag% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_founded% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_friendly\_fire% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_is\_unrivable% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_is\_anyonline% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_is\_verified% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_capeurl% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_inactivedays% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_onlinemembers\_count% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_allies\_count% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_rivals\_count% |  |  |  |
+
+#### Top Clans Placeholders
+
+The top clans is a group of placeholders that helps you create leaderboards.  
+You can put `_topclans_#_` in any existing clan placeholder to get the value for the clan in a specific rank position.  
+Ex.:  
+`%simpleclans_topclans_1_clan_name%` - this will return the name of the Clan in the first position.
+
+#### Top Players Placeholders
+
+This one is another group of placeholders to create leaderboards. As the name suggests, it's about players and not clans, but they work similarly.  
+Adding `_topplayers_#_` to existing player placeholders will get the value for the Player in the specified rank.  
+Ex.:  
+`%simpleclans_topplayers_2_tag_label%` - this will return the tag label for the Player in the second position.
 
