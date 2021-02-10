@@ -79,3 +79,7 @@ Adding `_topplayers_#_` to existing player placeholders will get the value for t
 Ex.:  
 `%simpleclans_topplayers_2_tag_label%` - this will return the tag label for the Player in the second position.
 
+#### HolographicDisplays
+
+If you intend to use these placeholders with HolographicDisplays, remember to [download ](https://www.spigotmc.org/resources/18461/)the extension.
+
