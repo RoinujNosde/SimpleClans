@@ -33,8 +33,8 @@ description: null
 | %simpleclans\_inactive\_days% | Числовой |  |  |
 | %simpleclans\_lastseen% | Числовой |  |  |
 | %simpleclans\_lastseendays% | Числовой |  |  |
-| %simpleclans\_tag% | Строковый | lowerscored Clan tag without color |  |
-| %simpleclans\_tag\_label% | Строковый | Clan tag with correct mayus, color and at the end &c |  |
+| %simpleclans\_tag% | Строковый | Тег клана без цвета в нижнем регистре. |  |
+| %simpleclans\_tag\_label% | Строковый | Полный тег клана с цветом |  |
 | %simpleclans\_rank% | Строковый |  |  |
 | %simpleclans\_rank\_displayname% | Строковый |  |  |
 | %simpleclans\_clanchat\_player\_color% |  |  |  |
@@ -89,4 +89,26 @@ description: null
 | %simpleclanstopclans\_\#\_clan\_onlinemembers\_count% |  |  |  |
 | %simpleclanstopclans\_\#\_clan\_allies\_count% |  |  |  |
 | %simpleclanstopclans\_\#\_clan\_rivals\_count% |  |  |  |
+
+#### Топ кланов
+
+Топ кланов – это группа placeholder'ов, благодаря которой вы можете создавать свои таблицы лидеров.   
+  
+Для этого необходимо обратиться к списку выше, взять один из существующих `%simpleclanstopclans_#%`, но вместо `#` добавить `_topclans_#_`, где \# – номер позиции клана.  
+  
+Пример.:  
+`%simpleclans_topclans_1_clan_name%` – вернёт клан с именем, находящийся на первой позиции.
+
+#### Топ игроков
+
+Другая группа placeholder'ов позволяет создать таблицу лидеров игроков. Принцип схож с топом кланов.  
+  
+Добавьте `_topplayers_#_` к существующему placeholder'у игроков, чтобы получить значение для указанной позиции.  
+  
+Пример:  
+`%simpleclans_topplayers_2_tag_label%` – Возвращает полный тег клана игрока, находящегося на второй позиции.
+
+#### HolographicDisplays
+
+Чтобы использовать топы \(таблицы лидеров\) с HolographicDisplays, помните об [установке ](https://www.spigotmc.org/resources/holographicextension.18461/)расширения.
 
