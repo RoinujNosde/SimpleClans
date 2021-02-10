@@ -25,5 +25,5 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: SimpleClans.jar
+        name: SimpleClans
         path: target/SimpleClans.jar
