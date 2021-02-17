@@ -22,10 +22,8 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Create Staging
-      run: mkdir staging && cp target/SimpleClans.jar staging
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
         name: SimpleClans
-        path: staging
+        path: target/SimpleClans.jar
