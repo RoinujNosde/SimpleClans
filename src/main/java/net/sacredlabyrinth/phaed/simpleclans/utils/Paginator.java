@@ -1,5 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+
 /**
  * 
  * @author RoinujNosde
@@ -9,8 +13,9 @@ public class Paginator {
 	
 	private int currentPage;
 	private final int sizePerPage;
-	private final int totalElements;
-	
+	private int totalElements;
+	private Collection<?> collection;
+
 	public Paginator(int sizePerPage, int totalElements) {
 		if (sizePerPage < 1) {
 			throw new IllegalArgumentException("sizePerPage cannot be less than 1");
@@ -21,6 +26,14 @@ public class Paginator {
 		this.sizePerPage = sizePerPage;
 		this.totalElements = totalElements;
 	}
+
+	public Paginator(int sizePerPage, @NotNull Collection<?> collection) {
+		if (sizePerPage < 1) {
+			throw new IllegalArgumentException("sizePerPage cannot be less than 1");
+		}
+		this.sizePerPage = sizePerPage;
+		this.collection = collection;
+	}
 	
 	/**
 	 * 
@@ -29,6 +42,9 @@ public class Paginator {
 	 * @author RoinujNosde
 	 */
 	public int getTotalElements() {
+		if (collection != null) {
+			return collection.size();
+		}
 		return totalElements;
 	}
 	
@@ -88,8 +104,9 @@ public class Paginator {
 	/**
 	 * @return if there is a next page
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public boolean hasNextPage() {
-		return !((sizePerPage * (currentPage + 1)) > totalElements);
+		return !((sizePerPage * (currentPage + 1)) > getTotalElements());
 	}
 
 	/**

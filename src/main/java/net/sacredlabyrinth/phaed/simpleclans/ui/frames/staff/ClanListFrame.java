@@ -34,7 +34,7 @@ public class ClanListFrame extends SCFrame {
 		if (type == Type.UNVERIFIED) {
 			clans = clans.stream().filter(c -> !c.isVerified()).collect(Collectors.toList());
 		}
-		paginator = new Paginator(getSize() - 9, clans.size());
+		paginator = new Paginator(getSize() - 9, clans);
 		plugin.getClanManager().sortClansByName(clans, true);
 	}
 

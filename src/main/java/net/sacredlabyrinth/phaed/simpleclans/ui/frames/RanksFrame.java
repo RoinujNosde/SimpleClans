@@ -30,7 +30,7 @@ public class RanksFrame extends SCFrame {
 		super(parent, viewer);
 		this.toEdit = toEdit;
 		ranks = subject != null ? subject.getRanks() : new ArrayList<>();
-		paginator = new Paginator(getSize() - 9, ranks.size());
+		paginator = new Paginator(getSize() - 9, ranks);
 	}
 
 	@Override

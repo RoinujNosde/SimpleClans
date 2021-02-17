@@ -25,22 +25,19 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class CoordsFrame extends SCFrame {
 
-	private final Clan subject;
-	private Paginator paginator;
+	private final List<ClanPlayer> allMembers;
+	private final Paginator paginator;
 
 	public CoordsFrame(Player viewer, SCFrame parent, Clan subject) {
 		super(parent, viewer);
+		allMembers = VanishUtils.getNonVanished(getViewer(), subject);
+		allMembers.sort((cp1, cp2) -> Boolean.compare(cp1.isLeader(), cp2.isLeader()));
 
-		this.subject = subject;
+		paginator = new Paginator(getSize() - 9, allMembers);
 	}
 
 	@Override
 	public void createComponents() {
-		List<ClanPlayer> allMembers = VanishUtils.getNonVanished(getViewer(), subject);
-		allMembers.sort((cp1, cp2) -> Boolean.compare(cp1.isLeader(), cp2.isLeader()));
-
-		paginator = new Paginator(getSize() - 9, allMembers.size());
-
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 2 || slot == 6 || slot == 7)
 				continue;

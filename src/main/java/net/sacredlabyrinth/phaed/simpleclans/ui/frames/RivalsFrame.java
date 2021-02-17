@@ -25,7 +25,7 @@ public class RivalsFrame extends SCFrame {
 		super(parent, viewer);
 		this.subject = subject;
 		rivals = subject.getRivals();
-		paginator = new Paginator(getSize() - 9, rivals.size());
+		paginator = new Paginator(getSize() - 9, rivals);
 	}
 
 	@Override

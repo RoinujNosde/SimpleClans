@@ -28,7 +28,7 @@ public class ClanListFrame extends SCFrame {
 
 	public ClanListFrame(SCFrame parent, Player viewer) {
 		super(parent, viewer);
-		paginator = new Paginator(getSize() - 9, clans.size());
+		paginator = new Paginator(getSize() - 9, clans);
 		plugin.getClanManager().sortClansByKDR(clans);
 
 		rankingResolver = new RankingNumberResolver<>(clans, c -> KDRFormat.toBigDecimal(c.getTotalKDR()), false,
