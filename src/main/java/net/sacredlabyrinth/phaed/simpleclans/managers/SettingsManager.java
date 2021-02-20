@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -197,6 +198,14 @@ public final class SettingsManager {
 	private int saveInterval;
 	private String rankingType;
 	private int loreLength;
+	private boolean warEnabled;
+	private boolean landSharing;
+	private List<String> protectionProviders;
+	private EventPriority warListenerPriority;
+	private boolean warCanInteract;
+	private boolean warCanBreak;
+	private boolean warCanPlace;
+	private boolean warCanDamage;
 
     /**
      *
@@ -407,6 +416,14 @@ public final class SettingsManager {
         maxKillsPerVictimEnabled = getConfig().getBoolean("kdr-grinding-prevention.enable-max-kills");
         delayBetweenKills = getConfig().getInt("kdr-grinding-prevention.delay-between-kills");
         delayBetweenKillsEnabled = getConfig().getBoolean("kdr-grinding-prevention.enable-kill-delay");
+        warEnabled = getConfig().getBoolean("war-and-protection.war-enabled", false);
+        landSharing = getConfig().getBoolean("war-and-protection.land-sharing", true);
+        protectionProviders = getConfig().getStringList("war-and-protection.protection-providers");
+        warListenerPriority = EventPriority.valueOf(getConfig().getString("war-and-protection.listener-priority", "HIGHEST"));
+        warCanInteract = getConfig().getBoolean("war-and-protection.can-interact", true);
+        warCanBreak = getConfig().getBoolean("war-and-protection.can-break", true);
+        warCanDamage = getConfig().getBoolean("war-and-protection.can-damage", true);
+        warCanPlace = getConfig().getBoolean("war-and-protection.can-place", true);
         
         // migrate from old way of adding ports
         if (database.contains(":")) {
@@ -434,6 +451,38 @@ public final class SettingsManager {
             plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
                     " that matches their clan tag.");
         }
+    }
+
+    public boolean isWarEnabled() {
+        return warEnabled;
+    }
+
+    public boolean isLandSharing() {
+        return landSharing;
+    }
+
+    public List<String> getProtectionProviders() {
+        return protectionProviders;
+    }
+
+    public EventPriority getWarListenerPriority() {
+        return warListenerPriority;
+    }
+
+    public boolean isWarCanInteract() {
+        return warCanInteract;
+    }
+
+    public boolean isWarCanBreak() {
+        return warCanBreak;
+    }
+
+    public boolean isWarCanPlace() {
+        return warCanPlace;
+    }
+
+    public boolean isWarCanDamage() {
+        return warCanDamage;
     }
 
     public int getLoreLength() {

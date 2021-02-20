@@ -52,6 +52,17 @@ settings:
     ranking-type: "DENSE"
     list-default-order-by: kdr
     lore-length: 36
+war-and-protection:
+    war-enabled: false
+    land-sharing: true
+    protection-providers:
+    - net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers.WorldGuardProvider
+    - net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers.GriefPreventionProvider
+    listener-priority: HIGHEST
+    can-interact: true
+    can-break: true
+    can-place: true
+    can-damage: true
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10
