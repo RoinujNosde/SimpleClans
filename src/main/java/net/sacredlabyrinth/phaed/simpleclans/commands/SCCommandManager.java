@@ -59,6 +59,7 @@ public class SCCommandManager extends PaperCommandManager {
         registerDependency(StorageManager.class, plugin.getStorageManager());
         registerDependency(PermissionsManager.class, plugin.getPermissionsManager());
         registerDependency(RequestManager.class, plugin.getRequestManager());
+        registerDependency(ProtectionManager.class, plugin.getProtectionManager());
     }
 
     private void registerCompletions() {

@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.HomeRegroupEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Location;
@@ -22,6 +23,8 @@ public class HomeCommands extends BaseCommand {
     private PermissionsManager permissions;
     @Dependency
     private SettingsManager settings;
+    @Dependency
+    private ProtectionManager protection;
     @Dependency
     private ClanManager cm;
 
@@ -108,6 +111,13 @@ public class HomeCommands extends BaseCommand {
                 !permissions.has(player, "simpleclans.mod.home")) {
             ChatBlock.sendMessage(player, RED + lang("home.base.only.once", player));
             return;
+        }
+        if (settings.isSetBaseOnlyInLand()) {
+            Land land = protection.getLandAt(player.getLocation());
+            if (land == null || !land.getOwners().contains(player.getUniqueId())) {
+                // TODO Send message
+                return;
+            }
         }
         PlayerHomeSetEvent homeSetEvent = new PlayerHomeSetEvent(clan, cp, player.getLocation());
         plugin.getServer().getPluginManager().callEvent(homeSetEvent);

@@ -3,9 +3,11 @@ package net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.ryanhamshire.GriefPrevention.events.ClaimCreatedEvent;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class GriefPreventionProvider implements ProtectionProvider {
+public class GriefPreventionProvider implements ProtectionProvider<ClaimCreatedEvent> {
 
     @Override
     public void setup() {}
@@ -33,7 +35,7 @@ public class GriefPreventionProvider implements ProtectionProvider {
     }
 
     @Override
-    public @NotNull Set<Land> getLandsOf(@NotNull Player player) {
+    public @NotNull Set<Land> getLandsOf(@NotNull OfflinePlayer player, @NotNull World world) {
         HashSet<Land> lands = new HashSet<>();
         for (Claim claim : GriefPrevention.instance.dataStore.getPlayerData(player.getUniqueId()).getClaims()) {
             lands.add(getLand(claim));
@@ -53,6 +55,19 @@ public class GriefPreventionProvider implements ProtectionProvider {
         if (claim != null) {
             dataStore.deleteClaim(claim);
         }
+    }
+
+    @Override
+    public @Nullable Class<ClaimCreatedEvent> getCreateLandEvent() {
+        return ClaimCreatedEvent.class;
+    }
+
+    @Override
+    public @Nullable Player getPlayer(ClaimCreatedEvent event) {
+        if (event.getCreator() instanceof Player) {
+            return ((Player) event.getCreator());
+        }
+        return null;
     }
 
     @Override

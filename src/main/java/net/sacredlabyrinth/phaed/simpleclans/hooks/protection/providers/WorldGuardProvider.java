@@ -9,15 +9,17 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "rawtypes"})
 public class WorldGuardProvider implements ProtectionProvider {
 
     private RegionContainer regionContainer;
@@ -46,9 +48,9 @@ public class WorldGuardProvider implements ProtectionProvider {
     }
 
     @Override
-    public @NotNull Set<Land> getLandsOf(@NotNull Player player) {
+    public @NotNull Set<Land> getLandsOf(@NotNull OfflinePlayer player, @NotNull World world) {
         HashSet<Land> lands = new HashSet<>();
-        RegionManager regionManager = getRegionManager(player.getLocation().getWorld());
+        RegionManager regionManager = getRegionManager(world);
         if (regionManager != null) {
             for (ProtectedRegion region : regionManager.getRegions().values()) {
                 if (region.getOwners().contains(player.getUniqueId())) {
@@ -71,6 +73,16 @@ public class WorldGuardProvider implements ProtectionProvider {
         if (regionManager != null) {
             regionManager.removeRegion(id);
         }
+    }
+
+    @Override
+    public @Nullable Class<?> getCreateLandEvent() {
+        return null;
+    }
+
+    @Override
+    public @Nullable Player getPlayer(Event event) {
+        return null;
     }
 
     @Nullable
