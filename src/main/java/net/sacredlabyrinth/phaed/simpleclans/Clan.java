@@ -11,16 +11,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -31,6 +26,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class Clan implements Serializable, Comparable<Clan> {
 
     private static final long serialVersionUID = 1L;
+    private static final String WARRING_KEY = "warring";
     private boolean verified;
     private String tag;
     private String colorTag;
@@ -46,15 +42,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     private List<String> rivals = new ArrayList<>();
     private List<String> bb = new ArrayList<>();
     private final List<String> members = new ArrayList<>();
-    private final HashMap<String, Clan> warringClans = new HashMap<>();
-    private double homeX = 0;
-    private double homeY = 0;
-    private double homeZ = 0;
-    private float homeYaw = 0;
-    private float homePitch = 0;
-    private @Nullable String homeWorld = "";
-    private boolean allowWithdraw = false;
-    private boolean allowDeposit = true;
+    private Flags flags = new Flags(null);
     private boolean feeEnabled;
     private List<Rank> ranks = new ArrayList<>();
     private @Nullable String defaultRank = null;
@@ -66,6 +54,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     public Clan() {
         this.capeUrl = "";
         this.tag = "";
+        flags.put("allowWithdraw", false);
+        flags.put("allowDeposit", true);
     }
 
     public Clan(String tag, String name, boolean verified) {
@@ -76,7 +66,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.lastUsed = (new Date()).getTime();
         this.verified = verified;
         this.capeUrl = "";
-
+        flags.put("allowWithdraw", false);
+        flags.put("allowDeposit", true);
         if (SimpleClans.getInstance().getSettingsManager().isClanFFOnByDefault()) {
             friendlyFire = true;
         }
@@ -1529,7 +1520,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param tag the tag of the clan we are at war with
      */
     public boolean isWarring(String tag) {
-        return warringClans.containsKey(tag);
+        return flags.getStringList(WARRING_KEY).contains(tag);
     }
 
     /**
@@ -1538,7 +1529,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param clan the clan we are testing against
      */
     public boolean isWarring(Clan clan) {
-        return warringClans.containsKey(clan.getTag());
+        return isWarring(clan.getTag());
     }
 
     /**
@@ -1546,10 +1537,12 @@ public class Clan implements Serializable, Comparable<Clan> {
      *
      */
     public void addWarringClan(Clan clan) {
-        if (!warringClans.containsKey(clan.getTag())) {
-            warringClans.put(clan.getTag(), clan);
+        List<String> warring = flags.getStringList(WARRING_KEY);
+        if (!warring.contains(clan.getTag())) {
+            warring.add(clan.getTag());
+            flags.put(WARRING_KEY, warring);
+            SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
-        SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
     /**
@@ -1557,9 +1550,9 @@ public class Clan implements Serializable, Comparable<Clan> {
      *
      */
     public boolean removeWarringClan(Clan clan) {
-        Clan warring = warringClans.remove(clan.getTag());
-
-        if (warring != null) {
+        List<String> warring = flags.getStringList(WARRING_KEY);
+        if (warring.remove(clan.getTag())) {
+            flags.put(WARRING_KEY, warring);
             SimpleClans.getInstance().getStorageManager().updateClan(this);
             return true;
         }
@@ -1573,7 +1566,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the clan list
      */
     public List<Clan> getWarringClans() {
-        return new ArrayList<>(warringClans.values());
+        return flags.getStringList(WARRING_KEY).stream().map(tag -> SimpleClans.getInstance().getClanManager()
+                .getClan(tag)).collect(Collectors.toList());
     }
 
     /**
@@ -1581,23 +1575,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      *
      * @return the flags
      */
-    @SuppressWarnings("unchecked")
-	public String getFlags() {
-        JSONObject json = new JSONObject();
-
-        // writing the list of flags to json
-
-        JSONArray warring = new JSONArray();
-        warring.addAll(warringClans.keySet());
-        json.put("warring", warring);
-        json.put("homeX", homeX);
-        json.put("homeY", homeY);
-        json.put("homeZ", homeZ);
-        json.put("homePitch", homePitch);
-        json.put("homeYaw", homeYaw);
-        json.put("homeWorld", homeWorld == null ? "" : homeWorld);
-
-        return json.toString();
+    public String getFlags() {
+        return flags.toJSONString();
     }
 
     /**
@@ -1606,86 +1585,36 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param flagString the flags to set
      */
     public void setFlags(String flagString) {
-        if (flagString != null && !flagString.isEmpty()) {
-            JSONObject flags = (JSONObject) JSONValue.parse(flagString);
-
-            if (flags != null) {
-                for (Object flag : flags.keySet()) {
-                    // reading the list of flags from json
-
-                    try {
-                        if (flag.equals("warring")) {
-                            JSONArray clans = (JSONArray) flags.get(flag);
-                            if (clans != null) {
-                                for (Object tag : clans) {
-                                    SimpleClans.debug("warring added: " + tag.toString());
-                                    warringClans.put(tag.toString(), null);
-                                }
-                            }
-                        }
-                        if (flag.equals("homeX")) {
-                            homeX = ((Number) flags.get(flag)).doubleValue();
-                        }
-                        if (flag.equals("homeY")) {
-                            homeY = ((Number) flags.get(flag)).doubleValue();
-                        }
-                        if (flag.equals("homeZ")) {
-                            homeZ = ((Number) flags.get(flag)).doubleValue();
-                        }
-                        if (flag.equals("homeYaw")) {
-                            homeYaw = ((Number) flags.get(flag)).floatValue();
-                        }
-                        if (flag.equals("homePitch")) {
-                            homePitch = ((Number) flags.get(flag)).floatValue();
-                        }
-                        if (flag.equals("homeWorld")) {
-                            homeWorld = (String) flags.get(flag);
-                        }
-                    } catch (Exception ex) {
-                        Logger logger = SimpleClans.getInstance().getLogger();
-                        logger.log(Level.SEVERE, String.format("Failed reading flag: %s, value: %s", flag,
-                                flags.get(flag)), ex);
-                    }
-                }
-            }
-        }
+        flags = new Flags(flagString);
     }
 
     public void validateWarring() {
-        for (Iterator<String> iter = warringClans.keySet().iterator(); iter.hasNext(); ) {
-            String clanName = iter.next();
-
-            Clan clan = SimpleClans.getInstance().getClanManager().getClan(clanName);
-
+        List<String> warring = flags.getStringList(WARRING_KEY);
+        Iterator<String> iterator = warring.iterator();
+        while (iterator.hasNext()) {
+            String clanTag = iterator.next();
+            Clan clan = SimpleClans.getInstance().getClanManager().getClan(clanTag);
             if (clan == null) {
-                iter.remove();
-            } else {
-                SimpleClans.debug("validated: " + clanName);
-                warringClans.put(clanName, clan);
+                iterator.remove();
             }
         }
+        flags.put(WARRING_KEY, warring);
     }
 
     public void setHomeLocation(@Nullable Location home) {
-        if (home == null) {
-            homeY = 0;
-            homeX = 0;
-            homeZ = 0;
-            homePitch = 0;
-            homeYaw = 0;
-            homeWorld = null;
-        } else {
-            homeX = home.getX();
-            homeY = home.getY();
-            homeZ = home.getZ();
-            homeYaw = home.getYaw();
-            homePitch = home.getPitch();
-            homeWorld = home.getWorld() == null ? null : home.getWorld().getName();
-        }
+        flags.put("homeX", home != null ? home.getX() : 0);
+        flags.put("homeY", home != null ? home.getY() : 0);
+        flags.put("homeZ", home != null ? home.getZ() : 0);
+        flags.put("homePitch", home != null ? home.getPitch() : 0);
+        flags.put("homeYaw", home != null ? home.getYaw() : 0);
+        String world = home != null && home.getWorld() != null ? home.getWorld().getName() : "";
+        flags.put("homeWorld", world);
+
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
     public @Nullable Location getHomeLocation() {
+        String homeWorld = flags.getString("homeWorld");
         if (homeWorld == null) {
             return null;
         }
@@ -1693,8 +1622,12 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (world == null) {
             return null;
         }
-
-        Location location = new Location(world, homeX, homeY, homeZ, homeYaw, homePitch);
+        double x = flags.getNumber("homeX").doubleValue();
+        double y = flags.getNumber("homeY").doubleValue();
+        double z = flags.getNumber("homeZ").doubleValue();
+        float yaw = flags.getNumber("homeYaw").floatValue();
+        float pitch = flags.getNumber("homePitch").floatValue();
+        Location location = new Location(world, x, y, z, yaw, pitch);
         if (location.getBlock().getType() != Material.AIR ||
                 location.clone().add(0, 1, 0).getBlock().getType() != Material.AIR) {
             location.setY(world.getHighestBlockYAt(location) + 1);
@@ -1748,14 +1681,14 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("allow_withdraw")
     public boolean isAllowWithdraw() {
-        return allowWithdraw;
+        return flags.getBoolean("allowWithdraw");
     }
 
     /**
      * @param allowWithdraw the allowWithdraw to set
      */
     public void setAllowWithdraw(boolean allowWithdraw) {
-        this.allowWithdraw = allowWithdraw;
+        flags.put("allowWithdraw", allowWithdraw);
     }
 
     /**
@@ -1763,14 +1696,14 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("allow_deposit")
     public boolean isAllowDeposit() {
-        return allowDeposit;
+        return flags.getBoolean("allowDeposit");
     }
 
     /**
      * @param allowDeposit the allowDeposit to set
      */
     public void setAllowDeposit(boolean allowDeposit) {
-        this.allowDeposit = allowDeposit;
+        flags.put("allowDeposit", allowDeposit);
     }
 
     /**
@@ -1803,7 +1736,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 * Sets the clan's ranks
 	 * 
 	 */
-	public void setRanks(List<Rank> ranks) {
+	public void setRanks(@Nullable List<Rank> ranks) {
 		if (ranks == null) {
 			ranks = new ArrayList<>();
 		}
@@ -1819,7 +1752,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 		if (r != null) {
 			ranks.remove(r);
 			getMembers().forEach(cp -> {
-				if (cp.getRankId().equals(r.getName())) {
+				if (Objects.equals(cp.getRankId(), r.getName())) {
 					cp.setRank("");
 					SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
 				}
