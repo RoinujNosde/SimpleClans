@@ -368,7 +368,6 @@ public final class StorageManager {
                         String packed_allies = res.getString("packed_allies");
                         String packed_rivals = res.getString("packed_rivals");
                         String packed_bb = res.getString("packed_bb");
-                        String cape_url = res.getString("cape_url");
                         String flags = res.getString("flags");
                         JSONObject ranks = Helper.parseJson(res.getString("ranks"));
                         long founded = res.getLong("founded");
@@ -397,7 +396,6 @@ public final class StorageManager {
                         clan.setPackedAllies(packed_allies);
                         clan.setPackedRivals(packed_rivals);
                         clan.setPackedBb(packed_bb);
-                        clan.setCapeUrl(cape_url);
                         clan.setFounded(founded);
                         clan.setLastUsed(last_used);
                         clan.setBalance(balance);
@@ -409,9 +407,7 @@ public final class StorageManager {
 
                         out.add(clan);
                     } catch (Exception ex) {
-                        for (StackTraceElement el : ex.getStackTrace()) {
-                            System.out.print(el.toString());
-                        }
+                        ex.printStackTrace();
                     }
                 }
             } catch (SQLException ex) {
@@ -449,7 +445,6 @@ public final class StorageManager {
                         String packed_allies = res.getString("packed_allies");
                         String packed_rivals = res.getString("packed_rivals");
                         String packed_bb = res.getString("packed_bb");
-                        String cape_url = res.getString("cape_url");
                         String flags = res.getString("flags");
                         JSONObject ranks = Helper.parseJson(res.getString("ranks"));
                         long founded = res.getLong("founded");
@@ -478,7 +473,6 @@ public final class StorageManager {
                         clan.setPackedAllies(packed_allies);
                         clan.setPackedRivals(packed_rivals);
                         clan.setPackedBb(packed_bb);
-                        clan.setCapeUrl(cape_url);
                         clan.setFounded(founded);
                         clan.setLastUsed(last_used);
                         clan.setBalance(balance);
@@ -490,9 +484,7 @@ public final class StorageManager {
 
                         out = clan;
                     } catch (Exception ex) {
-                        for (StackTraceElement el : ex.getStackTrace()) {
-                            System.out.print(el.toString());
-                        }
+                        ex.printStackTrace();
                     }
                 }
             } catch (SQLException ex) {
@@ -573,9 +565,7 @@ public final class StorageManager {
 
                         out.add(cp);
                     } catch (Exception ex) {
-                        for (StackTraceElement el : ex.getStackTrace()) {
-                            System.out.print(el.toString());
-                        }
+                        ex.printStackTrace();
                     }
                 }
             } catch (SQLException ex) {
@@ -663,7 +653,6 @@ public final class StorageManager {
                                 clanReSync.setPackedAllies(clanDB.getPackedAllies());
                                 clanReSync.setPackedRivals(clanDB.getPackedRivals());
                                 clanReSync.setPackedBb(clanDB.getPackedBb());
-                                clanReSync.setCapeUrl(clanDB.getCapeUrl());
                                 clanReSync.setFounded(clanDB.getFounded());
                                 clanReSync.setLastUsed(clanDB.getLastUsed());
                                 clanReSync.setBalance(clanDB.getBalance());
@@ -678,9 +667,7 @@ public final class StorageManager {
 
                         out = cp;
                     } catch (Exception ex) {
-                        for (StackTraceElement el : ex.getStackTrace()) {
-                            System.out.print(el.toString());
-                        }
+                        ex.printStackTrace();
                     }
                 }
             } catch (SQLException ex) {
