@@ -115,7 +115,7 @@ public class HomeCommands extends BaseCommand {
         if (settings.isSetBaseOnlyInLand()) {
             Land land = protection.getLandAt(player.getLocation());
             if (land == null || !land.getOwners().contains(player.getUniqueId())) {
-                // TODO Send message
+                ChatBlock.sendMessageKey(player, "you.can.only.set.base.in.your.land");
                 return;
             }
         }

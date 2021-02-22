@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -78,7 +79,8 @@ public class ProtectionManager implements Listener {
             }
             for (Land land : lands) {
                 for (UUID owner : land.getOwners()) {
-                    if (isWarringAndAllowed(action, owner, player) || isSameClanAndAllowed(action, owner, player)) {
+                    if (isWarringAndAllowed(action, owner, player) ||
+                            isSameClanAndAllowed(action, owner, player, land.getId())) {
                         return true;
                     }
                 }
@@ -87,12 +89,16 @@ public class ProtectionManager implements Listener {
         return false;
     }
 
-    private boolean isSameClanAndAllowed(@NotNull Action action, @NotNull UUID owner, @NotNull Player involved) {
+    private boolean isSameClanAndAllowed(Action action, UUID owner, Player involved, String landId) {
         if (!settingsManager.isLandSharing()) {
             return false;
         }
-        // TODO
-        return false;
+        ClanPlayer cp = clanManager.getCreateClanPlayer(owner);
+        Clan involvedClan = clanManager.getClanByPlayerUniqueId(involved.getUniqueId());
+        if (cp.getClan() == null || !cp.getClan().equals(involvedClan)) {
+            return false;
+        }
+        return cp.isAllowed(action, landId);
     }
 
     private boolean isWarringAndAllowed(@NotNull Action action, @NotNull UUID owner, @NotNull Player involved) {
@@ -147,32 +153,37 @@ public class ProtectionManager implements Listener {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void registerCreateLandEvent(ProtectionProvider provider, @Nullable Class<? extends Event> createLandEvent) {
-        if (createLandEvent == null) {
-            return;
-        }
+        if (createLandEvent == null) return;
         Bukkit.getPluginManager().registerEvent(createLandEvent, this, EventPriority.NORMAL, (listener, event) -> {
-            Event t = createLandEvent.cast(event);
-            Player player = provider.getPlayer(t);
-            if (player == null) {
-                return;
-            }
+            Player player = provider.getPlayer(event);
+            if (player == null) return;
             Clan clan = clanManager.getClanByPlayerUniqueId(player.getUniqueId());
             if ((clan == null || !clan.isLeader(player)) && settingsManager.isOnlyLeadersCanCreateLands()) {
-                // TODO Send message
-                ((Cancellable) event).setCancelled(true);
+                cancelWithMessage(player, event, "only.leaders.can.create.lands");
                 return;
             }
-            if (settingsManager.isOnlyOneLandPerClan() && clan != null) {
+            if (settingsManager.isOnlyOneLandPerClan()) {
+                if (clan == null) {
+                    cancelWithMessage(player, event, "only.clan.members.can.create.lands");
+                    return;
+                }
                 for (ClanPlayer member : clan.getAllMembers()) {
                     Set<Land> lands = getLandsOf(Bukkit.getOfflinePlayer(member.getUniqueId()), player.getWorld());
                     if (lands.size() > 0) {
-                        ((Cancellable) event).setCancelled(true);
-                        // TODO Send message
+                        cancelWithMessage(player, event, "only.one.land.per.clan");
                         return;
                     }
                 }
             }
         }, plugin, true);
+    }
+
+    private void cancelWithMessage(Player player, Event event, String messageKey) {
+        if (!(event instanceof Cancellable)) {
+            return;
+        }
+        ChatBlock.sendMessageKey(player, messageKey);
+        ((Cancellable) event).setCancelled(true);
     }
 
     private void registerBlockBreakListener() {
