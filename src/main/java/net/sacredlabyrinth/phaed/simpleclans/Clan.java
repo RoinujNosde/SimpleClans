@@ -54,8 +54,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     public Clan() {
         this.capeUrl = "";
         this.tag = "";
-        flags.put("allowWithdraw", false);
-        flags.put("allowDeposit", true);
     }
 
     public Clan(String tag, String name, boolean verified) {
@@ -66,8 +64,6 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.lastUsed = (new Date()).getTime();
         this.verified = verified;
         this.capeUrl = "";
-        flags.put("allowWithdraw", false);
-        flags.put("allowDeposit", true);
         if (SimpleClans.getInstance().getSettingsManager().isClanFFOnByDefault()) {
             friendlyFire = true;
         }
@@ -1681,7 +1677,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("allow_withdraw")
     public boolean isAllowWithdraw() {
-        return flags.getBoolean("allowWithdraw");
+        return flags.getBoolean("allowWithdraw", false);
     }
 
     /**
@@ -1696,7 +1692,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("allow_deposit")
     public boolean isAllowDeposit() {
-        return flags.getBoolean("allowDeposit");
+        return flags.getBoolean("allowDeposit", true);
     }
 
     /**

@@ -55,11 +55,15 @@ public class Flags {
     }
 
     public boolean getBoolean(@NotNull String key) {
+        return getBoolean(key, false);
+    }
+
+    public boolean getBoolean(@NotNull String key, boolean def) {
         Object object = flags.get(key);
         if (object instanceof Boolean) {
             return (Boolean) object;
         }
-        return false;
+        return def;
     }
 
     @SuppressWarnings("unchecked")

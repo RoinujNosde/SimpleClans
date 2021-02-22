@@ -51,10 +51,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public ClanPlayer() {
         this.tag = "";
-        flags.put("clanChat", true);
-        flags.put("allyChat", true);
-        flags.put("bb-enabled", true);
-        flags.put("hide-tag", true);
     }
 
     /**
@@ -83,10 +79,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         this.rivalKills = 0;
         this.civilianKills = 0;
         this.tag = "";
-        flags.put("clanChat", true);
-        flags.put("allyChat", true);
-        flags.put("bb-enabled", true);
-        flags.put("hide-tag", true);
     }
 
     @Override
@@ -776,7 +768,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     @Placeholder("is_bb_enabled")
     public boolean isBbEnabled() {
-        return flags.getBoolean("bb-enabled");
+        return flags.getBoolean("bb-enabled", true);
     }
 
     public void setBbEnabled(boolean bbEnabled) {
@@ -794,7 +786,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     @Placeholder("is_tag_enabled")
     public boolean isTagEnabled() {
-        return flags.getBoolean("hide-tag");
+        return flags.getBoolean("hide-tag", true);
     }
 
     public void setTagEnabled(boolean tagEnabled) {
