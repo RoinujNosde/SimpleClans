@@ -60,8 +60,8 @@ war-and-protection:
     - GriefPreventionProvider
     listener-priority: HIGHEST
     set-base-only-in-land: false
-    war-normal-expiration-time: 60
-    war-disconnect-expiration-time: 10
+    war-normal-expiration-time: 0
+    war-disconnect-expiration-time: 0
     land-creation:
         only-leaders: false
         only-one-per-clan: false
