@@ -237,6 +237,16 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
+     * Returns the clan's tag with colors only
+     *
+     * @return the tag or an empty string if there are no colors
+     */
+    @Placeholder("tag_color")
+    public String getTagColors() {
+        return colorTag.toLowerCase().replace(tag, "");
+    }
+
+    /**
      * Returns the last used date in milliseconds
      *
      * @return the lastUsed
