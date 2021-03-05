@@ -243,7 +243,14 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("tag_color")
     public String getTagColors() {
-        return colorTag.toLowerCase().replace(tag, "");
+        System.out.println("COLOR TAG: " + colorTag.replace("\u00a7", "&"));
+        if (colorTag.startsWith("\u00a7x")) { // Hexadecimal
+            return colorTag.substring(0, 14);
+        } else if (colorTag.charAt(0) == '\u00a7') { // Regular Codes
+            return colorTag.substring(0, 2);
+        } else { // No Codes
+            return "";
+        }
     }
 
     /**
