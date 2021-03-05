@@ -6,6 +6,8 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -13,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
+
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
@@ -24,9 +28,11 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class SCPlayerListener implements Listener {
 
     private final SimpleClans plugin;
+    private final SettingsManager settingsManager;
 
     public SCPlayerListener() {
         plugin = SimpleClans.getInstance();
+        settingsManager = plugin.getSettingsManager();
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -34,12 +40,12 @@ public class SCPlayerListener implements Listener {
         String[] split = event.getMessage().substring(1).split(" ");
         String command = split[0];
 
-        if (plugin.getSettingsManager().isTagBasedClanChat()) {
+        if (settingsManager.isTagBasedClanChat()) {
             Clan clan = plugin.getClanManager().getClan(command);
             if (clan == null || !clan.isMember(event.getPlayer())) {
                 return;
             }
-            String replaced = event.getMessage().replaceFirst(command, plugin.getSettingsManager().getCommandClanChat());
+            String replaced = event.getMessage().replaceFirst(command, settingsManager.getCommandClanChat());
             event.setMessage(replaced);
         }
     }
@@ -48,7 +54,7 @@ public class SCPlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
-        if (cp == null || plugin.getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld())) {
+        if (cp == null || settingsManager.isBlacklistedWorld(player.getLocation().getWorld())) {
             return;
         }
 
@@ -74,14 +80,14 @@ public class SCPlayerListener implements Listener {
     @EventHandler
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getSettingsManager().isBlacklistedWorld(player.getWorld())) {
+        if (settingsManager.isBlacklistedWorld(player.getWorld())) {
             return;
         }
 
         ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
         String tagLabel = cp != null && cp.isTagEnabled() ? cp.getTagLabel() : null;
 
-        if (plugin.getSettingsManager().isCompatMode() && plugin.getSettingsManager().isChatTags()) {
+        if (settingsManager.isCompatMode() && settingsManager.isChatTags()) {
             if (tagLabel != null) {
                 if (player.getDisplayName().contains("{clan}")) {
                     player.setDisplayName(player.getDisplayName().replace("{clan}", tagLabel));
@@ -126,8 +132,8 @@ public class SCPlayerListener implements Listener {
 
         SimpleClans.getInstance().getPermissionsManager().addPlayerPermissions(cp);
 
-        if (plugin.getSettingsManager().isBbShowOnLogin() && cp.isBbEnabled() && cp.getClan() != null) {
-            cp.getClan().displayBb(player, plugin.getSettingsManager().getBbLoginSize());
+        if (settingsManager.isBbShowOnLogin() && cp.isBbEnabled() && cp.getClan() != null) {
+            cp.getClan().displayBb(player, settingsManager.getBbLoginSize());
         }
 
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
@@ -136,8 +142,8 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!plugin.getSettingsManager().isTeleportOnSpawn() ||
-                plugin.getSettingsManager().isBlacklistedWorld(player.getWorld())) {
+        if (!settingsManager.isTeleportOnSpawn() ||
+                settingsManager.isBlacklistedWorld(player.getWorld())) {
             return;
         }
 
@@ -152,11 +158,20 @@ public class SCPlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
+        ClanPlayer cp = plugin.getClanManager().getClanPlayer(event.getPlayer());
+        if (cp != null) {
+            Clan clan = Objects.requireNonNull(cp.getClan());
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (clan.getOnlineMembers().isEmpty()) {
+                    plugin.getProtectionManager().setWarExpirationTime(cp.getClan(),
+                            settingsManager.getWarDisconnectExpirationTime());
+                }
+            });
+        }
+        if (settingsManager.isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
             return;
         }
 
-        ClanPlayer cp = plugin.getClanManager().getClanPlayer(event.getPlayer());
 
         SimpleClans.getInstance().getPermissionsManager().removeClanPlayerPermissions(cp);
         plugin.getClanManager().updateLastSeen(event.getPlayer());
@@ -165,7 +180,7 @@ public class SCPlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        if (plugin.getSettingsManager().isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
+        if (settingsManager.isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
             return;
         }
 

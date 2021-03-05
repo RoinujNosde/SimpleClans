@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,19 +19,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-public class GriefPreventionProvider implements ProtectionProvider<ClaimCreatedEvent> {
+public class GriefPreventionProvider implements ProtectionProvider {
 
     @Override
     public void setup() {}
 
     @Override
-    public @Nullable Set<Land> getLandsAt(@NotNull Location location) {
+    public @NotNull Set<Land> getLandsAt(@NotNull Location location) {
         Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+        if (claim == null) {
+            return Collections.emptySet();
+        }
         return Collections.singleton(getLand(claim));
     }
 
-    @NotNull
-    private Land getLand(Claim claim) {
+    @Nullable
+    private Land getLand(@Nullable Claim claim) {
+        if (claim == null) {
+            return null;
+        }
         return new Land(getIdPrefix() + claim.getID().toString(), Collections.singleton(claim.getOwnerID()));
     }
 
@@ -38,6 +45,9 @@ public class GriefPreventionProvider implements ProtectionProvider<ClaimCreatedE
     public @NotNull Set<Land> getLandsOf(@NotNull OfflinePlayer player, @NotNull World world) {
         HashSet<Land> lands = new HashSet<>();
         for (Claim claim : GriefPrevention.instance.dataStore.getPlayerData(player.getUniqueId()).getClaims()) {
+            if (claim == null) {
+                continue;
+            }
             lands.add(getLand(claim));
         }
         return lands;
@@ -58,14 +68,16 @@ public class GriefPreventionProvider implements ProtectionProvider<ClaimCreatedE
     }
 
     @Override
-    public @Nullable Class<ClaimCreatedEvent> getCreateLandEvent() {
+    public @Nullable Class<? extends Event> getCreateLandEvent() {
         return ClaimCreatedEvent.class;
     }
 
     @Override
-    public @Nullable Player getPlayer(ClaimCreatedEvent event) {
-        if (event.getCreator() instanceof Player) {
-            return ((Player) event.getCreator());
+    public @Nullable Player getPlayer(Event event) {
+        if (event instanceof ClaimCreatedEvent) {
+            if (((ClaimCreatedEvent) event).getCreator() instanceof Player) {
+                return ((Player) ((ClaimCreatedEvent) event).getCreator());
+            }
         }
         return null;
     }

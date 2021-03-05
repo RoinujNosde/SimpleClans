@@ -93,6 +93,7 @@ public class SimpleClans extends JavaPlugin {
         storageManager = new StorageManager();
         teleportManager = new TeleportManager();
         protectionManager = new ProtectionManager();
+        protectionManager.registerListeners();
         migrateChatFormat();
         registerEvents();
         permissionsManager.loadPermissions();

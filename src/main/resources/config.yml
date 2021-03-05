@@ -56,19 +56,22 @@ war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-    - net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers.WorldGuardProvider
-    - net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers.GriefPreventionProvider
+    - WorldGuardProvider
+    - GriefPreventionProvider
     listener-priority: HIGHEST
     set-base-only-in-land: false
+    war-normal-expiration-time: 60
+    war-disconnect-expiration-time: 10
     land-creation:
         only-leaders: false
         only-one-per-clan: false
     war-actions:
+        CONTAINER: true
         INTERACT: true
         BREAK: true
         PLACE: true
         DAMAGE: true
-        INTERACT_ENTITY: false
+        INTERACT_ENTITY: true
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10

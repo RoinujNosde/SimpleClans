@@ -16,10 +16,11 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@SuppressWarnings({"unused", "rawtypes"})
+@SuppressWarnings({"unused"})
 public class WorldGuardProvider implements ProtectionProvider {
 
     private RegionContainer regionContainer;
@@ -29,10 +30,10 @@ public class WorldGuardProvider implements ProtectionProvider {
     }
 
     @Override
-    public @Nullable Set<Land> getLandsAt(@NotNull Location location) {
+    public @NotNull Set<Land> getLandsAt(@NotNull Location location) {
         RegionManager regionManager = getRegionManager(location.getWorld());
         if (regionManager == null) {
-            return null;
+            return Collections.emptySet();
         }
         ApplicableRegionSet regions = regionManager.getApplicableRegions(BukkitAdapter.asBlockVector(location));
         Set<Land> lands = new HashSet<>();
@@ -76,7 +77,7 @@ public class WorldGuardProvider implements ProtectionProvider {
     }
 
     @Override
-    public @Nullable Class<?> getCreateLandEvent() {
+    public @Nullable Class<? extends Event> getCreateLandEvent() {
         return null;
     }
 

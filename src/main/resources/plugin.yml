@@ -1,8 +1,8 @@
 name: SimpleClans
 main: net.sacredlabyrinth.phaed.simpleclans.SimpleClans
 version: '${project.version}'
-softdepend: [VanishNoPacket, Permissions, PermissionsBukkit, Vault, PermissionsEx, mChat, mChatSuite, PlaceholderAPI, LuckPerms]
-loadbefore: [WorldGuard, GriefPrevention]
+softdepend: [ VanishNoPacket, Permissions, PermissionsBukkit, Vault, PermissionsEx, mChat, mChatSuite, PlaceholderAPI, LuckPerms, WorldGuard ]
+loadbefore: [ GriefPrevention ]
 api-version: '1.13'
 authors:
   - Phaed
@@ -53,7 +53,7 @@ permissions:
     description: Can view rivalries by clan
   simpleclans.other.kdr-exempt:
     description: The player's KDR is not affected on killing/dying
-    default: op
+    default: false
   simpleclans.member.profile:
     description: Can view his own clan's profile
   simpleclans.member.roster:
@@ -110,6 +110,8 @@ permissions:
     description: Can clear his clan's bb
   simpleclans.leader.setbanner:
     description: Can set his clan's banner
+  simpleclans.member.land:
+    description: Can use land commands
   simpleclans.member.kills:
     description: Can view his and other's kills
   simpleclans.member.tag-toggle:
@@ -214,10 +216,28 @@ permissions:
       simpleclans.anyone.leaderboard: true
       simpleclans.anyone.alliances: true
       simpleclans.anyone.rivalries: true
+  simpleclans.member.land.*:
+    description: Permissions for allowing/blocking actions in lands
+    default: false
+    children:
+      simpleclans.member.land.allow.container: true
+      simpleclans.member.land.allow.place: true
+      simpleclans.member.land.allow.damage: true
+      simpleclans.member.land.allow.break: true
+      simpleclans.member.land.allow.interact: true
+      simpleclans.member.land.allow.interact_entity: true
+      simpleclans.member.land.block.container: true
+      simpleclans.member.land.block.place: true
+      simpleclans.member.land.block.damage: true
+      simpleclans.member.land.block.break: true
+      simpleclans.member.land.block.interact: true
+      simpleclans.member.land.block.interact_entity: true
   simpleclans.member.*:
     description: Permissions for those who can be clan members
     default: true
     children:
+      simpleclans.member.land: true
+      simpleclans.member.land.*: true
       simpleclans.member.can-join: true
       simpleclans.member.profile: true
       simpleclans.member.roster: true

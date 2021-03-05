@@ -461,6 +461,14 @@ public final class SettingsManager {
         return landSharing;
     }
 
+    public int getWarNormalExpirationTime() {
+        return getConfig().getInt("war-and-protection.war-normal-expiration-time", 60) * 60 * 20;
+    }
+
+    public int getWarDisconnectExpirationTime() {
+        return getConfig().getInt("war-and-protection.war-disconnect-expiration-time", 10) * 60 * 20;
+    }
+
     public List<String> getProtectionProviders() {
         return protectionProviders;
     }

@@ -5,8 +5,10 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.HomeRegroupEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
-import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -113,8 +115,7 @@ public class HomeCommands extends BaseCommand {
             return;
         }
         if (settings.isSetBaseOnlyInLand()) {
-            Land land = protection.getLandAt(player.getLocation());
-            if (land == null || !land.getOwners().contains(player.getUniqueId())) {
+            if (!protection.isOwner(player, player.getLocation())) {
                 ChatBlock.sendMessageKey(player, "you.can.only.set.base.in.your.land");
                 return;
             }
