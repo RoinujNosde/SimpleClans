@@ -61,9 +61,9 @@ public class ChatUtils {
     }
 
     private static String oldStripColors(String text) {
-        return text.replaceAll("[&][0-9A-Za-z]", "")
+        return text.replaceAll("[&][0-9A-Fa-fk-orx]", "")
                 .replaceAll(String.valueOf((char) 194), "") //don't know why
-                .replaceAll("[\u00a7][0-9A-Za-z]", "");
+                .replaceAll("[\u00a7][0-9A-Fa-fk-orx]", "");
     }
 
     public static BaseComponent[] toBaseComponents(@Nullable CommandSender receiver, @NotNull String text) {
