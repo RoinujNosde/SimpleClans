@@ -237,6 +237,22 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
+     * Returns the first color in the clan's tag
+     *
+     * @return the color code or an empty string if there is no color
+     */
+    @Placeholder("color")
+    public String getColor() {
+        if (colorTag.startsWith("\u00a7x")) { // Hexadecimal Code
+            return colorTag.substring(0, 14);
+        } else if (colorTag.charAt(0) == '\u00a7') { // Regular Code
+            return colorTag.substring(0, 2);
+        } else { // No Code
+            return "";
+        }
+    }
+
+    /**
      * Returns the last used date in milliseconds
      *
      * @return the lastUsed
