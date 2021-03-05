@@ -1,10 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.conditions;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCondition implements IdentifiableCondition {
@@ -14,6 +11,7 @@ public abstract class AbstractCondition implements IdentifiableCondition {
     protected final ClanManager clanManager;
     protected final RequestManager requestManager;
     protected final SettingsManager settingsManager;
+    protected final ProtectionManager protectionManager;
 
     public AbstractCondition(@NotNull SimpleClans plugin) {
         this.plugin = plugin;
@@ -21,5 +19,6 @@ public abstract class AbstractCondition implements IdentifiableCondition {
         clanManager = plugin.getClanManager();
         requestManager = plugin.getRequestManager();
         settingsManager = plugin.getSettingsManager();
+        protectionManager = plugin.getProtectionManager();
     }
 }

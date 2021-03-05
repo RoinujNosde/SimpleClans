@@ -45,6 +45,7 @@ public class SimpleClans extends JavaPlugin {
     private SettingsManager settingsManager;
     private PermissionsManager permissionsManager;
     private TeleportManager teleportManager;
+    private ProtectionManager protectionManager;
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
@@ -91,6 +92,8 @@ public class SimpleClans extends JavaPlugin {
         clanManager = new ClanManager();
         storageManager = new StorageManager();
         teleportManager = new TeleportManager();
+        protectionManager = new ProtectionManager();
+        protectionManager.registerListeners();
         migrateChatFormat();
         registerEvents();
         permissionsManager.loadPermissions();
@@ -221,6 +224,10 @@ public class SimpleClans extends JavaPlugin {
 
     public SCCommandManager getCommandManager() {
         return commandManager;
+    }
+
+    public ProtectionManager getProtectionManager() {
+        return protectionManager;
     }
 
     /**

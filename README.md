@@ -1,4 +1,4 @@
-[![SimpleClans Logo](https://i.imgur.com/Z8XWayV.png)](https://www.spigotmc.org/resources/simpleclans.71242/)
+[![SimpleClans Logo](https://i.imgur.com/9vgfVdX.png)](https://www.spigotmc.org/resources/simpleclans.71242/)
 
 SimpleClans
 ==========
@@ -54,6 +54,8 @@ Including SimpleClans with Maven:
         <url>https://dl.bintray.com/roinujnosde/bukkit-plugins</url>
     </repository>
 </repositories>
+```
+```xml
 <dependencies>
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
@@ -72,7 +74,7 @@ repositories {
     }
 }
 dependencies {
-    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.14.3" // You can find the latest version at the bottom
+    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.14.3"
 }
 ```
 

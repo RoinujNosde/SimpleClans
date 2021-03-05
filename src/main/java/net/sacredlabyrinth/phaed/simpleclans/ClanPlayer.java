@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -844,12 +845,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         this.locale = locale;
     }
 
-    public enum Channel {
-        CLAN,
-        ALLY,
-        NONE
-    }
-
     public @Nullable Player toPlayer() {
         if (uniqueId != null) {
             return Bukkit.getPlayer(uniqueId);
@@ -874,5 +869,34 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     @Placeholder("is_mutedally")
     public boolean isMutedAlly() {
         return allyChatMute;
+    }
+
+    public void disallow(@NotNull Action action, @NotNull String landId) {
+        String key = "allow-" + action.name();
+        List<String> allowed = flags.getStringList(key);
+        if (allowed.remove(landId)) {
+            flags.put(key, allowed);
+        }
+    }
+
+    public void allow(@NotNull Action action, @NotNull String landId) {
+        String key = "allow-" + action.name();
+        List<String> allowed = flags.getStringList(key);
+        if (!allowed.contains(landId)) {
+            allowed.add(landId);
+            flags.put(key, allowed);
+        }
+    }
+
+    public boolean isAllowed(@NotNull Action action, @NotNull String landId) {
+        String key = "allow-" + action.name();
+        List<String> allowed = flags.getStringList(key);
+        return allowed.contains(landId);
+    }
+
+    public enum Channel {
+        CLAN,
+        ALLY,
+        NONE
     }
 }

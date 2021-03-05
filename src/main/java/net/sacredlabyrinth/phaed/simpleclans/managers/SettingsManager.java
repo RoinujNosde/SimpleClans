@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  * @author phaed
  */
 public final class SettingsManager {
-	private boolean enableGUI;
+    private boolean enableGUI;
     private boolean disableMessages;
     private String clanChatRankColor;
     private boolean tagBasedClanChat;
@@ -190,13 +191,20 @@ public final class SettingsManager {
     private int maxKillsPerVictim;
     private boolean delayBetweenKillsEnabled;
     private int delayBetweenKills;
-	private String language;
-	private boolean languagePerPlayer;
-	private boolean savePeriodically;
-	private boolean cachePlayerHeads;
-	private int saveInterval;
-	private String rankingType;
-	private int loreLength;
+    private String language;
+    private boolean languagePerPlayer;
+    private boolean savePeriodically;
+    private boolean cachePlayerHeads;
+    private int saveInterval;
+    private String rankingType;
+    private int loreLength;
+    private boolean warEnabled;
+    private boolean landSharing;
+    private List<String> protectionProviders;
+    private EventPriority warListenerPriority;
+    private boolean onlyLeadersCanCreateLands;
+    private boolean onlyOneLandPerClan;
+    private boolean setBaseOnlyInLand;
 
     /**
      *
@@ -233,14 +241,14 @@ public final class SettingsManager {
         teleportOnSpawn = getConfig().getBoolean("settings.teleport-home-on-spawn");
         dropOnHome = getConfig().getBoolean("settings.drop-items-on-clan-home");
         keepOnHome = getConfig().getBoolean("settings.keep-items-on-clan-home");
-		for (String material : getConfig().getStringList("settings.item-list")) {
+        for (String material : getConfig().getStringList("settings.item-list")) {
             Optional<XMaterial> x = XMaterial.matchXMaterial(material);
             if (x.isPresent()) {
                 itemsList.add(x.get().parseMaterial());
             } else {
                 plugin.getLogger().warning("Error with Material: " + material);
             }
-		}
+        }
         debugging = getConfig().getBoolean("settings.show-debug-info");
         mChatIntegration = getConfig().getBoolean("settings.mchat-integration");
         pvpOnlywhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
@@ -407,7 +415,14 @@ public final class SettingsManager {
         maxKillsPerVictimEnabled = getConfig().getBoolean("kdr-grinding-prevention.enable-max-kills");
         delayBetweenKills = getConfig().getInt("kdr-grinding-prevention.delay-between-kills");
         delayBetweenKillsEnabled = getConfig().getBoolean("kdr-grinding-prevention.enable-kill-delay");
-        
+        warEnabled = getConfig().getBoolean("war-and-protection.war-enabled", false);
+        landSharing = getConfig().getBoolean("war-and-protection.land-sharing", true);
+        protectionProviders = getConfig().getStringList("war-and-protection.protection-providers");
+        warListenerPriority = EventPriority.valueOf(getConfig().getString("war-and-protection.listener-priority", "HIGHEST"));
+        onlyLeadersCanCreateLands = getConfig().getBoolean("war-and-protection.land-creation.only-leaders", false);
+        onlyOneLandPerClan = getConfig().getBoolean("war-and-protection.land-creation.only-one-per-clan", false);
+        setBaseOnlyInLand = getConfig().getBoolean("war-and-protection.set-base-only-in-land", false);
+
         // migrate from old way of adding ports
         if (database.contains(":")) {
             String[] strings = database.split(":");
@@ -436,6 +451,48 @@ public final class SettingsManager {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isWarEnabled() {
+        return warEnabled;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean isLandSharing() {
+        return landSharing;
+    }
+
+    public int getWarNormalExpirationTime() {
+        return getConfig().getInt("war-and-protection.war-normal-expiration-time", 60) * 60 * 20;
+    }
+
+    public int getWarDisconnectExpirationTime() {
+        return getConfig().getInt("war-and-protection.war-disconnect-expiration-time", 10) * 60 * 20;
+    }
+
+    public List<String> getProtectionProviders() {
+        return protectionProviders;
+    }
+
+    public EventPriority getWarListenerPriority() {
+        return warListenerPriority;
+    }
+
+    public boolean isActionAllowedInWar(@NotNull ProtectionManager.Action action) {
+        return getConfig().getBoolean("war-and-protection.war-actions." + action.name(), false);
+    }
+
+    public boolean isOnlyLeadersCanCreateLands() {
+        return onlyLeadersCanCreateLands;
+    }
+
+    public boolean isOnlyOneLandPerClan() {
+        return onlyOneLandPerClan;
+    }
+
+    public boolean isSetBaseOnlyInLand() {
+        return setBaseOnlyInLand;
+    }
+
     public int getLoreLength() {
         return loreLength;
     }
@@ -443,33 +500,32 @@ public final class SettingsManager {
     public boolean isCachePlayerHeads() {
         return cachePlayerHeads;
     }
-    
+
     public boolean isEnableGUI() {
-		return enableGUI;
-	}
-    
+        return enableGUI;
+    }
+
     public void setEnableGUI(boolean enableGUI) {
-		this.enableGUI = enableGUI;
+        this.enableGUI = enableGUI;
         getConfig().set("settings.enable-gui", enableGUI);
         save();
     }
 
     /**
-     *
      * @return if the tag can contain letters from other alphabets
      */
     public boolean isAcceptOtherAlphabetsLettersOnTag() {
         return acceptOtherAlphabetsLettersOnTag;
     }
-    
-    public Locale getLanguage() {
-    	String[] split = language.split("_");
-    	
-    	if (split.length == 2) {
-    		return new Locale(split[0], split[1]);
-    	}
 
-    	return new Locale(language);
+    public Locale getLanguage() {
+        String[] split = language.split("_");
+
+        if (split.length == 2) {
+            return new Locale(split[0], split[1]);
+        }
+
+        return new Locale(language);
     }
 
     @NotNull
@@ -482,95 +538,95 @@ public final class SettingsManager {
     }
 
     public boolean isLanguagePerPlayer() {
-    	return languagePerPlayer;
+        return languagePerPlayer;
     }
-    
+
     public int getTasksCollectUpkeepHour() {
-		return tasksCollectUpkeepHour;
-	}
+        return tasksCollectUpkeepHour;
+    }
 
-	public void setTasksCollectUpkeepHour(int tasksCollectUpkeepHour) {
-		this.tasksCollectUpkeepHour = tasksCollectUpkeepHour;
-	}
+    public void setTasksCollectUpkeepHour(int tasksCollectUpkeepHour) {
+        this.tasksCollectUpkeepHour = tasksCollectUpkeepHour;
+    }
 
-	public int getTasksCollectUpkeepMinute() {
-		return tasksCollectUpkeepMinute;
-	}
+    public int getTasksCollectUpkeepMinute() {
+        return tasksCollectUpkeepMinute;
+    }
 
-	public void setTasksCollectUpkeepMinute(int tasksCollectUpkeepMinute) {
-		this.tasksCollectUpkeepMinute = tasksCollectUpkeepMinute;
-	}
+    public void setTasksCollectUpkeepMinute(int tasksCollectUpkeepMinute) {
+        this.tasksCollectUpkeepMinute = tasksCollectUpkeepMinute;
+    }
 
-	public int getTasksCollectUpkeepWarningHour() {
-		return tasksCollectUpkeepWarningHour;
-	}
+    public int getTasksCollectUpkeepWarningHour() {
+        return tasksCollectUpkeepWarningHour;
+    }
 
-	public void setTasksCollectUpkeepWarningHour(int tasksCollectUpkeepWarningHour) {
-		this.tasksCollectUpkeepWarningHour = tasksCollectUpkeepWarningHour;
-	}
+    public void setTasksCollectUpkeepWarningHour(int tasksCollectUpkeepWarningHour) {
+        this.tasksCollectUpkeepWarningHour = tasksCollectUpkeepWarningHour;
+    }
 
-	public int getTasksCollectUpkeepWarningMinute() {
-		return tasksCollectUpkeepWarningMinute;
-	}
+    public int getTasksCollectUpkeepWarningMinute() {
+        return tasksCollectUpkeepWarningMinute;
+    }
 
-	public void setTasksCollectUpkeepWarningMinute(int tasksCollectUpkeepWarningMinute) {
-		this.tasksCollectUpkeepWarningMinute = tasksCollectUpkeepWarningMinute;
-	}
+    public void setTasksCollectUpkeepWarningMinute(int tasksCollectUpkeepWarningMinute) {
+        this.tasksCollectUpkeepWarningMinute = tasksCollectUpkeepWarningMinute;
+    }
 
-	public int getTasksCollectFeeHour() {
-		return tasksCollectFeeHour;
-	}
+    public int getTasksCollectFeeHour() {
+        return tasksCollectFeeHour;
+    }
 
-	public void setTasksCollectFeeHour(int tasksCollectFeeHour) {
-		this.tasksCollectFeeHour = tasksCollectFeeHour;
-	}
+    public void setTasksCollectFeeHour(int tasksCollectFeeHour) {
+        this.tasksCollectFeeHour = tasksCollectFeeHour;
+    }
 
-	public int getTasksCollectFeeMinute() {
-		return tasksCollectFeeMinute;
-	}
+    public int getTasksCollectFeeMinute() {
+        return tasksCollectFeeMinute;
+    }
 
-	public void setTasksCollectFeeMinute(int tasksCollectFeeMinute) {
-		this.tasksCollectFeeMinute = tasksCollectFeeMinute;
-	}
+    public void setTasksCollectFeeMinute(int tasksCollectFeeMinute) {
+        this.tasksCollectFeeMinute = tasksCollectFeeMinute;
+    }
 
-	public int getMinToVerify() {
+    public int getMinToVerify() {
         return minToVerify;
     }
 
-	/**
+    /**
      * Returns the delay between kills
-     * 
+     *
      * @return
      */
     public int getDelayBetweenKills() {
-    	return delayBetweenKills;
+        return delayBetweenKills;
     }
-    
+
     /**
      * Checks if the delay between kills is enabled
-     * 
+     *
      * @return
      */
     public boolean isDelayBetweenKills() {
-    	return delayBetweenKillsEnabled;
+        return delayBetweenKillsEnabled;
     }
-    
+
     /**
      * Returns the max number of kills per victim
-     * 
+     *
      * @return
      */
     public int getMaxKillsPerVictim() {
-    	return maxKillsPerVictim;
+        return maxKillsPerVictim;
     }
-    
+
     /**
      * Checks if there is a max number of kills per victim
-     * 
+     *
      * @return
      */
     public boolean isMaxKillsPerVictim() {
-    	return maxKillsPerVictimEnabled;
+        return maxKillsPerVictimEnabled;
     }
 
     /**
@@ -585,7 +641,7 @@ public final class SettingsManager {
 
     /**
      * Gets the command set as the clan chat command
-     * 
+     *
      * @return the clan chat command
      */
     public String getCommandClanChat() {
@@ -632,38 +688,38 @@ public final class SettingsManager {
         return word.equalsIgnoreCase("clan") || word.equalsIgnoreCase(commandMore) || word.equalsIgnoreCase(commandDeny) || word.equalsIgnoreCase(commandAccept);
 
     }
-    
+
     /**
      * Checks if the upkeep is to be charged only from clans with the member fee enabled
-     * 
+     *
      * @return
      */
     public boolean isChargeUpkeepOnlyIfMemberFeeEnabled() {
-    	return eChargeUpkeepOnlyIfMemberFeeEnabled;
+        return eChargeUpkeepOnlyIfMemberFeeEnabled;
     }
-    
+
     /**
      * Checks if the upkeep should be multiplied by the clan size
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isMultiplyUpkeepBySize() {
         return eMultiplyUpkeepBySize;
     }
-    
+
     /**
      * Checks if the upkeep is enabled
-     * 
-     * @return 
+     *
+     * @return
      */
     public boolean isClanUpkeep() {
         return eClanUpkeepEnabled;
     }
-    
+
     /**
      * Returns the upkeep
-     * 
-     * @return 
+     *
+     * @return
      */
     public double getClanUpkeep() {
         if (eClanUpkeep < 0) {
@@ -671,19 +727,21 @@ public final class SettingsManager {
         }
         return eClanUpkeep;
     }
-    
-    
+
+
     /**
      * Returns the max member fee allowed
-     * @return 
+     *
+     * @return
      */
     public double getMaxMemberFee() {
         return eMaxMemberFee;
     }
-    
+
     /**
      * Checks if the member fee is enabled
-     * @return 
+     *
+     * @return
      */
     public boolean isMemberFee() {
         return eMemberFee;
@@ -696,10 +754,10 @@ public final class SettingsManager {
     public boolean isePurchaseResetKdr() {
         return ePurchaseResetKdr;
     }
-    
+
     /**
      * Gets the price to pay for setting the member fee
-     * 
+     *
      * @return the price
      */
     public double geteMemberFeeSetPrice() {
@@ -712,6 +770,7 @@ public final class SettingsManager {
 
     /**
      * Do leaders need to pay for setting the member fee?
+     *
      * @return true if so
      */
     public boolean isePurchaseMemberFeeSet() {
@@ -720,12 +779,13 @@ public final class SettingsManager {
 
     /**
      * Gets the price to reset the KDR
+     *
      * @return the price
      */
     public double geteResetKdr() {
         return eResetKdr;
     }
-    
+
     /**
      * Check whether a string has a disallowed color
      *
@@ -801,7 +861,7 @@ public final class SettingsManager {
         if (!bannedPlayers.contains(playerUniqueId.toString())) {
             bannedPlayers.add(playerUniqueId.toString());
         }
-        
+
         getConfig().set("settings.banned-players", bannedPlayers);
         save();
     }
@@ -818,7 +878,7 @@ public final class SettingsManager {
      */
     public void removeBanned(UUID playerUniqueId) {
         bannedPlayers.remove(playerUniqueId.toString());
-        
+
         getConfig().set("settings.banned-players", bannedPlayers);
         save();
     }
@@ -841,61 +901,61 @@ public final class SettingsManager {
     public boolean isRequireVerification() {
         return requireVerification;
     }
-    
+
     public boolean isRejoinCooldown() {
-    	return rejoinCooldownEnabled;
+        return rejoinCooldownEnabled;
     }
-    
+
     public int getRejoinCooldown() {
-    	return rejoinCooldown;
+        return rejoinCooldown;
     }
 
     @NotNull
     public String getListDefaultOrderBy() {
-		return listDefaultOrderBy;
-	}
+        return listDefaultOrderBy;
+    }
 
-	@Deprecated
-	public String getListDefault() {
+    @Deprecated
+    public String getListDefault() {
         return getListDefaultOrderBy();
     }
 
-	@Deprecated
-	public String getListSize() {
-		return "size";
-	}
-
-	@Deprecated
-	public String getListKdr() {
-		return "kdr";
-	}
-
-	@Deprecated
-	public String getListName() {
-		return "name";
-	}
-
-	@Deprecated
-	public String getListFounded() {
-		return "founded";
-	}
+    @Deprecated
+    public String getListSize() {
+        return "size";
+    }
 
     @Deprecated
-	public String getListActive() {
-		return "active";
-	}
+    public String getListKdr() {
+        return "kdr";
+    }
 
-	@Deprecated
-	public String getListAsc() {
-		return "asc";
-	}
+    @Deprecated
+    public String getListName() {
+        return "name";
+    }
 
-	@Deprecated
-	public String getListDesc() {
-		return "desc";
-	}
+    @Deprecated
+    public String getListFounded() {
+        return "founded";
+    }
 
-	/**
+    @Deprecated
+    public String getListActive() {
+        return "active";
+    }
+
+    @Deprecated
+    public String getListAsc() {
+        return "asc";
+    }
+
+    @Deprecated
+    public String getListDesc() {
+        return "desc";
+    }
+
+    /**
      * @return the bannedPlayers
      */
     public List<String> getBannedPlayers() {
@@ -1076,32 +1136,32 @@ public final class SettingsManager {
     public int getClanMinSizeToRival() {
         return clanMinSizeToRival;
     }
-    
+
     /**
      * Returns the max length of the clan description
-     * 
+     *
      * @return the max length
      */
     public int getClanMaxDescriptionLength() {
-    	if (clanMaxDescriptionLength > 255 || clanMaxDescriptionLength < 0) {
-    		clanMaxDescriptionLength = 255;
-    	}
-		return clanMaxDescriptionLength;
-	}
+        if (clanMaxDescriptionLength > 255 || clanMaxDescriptionLength < 0) {
+            clanMaxDescriptionLength = 255;
+        }
+        return clanMaxDescriptionLength;
+    }
 
     /**
      * Returns the min length of the clan description
-     * 
+     *
      * @return the min length
      */
-	public int getClanMinDescriptionLength() {
-		if (clanMinDescriptionLength < 0 || clanMinDescriptionLength > getClanMaxDescriptionLength()) {
-			clanMinDescriptionLength = 0;
-		}
-		return clanMinDescriptionLength;
-	}
+    public int getClanMinDescriptionLength() {
+        if (clanMinDescriptionLength < 0 || clanMinDescriptionLength > getClanMaxDescriptionLength()) {
+            clanMinDescriptionLength = 0;
+        }
+        return clanMinDescriptionLength;
+    }
 
-	/**
+    /**
      * @return the clanMinLength
      */
     public int getClanMinLength() {
@@ -1109,7 +1169,6 @@ public final class SettingsManager {
     }
 
     /**
-     *
      * @return the max number of alliances a clan can have
      */
     public int getClanMaxAlliances() {
@@ -1172,23 +1231,23 @@ public final class SettingsManager {
     public String getTagSeparatorColor() {
         return Helper.toColor(tagSeparatorColor);
     }
-    
+
     public String getClanChatFormat() {
         return clanChatFormat;
     }
-    
+
     public String getClanChatRank() {
         return clanChatRank;
     }
-    
+
     public String getClanChatLeaderColor() {
         return Helper.toColor(clanChatLeaderColor);
     }
-    
+
     public String getClanChatTrustedColor() {
- 		return Helper.toColor(clanChatTrustedColor);
- 	}
-    
+        return Helper.toColor(clanChatTrustedColor);
+    }
+
     public String getClanChatMemberColor() {
         return Helper.toColor(clanChatMemberColor);
     }
@@ -1215,7 +1274,7 @@ public final class SettingsManager {
     public String getClanChatNameColor() {
         return clanChatNameColor;
     }
-    
+
     @Deprecated
     /**
      * @return the clanChatTagBracketLeft
@@ -1446,10 +1505,10 @@ public final class SettingsManager {
     public boolean isConfirmationForDemote() {
         return confirmationForDemote;
     }
-    
+
     /**
      * Returns the min percentage of leaders online required to demote someone
-     * 
+     *
      * @return the percentage
      */
     public double getPercentageOnlineToDemote() {
@@ -1479,23 +1538,23 @@ public final class SettingsManager {
     public String getAllyChatMessageColor() {
         return allyChatMessageColor;
     }
-    
+
     public String getAllyChatFormat() {
         return allyChatFormat;
     }
-    
+
     public String getAllyChatRank() {
         return allyChatRank;
     }
-    
+
     public String getAllyChatLeaderColor() {
         return Helper.toColor(allyChatLeaderColor);
     }
-    
+
     public String getAllyChatTrustedColor() {
-		return Helper.toColor(allyChatTrustedColor);
-	}
-    
+        return Helper.toColor(allyChatTrustedColor);
+    }
+
     public String getAllyChatMemberColor() {
         return Helper.toColor(allyChatMemberColor);
     }
@@ -1529,7 +1588,7 @@ public final class SettingsManager {
     public String getAllyChatPlayerBracketRight() {
         return allyChatPlayerBracketRight;
     }
-    
+
     public String getCommandGlobal() {
         return commandGlobal;
     }
@@ -1609,7 +1668,7 @@ public final class SettingsManager {
     public boolean isePurchaseHomeTeleport() {
         return ePurchaseHomeTeleport;
     }
-    
+
     /**
      * @return the eUniqueTaxOnRegroup
      */
@@ -1618,13 +1677,12 @@ public final class SettingsManager {
     }
 
     /**
-     * 
      * @return the eIssuerPaysRegroup
      */
     public boolean iseIssuerPaysRegroup() {
         return eIssuerPaysRegroup;
     }
-    
+
     /**
      * @return the ePurchaseHomeRegroup
      */
@@ -1638,7 +1696,7 @@ public final class SettingsManager {
     public double getHomeTeleportPrice() {
         return eHomeTeleportPrice;
     }
-    
+
     /**
      * @return the HomeRegroupPrice
      */
@@ -1765,20 +1823,20 @@ public final class SettingsManager {
         return this.maxMembers;
     }
 
-	public boolean isSavePeriodically() {
-		return savePeriodically;
-	}
+    public boolean isSavePeriodically() {
+        return savePeriodically;
+    }
 
-	/**
-	 * Gets the interval to save the data
-	 * 
-	 * @return the interval in seconds
-	 */
-	public int getSaveInterval() {
-		if (saveInterval < 1) {
-			saveInterval = 5;
-		}
-		
-		return saveInterval * 60;
-	}
+    /**
+     * Gets the interval to save the data
+     *
+     * @return the interval in seconds
+     */
+    public int getSaveInterval() {
+        if (saveInterval < 1) {
+            saveInterval = 5;
+        }
+
+        return saveInterval * 60;
+    }
 }
