@@ -46,6 +46,15 @@ public class Flags {
     }
 
     @NotNull
+    public String getString(@NotNull String key, @NotNull String def) {
+        String string = getString(key);
+        if (string == null) {
+            return def;
+        }
+        return string;
+    }
+
+    @NotNull
     public Number getNumber(@NotNull String key) {
         Object object = flags.get(key);
         if (object instanceof Number) {
