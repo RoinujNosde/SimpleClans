@@ -1,4 +1,4 @@
-name: Publish to Bintray (Spigot 1.13+)
+name: Publish to Bintray
 
 on:
   release:

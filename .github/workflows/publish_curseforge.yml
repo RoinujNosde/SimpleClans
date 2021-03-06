@@ -1,0 +1,28 @@
+name: Publish to CurseForge
+
+on:
+  release:
+    types: [created]
+    
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: Upload artifact
+      uses: fjogeleit/http-request-action@v1.7.1
+      with:
+        url: 'https://minecraft.curseforge.com/api/projects/380814/upload-file'
+        method: 'POST'
+        contentType: 'multipart/form-data'
+        files: '{"file": "${{ env.GITHUB_WORKSPACE }}/target/SimpleClans.jar"}'  
+        data: '{"token": "${{ secrets.CURSEFORGE_TOKEN }}","metadata": {"displayName":"${{ github.event.release.tag_name }}", "changelog": "${{ github.event.release.body }}","gameVersions": [7915,7667,7330,7105,6588,630,585,531],"releaseType": "release"}}'

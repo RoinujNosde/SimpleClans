@@ -792,6 +792,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     public void setTagEnabled(boolean tagEnabled) {
         flags.put("hide-tag", tagEnabled);
+
         SimpleClans.getInstance().getStorageManager().updateClanPlayer(this);
         SimpleClans.getInstance().getClanManager().updateDisplayName(this.toPlayer());
     }
