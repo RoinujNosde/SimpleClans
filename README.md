@@ -50,8 +50,8 @@ Including SimpleClans with Maven:
 ```xml
 <repositories>
     <repository>
-        <id>bintray-roinujnosde-bukkit-plugins</id>
-        <url>https://dl.bintray.com/roinujnosde/bukkit-plugins</url>
+        <id>codemc-repo</id>
+        <url>https://repo.codemc.org/repository/maven-public</url>
     </repository>
 </repositories>
 ```
@@ -60,7 +60,7 @@ Including SimpleClans with Maven:
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.14.3</version> <!-- You can find the latest version at the bottom -->
+        <version>2.15.0</version> <!-- You can find the latest version at the bottom -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -70,16 +70,15 @@ Using Gradle:
 ```groovy
 repositories {
     maven {
-        url  "https://dl.bintray.com/roinujnosde/bukkit-plugins" 
+        url  "https://repo.codemc.org/repository/maven-public" 
     }
 }
 dependencies {
-    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.14.3"
+    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.15.0"
 }
 ```
 
 ##### Latest version:
-[![Bintray](https://img.shields.io/bintray/v/roinujnosde/bukkit-plugins/SimpleClans)](https://bintray.com/roinujnosde/bukkit-plugins/SimpleClans/_latestVersion)
-
+[![](https://jitpack.io/v/roinujnosde/simpleclans.svg?label=Maven)]()
 ##### API Examples
 * [Examples of how to use the API](https://simpleclans.gitbook.io/simpleclans/other/simpleclans-api)
