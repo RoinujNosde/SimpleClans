@@ -140,7 +140,7 @@ public final class PermissionsManager {
      * Removes permissions for a player (when he gets kicked for example)
      *
      */
-    public void removeClanPlayerPermissions(ClanPlayer cp) {
+    public void removeClanPlayerPermissions(@Nullable ClanPlayer cp) {
         if (cp != null && cp.getClan() != null && cp.toPlayer() != null) {
             Player player = cp.toPlayer();
             if (player != null && permissions.containsKey(cp.getClan().getTag()) && permAttaches.containsKey(player)) {

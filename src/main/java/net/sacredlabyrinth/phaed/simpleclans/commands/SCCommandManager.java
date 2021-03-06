@@ -59,6 +59,7 @@ public class SCCommandManager extends PaperCommandManager {
         registerDependency(StorageManager.class, plugin.getStorageManager());
         registerDependency(PermissionsManager.class, plugin.getPermissionsManager());
         registerDependency(RequestManager.class, plugin.getRequestManager());
+        registerDependency(ProtectionManager.class, plugin.getProtectionManager());
     }
 
     private void registerCompletions() {
@@ -217,6 +218,7 @@ public class SCCommandManager extends PaperCommandManager {
                 "alliances", "leaderboard", "allow", "block", "auto", "check", "assign", "unassign", "delete", "me",
                 "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set", "status", "tp", "all", "everyone",
                 "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help", "mod",
-                "setdefault", "removedefault");
+                "setdefault", "removedefault", "land", "break", "interact", "place", "damage", "interact_entity",
+                "container");
     }
 }

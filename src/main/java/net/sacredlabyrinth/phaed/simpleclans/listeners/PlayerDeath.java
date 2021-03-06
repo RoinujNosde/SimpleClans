@@ -1,9 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.listeners;
 
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Kill;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.AddKillEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Bukkit;
@@ -56,6 +53,22 @@ public class PlayerDeath implements Listener {
         // record death for victim
         victimCp.addDeath();
         plugin.getStorageManager().updateClanPlayer(victimCp);
+    }
+
+    @EventHandler
+    public void onWarDeath(PlayerDeathEvent event) {
+        Player player = event.getEntity();
+        Player killer = player.getKiller();
+        if (killer == null) {
+            return;
+        }
+        Clan victimClan = plugin.getClanManager().getClanByPlayerUniqueId(player.getUniqueId());
+        Clan killerClan = plugin.getClanManager().getClanByPlayerUniqueId(killer.getUniqueId());
+        War war = plugin.getProtectionManager().getWar(victimClan, killerClan);
+        if (war == null || victimClan == null) {
+            return;
+        }
+        war.increaseCasualties(victimClan);
     }
 
     private void addKill(@NotNull ClanPlayer victim, @NotNull ClanPlayer attacker) {

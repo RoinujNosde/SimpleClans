@@ -83,7 +83,7 @@ public class CreateClanNamePrompt extends StringPrompt {
     @Nullable
     private Prompt validateName(@NotNull SimpleClans plugin, @NotNull Player player, @NotNull String input) {
         boolean bypass = plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass");
-        if (bypass) {
+        if (!bypass) {
             if (Helper.stripColors(input).length() > plugin.getSettingsManager().getClanMaxLength()) {
                 return new MessagePromptImpl(ChatColor.RED +
                         lang("your.clan.name.cannot.be.longer.than.characters", player,

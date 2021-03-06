@@ -52,6 +52,26 @@ settings:
     ranking-type: "DENSE"
     list-default-order-by: kdr
     lore-length: 36
+war-and-protection:
+    war-enabled: false
+    land-sharing: true
+    protection-providers:
+    - WorldGuardProvider
+    - GriefPreventionProvider
+    listener-priority: HIGHEST
+    set-base-only-in-land: false
+    war-normal-expiration-time: 0
+    war-disconnect-expiration-time: 0
+    land-creation:
+        only-leaders: false
+        only-one-per-clan: false
+    war-actions:
+        CONTAINER: true
+        INTERACT: true
+        BREAK: true
+        PLACE: true
+        DAMAGE: true
+        INTERACT_ENTITY: true
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10

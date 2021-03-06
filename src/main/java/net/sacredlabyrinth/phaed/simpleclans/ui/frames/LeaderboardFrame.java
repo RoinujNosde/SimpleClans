@@ -36,7 +36,7 @@ public class LeaderboardFrame extends SCFrame {
 
 		rankingResolver = new RankingNumberResolver<>(clanPlayers, c -> KDRFormat.toBigDecimal(c.getKDR()), false,
 				plugin.getSettingsManager().getRankingType());
-		paginator = new Paginator(getSize() - 9, this.clanPlayers.size());
+		paginator = new Paginator(getSize() - 9, this.clanPlayers);
 	}
 
 	@Override

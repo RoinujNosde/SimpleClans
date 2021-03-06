@@ -144,6 +144,7 @@ public final class ClanManager {
         importClan(clan);
         plugin.getStorageManager().updateClanPlayer(cp);
 
+        plugin.getRequestManager().deny(cp); //denies any previous invitation
         SimpleClans.getInstance().getPermissionsManager().updateClanPermissions(clan);
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new CreateClanEvent(clan));
     }

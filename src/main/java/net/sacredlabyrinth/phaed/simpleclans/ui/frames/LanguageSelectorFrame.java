@@ -32,7 +32,7 @@ public class LanguageSelectorFrame extends SCFrame {
         plugin = SimpleClans.getInstance();
         clanPlayer = plugin.getClanManager().getCreateClanPlayer(viewer.getUniqueId());
         languages = LanguageResource.getAvailableLocales();
-        paginator = new Paginator(getSize() - 9, languages.size());
+        paginator = new Paginator(getSize() - 9, languages);
     }
 
     @Override

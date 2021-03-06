@@ -3,15 +3,16 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestFinishedEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.WarEndEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.MessageFormat;
 import java.util.*;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -30,6 +31,7 @@ public final class RequestManager {
         askerTask();
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean hasRequest(String tag) {
         return requests.containsKey(tag);
     }
@@ -105,7 +107,7 @@ public final class RequestManager {
     	if (requests.containsKey(warClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(lang("proposing.war"), requestingClan.getName(), Helper.stripColors(warClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.war"), requestingClan.getName(), ChatUtils.stripColors(warClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(warClan.getLeaders());
         acceptors.remove(requester);
@@ -119,7 +121,7 @@ public final class RequestManager {
     	if (requests.containsKey(warClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(lang("proposing.to.end.the.war"), requestingClan.getName(), Helper.stripColors(warClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.to.end.the.war"), requestingClan.getName(), ChatUtils.stripColors(warClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(warClan.getLeaders());
         acceptors.remove(requester);
@@ -133,7 +135,7 @@ public final class RequestManager {
     	if (requests.containsKey(allyClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(lang("proposing.an.alliance"), requestingClan.getName(), Helper.stripColors(allyClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.an.alliance"), requestingClan.getName(), ChatUtils.stripColors(allyClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(allyClan.getLeaders());
         acceptors.remove(requester);
@@ -147,7 +149,7 @@ public final class RequestManager {
        	if (requests.containsKey(rivalClan.getTag())) {
     		return;
     	}
-		String msg = MessageFormat.format(lang("proposing.to.end.the.rivalry"), requestingClan.getName(), Helper.stripColors(rivalClan.getColorTag()));
+		String msg = MessageFormat.format(lang("proposing.to.end.the.rivalry"), requestingClan.getName(), ChatUtils.stripColors(rivalClan.getColorTag()));
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(rivalClan.getLeaders());
         acceptors.remove(requester);
@@ -330,6 +332,8 @@ public final class RequestManager {
 			List<String> denies) {
 		if (requesterClan != null && targetClan != null) {
 		    if (!accepts.isEmpty()) {
+                War war = plugin.getProtectionManager().getWar(requesterClan, requesterClan);
+                plugin.getProtectionManager().removeWar(war, WarEndEvent.Reason.REQUEST);
 		    	requesterClan.removeWarringClan(targetClan);
 		    	targetClan.removeWarringClan(requesterClan);
 
@@ -346,14 +350,21 @@ public final class RequestManager {
 			List<String> denies) {
 		if (requesterClan != null && targetClan != null) {
 		    if (!accepts.isEmpty()) {
+                if (!plugin.getProtectionManager().addWar(new War(requesterClan, targetClan))) {
+                    return;
+                }
 		        requesterClan.addWarringClan(targetClan);
 		        targetClan.addWarringClan(requesterClan);
 
-		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war", targetClan.getName(), requesterClan.getColorTag()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war", requesterClan.getName(), targetClan.getColorTag()));
+		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war",
+                        targetClan.getName(), requesterClan.getColorTag()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war",
+                        requesterClan.getName(), targetClan.getColorTag()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
+		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0),
+                        requesterClan.getName()));
+		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("end.war.denied",
+                        targetClan.getName()));
 		    }
 		}
 	}
