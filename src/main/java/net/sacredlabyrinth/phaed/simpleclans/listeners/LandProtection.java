@@ -12,6 +12,7 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -153,7 +154,7 @@ public class LandProtection implements Listener {
             }
             InventoryOpenEvent event = ((InventoryOpenEvent) e);
             InventoryHolder holder = event.getInventory().getHolder();
-            Location location = event.getInventory().getLocation();
+            Location location = getLocation(holder);
             if (holder instanceof Entity && holder == event.getPlayer()) return;
             if (location == null) return;
 
@@ -210,7 +211,7 @@ public class LandProtection implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryOpen(InventoryOpenEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
-        Location location = event.getInventory().getLocation();
+        Location location = getLocation(holder);
         if (holder instanceof Entity && holder == event.getPlayer()) return;
         if (location == null) return;
 
@@ -237,6 +238,13 @@ public class LandProtection implements Listener {
             event.setUseInteractedBlock(Event.Result.DENY);
             event.setCancelled(true);
         }
+    }
+
+    private @Nullable Location getLocation(@Nullable InventoryHolder holder) {
+        if (holder instanceof BlockState) {
+            return ((BlockState) holder).getLocation();
+        }
+        return null;
     }
 
     @NotNull

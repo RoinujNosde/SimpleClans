@@ -50,6 +50,9 @@ public class ProtectionManager {
 
     public void registerListeners() {
         landProtection = new LandProtection(plugin);
+        if (!settingsManager.isWarEnabled() && !settingsManager.isLandSharing()) {
+            return;
+        }
         landProtection.registerListeners();
     }
 
