@@ -13,28 +13,28 @@ description: null
 * `tameable-mobs-sharing` -  
 * `teleport-blocks` -  
 * `teleport-home-on-spawn` - При возрождении игроки будут телепортированы на базу клана. 
-* `drop-items-on-clan-home` -  
-* `keep-items-on-clan-home` -  
-* `item-list` -  
+* `drop-items-on-clan-home` - При телепортации на базу клана, выкидывать предметы на землю. 
+* `keep-items-on-clan-home` - При телепортации на базу клана, оставлять предметы. 
+* `item-list` - Список предметов, используемый для keep- и drop- items-on-clan-home 
 * `show-debug-info` -  
 * `mchat-integration` -  
 * `enable-auto-groups` -  
 * `chat-compatibility-mode` -  
 * `rival-limit-percent` -  
 * `use-colorcode-from-prefix-for-name` -  
-* `display-chat-tags` -  
-* `unrivable-clans` -  
-* `show-unverified-on-list` -  
+* `display-chat-tags` - Отображать ли тег клана в чате? 
+* `unrivable-clans` - Кланы, которые с которыми невозможно начать вражду. 
+* `show-unverified-on-list` - Показывать ли не подтвержденные кланы в списке кланов? 
 * `blacklisted-worlds` -  
-* `banned-players` -  
-* `disallowed-tags` -  
-* `language` -  
-* `language-per-player` -  
-* `disallowed-tag-colors` -  
-* `server-name` -  
+* `banned-players` - Игроки, которые не могут пользоваться командами плагина. 
+* `disallowed-tags` - Запрещённые теги. 
+* `language` - Язык по-умолчанию. 
+* `user-language-selector` - Разрешить ли игрокам выбирать язык? 
+* `disallowed-tag-colors` - Запрещенные цветовые кода для тега. 
+* `server-name` - Название вашего сервера. 
 * `new-clan-verification-required` -  
-* `allow-regroup-command` -  
-* `allow-reset-kdr` -  
+* `allow-regroup-command` - Разрешить ли команду для перегруппировки \(телепортации игроков к себе/на базу\)? 
+* `allow-reset-kdr` - Разрешить сбросить КДР \(соотношение убийств к смертям\) 
 * `rejoin-cooldown` -  
 * `rejoin-cooldown-enabled` -  
 * `min-to-verify` - Количество игроков в клане, чтобы можно было пройти подтверждение \(Модераторы могут обойти это ограничение\). 
@@ -85,22 +85,22 @@ settings:
     ranking-type: DENSE
 ```
 
-## Фомат тегов
+## Формат тегов
 
 #### Пример
 
-* `default-color` - 
-* `max-length` - 
-* `bracket` - 
-  * `color` - 
-  * `leader-color` - 
-  * `left` - 
-  * `right` - 
-* `min-length` - 
-* `separator` - 
-  * `color` - 
-  * `leader-color` - 
-  * `char` - 
+* `default-color` - Цвет по-умолчанию
+* `max-length` - Максимальная длинна
+* `bracket` - Скобки
+  * `color` - Цвет
+  * `leader-color` - Цвет лидера
+  * `left` - Слева
+  * `right` - Справа
+* `min-length` - Минимальная длина
+* `separator` - Разделитель
+  * `color` - Цвет
+  * `leader-color` - Цвет лидера
+  * `char` - Символ
 
 ```yaml
 tag:
@@ -120,13 +120,13 @@ tag:
 
 ## Главные команды
 
-* `more` - 
-* `ally` - 
-* `clan` - 
-* `accept` - 
-* `deny` - 
+* `more` - больше
+* `ally` - союзник
+* `clan` - клан
+* `accept` - принять
+* `deny` - отклонить
 * `global` - 
-* `clan_chat` - 
+* `clan_chat` - чат клана
 * `force-priority` - 
 
 #### Пример
@@ -145,10 +145,10 @@ commands:
 
 ## Защита от набивания KDR
 
-* `enable-max-kills` - 
-* `max-kills-per-victim` - 
-* `enable-kill-delay` - 
-* `delay-between-kills` - 
+* `enable-max-kills` - Включить максимальное количество убийств
+* `max-kills-per-victim` - Максимальное количество убийств за жертву
+* `enable-kill-delay` - Включить задержку перед убийствами
+* `delay-between-kills` - Задержка перед убийствами
 
 #### Пример
 
@@ -187,30 +187,30 @@ list:
 
 ## Экономика
 
-* `creation-price` - 
+* `creation-price` - Цена создание
 * `purchase-clan-create` - 
-* `verification-price` - 
+* `verification-price` - Цена подтверждения
 * `purchase-clan-verify` - 
-* `invite-price` - 
+* `invite-price` - Цена приглашения
 * `purchase-clan-invite` - 
-* `home-teleport-price` - 
-* `purchase-home-teleport` - 
+* `home-teleport-price` - Цена телепортации на базу клана
+* `purchase-home-teleport` - Цена за установку точки базы клана.
 * `home-teleport-set-price` - 
 * `purchase-home-teleport-set` - 
 * `home-regroup-price` - 
 * `purchase-home-regroup` - 
 * `unique-tax-on-regroup` - 
 * `issuer-pays-regroup` - 
-* `money-per-kill` - 
+* `money-per-kill` - Вознаграждение за убийство.
 * `money-per-kill-kdr-multipier` - 
 * `purchase-reset-kdr` - 
-* `reset-kdr-price` - 
-* `purchase-member-fee-set` - 
-* `member-fee-set-price` - 
-* `member-fee-enabled` - 
-* `max-member-fee` - 
-* `upkeep` - 
-* `upkeep-enabled` - 
+* `reset-kdr-price` - Цена сброса KDR.
+* `purchase-member-fee-set` - Цена за установку комиссии на участников.
+* `member-fee-set-price` - Комиссия на участников.
+* `member-fee-enabled` - Включить ли комиссию на участников?
+* `max-member-fee` - Максимальная комиссия участников.
+* `upkeep` - Коммисия на поддержание клана.
+* `upkeep-enabled` - Включить ли комиссию на поддержание клана?
 * `multiply-upkeep-by-clan-size` - 
 * `charge-upkeep-only-if-member-fee-enabled` - 
 
@@ -248,10 +248,10 @@ economy:
 
 ## Вес убийств
 
-* `rival` - 
-* `civilian` - 
-* `neutral` - 
-* `deny-same-ip-kills` - 
+* `rival` - соперник/противник
+* `civilian` - мирный/без клана
+* `neutral` - нейтрал
+* `deny-same-ip-kills` - Отменять убийства с одного айпи адреса
 
 #### Пример
 
@@ -265,19 +265,19 @@ kill-weights:
 
 ## Настройки клана
 
-* `homebase-teleport-wait-secs` - 
-* `homebase-can-be-set-only-once` - 
+* `homebase-teleport-wait-secs` - Задержка перед телепортацией на точку базы клана
+* `homebase-can-be-set-only-once` - Точка базы клана может быть установлена единожды
 * `min-size-to-set-rival` - 
-* `max-length` - 
-* `max-description-length` - 
-* `min-description-length` - 
-* `max-members` - 
+* `max-length` - Максимальная длина названия клана.
+* `max-description-length` - Максимальная длина описания клана
+* `min-description-length` - Минимальная длина описания клана.
+* `max-members` - Максимальное количество участников
 * `confirmation-for-promote` - 
-* `trust-members-by-default` - 
+* `trust-members-by-default` - Подтверждать участников по умолчанию?
 * `confirmation-for-demote` - 
 * `percentage-online-to-demote` - 
-* `ff-on-by-default` - 
-* `min-length` - 
+* `ff-on-by-default` - Глобальный "Огонь по своим" включен по умолчанию.
+* `min-length` - Минимальная длина названия клана.
 * `min-size-to-set-ally` - 
 
 #### Пример
@@ -302,15 +302,15 @@ clan:
 
 ## Запланированные задачи
 
-* `collect-upkeep` - 
-  * `hour` - 
-  * `minute` - 
-* `collect-upkeep-warning` - 
-  * `hour` - 
-  * `minute` - 
-* `collect-fee` - 
-  * `hour` - 
-  * `minute` - 
+* `collect-upkeep` - Сбор комиссии на поддержание клана
+  * `hour` - час
+  * `minute` - минуты
+* `collect-upkeep-warning` - Предупреждение о сборе комисии на поддержание клана
+  * `hour` - час 
+  * `minute` - минуты 
+* `collect-fee` - Сбор комиссии
+  * `hour` - час
+  * `minute` - минуты
 
 #### Пример
 
@@ -329,14 +329,14 @@ tasks:
 
 ## Страницы
 
-* `untrusted-color` - 
-* `clan-name-color` - 
-* `subtitle-color` - 
-* `headings-color` - 
-* `trusted-color` - 
-* `leader-color` - 
-* `separator` - 
-* `size` - 
+* `untrusted-color` - Цвет неподтвержденного клана
+* `clan-name-color` - Цвет названия клана
+* `subtitle-color` - Цвет подзаголовков
+* `headings-color` - Цвет заголовков
+* `trusted-color` - Цвет подтвержденного клана
+* `leader-color` - Цвет лидера
+* `separator` - Разделитель
+* `size` - Размер
 
 #### Пример
 
@@ -354,14 +354,14 @@ page:
 
 ## Чат клана
 
-* `enable` - 
+* `enable` - Включить
 * `tag-based-clan-chat` - 
 * `announcement-color` - 
-* `format` - 
-* `rank` - 
-* `leader-color:` - 
-* `trusted-color` - 
-* `member-color` - 
+* `format` - Формат отображения чата
+* `rank` - Формат отображения ранга
+* `leader-color:` - Цвет лидера в чате
+* `trusted-color` - Цвет подтвержденного участника в чате 
+* `member-color` - Цвет участника в чате
 
 #### Пример
 
@@ -379,7 +379,7 @@ clanchat:
 
 ## Запросы
 
-* `message-color` - 
+* `message-color` - Цвет сообщений
 * `ask-frequency-secs` - 
 * `max-asks-per-request` - 
 
@@ -394,11 +394,11 @@ request:
 
 ## Доска объявлений клана
 
-* `color` - 
+* `color` - Цвет
 * `accent-color` - 
-* `show-on-login` - 
-* `size` - 
-* `login-size` - 
+* `show-on-login` - Показывать при заходе?
+* `size` - Размер
+* `login-size` - Размер при входе
 
 #### Пример
 
@@ -413,12 +413,12 @@ bb:
 
 ## Союзный чат
 
-* `enable` - 
-* `format` - 
-* `rank` - 
-* `leader-color` - 
-* `trusted-color` - 
-* `member-color` - 
+* `enable` - Включить
+* `format` - Формат чата
+* `rank` - Формат ранга
+* `leader-color` - Цвет лидера
+* `trusted-color` - Цвет подтвержденного участника
+* `member-color` - Цвет участника
 
 #### Пример
 
@@ -434,9 +434,9 @@ allychat:
 
 ## Очистка данных
 
-* `inactive-player-data-days` - 
-* `inactive-clan-days` - 
-* `unverified-clan-days` - 
+* `inactive-player-data-days` - Через сколько дней будут очищены данные о неактивных игроках?
+* `inactive-clan-days` - Через сколько дней будут очищены не активные кланы?
+* `unverified-clan-days` - Через сколько дней будут очищены не активные и не подтвержденные кланы?
 
 #### Пример
 
@@ -449,12 +449,12 @@ purge:
 
 ## MySQL настройки
 
-* `username` - 
-* `host` - 
-* `port` - 
-* `enable` - 
-* `password` - 
-* `database` - 
+* `username` - Логин
+* `host` - Хост
+* `port` - Порт
+* `enable` - Включить?
+* `password` - Пароль
+* `database` - База данных
 
 #### Пример
 
@@ -486,7 +486,7 @@ permissions:
 * `save-periodically` - Плагин будет периодически сохранять данные, а не сразу. **Рекомендуется** установить данный параметр на `true`. 
 * `save-interval` - Интервал **в минутах**, в течение которого изменения записываются в базу данных. 
 * `use-threads` - Плагин не будет использовать основной поток для подключения к БД. **Рекомендуется** установить данный параметр на `true`. 
-* `use-bungeecord` - 
+* `use-bungeecord` - Использовать bungeecord? \(WIP\)
 
 #### Пример
 
