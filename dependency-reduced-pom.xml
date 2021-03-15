@@ -235,6 +235,18 @@
       <version>16.17.1</version>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>com.github.cryptomorin</groupId>
+          <artifactId>XSeries</artifactId>
+          <version>7.2.1</version>
+          <scope>compile</scope>
+      </dependency>
+      <dependency>
+          <groupId>net.md-5</groupId>
+          <artifactId>bungeecord-chat</artifactId>
+          <version>1.16-R0.3</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
   <distributionManagement>
     <repository>
