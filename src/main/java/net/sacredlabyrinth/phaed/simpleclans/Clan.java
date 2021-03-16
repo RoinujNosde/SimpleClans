@@ -1732,8 +1732,10 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 * 
 	 */
 	public void createRank(String name) {
-		ranks.add(new Rank(name));
-	}
+	    Rank rank = new Rank(name);
+		ranks.add(rank);
+        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new CreateRankEvent(rank));
+    }
 
 	/**
 	 * Returns the clan's ranks
