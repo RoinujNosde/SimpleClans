@@ -814,8 +814,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     @Placeholder("rank")
-    public @Nullable String getRankId() {
-        return flags.getString("rank");
+    public @NotNull String getRankId() {
+        return flags.getString("rank", "");
     }
 
     /**
