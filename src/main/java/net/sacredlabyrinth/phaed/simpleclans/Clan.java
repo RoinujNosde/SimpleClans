@@ -1763,12 +1763,14 @@ public class Clan implements Serializable, Comparable<Clan> {
 		Rank r = getRank(name);
 		if (r != null) {
 			ranks.remove(r);
+
 			getMembers().forEach(cp -> {
 				if (Objects.equals(cp.getRankId(), r.getName())) {
 					cp.setRank("");
 					SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
 				}
 			});
+            SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DeleteRankEvent(r));
 		}
 	}
 
