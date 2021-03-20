@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -27,10 +26,6 @@ public class PreCreateRankEvent extends PlayerEvent implements Cancellable {
     @NotNull
     public String getRankName() {
         return rankName;
-    }
-
-    public Rank getRank() {
-        return clan.getRank(rankName);
     }
 
     @Override
