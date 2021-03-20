@@ -50,43 +50,31 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (event instanceof FakeAsyncPlayerChatEvent) {
-            return;
-        }
         Player player = event.getPlayer();
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
         if (cp == null || settingsManager.isBlacklistedWorld(player.getLocation().getWorld())) {
             return;
         }
-        FakeAsyncPlayerChatEvent fakeEvent = new FakeAsyncPlayerChatEvent(event);
-        Bukkit.getPluginManager().callEvent(fakeEvent);
-        if (fakeEvent.isCancelled()) {
-            return;
-        }
+
         Channel channel = cp.getChannel();
         if (channel != NONE) {
-            if (!handleClanChat(event.getMessage(), player, channel)) return;
+            PermissionsManager pm = plugin.getPermissionsManager();
+            if ((channel == Channel.ALLY && !pm.has(player, "simpleclans.member.ally")) ||
+                    (channel == CLAN && !pm.has(player, "simpleclans.member.chat"))) {
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
+                return;
+            }
+            switch (channel) {
+                case CLAN:
+                    plugin.getClanManager().processClanChat(player, event.getMessage());
+                    break;
+                case ALLY:
+                    plugin.getClanManager().processAllyChat(player, event.getMessage());
+            }
             event.setCancelled(true);
         }
-    }
-
-    private boolean handleClanChat(String message, Player player, Channel channel) {
-        PermissionsManager pm = plugin.getPermissionsManager();
-        if ((channel == Channel.ALLY && !pm.has(player, "simpleclans.member.ally")) ||
-                (channel == CLAN && !pm.has(player, "simpleclans.member.chat"))) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
-            return false;
-        }
-        switch (channel) {
-            case CLAN:
-                plugin.getClanManager().processClanChat(player, message);
-                break;
-            case ALLY:
-                plugin.getClanManager().processAllyChat(player, message);
-        }
-        return true;
     }
 
     @EventHandler
@@ -197,13 +185,5 @@ public class SCPlayerListener implements Listener {
         }
 
         plugin.getClanManager().updateLastSeen(event.getPlayer());
-    }
-
-    private static class FakeAsyncPlayerChatEvent extends AsyncPlayerChatEvent {
-
-        public FakeAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
-            super(event.isAsynchronous(), event.getPlayer(), event.getMessage(), event.getRecipients());
-        }
-
     }
 }
