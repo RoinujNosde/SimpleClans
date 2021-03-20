@@ -62,6 +62,7 @@ war-and-protection:
     set-base-only-in-land: false
     war-normal-expiration-time: 0
     war-disconnect-expiration-time: 0
+    edit-all-lands: false
     land-creation:
         only-leaders: false
         only-one-per-clan: false

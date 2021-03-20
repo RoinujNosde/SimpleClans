@@ -461,6 +461,10 @@ public final class SettingsManager {
         return landSharing;
     }
 
+    public boolean isEditAllLands() {
+        return getConfig().getBoolean("war-and-protection.edit-all-lands", false);
+    }
+
     public int getWarNormalExpirationTime() {
         return getConfig().getInt("war-and-protection.war-normal-expiration-time", 60) * 60 * 20;
     }
