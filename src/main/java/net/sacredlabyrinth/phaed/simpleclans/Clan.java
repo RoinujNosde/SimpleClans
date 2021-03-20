@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1497,23 +1496,22 @@ public class Clan implements Serializable, Comparable<Clan> {
             String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("you.are.no.longer.at.war"), c.getName(), getColorTag()));
+                c.addBb(disbanded, ChatColor.AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("has.been.disbanded.rivalry.ended"), getName()));
+                c.addBb(disbanded, ChatColor.AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("has.been.disbanded.alliance.ended"), getName()));
+                c.addBb(disbanded, ChatColor.AQUA + lang("has.been.disbanded.alliance.ended", getName()));
             }
         }
-
-        final Clan thisOne = this;
+        SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
 
         SimpleClans.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SimpleClans.getInstance(), () -> {
-            SimpleClans.getInstance().getClanManager().removeClan(thisOne.getTag());
-            SimpleClans.getInstance().getStorageManager().deleteClan(thisOne);
+            SimpleClans.getInstance().getClanManager().removeClan(this.getTag());
+            SimpleClans.getInstance().getStorageManager().deleteClan(this);
         }, 1);
     }
 
