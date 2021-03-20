@@ -1338,6 +1338,7 @@ public final class ClanManager {
      * Processes a global chat command
      *
      */
+    @Deprecated
     public boolean processGlobalChat(Player player, String msg) {
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
 

@@ -1731,8 +1731,8 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 */
 	public void createRank(String name) {
 	    Rank rank = new Rank(name);
-		ranks.add(rank);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new CreateRankEvent(rank));
+        Bukkit.getPluginManager().callEvent(new PreCreateRankEvent(rank));
+        ranks.add(rank);
     }
 
 	/**
@@ -1762,16 +1762,18 @@ public class Clan implements Serializable, Comparable<Clan> {
 	public void deleteRank(String name) {
 		Rank r = getRank(name);
 		if (r != null) {
-			ranks.remove(r);
+            PreDeleteRankEvent event = new PreDeleteRankEvent(r);
+            Bukkit.getServer().getPluginManager().callEvent(event);
 
-			getMembers().forEach(cp -> {
-				if (Objects.equals(cp.getRankId(), r.getName())) {
-					cp.setRank("");
-					SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
-				}
-			});
-            SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DeleteRankEvent(r));
-		}
+            ranks.remove(r);
+
+            getMembers().forEach(cp -> {
+                if (Objects.equals(cp.getRankId(), r.getName())) {
+                    cp.setRank("");
+                    SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
+                }
+            });
+        }
 	}
 
 	/**

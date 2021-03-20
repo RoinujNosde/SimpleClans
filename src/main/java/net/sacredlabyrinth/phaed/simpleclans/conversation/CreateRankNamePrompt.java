@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.events.CreateRankEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
@@ -31,8 +32,14 @@ public class CreateRankNamePrompt extends StringPrompt {
             return new MessagePromptImpl(ChatColor.RED + lang("rank.already.exists", player), this);
         }
 
-        clan.createRank(rank);
-        plugin.getStorageManager().updateClan(clan, true);
-        return new MessagePromptImpl(ChatColor.AQUA + lang("rank.created", player));
+        CreateRankEvent event = new CreateRankEvent(player, clan, clan.getRank(rank));
+
+        if (!event.isCancelled()) {
+            clan.createRank(rank);
+            plugin.getStorageManager().updateClan(clan, true);
+            return new MessagePromptImpl(ChatColor.AQUA + lang("rank.created", player));
+        }
+
+        return null;
     }
 }
