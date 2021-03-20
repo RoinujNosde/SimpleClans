@@ -1731,7 +1731,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 */
 	public void createRank(String name) {
 	    Rank rank = new Rank(name);
-        Bukkit.getPluginManager().callEvent(new PreCreateRankEvent(rank));
         ranks.add(rank);
     }
 
@@ -1762,9 +1761,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 	public void deleteRank(String name) {
 		Rank r = getRank(name);
 		if (r != null) {
-            PreDeleteRankEvent event = new PreDeleteRankEvent(r);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-
             ranks.remove(r);
 
             getMembers().forEach(cp -> {
