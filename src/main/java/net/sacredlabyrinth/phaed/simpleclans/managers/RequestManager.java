@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -385,6 +386,19 @@ public final class RequestManager {
             }
         }
 
+    }
+
+    public void removeRequest(@NotNull String keyOrTarget) {
+        Iterator<Map.Entry<String, Request>> iterator = requests.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Request> entry = iterator.next();
+            final String requester = entry.getKey();
+            final String target = entry.getValue().getTarget();
+            if (keyOrTarget.equals(requester) || keyOrTarget.equals(target)) {
+                entry.getValue().cleanVotes();
+                iterator.remove();
+            }
+        }
     }
 
     /**
