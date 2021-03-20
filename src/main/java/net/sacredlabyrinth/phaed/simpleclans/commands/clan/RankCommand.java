@@ -5,9 +5,11 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
+import net.sacredlabyrinth.phaed.simpleclans.events.DeleteRankEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
@@ -78,9 +80,14 @@ public class RankCommand extends BaseCommand {
     @CommandCompletion("@ranks")
     @Description("{@@command.description.rank.delete}")
     public void delete(Player player, Clan clan, @Name("rank") Rank rank) {
-        clan.deleteRank(rank.getName());
-        storage.updateClan(clan, true);
-        ChatBlock.sendMessage(player, AQUA + lang("rank.0.deleted", player, rank.getDisplayName()));
+        DeleteRankEvent event = new DeleteRankEvent(player, clan, rank);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        if (!event.isCancelled()) {
+            clan.deleteRank(rank.getName());
+            storage.updateClan(clan, true);
+            ChatBlock.sendMessage(player, AQUA + lang("rank.0.deleted", player, rank.getDisplayName()));
+        }
     }
 
     @Subcommand("%list")

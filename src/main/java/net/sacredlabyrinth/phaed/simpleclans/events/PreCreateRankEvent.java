@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -11,25 +10,26 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Minat0_
  */
-public class DeleteRankEvent extends PlayerEvent implements Cancellable {
+public class PreCreateRankEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final Rank rank;
+    private String rankName;
     private final Clan clan;
     private boolean cancelled;
 
-    public DeleteRankEvent(Player who, Clan clan, Rank rank) {
+    public PreCreateRankEvent(Player who, Clan clan, String rankName) {
         super(who);
-        this.rank = rank;
         this.clan = clan;
+        this.rankName = rankName;
     }
 
-    public Rank getRank() {
-        return rank;
+    @NotNull
+    public String getRankName() {
+        return rankName;
     }
-
-    public Clan getClan() {
-        return clan;
+    
+    public void setRankName(@NotNull String rankName) {
+        this.rankName = rankName;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DeleteRankEvent extends PlayerEvent implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setCancelled(boolean isCancelled) {
+        this.cancelled = isCancelled;
     }
 }

@@ -1730,8 +1730,9 @@ public class Clan implements Serializable, Comparable<Clan> {
 	 * 
 	 */
 	public void createRank(String name) {
-		ranks.add(new Rank(name));
-	}
+	    Rank rank = new Rank(name);
+        ranks.add(rank);
+    }
 
 	/**
 	 * Returns the clan's ranks
@@ -1760,16 +1761,15 @@ public class Clan implements Serializable, Comparable<Clan> {
 	public void deleteRank(String name) {
 		Rank r = getRank(name);
 		if (r != null) {
-			ranks.remove(r);
+            ranks.remove(r);
 
-			getMembers().forEach(cp -> {
-				if (Objects.equals(cp.getRankId(), r.getName())) {
-					cp.setRank("");
-					SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
-				}
-			});
-            SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DeleteRankEvent(r));
-		}
+            getMembers().forEach(cp -> {
+                if (Objects.equals(cp.getRankId(), r.getName())) {
+                    cp.setRank("");
+                    SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
+                }
+            });
+        }
 	}
 
 	/**
