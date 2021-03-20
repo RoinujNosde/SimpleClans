@@ -14,20 +14,26 @@ import org.jetbrains.annotations.NotNull;
 public class CreateRankEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final Rank rank;
+    private final String rankName;
     private final Clan clan;
     private boolean cancelled;
 
-    public CreateRankEvent(Player who, Clan clan, Rank rank) {
+    public CreateRankEvent(Player who, Clan clan, String rankName) {
         super(who);
         this.clan = clan;
-        this.rank = rank;
+        this.rankName = rankName;
+    }
+
+    @NotNull
+    public String getRankName() {
+        return rankName;
     }
 
     public Rank getRank() {
-        return rank;
+        return clan.getRank(rankName);
     }
 
+    @NotNull
     public Clan getClan() {
         return clan;
     }

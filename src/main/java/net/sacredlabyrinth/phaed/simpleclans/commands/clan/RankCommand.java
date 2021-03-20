@@ -81,12 +81,12 @@ public class RankCommand extends BaseCommand {
     @Description("{@@command.description.rank.delete}")
     public void delete(Player player, Clan clan, @Name("rank") Rank rank) {
         DeleteRankEvent event = new DeleteRankEvent(player, clan, rank);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
             clan.deleteRank(rank.getName());
             storage.updateClan(clan, true);
             ChatBlock.sendMessage(player, AQUA + lang("rank.0.deleted", player, rank.getDisplayName()));
-            Bukkit.getServer().getPluginManager().callEvent(event);
         }
     }
 
