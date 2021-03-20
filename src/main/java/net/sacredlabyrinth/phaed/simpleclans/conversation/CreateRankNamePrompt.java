@@ -30,20 +30,20 @@ public class CreateRankNamePrompt extends StringPrompt {
         if (input == null) return this;
 
         String rank = input.toLowerCase().replace(" ", "_");
+        PreCreateRankEvent event = new PreCreateRankEvent(player, clan, rank);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        rank = event.getRankName();
+        
+        if (event.isCancelled()) {
+            return null;
+        }
         if (clan.hasRank(rank)) {
             return new MessagePromptImpl(ChatColor.RED + lang("rank.already.exists", player), this);
         }
-
-        PreCreateRankEvent event = new PreCreateRankEvent(player, clan, rank);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-
-        if (!event.isCancelled()) {
-            clan.createRank(rank);
-            Bukkit.getServer().getPluginManager().callEvent(new CreateRankEvent(player, clan, clan.getRank(rank)));
-            plugin.getStorageManager().updateClan(clan, true);
-            return new MessagePromptImpl(ChatColor.AQUA + lang("rank.created", player));
-        }
-
-        return null;
+        
+        clan.createRank(rank);
+        Bukkit.getServer().getPluginManager().callEvent(new CreateRankEvent(player, clan, clan.getRank(rank)));
+        plugin.getStorageManager().updateClan(clan, true);
+        return new MessagePromptImpl(ChatColor.AQUA + lang("rank.created", player));
     }
 }
