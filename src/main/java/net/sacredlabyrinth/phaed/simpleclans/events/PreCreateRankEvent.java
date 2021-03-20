@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class PreCreateRankEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final String rankName;
+    private String rankName;
     private final Clan clan;
     private boolean cancelled;
 
@@ -26,6 +26,10 @@ public class PreCreateRankEvent extends PlayerEvent implements Cancellable {
     @NotNull
     public String getRankName() {
         return rankName;
+    }
+    
+    public void setRankName(@NotNull String rankName) {
+        this.rankName = rankName;
     }
 
     @Override
