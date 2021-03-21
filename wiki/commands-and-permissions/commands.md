@@ -46,6 +46,8 @@ description: null
 | `/clan profile` | Shows your clan's profile | Yes |
 | `/clan roster` | Shows your clan's roster | Yes |
 | `/clan coords` | Shows your clan's coords | Yes |
+| `/clan bb` | Shows your clan's bulletin board | Yes |
+| `/clan bb add (message)` | Writes a message to your clan's bulletin board | Yes |
 
 ### Chat Commands
 
@@ -91,6 +93,7 @@ description: null
 | `/clan rank permissions (rank)` | Lists the rank's permissions | Yes |
 | `/clan rank permissions add (rank) (permission)` | Adds a permission to the rank | Yes |
 | `/clan rank permissions remove (rank) (permission)` | Removes a permission from the rank | Yes |
+| `/clan bb clear` | Clears your clan's bulletin board | Yes |
 
 ## Mod Commands
 
