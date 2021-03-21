@@ -441,7 +441,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     /**
      * Returns weighted-kill/death ratio
      */
-    @Placeholder("kdr")
+    @Placeholder(value = "kdr", resolver = "kdr")
     @Placeholder(value = "topplayers_position", resolver = "ranking_position")
     public float getKDR() {
         int totalDeaths = getDeaths();

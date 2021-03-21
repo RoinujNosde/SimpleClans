@@ -873,7 +873,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Gets the clan's total KDR
      *
      */
-    @Placeholder("total_kdr")
+    @Placeholder(value = "total_kdr", resolver = "kdr")
     @Placeholder(value = "topclans_position", resolver = "ranking_position")
     public float getTotalKDR() {
         if (members.isEmpty()) {

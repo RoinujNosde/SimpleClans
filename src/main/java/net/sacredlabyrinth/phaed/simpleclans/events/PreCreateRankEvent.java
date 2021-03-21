@@ -23,6 +23,10 @@ public class PreCreateRankEvent extends PlayerEvent implements Cancellable {
         this.rankName = rankName;
     }
 
+    public Clan getClan() {
+        return clan;
+    }
+
     @NotNull
     public String getRankName() {
         return rankName;
