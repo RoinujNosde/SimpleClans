@@ -472,7 +472,7 @@ public final class ClanManager {
 
         if (clan != null) {
             if (clan.getSize() == 1) {
-                clan.disband();
+                clan.disband(null, false, true);
             } else {
                 cp.setClan(null);
                 cp.addPastClan(clan.getColorTag() + (cp.isLeader() ? ChatColor.DARK_RED + "*" : ""));

@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 /**
  * @author phaed
@@ -1066,7 +1069,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (player != null) {
             SimpleClans.getInstance().getClanManager().updateDisplayName(player);
         }
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerJoinedClanEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerJoinedClanEvent(this, cp));
     }
 
     @SuppressWarnings("deprecation")
@@ -1106,7 +1109,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (matched != null) {
             SimpleClans.getInstance().getClanManager().updateDisplayName(matched);
         }
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerKickedClanEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerKickedClanEvent(this, cp));
     }
 
     @SuppressWarnings("deprecation")
@@ -1129,7 +1132,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerPromoteEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerPromoteEvent(this, cp));
     }
 
     @SuppressWarnings("deprecation")
@@ -1151,7 +1154,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerDemoteEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerDemoteEvent(this, cp));
     }
 
     /**
@@ -1167,7 +1170,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(ally);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new AllyClanAddEvent(this, ally));
+        Bukkit.getPluginManager().callEvent(new AllyClanAddEvent(this, ally));
     }
 
     /**
@@ -1180,7 +1183,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(ally);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new AllyClanRemoveEvent(this, ally));
+        Bukkit.getPluginManager().callEvent(new AllyClanRemoveEvent(this, ally));
     }
 
     /**
@@ -1196,7 +1199,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(rival);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new RivalClanAddEvent(this, rival));
+        Bukkit.getPluginManager().callEvent(new RivalClanAddEvent(this, rival));
     }
 
     /**
@@ -1209,7 +1212,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(rival);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new RivalClanRemoveEvent(this, rival));
+        Bukkit.getPluginManager().callEvent(new RivalClanRemoveEvent(this, rival));
     }
 
     /**
@@ -1471,11 +1474,27 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Disband a clan
+     *
+     * @param sender who is tries to disband.
+     * @param announce should it be announced?
+     * @param force should it be force disbanded?
      */
-    public void disband() {
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DisbandClanEvent(this));
+    public void disband(@Nullable CommandSender sender, boolean announce, boolean force) {
         Collection<ClanPlayer> clanPlayers = SimpleClans.getInstance().getClanManager().getAllClanPlayers();
         List<Clan> clans = SimpleClans.getInstance().getClanManager().getClans();
+
+        if (this.isPermanent() && !force) {
+            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent"));
+            return;
+        }
+
+        if (announce) {
+            if (SimpleClans.getInstance().getSettingsManager().isDisableMessages() && sender != null) {
+                this.clanAnnounce(sender.getName(), AQUA + lang("clan.has.been.disbanded", this.getName()));
+            } else {
+                SimpleClans.getInstance().getClanManager().serverAnnounce(ChatColor.AQUA + lang("clan.has.been.disbanded", this.getName()));
+            }
+        }
 
         for (ClanPlayer cp : clanPlayers) {
             if (cp.getTag().equals(getTag())) {
@@ -1490,6 +1509,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         }
 
+        Bukkit.getPluginManager().callEvent(new DisbandClanEvent(this));
         clans.remove(this);
 
         for (Clan c : clans) {
@@ -1513,6 +1533,10 @@ public class Clan implements Serializable, Comparable<Clan> {
             SimpleClans.getInstance().getClanManager().removeClan(this.getTag());
             SimpleClans.getInstance().getStorageManager().deleteClan(this);
         }, 1);
+    }
+
+    public void disband() {
+        disband(null, true, false);
     }
 
     /**

@@ -60,8 +60,7 @@ public class StaffCommands extends BaseCommand {
                 ChatBlock.sendMessage(sender, lang("player.already.in.this.clan", sender));
                 return;
             }
-
-            if (oldClan.isLeader(player) && oldClan.getLeaders().size() <= 1) {
+            if (!oldClan.isPermanent() && oldClan.isLeader(player) && oldClan.getLeaders().size() <= 1) {
                 ChatBlock.sendMessage(sender, RED + lang("you.cannot.move.the.last.leader", sender));
                 return;
             } else {
@@ -245,7 +244,7 @@ public class StaffCommands extends BaseCommand {
 
         Clan clan = player.getClanPlayer().getClan();
         if (clan != null && clan.getMembers().size() == 1) {
-            clan.disband();
+            clan.disband(sender, false, true);
         }
         cm.deleteClanPlayer(player.getClanPlayer());
         ChatBlock.sendMessage(sender, AQUA + lang("player.purged", sender));
@@ -273,8 +272,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.disband")
     @Description("{@@command.description.mod.disband}")
     public void disband(CommandSender sender, @Name("clan") ClanInput clan) {
-        cm.serverAnnounce(AQUA + lang("clan.has.been.disbanded", clan.getClan().getName()));
-        clan.getClan().disband();
+        clan.getClan().disband(sender, true, false);
     }
 
     @Subcommand("%admin %promote")
@@ -337,11 +335,15 @@ public class StaffCommands extends BaseCommand {
     }
 
     @Subcommand("%admin %permanent")
+    @CommandCompletion("@clans")
     @CommandPermission("simpleclans.admin.permanent")
     @Description("{@@command.description.admin.permanent}")
     public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
-        boolean permanent = clan.getClan().isPermanent();
+        Clan c = clan.getClan();
+        boolean permanent = c.isPermanent();
         permanent = !permanent;
-        clan.getClan().setPermanent(permanent);
+        c.setPermanent(permanent);
+        c.addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender, sender.getName()));
+        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, c.getName()));
     }
 }
