@@ -335,4 +335,13 @@ public class StaffCommands extends BaseCommand {
         cm.resetKdr(cp);
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));
     }
+
+    @Subcommand("%admin %permanent")
+    @CommandPermission("simpleclans.admin.permanent")
+    @Description("{@@command.description.admin.permanent}")
+    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
+        boolean permanent = clan.getClan().isPermanent();
+        permanent = !permanent;
+        clan.getClan().setPermanent(permanent);
+    }
 }

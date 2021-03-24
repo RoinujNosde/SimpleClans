@@ -219,6 +219,6 @@ public class SCCommandManager extends PaperCommandManager {
                 "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set", "status", "tp", "all", "everyone",
                 "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help", "mod",
                 "setdefault", "removedefault", "land", "break", "interact", "place_block", "damage", "interact_entity",
-                "container");
+                "container", "permanent");
     }
 }

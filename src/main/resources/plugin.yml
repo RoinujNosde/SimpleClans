@@ -17,6 +17,8 @@ permissions:
     description: Can promote players to clan leaders
   simpleclans.admin.demote:
     description: Can demote clan leaders to normal players
+  simpleclans.admin.permanent:
+    description: Can toggle clan permanent status
   simpleclans.admin.all-seeing-eye:
     description: Can see all clan chats
   simpleclans.admin.resetkdr:
@@ -188,6 +190,7 @@ permissions:
       simpleclans.admin.resetkdr: true
       simpleclans.admin.demote: true
       simpleclans.admin.promote: true
+      simpleclans.admin.permanent: true
   simpleclans.mod.*:
     description: Permissions for moderators
     default: op
