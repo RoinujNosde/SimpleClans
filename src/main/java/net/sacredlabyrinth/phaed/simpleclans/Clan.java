@@ -561,6 +561,15 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.verified = verified;
     }
 
+    @Placeholder("is_permanent")
+    public boolean isPermanent() {
+        return flags.getBoolean("permanent", false);
+    }
+
+    public void setPermanent(boolean permanent) {
+        flags.put("permanent", permanent);
+    }
+
     /**
      * Returns the cape url for this clan
      *
@@ -1875,13 +1884,5 @@ public class Clan implements Serializable, Comparable<Clan> {
 	        return banner.clone();
         }
         return null;
-    }
-
-    public boolean isPermanent() {
-        return flags.getBoolean("permanent", false);
-    }
-
-    public void setPermanent(boolean permanent) {
-        flags.put("permanent", permanent);
     }
 }

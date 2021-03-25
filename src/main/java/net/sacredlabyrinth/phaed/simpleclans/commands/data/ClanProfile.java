@@ -8,6 +8,9 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class ClanProfile extends Sendable {
@@ -24,7 +27,7 @@ public class ClanProfile extends Sendable {
         String message = lang("clan.profile").replace("%clan_name%", clan.getName())
                 .replace("%clan_color_tag%", clan.getColorTag())
                 .replace("%clan_description%", getDescription())
-                .replace("%clan_verified%", getVerifiedStatus())
+                .replace("%clan_status%", getStatus())
                 .replace("%clan_leaders%", clan.getLeadersString(sm.getPageLeaderColor(), subColor + ", "))
                 .replace("%clan_online_count%", String.valueOf(VanishUtils.getNonVanished(sender, clan).size()))
                 .replace("%clan_size%", String.valueOf(clan.getSize()))
@@ -49,9 +52,15 @@ public class ClanProfile extends Sendable {
     }
 
     @NotNull
-    private String getVerifiedStatus() {
-        return clan.isVerified() ? sm.getPageTrustedColor() + lang("verified", sender) :
-                sm.getPageUnTrustedColor() + lang("unverified", sender);
+    private String getStatus() {
+        ArrayList<String> statuses = new ArrayList<>();
+        if (clan.isPermanent()) statuses.add(lang("permanent", sender));
+        if (clan.isVerified()) {
+            statuses.add(lang("verified", sender));
+        } else {
+            statuses.add(lang("unverified", sender));
+        }
+        return statuses.stream().map(status -> sm.getPageTrustedColor() + status).collect(Collectors.joining(", "));
     }
 
     @NotNull
