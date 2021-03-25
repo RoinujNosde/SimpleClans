@@ -1473,9 +1473,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * Disband a clan
+     * Disbands the clan
      *
-     * @param sender who is tries to disband.
+     * @param sender who is trying to disband
      * @param announce should it be announced?
      * @param force should it be force disbanded?
      */

@@ -2,9 +2,10 @@ package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.PreCreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
@@ -84,12 +85,12 @@ public class CreateClanNamePrompt extends StringPrompt {
     private Prompt validateName(@NotNull SimpleClans plugin, @NotNull Player player, @NotNull String input) {
         boolean bypass = plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass");
         if (!bypass) {
-            if (Helper.stripColors(input).length() > plugin.getSettingsManager().getClanMaxLength()) {
+            if (ChatUtils.stripColors(input).length() > plugin.getSettingsManager().getClanMaxLength()) {
                 return new MessagePromptImpl(ChatColor.RED +
                         lang("your.clan.name.cannot.be.longer.than.characters", player,
                                 plugin.getSettingsManager().getClanMaxLength()), this);
             }
-            if (Helper.stripColors(input).length() <= plugin.getSettingsManager().getClanMinLength()) {
+            if (ChatUtils.stripColors(input).length() <= plugin.getSettingsManager().getClanMinLength()) {
                 return new MessagePromptImpl(ChatColor.RED +
                         lang("your.clan.name.must.be.longer.than.characters", player,
                                 plugin.getSettingsManager().getClanMinLength()), this);
