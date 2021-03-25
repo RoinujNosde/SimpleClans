@@ -114,7 +114,9 @@ public class Components {
                     lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer))),
                     lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer))),
                     lang("gui.clandetails.clan.lore.founded", viewer, clan.getFoundedString()),
-                    lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), clan.isPermanent() ? "∞" : (clan.isVerified()) ? pl.getSettingsManager().getPurgeClan() : pl.getSettingsManager().getPurgeUnverified()));
+                    lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(),
+                            clan.isPermanent() || (pl.getSettingsManager().getPurgeClan() <= 0 || pl.getSettingsManager().getPurgeUnverified() <= 0)
+                            ? "∞" : (clan.isVerified()) ? pl.getSettingsManager().getPurgeClan() : pl.getSettingsManager().getPurgeUnverified()));
         } else {
             name = lang("gui.clandetails.free.agent.title", viewer);
             double price = pl.getSettingsManager().isePurchaseCreation() ? pl.getSettingsManager().getCreationPrice() : 0;

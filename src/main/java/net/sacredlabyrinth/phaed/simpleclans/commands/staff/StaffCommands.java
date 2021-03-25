@@ -244,7 +244,7 @@ public class StaffCommands extends BaseCommand {
 
         Clan clan = player.getClanPlayer().getClan();
         if (clan != null && clan.getMembers().size() == 1) {
-            clan.disband(sender, false, true);
+            clan.disband(sender, false, false);
         }
         cm.deleteClanPlayer(player.getClanPlayer());
         ChatBlock.sendMessage(sender, AQUA + lang("player.purged", sender));
@@ -272,7 +272,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.disband")
     @Description("{@@command.description.mod.disband}")
     public void disband(CommandSender sender, @Name("clan") ClanInput clan) {
-        clan.getClan().disband(sender, true, false);
+        clan.getClan().disband(sender, true, true);
     }
 
     @Subcommand("%admin %promote")
@@ -339,11 +339,9 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.admin.permanent")
     @Description("{@@command.description.admin.permanent}")
     public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
-        Clan c = clan.getClan();
-        boolean permanent = c.isPermanent();
-        permanent = !permanent;
-        c.setPermanent(permanent);
-        c.addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender, sender.getName()));
-        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, c.getName()));
+        boolean permanent = !clan.getClan().isPermanent();
+        clan.getClan().setPermanent(permanent);
+        clan.getClan().addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender, sender.getName()));
+        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getClan().getName()));
     }
 }

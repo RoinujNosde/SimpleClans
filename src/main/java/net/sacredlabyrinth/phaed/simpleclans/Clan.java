@@ -1861,20 +1861,10 @@ public class Clan implements Serializable, Comparable<Clan> {
         return null;
     }
 
-    /**
-     * Is the clan permanent?
-     *
-     * @return true if clan permanent or false if not
-     */
     public boolean isPermanent() {
         return flags.getBoolean("permanent", false);
     }
 
-    /**
-     * Set the permanent status of clan
-     *
-     * @param permanent status of clan
-     */
     public void setPermanent(boolean permanent) {
         flags.put("permanent", permanent);
     }

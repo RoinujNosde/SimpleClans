@@ -303,17 +303,18 @@ public final class StorageManager {
         List<Clan> purge = new ArrayList<>();
 
         for (Clan clan : clans) {
-            if (!clan.isPermanent()) {
-                if (clan.isVerified()) {
-                    int purgeClan = plugin.getSettingsManager().getPurgeClan();
-                    if (clan.getInactiveDays() > purgeClan && purgeClan > 0) {
-                        purge.add(clan);
-                    }
-                } else {
-                    int purgeUnverified = plugin.getSettingsManager().getPurgeUnverified();
-                    if (clan.getInactiveDays() > purgeUnverified && purgeUnverified > 0) {
-                        purge.add(clan);
-                    }
+            if (clan.isPermanent()) {
+                continue;
+            }
+            if (clan.isVerified()) {
+                int purgeClan = plugin.getSettingsManager().getPurgeClan();
+                if (clan.getInactiveDays() > purgeClan && purgeClan > 0) {
+                    purge.add(clan);
+                }
+            } else {
+                int purgeUnverified = plugin.getSettingsManager().getPurgeUnverified();
+                if (clan.getInactiveDays() > purgeUnverified && purgeUnverified > 0) {
+                    purge.add(clan);
                 }
             }
         }

@@ -55,7 +55,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
                 clan.setBalance(balance - upkeep);
                 clan.addBb(ChatColor.AQUA + MessageFormat.format(lang("upkeep.collected"), upkeep), false);
             } else {
-                clan.disband(null, false, true);
+                clan.disband(null, true, false);
             }
         });
     }
