@@ -281,7 +281,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * Returns the max number of days the clan has been inactive
+     * Returns the max number of days the clan can be inactive
+     * A number <= 0 means it won't be purged
      *
      */
     public int getMaxInactiveDays() {
