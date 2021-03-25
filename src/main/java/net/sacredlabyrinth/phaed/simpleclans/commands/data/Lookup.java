@@ -49,7 +49,7 @@ public class Lookup extends Sendable {
                     .replace("%player_last_seen%", target.getLastSeenString(sender))
                     .replace("%player_past_clans%", target.getPastClansString(headColor + ", "))
                     .replace("%player_inactive_days%", String.valueOf(target.getInactiveDays()))
-                    .replace("%player_max_inactive_days%", String.valueOf(sm.getPurgePlayers()))
+                    .replace("%player_max_inactive_days%", Helper.formatMaxInactiveDays(sm.getPurgePlayers()))
                     .replace("%kill_type_line%", getKillTypeLine());
             sender.sendMessage(lookup);
         } else {

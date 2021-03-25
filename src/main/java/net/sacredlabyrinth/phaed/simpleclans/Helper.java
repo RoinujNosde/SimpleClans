@@ -900,7 +900,7 @@ public class Helper {
      * 
      * @param cp Sender
      * @param msg The chat message
-     * @return The formated message
+     * @return The formatted message
      */
     public static String formatSpyClanChat(ClanPlayer cp, String msg) {
         msg = stripColors(msg);
@@ -909,6 +909,20 @@ public class Helper {
             return ChatColor.DARK_GRAY + msg;
         } else {
             return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + msg;
+        }
+    }
+
+    /**
+     * Formats max inactive days to an infinity symbol if it's negative or 0
+     *
+     * @param max inactive days
+     * @return formatted message
+     */
+    public static String formatMaxInactiveDays(int max) {
+        if (max <= 0) {
+            return "∞";
+        } else {
+            return String.valueOf(max);
         }
     }
 }

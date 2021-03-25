@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -40,7 +41,6 @@ public class Components {
     public static SCComponent getPlayerComponent(SCFrame frame, Player viewer, ClanPlayer cp, int slot,
                                                  boolean openDetails) {
         SimpleClans pl = SimpleClans.getInstance();
-
         String status = getPlayerStatus(viewer, cp);
         SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title", viewer, cp.getName()),
                 Arrays.asList(
@@ -114,9 +114,7 @@ public class Components {
                     lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer))),
                     lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer))),
                     lang("gui.clandetails.clan.lore.founded", viewer, clan.getFoundedString()),
-                    lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(),
-                            clan.isPermanent() || (pl.getSettingsManager().getPurgeClan() <= 0 || pl.getSettingsManager().getPurgeUnverified() <= 0)
-                            ? "∞" : (clan.isVerified()) ? pl.getSettingsManager().getPurgeClan() : pl.getSettingsManager().getPurgeUnverified()));
+                    lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), Helper.formatMaxInactiveDays(clan.getMaxInactiveDays())));
         } else {
             name = lang("gui.clandetails.free.agent.title", viewer);
             double price = pl.getSettingsManager().isePurchaseCreation() ? pl.getSettingsManager().getCreationPrice() : 0;

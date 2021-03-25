@@ -281,6 +281,21 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
+     * Returns the max number of days the clan has been inactive
+     *
+     */
+    public int getMaxInactiveDays() {
+        if (this.isPermanent()) {
+            return -1;
+        }
+
+        int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getPurgeClan();
+        int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getPurgeUnverified();
+
+        return this.isVerified() ? verifiedClanInactiveDays : unverifiedClanInactiveDays;
+    }
+
+    /**
      * (used internally)
      *
      * @param lastUsed the lastUsed to set

@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -38,14 +39,8 @@ public class ClanProfile extends Sendable {
                 .replace("%clan_rivals%", clan.getRivalString(subColor + ", "))
                 .replace("%clan_founded%", clan.getFoundedString())
                 .replace("%clan_inactive_days%", String.valueOf(clan.getInactiveDays()))
-                .replace("%clan_max_inactive_days%", getMaxInactiveDays());
+                .replace("%clan_max_inactive_days%", Helper.formatMaxInactiveDays(clan.getMaxInactiveDays()));
         sender.sendMessage(message);
-    }
-
-    @NotNull
-    private String getMaxInactiveDays() {
-        return String.valueOf(clan.isVerified() ?
-                sm.getPurgeClan() : sm.getPurgeUnverified());
     }
 
     @NotNull
