@@ -341,7 +341,7 @@ public class StaffCommands extends BaseCommand {
     public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
         boolean permanent = !clan.getClan().isPermanent();
         clan.getClan().setPermanent(permanent);
-        clan.getClan().addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender, sender.getName()));
+        clan.getClan().addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
         ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getClan().getName()));
     }
 }

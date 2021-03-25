@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class Lookup extends Sendable {
             String lookup = lang("player.lookup", sender)
                     .replace("%player_name%", target.getName())
                     .replace("%clan_name%", getClanName())
-                    .replace("%player_rank%", Helper.parseColors(target.getRankDisplayName()))
+                    .replace("%player_rank%", ChatUtils.parseColors(target.getRankDisplayName()))
                     .replace("%player_status%", getPlayerStatus())
                     .replace("%player_kdr%", KDRFormat.format(target.getKDR()))
                     .replace("%player_rival_kills%", String.valueOf(target.getRivalKills()))
