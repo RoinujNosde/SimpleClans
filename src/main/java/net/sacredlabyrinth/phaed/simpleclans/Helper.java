@@ -18,6 +18,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -930,12 +932,14 @@ public class Helper {
     @NotNull
     public static String getFormattedClanStatus(Clan clan, CommandSender sender) {
         ArrayList<String> statuses = new ArrayList<>();
-        if (clan.isPermanent()) statuses.add(SimpleClans.lang("permanent", sender));
-        if (clan.isVerified()) {
-            statuses.add(SimpleClans.lang("verified", sender));
-        } else {
-            statuses.add(SimpleClans.lang("unverified", sender));
+        if (clan.isPermanent()) {
+            statuses.add(lang("permanent", sender));
         }
-        return statuses.stream().filter(Objects::nonNull).collect(Collectors.joining(", "));
+        if (clan.isVerified()) {
+            statuses.add(lang("verified", sender));
+        } else {
+            statuses.add(lang("unverified", sender));
+        }
+        return statuses.stream().collect(Collectors.joining(", "));
     }
 }
