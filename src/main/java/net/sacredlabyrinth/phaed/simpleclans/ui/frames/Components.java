@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -27,10 +28,10 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class Components {
 
-	private Components() {
-	}
+    private Components() {
+    }
 
-	public static SCComponent getPlayerComponent(SCFrame frame, Player viewer, OfflinePlayer subject, int slot,
+    public static SCComponent getPlayerComponent(SCFrame frame, Player viewer, OfflinePlayer subject, int slot,
                                                  boolean openDetails) {
         ClanPlayer cp = SimpleClans.getInstance().getClanManager().getCreateClanPlayer(subject.getUniqueId());
 
@@ -40,17 +41,16 @@ public class Components {
     public static SCComponent getPlayerComponent(SCFrame frame, Player viewer, ClanPlayer cp, int slot,
                                                  boolean openDetails) {
         SimpleClans pl = SimpleClans.getInstance();
-
         String status = getPlayerStatus(viewer, cp);
-        SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title",viewer, cp.getName()),
+        SCComponent c = new SCComponentImpl(lang("gui.playerdetails.player.title", viewer, cp.getName()),
                 Arrays.asList(
-                        cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan",viewer)
-                                : lang("gui.playerdetails.player.lore.clan",viewer, cp.getClan().getColorTag(),
+                        cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan", viewer)
+                                : lang("gui.playerdetails.player.lore.clan", viewer, cp.getClan().getColorTag(),
                                 cp.getClan().getName()),
-                        lang("gui.playerdetails.player.lore.rank",viewer,
+                        lang("gui.playerdetails.player.lore.rank", viewer,
                                 ChatUtils.parseColors(cp.getRankDisplayName())),
-                        lang("gui.playerdetails.player.lore.status",viewer, status),
-                        lang("gui.playerdetails.player.lore.kdr",viewer,
+                        lang("gui.playerdetails.player.lore.status", viewer, status),
+                        lang("gui.playerdetails.player.lore.kdr", viewer,
                                 new DecimalFormat("#.#").format(cp.getKDR())),
                         lang("gui.playerdetails.player.lore.kill.totals", viewer, cp.getRivalKills(),
                                 cp.getNeutralKills(), cp.getCivilianKills()),
@@ -78,17 +78,17 @@ public class Components {
 
     @NotNull
     private static String getPlayerStatus(Player viewer, ClanPlayer cp) {
-	    if (cp.getClan() == null) {
-	        return lang("free.agent", viewer);
+        if (cp.getClan() == null) {
+            return lang("free.agent", viewer);
         }
-	    if (cp.isLeader()) {
-	        return lang("leader", viewer);
+        if (cp.isLeader()) {
+            return lang("leader", viewer);
         }
-	    if (cp.isTrusted()) {
-	        return lang("trusted", viewer);
+        if (cp.isTrusted()) {
+            return lang("trusted", viewer);
         }
-	    if (cp.getRankId() != null && !cp.getRankId().isEmpty()) {
-	        return lang("in.rank", viewer);
+        if (cp.getRankId() != null && !cp.getRankId().isEmpty()) {
+            return lang("in.rank", viewer);
         }
         return lang("untrusted", viewer);
     }
@@ -99,26 +99,24 @@ public class Components {
         String name;
         List<String> lore;
         if (clan != null) {
-            name = lang("gui.clandetails.clan.title",viewer, clan.getColorTag(), clan.getName());
+            name = lang("gui.clandetails.clan.title", viewer, clan.getColorTag(), clan.getName());
             lore = Arrays.asList(
-                    lang("gui.clandetails.clan.lore.description",viewer,
-                            clan.getDescription() != null && !clan.getDescription().isEmpty() ? clan.getDescription() : lang("no.description",viewer)),
-                    lang("gui.clandetails.clan.lore.status",viewer, clan.isVerified() ? lang("verified",viewer) : lang("unverified",viewer)),
-                    lang("gui.clandetails.clan.lore.leaders",viewer, clan.getLeadersString("", ", ")),
-                    lang("gui.clandetails.clan.lore.online.members",viewer, VanishUtils.getNonVanished(viewer, clan).size(), clan.getMembers().size()),
-                    lang("gui.clandetails.clan.lore.kdr",viewer, KDRFormat.format(clan.getTotalKDR())),
-                    lang("gui.clandetails.clan.lore.kill.totals",viewer, clan.getTotalRival(), clan.getTotalNeutral(), clan.getTotalCivilian()),
-                    lang("gui.clandetails.clan.lore.deaths",viewer, clan.getTotalDeaths()),
-                    lang("gui.clandetails.clan.lore.fee",viewer, clan.isMemberFeeEnabled()
-                            ? lang("fee.enabled",viewer) : lang("fee.disabled",viewer), clan.getMemberFee()),
-                    lang("gui.clandetails.clan.lore.allies",viewer, clan.getAllies().isEmpty() ? lang("none",viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator",viewer))),
-                    lang("gui.clandetails.clan.lore.rivals",viewer, clan.getRivals().isEmpty() ? lang("none",viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator",viewer))),
-                    lang("gui.clandetails.clan.lore.founded",viewer, clan.getFoundedString()),
-                    lang("gui.clandetails.clan.lore.inactive",viewer, clan.getInactiveDays(), (clan.isVerified() ?
-                            pl.getSettingsManager().getPurgeClan() : pl.getSettingsManager().getPurgeUnverified())
-                    ));
+                    lang("gui.clandetails.clan.lore.description", viewer,
+                            clan.getDescription() != null && !clan.getDescription().isEmpty() ? clan.getDescription() : lang("no.description", viewer)),
+                    lang("gui.clandetails.clan.lore.status", viewer, Helper.getFormattedClanStatus(clan, viewer)),
+                    lang("gui.clandetails.clan.lore.leaders", viewer, clan.getLeadersString("", ", ")),
+                    lang("gui.clandetails.clan.lore.online.members", viewer, VanishUtils.getNonVanished(viewer, clan).size(), clan.getMembers().size()),
+                    lang("gui.clandetails.clan.lore.kdr", viewer, KDRFormat.format(clan.getTotalKDR())),
+                    lang("gui.clandetails.clan.lore.kill.totals", viewer, clan.getTotalRival(), clan.getTotalNeutral(), clan.getTotalCivilian()),
+                    lang("gui.clandetails.clan.lore.deaths", viewer, clan.getTotalDeaths()),
+                    lang("gui.clandetails.clan.lore.fee", viewer, clan.isMemberFeeEnabled()
+                            ? lang("fee.enabled", viewer) : lang("fee.disabled", viewer), clan.getMemberFee()),
+                    lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer))),
+                    lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer))),
+                    lang("gui.clandetails.clan.lore.founded", viewer, clan.getFoundedString()),
+                    lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), Helper.formatMaxInactiveDays(clan.getMaxInactiveDays())));
         } else {
-            name = lang("gui.clandetails.free.agent.title",viewer);
+            name = lang("gui.clandetails.free.agent.title", viewer);
             double price = pl.getSettingsManager().isePurchaseCreation() ? pl.getSettingsManager().getCreationPrice() : 0;
             lore = new ArrayList<>();
             if (price != 0) {
@@ -163,8 +161,8 @@ public class Components {
     }
 
     public static @NotNull SCComponent getPreviousPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator paginator, @NotNull Player viewer) {
-	    if (!paginator.hasPreviousPage()) {
-	        return getPanelComponent(slot);
+        if (!paginator.hasPreviousPage()) {
+            return getPanelComponent(slot);
         }
         SCComponent c = new SCComponentImpl(lang("gui.previous.page.title", viewer), null,
                 XMaterial.STONE_BUTTON, slot);

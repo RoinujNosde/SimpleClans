@@ -102,8 +102,7 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
 
-        clan.clanAnnounce(player.getName(), AQUA + lang("clan.has.been.disbanded", clan.getName()));
-        clan.disband();
+        clan.disband(player, true, false);
     }
 
     @Subcommand("%verify")

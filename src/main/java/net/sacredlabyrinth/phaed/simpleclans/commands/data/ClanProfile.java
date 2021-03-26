@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -23,7 +24,7 @@ public class ClanProfile extends Sendable {
         String message = lang("clan.profile").replace("%clan_name%", clan.getName())
                 .replace("%clan_color_tag%", clan.getColorTag())
                 .replace("%clan_description%", getDescription())
-                .replace("%clan_verified%", getVerifiedStatus())
+                .replace("%clan_status%", Helper.getFormattedClanStatus(clan, sender))
                 .replace("%clan_leaders%", clan.getLeadersString(sm.getPageLeaderColor(), subColor + ", "))
                 .replace("%clan_online_count%", String.valueOf(VanishUtils.getNonVanished(sender, clan).size()))
                 .replace("%clan_size%", String.valueOf(clan.getSize()))
@@ -38,25 +39,13 @@ public class ClanProfile extends Sendable {
                 .replace("%clan_rivals%", clan.getRivalString(subColor + ", "))
                 .replace("%clan_founded%", clan.getFoundedString())
                 .replace("%clan_inactive_days%", String.valueOf(clan.getInactiveDays()))
-                .replace("%clan_max_inactive_days%", getMaxInactiveDays());
+                .replace("%clan_max_inactive_days%", Helper.formatMaxInactiveDays(clan.getMaxInactiveDays()));
         sender.sendMessage(message);
-    }
-
-    @NotNull
-    private String getMaxInactiveDays() {
-        return String.valueOf(clan.isVerified() ?
-                sm.getPurgeClan() : sm.getPurgeUnverified());
     }
 
     @NotNull
     private String getFeeEnabled() {
         return clan.isMemberFeeEnabled() ? lang("fee.enabled", sender) : lang("fee.disabled", sender);
-    }
-
-    @NotNull
-    private String getVerifiedStatus() {
-        return clan.isVerified() ? sm.getPageTrustedColor() + lang("verified", sender) :
-                sm.getPageUnTrustedColor() + lang("unverified", sender);
     }
 
     @NotNull

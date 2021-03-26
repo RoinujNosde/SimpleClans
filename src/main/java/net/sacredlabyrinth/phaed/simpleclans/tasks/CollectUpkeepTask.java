@@ -1,12 +1,14 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
-import java.text.MessageFormat;
 import net.md_5.bungee.api.ChatColor;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.text.MessageFormat;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  *
@@ -53,7 +55,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
                 clan.setBalance(balance - upkeep);
                 clan.addBb(ChatColor.AQUA + MessageFormat.format(lang("upkeep.collected"), upkeep), false);
             } else {
-                clan.disband();
+                clan.disband(null, true, false);
             }
         });
     }

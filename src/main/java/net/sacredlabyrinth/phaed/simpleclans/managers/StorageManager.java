@@ -1,9 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.google.common.base.Charsets;
-
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import net.sacredlabyrinth.phaed.simpleclans.storage.DBCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.MySQLCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
@@ -11,7 +9,6 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.YAMLSerializer;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDFetcher;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,6 +23,8 @@ import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -304,6 +303,9 @@ public final class StorageManager {
         List<Clan> purge = new ArrayList<>();
 
         for (Clan clan : clans) {
+            if (clan.isPermanent()) {
+                continue;
+            }
             if (clan.isVerified()) {
                 int purgeClan = plugin.getSettingsManager().getPurgeClan();
                 if (clan.getInactiveDays() > purgeClan && purgeClan > 0) {
@@ -352,7 +354,7 @@ public final class StorageManager {
     public List<Clan> retrieveClans() {
         List<Clan> out = new ArrayList<>();
 
-        String query = "SELECT * FROM  `sc_clans`;";
+        String query = "SELECT * FROM `sc_clans`;";
         ResultSet res = core.select(query);
 
         if (res != null) {

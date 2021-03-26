@@ -18,6 +18,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -28,6 +30,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author phaed
@@ -900,7 +903,7 @@ public class Helper {
      * 
      * @param cp Sender
      * @param msg The chat message
-     * @return The formated message
+     * @return The formatted message
      */
     public static String formatSpyClanChat(ClanPlayer cp, String msg) {
         msg = stripColors(msg);
@@ -910,5 +913,33 @@ public class Helper {
         } else {
             return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + msg;
         }
+    }
+
+    /**
+     * Formats max inactive days to an infinity symbol if it's negative or 0
+     *
+     * @param max inactive days
+     * @return formatted message
+     */
+    public static String formatMaxInactiveDays(int max) {
+        if (max <= 0) {
+            return "∞";
+        } else {
+            return String.valueOf(max);
+        }
+    }
+
+    @NotNull
+    public static String getFormattedClanStatus(Clan clan, CommandSender sender) {
+        ArrayList<String> statuses = new ArrayList<>();
+        if (clan.isPermanent()) {
+            statuses.add(lang("permanent", sender));
+        }
+        if (clan.isVerified()) {
+            statuses.add(lang("verified", sender));
+        } else {
+            statuses.add(lang("unverified", sender));
+        }
+        return statuses.stream().collect(Collectors.joining(", "));
     }
 }

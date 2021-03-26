@@ -267,7 +267,6 @@ public final class RequestManager {
 
 	private void processDisband(Clan requesterClan, List<String> denies) {
 		if (denies.isEmpty()) {
-		    requesterClan.addBb(lang("leaders"), ChatColor.AQUA + lang("has.been.disbanded", requesterClan.getName()));
 		    requesterClan.disband();
 		} else {
 		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
