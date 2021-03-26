@@ -58,6 +58,16 @@ description: null
 | `/ally (message)` | Sends a message to the ally chat | No |
 | `/ally [join|leave|mute]` | Joins/leaves/mutes the ally chat | No |
 
+### Bank Commands
+
+| Command | Description | Verified only |
+| :--- | :--- | :--- |
+| `/clan bank status` | Checks your clans bank balance | Yes |
+| `/clan bank withdraw (amount)` | Withdraws an amount from your clans bank | Yes |
+| `/clan bank withdraw all` | Withdraws all from your clans bank | Yes |
+| `/clan bank deposit (amount)` | Deposits an amount of your money into your clan bank | Yes |
+| `/clan bank deposit all` | Deposits all of your money into your clan bank | Yes |
+
 ## Leaders Commands
 
 | Command | Description | Verified only |
