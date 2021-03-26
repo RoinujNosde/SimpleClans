@@ -106,6 +106,9 @@ public class ProtectionManager {
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
+                if (owner == null) {
+                    continue;
+                }
                 Player involved;
                 if (other != null && player.getUniqueId().equals(owner)) {
                     involved = other;

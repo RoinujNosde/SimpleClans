@@ -356,6 +356,7 @@ public final class ClanManager {
      *
      */
     public ClanPlayer getCreateClanPlayer(UUID playerUniqueId) {
+        Objects.requireNonNull(playerUniqueId, "UUID must not be null");
         if (clanPlayers.containsKey(playerUniqueId.toString())) {
             return clanPlayers.get(playerUniqueId.toString());
         }
