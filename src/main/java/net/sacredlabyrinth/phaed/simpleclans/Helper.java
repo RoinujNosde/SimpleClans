@@ -28,6 +28,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author phaed
@@ -924,5 +925,17 @@ public class Helper {
         } else {
             return String.valueOf(max);
         }
+    }
+
+    @NotNull
+    public static String getFormattedClanStatus(Clan clan, CommandSender sender) {
+        ArrayList<String> statuses = new ArrayList<>();
+        if (clan.isPermanent()) statuses.add(SimpleClans.lang("permanent", sender));
+        if (clan.isVerified()) {
+            statuses.add(SimpleClans.lang("verified", sender));
+        } else {
+            statuses.add(SimpleClans.lang("unverified", sender));
+        }
+        return statuses.stream().filter(Objects::nonNull).collect(Collectors.joining(", "));
     }
 }

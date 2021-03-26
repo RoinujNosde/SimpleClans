@@ -23,9 +23,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -106,7 +103,7 @@ public class Components {
             lore = Arrays.asList(
                     lang("gui.clandetails.clan.lore.description", viewer,
                             clan.getDescription() != null && !clan.getDescription().isEmpty() ? clan.getDescription() : lang("no.description", viewer)),
-                    lang("gui.clandetails.clan.lore.status", viewer, Stream.of(clan.isVerified() ? lang("verified", viewer) : lang("unverified", viewer), clan.isPermanent() ? lang("permanent", viewer) : null).filter(Objects::nonNull).collect(Collectors.joining(", "))),
+                    lang("gui.clandetails.clan.lore.status", viewer, Helper.getFormattedClanStatus(clan, viewer)),
                     lang("gui.clandetails.clan.lore.leaders", viewer, clan.getLeadersString("", ", ")),
                     lang("gui.clandetails.clan.lore.online.members", viewer, VanishUtils.getNonVanished(viewer, clan).size(), clan.getMembers().size()),
                     lang("gui.clandetails.clan.lore.kdr", viewer, KDRFormat.format(clan.getTotalKDR())),
