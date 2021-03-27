@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -34,27 +33,17 @@ public class ChatBlock {
     public void setPadRight(boolean padRight) {
     	this.padRight = padRight;
     }
-    
-    /**
-     * @param columnAlignment
-     */
+
     public void setAlignment(String... columnAlignment) {
         columnAlignments.addAll(Arrays.asList(columnAlignment));
     }
 
-    /**
-     * @param columnFlex
-     */
     public void setFlexibility(boolean... columnFlex) {
         for (boolean flex : columnFlex) {
             columnFlexes.add(flex);
         }
     }
 
-    /**
-     * @param columnPercentages
-     * @param prefix
-     */
     public void setColumnSizes(String prefix, double... columnPercentages) {
         int ll = LINE_LENGTH;
 
@@ -67,73 +56,38 @@ public class ChatBlock {
         }
     }
 
-    /**
-     * @return
-     */
     public boolean hasContent() {
         return !rows.isEmpty();
     }
 
-    /**
-     * @param contents
-     */
     public void addRow(String... contents) {
         rows.add(contents);
     }
 
-    /**
-     * @return
-     */
     public int size() {
         return rows.size();
     }
 
-    /**
-     * @return
-     */
     public boolean isEmpty() {
         return rows.isEmpty();
     }
 
-    /**
-     *
-     */
     public void clear() {
         rows.clear();
     }
 
-    /**
-     * @param player
-     * @return
-     */
     public boolean sendBlock(CommandSender player) {
         return sendBlock(player, null, 0);
     }
 
-    /**
-     * @param player
-     * @param prefix
-     * @return
-     */
     public boolean sendBlock(CommandSender player, String prefix) {
         return sendBlock(player, prefix, 0);
     }
 
-    /**
-     * @param player
-     * @param amount
-     * @return
-     */
     public boolean sendBlock(CommandSender player, int amount) {
         return sendBlock(player, null, amount);
     }
 
-    /**
-     * @param player
-     * @param prefix
-     * @param amount
-     * @return
-     */
     boolean sendBlock(CommandSender player, String prefix, int amount) {
         if (player == null) {
             return false;
@@ -304,10 +258,6 @@ public class ChatBlock {
         return out;
     }
 
-    /**
-     * @param col
-     * @return
-     */
     int getMaxWidth(int col) {
         double maxWidth = 0;
 
@@ -318,19 +268,10 @@ public class ChatBlock {
         return (int) maxWidth;
     }
 
-    /**
-     * @param msg
-     * @return
-     */
     public static String centerInLine(String msg) {
         return centerInLineOf(msg, LINE_LENGTH);
     }
 
-    /**
-     * @param msg
-     * @param lineLength
-     * @return
-     */
     private static String centerInLineOf(String msg, double lineLength) {
         double length = msgLength(msg);
         double diff = lineLength - length;
@@ -355,10 +296,6 @@ public class ChatBlock {
         return msg;
     }
 
-    /**
-     * @param str
-     * @return
-     */
     public static String makeEmpty(String str) {
         if (str == null) {
             return "";
@@ -367,11 +304,6 @@ public class ChatBlock {
         return paddLeftToFit("", msgLength(str));
     }
 
-    /**
-     * @param msg
-     * @param length
-     * @return
-     */
     private static String cropRightToFit(String msg, double length) {
         if (msg == null || msg.length() == 0 || length == 0) {
             return "";
@@ -384,11 +316,6 @@ public class ChatBlock {
         return msg;
     }
 
-    /**
-     * @param msg
-     * @param length
-     * @return
-     */
     private static String cropLeftToFit(String msg, double length) {
         if (msg == null || msg.length() == 0 || length == 0) {
             return "";
@@ -402,11 +329,11 @@ public class ChatBlock {
     }
 
     /**
-     * Padds left til the string is a certain size
+     * Pads left til the string is a certain size
      *
-     * @param msg
-     * @param length
-     * @return
+     * @param msg the message to pad
+     * @param length the message length
+     * @return the padded message
      */
     private static String paddLeftToFit(String msg, double length) {
         if (msgLength(msg) >= length) {
@@ -421,11 +348,11 @@ public class ChatBlock {
     }
 
     /**
-     * Padds right til the string is a certain size
+     * Pads right til the string is a certain size
      *
-     * @param msg
-     * @param length
-     * @return
+     * @param msg the message to pad
+     * @param length the message length
+     * @return the padded message
      */
     private static String paddRightToFit(String msg, double length) {
         if (msgLength(msg) >= length) {
@@ -442,8 +369,6 @@ public class ChatBlock {
     /**
      * Finds the length on the screen of a string. Ignores colors.
      *
-     * @param str
-     * @return
      */
     private static double msgLength(String str) {
         double length = 0;
@@ -465,8 +390,6 @@ public class ChatBlock {
     /**
      * Finds the visual length of the character on the screen.
      *
-     * @param x
-     * @return
      */
     private static int charLength(char x) {
         String normalized = StringSimplifier.simplifiedString(x + "");
@@ -546,8 +469,6 @@ public class ChatBlock {
         return out.toArray(new String[0]);
     }
 
-    /**
-     */
     private static String combineSplit(String[] string) {
         StringBuilder builder = new StringBuilder();
         for (String aString : string) {
