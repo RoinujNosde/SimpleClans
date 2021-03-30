@@ -239,20 +239,29 @@ public class ProtectionManager {
                 logger.log(Level.WARNING, String.format("Error instantiating provider %s", className), ex);
             }
             if (instance instanceof ProtectionProvider) {
-                ProtectionProvider provider = (ProtectionProvider) instance;
-                String requiredPlugin = provider.getRequiredPluginName();
-                if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
-                    logger.warning(String.format("Required plugin %s for the provider %s was not found!",
-                            requiredPlugin, instance.getClass().getSimpleName()));
-                    continue;
-                }
-                provider.setup();
-                providers.add(provider);
-                landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
+                registerProvider((ProtectionProvider) instance);
             } else {
                 logger.warning(String.format("%s is not an instance of ProtectionProvider", className));
             }
         }
+    }
+
+    private void registerProvider(ProtectionProvider provider) {
+        String requiredPlugin = provider.getRequiredPluginName();
+        String providerName = provider.getClass().getSimpleName();
+        if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
+            logger.warning(String.format("Required plugin %s for the provider %s was not found!",
+                    requiredPlugin, providerName));
+            return;
+        }
+        try {
+            provider.setup();
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, String.format("Error registering provider %s", providerName), ex);
+            return;
+        }
+        providers.add(provider);
+        landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
     }
 
     @NotNull
