@@ -100,5 +100,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.flywaydb:flyway-core:3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sk89q:commandbook:2.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.TechFortress:GriefPrevention:16.17.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:PlotSquared-Core:5.13.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:PlotSquared-Bukkit:5.13.3" level="project" />
   </component>
 </module>
