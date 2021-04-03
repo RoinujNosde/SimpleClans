@@ -8,6 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -940,6 +941,21 @@ public class Helper {
         } else {
             statuses.add(lang("unverified", sender));
         }
-        return statuses.stream().collect(Collectors.joining(", "));
+        return String.join(", ", statuses);
+    }
+
+    /**
+     * Checks if all passed materials are some kind of AIR
+     *
+     * @param materials materials to test
+     * @return true if all materials are AIR
+     */
+    public static boolean isAir(@NotNull Material... materials) {
+        for (Material m : materials) {
+            if (!m.name().contains("AIR")) {
+                return false;
+            }
+        }
+        return true;
     }
 }

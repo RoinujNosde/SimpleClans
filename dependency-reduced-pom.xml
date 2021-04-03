@@ -116,6 +116,10 @@
       <url>https://maven.enginehub.org/repo/</url>
     </repository>
     <repository>
+      <id>IntellectualSites</id>
+      <url>https://mvn.intellectualsites.com/content/groups/public/</url>
+    </repository>
+    <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
     </repository>
@@ -234,6 +238,24 @@
       <artifactId>GriefPrevention</artifactId>
       <version>16.17.1</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.plotsquared</groupId>
+      <artifactId>PlotSquared-Core</artifactId>
+      <version>5.13.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.plotsquared</groupId>
+      <artifactId>PlotSquared-Bukkit</artifactId>
+      <version>5.13.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>PlotSquared-Core</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <distributionManagement>
