@@ -7,6 +7,8 @@ import java.util.*;
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -991,7 +993,7 @@ public final class SettingsManager {
      * @return the serverName
      */
     public String getServerName() {
-        return Helper.parseColors(serverName);
+        return ChatUtils.parseColors(serverName);
     }
 
     /**

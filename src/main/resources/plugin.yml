@@ -2,7 +2,7 @@ name: SimpleClans
 main: net.sacredlabyrinth.phaed.simpleclans.SimpleClans
 version: '${project.version}'
 softdepend: [ VanishNoPacket, Permissions, PermissionsBukkit, Vault, PermissionsEx, mChat, mChatSuite, PlaceholderAPI, LuckPerms, WorldGuard ]
-loadbefore: [ GriefPrevention ]
+loadbefore: [ GriefPrevention, PlotSquared ]
 api-version: '1.13'
 authors:
   - Phaed

@@ -57,6 +57,9 @@ war-and-protection:
     land-sharing: true
     protection-providers:
     - WorldGuardProvider
+    - WorldGuard6Provider
+    - PlotSquared5Provider
+    - PlotSquared3Provider
     - GriefPreventionProvider
     listener-priority: HIGHEST
     set-base-only-in-land: false

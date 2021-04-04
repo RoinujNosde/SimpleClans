@@ -77,7 +77,7 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (settingsManager.isBlacklistedWorld(player.getWorld())) {

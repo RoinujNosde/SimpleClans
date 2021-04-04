@@ -106,6 +106,9 @@ public class ProtectionManager {
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
+                if (owner == null) {
+                    continue;
+                }
                 Player involved;
                 if (other != null && player.getUniqueId().equals(owner)) {
                     involved = other;
@@ -236,20 +239,32 @@ public class ProtectionManager {
                 logger.log(Level.WARNING, String.format("Error instantiating provider %s", className), ex);
             }
             if (instance instanceof ProtectionProvider) {
-                ProtectionProvider provider = (ProtectionProvider) instance;
-                String requiredPlugin = provider.getRequiredPluginName();
-                if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
-                    logger.warning(String.format("Required plugin %s for the provider %s was not found!",
-                            requiredPlugin, instance.getClass().getSimpleName()));
-                    continue;
-                }
-                provider.setup();
-                providers.add(provider);
-                landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
+                registerProvider((ProtectionProvider) instance);
             } else {
                 logger.warning(String.format("%s is not an instance of ProtectionProvider", className));
             }
         }
+    }
+
+    private void registerProvider(ProtectionProvider provider) {
+        String requiredPlugin = provider.getRequiredPluginName();
+        String providerName = provider.getClass().getSimpleName();
+        if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
+            logger.warning(String.format("Required plugin %s for the provider %s was not found!",
+                    requiredPlugin, providerName));
+            return;
+        }
+        try {
+            provider.setup();
+        } catch (LinkageError | Exception throwable) {
+            logger.log(Level.WARNING, String.format("Error registering provider %s", providerName));
+            if (settingsManager.isDebugging()) {
+                throwable.printStackTrace();
+            }
+            return;
+        }
+        providers.add(provider);
+        landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
     }
 
     @NotNull
