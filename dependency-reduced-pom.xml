@@ -120,6 +120,10 @@
       <url>https://mvn.intellectualsites.com/content/groups/public/</url>
     </repository>
     <repository>
+      <id>plotsquared</id>
+      <url>https://plotsquared.com/mvn/</url>
+    </repository>
+    <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
     </repository>
@@ -134,10 +138,6 @@
         <exclusion>
           <artifactId>commons-lang</artifactId>
           <groupId>commons-lang</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
         </exclusion>
         <exclusion>
           <artifactId>gson</artifactId>
@@ -227,10 +227,6 @@
           <artifactId>commandbook</artifactId>
           <groupId>com.sk89q</groupId>
         </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -254,6 +250,26 @@
         <exclusion>
           <artifactId>PlotSquared-Core</artifactId>
           <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.plotsquared</groupId>
+      <artifactId>plotsquared-api</artifactId>
+      <version>3.1</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>com.sk89q.worldedit</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>snakeyaml</artifactId>
+          <groupId>org.yaml</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>gson</artifactId>
+          <groupId>com.google.code.gson</groupId>
         </exclusion>
       </exclusions>
     </dependency>

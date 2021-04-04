@@ -256,8 +256,11 @@ public class ProtectionManager {
         }
         try {
             provider.setup();
-        } catch (Exception ex) {
-            logger.log(Level.WARNING, String.format("Error registering provider %s", providerName), ex);
+        } catch (LinkageError | Exception throwable) {
+            logger.log(Level.WARNING, String.format("Error registering provider %s", providerName));
+            if (settingsManager.isDebugging()) {
+                throwable.printStackTrace();
+            }
             return;
         }
         providers.add(provider);
