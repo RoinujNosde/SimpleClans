@@ -15,15 +15,15 @@ import org.jetbrains.annotations.Nullable;
 public class PlayerRankUpdateEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
-    private final ClanPlayer who;
+    private final ClanPlayer target;
     private final ClanPlayer issuer;
     private final Rank oldRank;
     private final Rank newRank;
     private final Clan clan;
     private boolean cancelled;
 
-    public PlayerRankUpdateEvent(ClanPlayer who, ClanPlayer issuer, Clan clan, Rank oldRank, Rank newRank) {
-        this.who = who;
+    public PlayerRankUpdateEvent(ClanPlayer target, ClanPlayer issuer, Clan clan, Rank oldRank, Rank newRank) {
+        this.target = target;
         this.issuer = issuer;
         this.oldRank = oldRank;
         this.clan = clan;
@@ -51,8 +51,8 @@ public class PlayerRankUpdateEvent extends Event implements Cancellable {
     }
 
     @NotNull
-    public ClanPlayer getWho() {
-        return who;
+    public ClanPlayer getTarget() {
+        return target;
     }
 
     @Override
