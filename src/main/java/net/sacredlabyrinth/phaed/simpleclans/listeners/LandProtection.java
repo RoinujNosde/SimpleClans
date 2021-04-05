@@ -74,7 +74,7 @@ public class LandProtection implements Listener {
                     cancelWithMessage(player, event, "only.clan.members.can.create.lands");
                     return;
                 }
-                for (ClanPlayer member : clan.getSortedMembers()) {
+                for (ClanPlayer member : clan.getAllMembers()) {
                     Set<Land> lands = protectionManager.getLandsOf(Bukkit.getOfflinePlayer(member.getUniqueId()), player.getWorld());
                     if (lands.size() > 0) {
                         cancelWithMessage(player, event, "only.one.land.per.clan");

@@ -23,7 +23,7 @@ public class ClanMembersCompletion extends AbstractSyncCompletion {
         if (player != null) {
             Clan clan = clanManager.getClanByPlayerUniqueId(player.getUniqueId());
             if (clan != null) {
-                return clan.getSortedMembers().stream().map(ClanPlayer::getName).collect(Collectors.toList());
+                return clan.getAllMembers().stream().map(ClanPlayer::getName).collect(Collectors.toList());
             }
         }
         return Collections.emptyList();
