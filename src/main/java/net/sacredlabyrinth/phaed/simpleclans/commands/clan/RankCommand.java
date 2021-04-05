@@ -40,13 +40,13 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.assign")
     @CommandCompletion("@clan_members @ranks")
     @Description("{@@command.description.rank.assign}")
-    public void assign(Player player,
+    public void assign(ClanPlayer player,
                        Clan clan,
                        @Name("member") @Conditions("same_clan") ClanPlayerInput member,
                        @Name("rank") Rank rank) {
         ClanPlayer memberInput = member.getClanPlayer();
 
-        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, clan, clan.getRank(memberInput.getRankId()), rank);
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, memberInput, clan, clan.getRank(memberInput.getRankId()), rank);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
@@ -58,23 +58,23 @@ public class RankCommand extends BaseCommand {
 
         memberInput.setRank(rank.getName());
         storage.updateClanPlayer(memberInput);
-        ChatBlock.sendMessage(player, AQUA + lang("player.rank.changed", player));
+        ChatBlock.sendMessage(player.toPlayer(), AQUA + lang("player.rank.changed", player));
     }
 
     @Subcommand("%unassign")
     @CommandPermission("simpleclans.leader.rank.unassign")
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.rank.unassign}")
-    public void unassign(Player player, Clan clan, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
-        ClanPlayer cpInput = cp.getClanPlayer();
+    public void unassign(ClanPlayer player, Clan clan, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
+        ClanPlayer memberInput = cp.getClanPlayer();
 
-        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, clan, clan.getRank(cpInput.getRankId()), null);
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, memberInput, clan, clan.getRank(memberInput.getRankId()), null);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
-        cpInput.setRank(null);
-        storage.updateClanPlayer(cpInput);
+        memberInput.setRank(null);
+        storage.updateClanPlayer(memberInput);
         ChatBlock.sendMessage(player, AQUA + lang("player.unassigned.from.rank", player));
     }
 
