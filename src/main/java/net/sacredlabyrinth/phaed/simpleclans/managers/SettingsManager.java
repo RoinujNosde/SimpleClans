@@ -1,25 +1,22 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author phaed
@@ -207,6 +204,8 @@ public final class SettingsManager {
     private boolean onlyLeadersCanCreateLands;
     private boolean onlyOneLandPerClan;
     private boolean setBaseOnlyInLand;
+    private boolean requestEnabled;
+    private int membersOnlineMaxDifference;
 
     /**
      *
@@ -424,6 +423,8 @@ public final class SettingsManager {
         onlyLeadersCanCreateLands = getConfig().getBoolean("war-and-protection.land-creation.only-leaders", false);
         onlyOneLandPerClan = getConfig().getBoolean("war-and-protection.land-creation.only-one-per-clan", false);
         setBaseOnlyInLand = getConfig().getBoolean("war-and-protection.set-base-only-in-land", false);
+        requestEnabled = getConfig().getBoolean("war-requests.request-enabled", true);
+        membersOnlineMaxDifference = getConfig().getInt("war-requests.members-online-max-difference");
 
         // migrate from old way of adding ports
         if (database.contains(":")) {
@@ -451,6 +452,10 @@ public final class SettingsManager {
             plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
                     " that matches their clan tag.");
         }
+    }
+
+    public boolean isRequestEnabled() {
+        return requestEnabled;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -993,7 +998,7 @@ public final class SettingsManager {
      * @return the serverName
      */
     public String getServerName() {
-        return ChatUtils.parseColors(serverName);
+        return Helper.parseColors(serverName);
     }
 
     /**
@@ -1823,6 +1828,10 @@ public final class SettingsManager {
 
     public void setForceCommandPriority(boolean forceCommandPriority) {
         this.forceCommandPriority = forceCommandPriority;
+    }
+
+    public int getMembersOnlineMaxDifference() {
+        return membersOnlineMaxDifference;
     }
 
     public int getMaxMembers() {

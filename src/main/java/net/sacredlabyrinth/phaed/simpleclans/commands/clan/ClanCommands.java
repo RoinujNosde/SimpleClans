@@ -42,24 +42,17 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=WAR_START")
     @Description("{@@command.description.war.start}")
     @CommandCompletion("@rivals")
-    public void startWar(Player player, ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
+    public void startWar(Player player, ClanPlayer cp, Clan issuerClan, @Conditions("can_war_target") @Name("clan") ClanInput other) {
         Clan war = other.getClan();
-        if (!issuerClan.isRival(war.getTag())) {
-            ChatBlock.sendMessage(player, RED + lang("you.can.only.start.war.with.rivals", player));
-            return;
-        }
-        if (!issuerClan.isWarring(war.getTag())) {
-            List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(issuerClan.getLeaders());
 
-            if (!onlineLeaders.isEmpty()) {
-                requestManager.addWarStartRequest(cp, war, issuerClan);
-                ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
-                        player, war.getName()));
-            } else {
-                ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance", player));
-            }
+        List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(issuerClan.getLeaders());
+
+        if (!onlineLeaders.isEmpty()) {
+            requestManager.addWarStartRequest(cp, war, issuerClan);
+            ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
+                    player, war.getName()));
         } else {
-            ChatBlock.sendMessage(player, RED + lang("clans.already.at.war", player));
+            ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance", player));
         }
     }
 
