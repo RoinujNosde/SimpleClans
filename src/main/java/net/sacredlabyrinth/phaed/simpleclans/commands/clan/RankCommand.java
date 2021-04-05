@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
 import net.sacredlabyrinth.phaed.simpleclans.events.DeleteRankEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerRankUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -44,6 +45,12 @@ public class RankCommand extends BaseCommand {
                        @Name("member") @Conditions("same_clan") ClanPlayerInput member,
                        @Name("rank") Rank rank) {
         ClanPlayer memberInput = member.getClanPlayer();
+
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, clan, clan.getRank(memberInput.getRankId()), rank);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
         if (memberInput.getRankId().equals(rank.getName())) {
             ChatBlock.sendMessage(player, lang("player.already.has.that.rank", player));
             return;
@@ -58,8 +65,14 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.unassign")
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.rank.unassign}")
-    public void unassign(Player player, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
+    public void unassign(Player player, Clan clan, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
         ClanPlayer cpInput = cp.getClanPlayer();
+
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, clan, clan.getRank(cpInput.getRankId()), null);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
         cpInput.setRank(null);
         storage.updateClanPlayer(cpInput);
         ChatBlock.sendMessage(player, AQUA + lang("player.unassigned.from.rank", player));
