@@ -35,7 +35,7 @@ public class CanWarTargetCondition extends AbstractParameterCondition<ClanInput>
         boolean isRequestEnabled = settingsManager.isRequestEnabled();
         int maxDifference = settingsManager.getMembersOnlineMaxDifference();
 
-        if (isRequestEnabled && maxDifference >= 0) {
+        if (!isRequestEnabled && maxDifference >= 0) {
             int difference = Math.abs(issuerClan.getOnlineMembers().size() - targetClan.getOnlineMembers().size());
             if (difference > maxDifference)
                 throw new ConditionFailedException(lang("you.cant.start.war.online.members.difference", issuer));
