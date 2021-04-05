@@ -58,7 +58,7 @@ public class RankCommand extends BaseCommand {
 
         memberInput.setRank(rank.getName());
         storage.updateClanPlayer(memberInput);
-        ChatBlock.sendMessage(player.toPlayer(), AQUA + lang("player.rank.changed", player));
+        ChatBlock.sendMessage(player, AQUA + lang("player.rank.changed", player));
     }
 
     @Subcommand("%unassign")
