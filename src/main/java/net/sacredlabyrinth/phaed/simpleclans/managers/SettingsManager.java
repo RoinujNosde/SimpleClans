@@ -424,7 +424,7 @@ public final class SettingsManager {
         onlyOneLandPerClan = getConfig().getBoolean("war-and-protection.land-creation.only-one-per-clan", false);
         setBaseOnlyInLand = getConfig().getBoolean("war-and-protection.set-base-only-in-land", false);
         requestEnabled = getConfig().getBoolean("war-requests.request-enabled", true);
-        membersOnlineMaxDifference = getConfig().getInt("war-requests.members-online-max-difference");
+        membersOnlineMaxDifference = getConfig().getInt("war-requests.members-online-max-difference", 5);
 
         // migrate from old way of adding ports
         if (database.contains(":")) {
