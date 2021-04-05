@@ -118,7 +118,7 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
         int minToVerify = settings.getMinToVerify();
-        if (minToVerify > clan.getAllMembers().size()) {
+        if (minToVerify > clan.getSortedMembers().size()) {
             ChatBlock.sendMessage(player, lang("your.clan.must.have.members.to.verify", player, minToVerify));
             return;
         }

@@ -45,8 +45,9 @@ public class RankCommand extends BaseCommand {
                        @Name("member") @Conditions("same_clan") ClanPlayerInput member,
                        @Name("rank") Rank rank) {
         ClanPlayer memberInput = member.getClanPlayer();
+        ClanPlayer issuer = new ClanPlayer(player.getUniqueId());
 
-        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, clan, clan.getRank(memberInput.getRankId()), rank);
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(issuer, memberInput, clan, clan.getRank(memberInput.getRankId()), rank);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
@@ -65,16 +66,17 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.unassign")
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.rank.unassign}")
-    public void unassign(Player player, Clan clan, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
-        ClanPlayer cpInput = cp.getClanPlayer();
+    public void unassign(Player player, Clan clan, @Conditions("same_clan") @Name("member") ClanPlayerInput member) {
+        ClanPlayer memberInput = member.getClanPlayer();
+        ClanPlayer issuer = new ClanPlayer(player.getUniqueId());
 
-        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, clan, clan.getRank(cpInput.getRankId()), null);
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(issuer, memberInput, clan, clan.getRank(memberInput.getRankId()), null);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) return;
 
-        cpInput.setRank(null);
-        storage.updateClanPlayer(cpInput);
+        memberInput.setRank(null);
+        storage.updateClanPlayer(memberInput);
         ChatBlock.sendMessage(player, AQUA + lang("player.unassigned.from.rank", player));
     }
 

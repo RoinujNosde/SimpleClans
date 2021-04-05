@@ -841,9 +841,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * Get all clan's members
+     * Get all clan's members (sorted)
      */
-    public List<ClanPlayer> getAllMembers() {
+    public List<ClanPlayer> getSortedMembers() {
         List<ClanPlayer> out = new ArrayList<>();
 
         for (String member : members) {

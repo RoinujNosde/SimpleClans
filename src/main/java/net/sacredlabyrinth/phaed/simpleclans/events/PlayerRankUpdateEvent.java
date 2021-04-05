@@ -1,33 +1,36 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Minat0_
  */
-public class PlayerRankUpdateEvent extends PlayerEvent implements Cancellable {
+public class PlayerRankUpdateEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
+    private final ClanPlayer who;
+    private final ClanPlayer issuer;
     private final Rank oldRank;
     private final Rank newRank;
     private final Clan clan;
     private boolean cancelled;
 
-    public PlayerRankUpdateEvent(@NotNull Player who, Clan clan, Rank oldRank, Rank newRank) {
-        super(who);
+    public PlayerRankUpdateEvent(ClanPlayer who, ClanPlayer issuer, Clan clan, Rank oldRank, Rank newRank) {
+        this.who = who;
+        this.issuer = issuer;
         this.oldRank = oldRank;
         this.clan = clan;
         this.newRank = newRank;
     }
 
-    @NotNull
+    @Nullable
     public Rank getOldRank() {
         return oldRank;
     }
@@ -40,6 +43,16 @@ public class PlayerRankUpdateEvent extends PlayerEvent implements Cancellable {
     @Nullable
     public Rank getNewRank() {
         return newRank;
+    }
+
+    @NotNull
+    public ClanPlayer getWho() {
+        return who;
+    }
+
+    @NotNull
+    public ClanPlayer getIssuer() {
+        return issuer;
     }
 
     @Override
