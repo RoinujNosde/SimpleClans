@@ -47,12 +47,16 @@ public class ClanCommands extends BaseCommand {
 
         List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(issuerClan.getLeaders());
 
-        if (!onlineLeaders.isEmpty()) {
-            requestManager.addWarStartRequest(cp, war, issuerClan);
-            ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
-                    player, war.getName()));
+        if (settings.isWarRequestEnabled()) {
+            if (!onlineLeaders.isEmpty()) {
+                requestManager.addWarStartRequest(cp, war, issuerClan);
+                ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
+                        player, war.getName()));
+            } else {
+                ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance", player));
+            }
         } else {
-            ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance", player));
+            startWar(player, cp, issuerClan, other);
         }
     }
 

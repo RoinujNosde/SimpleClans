@@ -204,8 +204,6 @@ public final class SettingsManager {
     private boolean onlyLeadersCanCreateLands;
     private boolean onlyOneLandPerClan;
     private boolean setBaseOnlyInLand;
-    private boolean requestEnabled;
-    private int membersOnlineMaxDifference;
 
     /**
      *
@@ -423,8 +421,6 @@ public final class SettingsManager {
         onlyLeadersCanCreateLands = getConfig().getBoolean("war-and-protection.land-creation.only-leaders", false);
         onlyOneLandPerClan = getConfig().getBoolean("war-and-protection.land-creation.only-one-per-clan", false);
         setBaseOnlyInLand = getConfig().getBoolean("war-and-protection.set-base-only-in-land", false);
-        requestEnabled = getConfig().getBoolean("war-requests.request-enabled", true);
-        membersOnlineMaxDifference = getConfig().getInt("war-requests.members-online-max-difference", 5);
 
         // migrate from old way of adding ports
         if (database.contains(":")) {
@@ -454,8 +450,8 @@ public final class SettingsManager {
         }
     }
 
-    public boolean isRequestEnabled() {
-        return requestEnabled;
+    public boolean isWarRequestEnabled() {
+        return getConfig().getBoolean("war-and-protection.war-requests.request-enabled", true);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -1831,7 +1827,7 @@ public final class SettingsManager {
     }
 
     public int getMembersOnlineMaxDifference() {
-        return membersOnlineMaxDifference;
+        return getConfig().getInt("war-and-protection.war-requests.members-online-max-difference", 5);
     }
 
     public int getMaxMembers() {

@@ -22,7 +22,7 @@ public class PlayerRankUpdateEvent extends Event implements Cancellable {
     private final Clan clan;
     private boolean cancelled;
 
-    public PlayerRankUpdateEvent(ClanPlayer target, ClanPlayer issuer, Clan clan, Rank oldRank, Rank newRank) {
+    public PlayerRankUpdateEvent(ClanPlayer issuer, ClanPlayer target, Clan clan, Rank oldRank, Rank newRank) {
         this.target = target;
         this.issuer = issuer;
         this.oldRank = oldRank;
