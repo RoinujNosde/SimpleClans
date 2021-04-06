@@ -1560,6 +1560,10 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
     }
 
+    public void addWarringClan(Clan targetClan) {
+        addWarringClan(null, targetClan);
+    }
+
     /**
      * Remove a warring clan
      */
