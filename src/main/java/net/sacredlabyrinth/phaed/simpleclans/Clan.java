@@ -1554,9 +1554,10 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (!warring.contains(targetClan.getTag())) {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
-            if (requestPlayer != null)
+            if (requestPlayer != null) {
                 this.addBb(requestPlayer.getName(), ChatColor.AQUA + lang("you.are.at.war",
                         this.getName(), targetClan.getColorTag()));
+            }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
     }
