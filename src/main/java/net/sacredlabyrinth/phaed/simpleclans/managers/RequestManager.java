@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -216,9 +217,11 @@ public final class RequestManager {
     	ClanPlayer requester = req.getRequester();
     	
     	String target = req.getTarget();
-    	//may be null
+
+        @Nullable
     	Clan targetClan = plugin.getClanManager().getClan(target);
-    	//may be null
+
+        @Nullable
     	UUID targetPlayer = UUIDMigration.getForcedPlayerUUID(target);
     	
     	List<String> accepts = req.getAccepts();

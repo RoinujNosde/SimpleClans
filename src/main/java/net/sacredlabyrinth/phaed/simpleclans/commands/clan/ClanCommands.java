@@ -44,21 +44,21 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=WAR_START")
     @Description("{@@command.description.war.start}")
     @CommandCompletion("@rivals")
-    public void startWar(Player player, ClanPlayer cp, Clan requesterClan, @Conditions("can_war_target") @Name("clan") ClanInput targetClanInput) {
+    public void startWar(Player player, ClanPlayer requester, Clan requestClan, @Conditions("can_war_target") @Name("clan") ClanInput targetClanInput) {
         Clan targetClan = targetClanInput.getClan();
 
-        List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(requesterClan.getLeaders());
+        List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(requestClan.getLeaders());
 
         if (settings.isWarRequestEnabled()) {
             if (!onlineLeaders.isEmpty()) {
-                requestManager.addWarStartRequest(cp, targetClan, requesterClan);
+                requestManager.addWarStartRequest(requester, targetClan, requestClan);
                 ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
                         player, targetClan.getName()));
             } else {
                 ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance", player));
             }
         } else {
-            protectionManager.addWar(cp, requesterClan, targetClan);
+            protectionManager.addWar(requester, requestClan, targetClan);
         }
     }
 
