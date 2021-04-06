@@ -23,10 +23,7 @@ public class NonMembersCompletion extends AbstractSyncCompletion {
 
     @Override
     public Collection<String> getCompletions(BukkitCommandCompletionContext c) throws InvalidCommandArgument {
-        Player player = c.getPlayer();
-        return Bukkit.getOnlinePlayers().stream()
-                .filter(p -> clanManager.getClanByPlayerUniqueId(p.getUniqueId()) == null
-                        && (player == null || player.canSee(p)))
-                .map(Player::getName).collect(Collectors.toList());
+        return Bukkit.getOnlinePlayers().stream().
+                filter(player -> clanManager.getClanByPlayerUniqueId(player.getUniqueId()) == null).map(Player::getName).collect(Collectors.toList());
     }
 }
