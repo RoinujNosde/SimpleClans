@@ -76,6 +76,9 @@ war-and-protection:
         PLACE: true
         DAMAGE: true
         INTERACT_ENTITY: true
+    war-start:
+        request-enabled: true
+        members-online-max-difference: 5
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10

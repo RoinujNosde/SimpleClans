@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +28,11 @@ public class ChatBlock {
     private boolean padRight = true;
 
     public void setCropRight(boolean cropRight) {
-    	this.cropRight = cropRight;
+        this.cropRight = cropRight;
     }
-    
+
     public void setPadRight(boolean padRight) {
-    	this.padRight = padRight;
+        this.padRight = padRight;
     }
 
     public void setAlignment(String... columnAlignment) {
@@ -148,27 +149,27 @@ public class ChatBlock {
                     }
                 } else if (align.equalsIgnoreCase("l")) {
                     if (msgLength(section) > colsize) {
-                    	if (cropRight) {
-                    		col = cropRightToFit(section, colsize);
+                        if (cropRight) {
+                            col = cropRightToFit(section, colsize);
                         } else {
-                        	col = section;
+                            col = section;
                         }
                     } else if (msgLength(section) < colsize) {
-                    	if (padRight) {
-                    		col = paddRightToFit(section, colsize);
-                    	} else {
-                    		col = section;
-                    	}
+                        if (padRight) {
+                            col = paddRightToFit(section, colsize);
+                        } else {
+                            col = section;
+                        }
                     }
                 } else if (align.equalsIgnoreCase("c")) {
                     if (msgLength(section) > colsize) {
-                    	if (cropRight) {
-                    		col = cropRightToFit(section, colsize);
-                    	} else {
-                    		col = section;
-                    	}
+                        if (cropRight) {
+                            col = cropRightToFit(section, colsize);
+                        } else {
+                            col = section;
+                        }
                     } else if (msgLength(section) < colsize) {
-                    	col = centerInLineOf(section, colsize);
+                        col = centerInLineOf(section, colsize);
                     }
                 }
 
@@ -233,7 +234,7 @@ public class ChatBlock {
             // crop and print out
             String msg = (prefix_used ? empty_prefix : prefix + " ") + finalString;
             if (cropRight) {
-            	msg = cropRightToFit(msg, LINE_LENGTH);
+                msg = cropRightToFit(msg, LINE_LENGTH);
             }
             if (color.length() > 0) {
                 msg = color + msg;
@@ -331,7 +332,7 @@ public class ChatBlock {
     /**
      * Pads left til the string is a certain size
      *
-     * @param msg the message to pad
+     * @param msg    the message to pad
      * @param length the message length
      * @return the padded message
      */
@@ -350,7 +351,7 @@ public class ChatBlock {
     /**
      * Pads right til the string is a certain size
      *
-     * @param msg the message to pad
+     * @param msg    the message to pad
      * @param length the message length
      * @return the padded message
      */
@@ -368,7 +369,6 @@ public class ChatBlock {
 
     /**
      * Finds the length on the screen of a string. Ignores colors.
-     *
      */
     private static double msgLength(String str) {
         double length = 0;
@@ -389,7 +389,6 @@ public class ChatBlock {
 
     /**
      * Finds the visual length of the character on the screen.
-     *
      */
     private static int charLength(char x) {
         String normalized = StringSimplifier.simplifiedString(x + "");
@@ -415,7 +414,6 @@ public class ChatBlock {
 
     /**
      * Cuts the message apart into whole words short enough to fit on one line
-     *
      */
     private static String[] wordWrap(String msg) {
         // Split each word apart
@@ -482,7 +480,6 @@ public class ChatBlock {
 
     /**
      * Cuts apart a word that is too long to fit on one line
-     *
      */
     private static String[] wordCut(int lengthBefore, String str) {
         int length = lengthBefore;
@@ -516,7 +513,6 @@ public class ChatBlock {
 
     /**
      * Outputs a single line out, crops overflow
-     *
      */
     public static void saySingle(CommandSender receiver, String msg) {
         if (receiver == null) {
@@ -528,7 +524,6 @@ public class ChatBlock {
 
     /**
      * Outputs a message to a user
-     *
      */
     public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
@@ -543,6 +538,19 @@ public class ChatBlock {
 //        }
     }
 
+    public static void sendMessage(@Nullable ClanPlayer receiver, @NotNull String msg) {
+        if (receiver == null) {
+            return;
+        }
+
+        Player player = receiver.toPlayer();
+        if (player == null) {
+            return;
+        }
+
+        player.sendMessage(ChatUtils.parseColors(msg));
+    }
+
     public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
         sendMessage(receiver, lang(key, receiver, args));
     }
@@ -553,7 +561,6 @@ public class ChatBlock {
 
     /**
      * Send blank line
-     *
      */
     public static void sendBlank(CommandSender receiver) {
         if (receiver == null) {
@@ -565,12 +572,11 @@ public class ChatBlock {
 
     /**
      * Colors each line
-     *
      */
     public static String[] say(String message) {
         return colorize(wordWrap(message));
     }
-    
+
     public static String[] getColorizedMessage(String msg) {
         return colorize(wordWrap(msg));
     }
@@ -584,7 +590,7 @@ public class ChatBlock {
     }
 
     public static @Nullable String colorize(String message) {
-        return colorizeBase(new String[]{ message })[0];
+        return colorizeBase(new String[]{message})[0];
     }
 
 

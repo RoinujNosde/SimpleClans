@@ -36,30 +36,29 @@ public class ClanCommands extends BaseCommand {
     private PermissionsManager permissions;
     @Dependency
     private RequestManager requestManager;
+    @Dependency
+    private ProtectionManager protectionManager;
 
     @Subcommand("%war %start")
     @CommandPermission("simpleclans.leader.war")
     @Conditions("verified|rank:name=WAR_START")
     @Description("{@@command.description.war.start}")
     @CommandCompletion("@rivals")
-    public void startWar(Player player, ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
-        Clan war = other.getClan();
-        if (!issuerClan.isRival(war.getTag())) {
-            ChatBlock.sendMessage(player, RED + lang("you.can.only.start.war.with.rivals", player));
-            return;
-        }
-        if (!issuerClan.isWarring(war.getTag())) {
-            List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(issuerClan.getLeaders());
+    public void startWar(Player player, ClanPlayer requester, Clan requestClan, @Conditions("can_war_target") @Name("clan") ClanInput targetClanInput) {
+        Clan targetClan = targetClanInput.getClan();
 
+        List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(requestClan.getLeaders());
+
+        if (settings.isWarRequestEnabled()) {
             if (!onlineLeaders.isEmpty()) {
-                requestManager.addWarStartRequest(cp, war, issuerClan);
+                requestManager.addWarStartRequest(requester, targetClan, requestClan);
                 ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
-                        player, war.getName()));
+                        player, targetClan.getName()));
             } else {
                 ChatBlock.sendMessage(player, RED + lang("at.least.one.leader.accept.the.alliance", player));
             }
         } else {
-            ChatBlock.sendMessage(player, RED + lang("clans.already.at.war", player));
+            protectionManager.addWar(requester, requestClan, targetClan);
         }
     }
 
