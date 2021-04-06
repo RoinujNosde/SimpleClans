@@ -122,8 +122,8 @@ public class ProtectionManager {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public boolean addWar(@NotNull ClanPlayer requesterPlayer, Clan requesterClan, Clan targetClan) {
-        War war = new War(requesterClan, targetClan);
+    public boolean addWar(@NotNull ClanPlayer requester, Clan requestClan, Clan targetClan) {
+        War war = new War(requestClan, targetClan);
 
         if (wars.containsKey(war)) {
             return false;
@@ -135,8 +135,8 @@ public class ProtectionManager {
             return false;
         }
 
-        requesterClan.addWarringClan(requesterPlayer, targetClan);
-        targetClan.addWarringClan(requesterPlayer, requesterClan);
+        requestClan.addWarringClan(requester, targetClan);
+        targetClan.addWarringClan(requester, requestClan);
 
         wars.put(war, scheduleTask(war, settingsManager.getWarNormalExpirationTime()));
         return true;
