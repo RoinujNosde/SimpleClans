@@ -1330,8 +1330,8 @@ public class Clan implements Serializable, Comparable<Clan> {
                 ChatBlock.sendMessage(pl, message);
             }
         }
-        String formattedPlayerName = (playerName!=null) ? AQUA + "[" + Helper.getColorName(playerName) + ChatColor.WHITE + "] " : "";
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("clan.announce") + AQUA + "] " + formattedPlayerName + message);
+
+        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("clan.announce") + ChatColor.AQUA + "] " + ChatColor.AQUA + "[" + Helper.getColorName(playerName) + ChatColor.WHITE + "] " + message);
     }
 
     /**
@@ -1554,7 +1554,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (!warring.contains(targetClan.getTag())) {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
-                this.addBb(requestPlayer != null ? requestPlayer.getName() : null, ChatColor.AQUA + lang("you.are.at.war",
+            if (requestPlayer != null)
+                this.addBb(requestPlayer.getName(), ChatColor.AQUA + lang("you.are.at.war",
                         this.getName(), targetClan.getColorTag()));
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
