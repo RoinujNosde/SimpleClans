@@ -451,7 +451,7 @@ public final class SettingsManager {
     }
 
     public boolean isWarRequestEnabled() {
-        return getConfig().getBoolean("war-and-protection.war-requests.request-enabled", true);
+        return getConfig().getBoolean("war-and-protection.war-start.request-enabled", true);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -1827,7 +1827,7 @@ public final class SettingsManager {
     }
 
     public int getMembersOnlineMaxDifference() {
-        return getConfig().getInt("war-and-protection.war-requests.members-online-max-difference", 5);
+        return getConfig().getInt("war-and-protection.war-start.members-online-max-difference", 5);
     }
 
     public int getMaxMembers() {

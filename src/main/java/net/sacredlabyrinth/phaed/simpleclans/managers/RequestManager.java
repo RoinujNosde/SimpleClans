@@ -226,7 +226,7 @@ public final class RequestManager {
     	
     	switch (req.getType()) {
     		case START_WAR:
-    			processStartWar(requesterClan, requesterCp, targetClan, accepts, denies);
+    			processStartWar(requesterCp, requesterClan, targetClan, accepts, denies);
     			break;
     		case END_WAR:
     			processEndWar(requesterClan, requesterCp, targetClan, accepts, denies);
@@ -346,20 +346,11 @@ public final class RequestManager {
 		}
 	}
 
-	private void processStartWar(Clan requesterClan, ClanPlayer requesterCp, Clan targetClan, List<String> accepts,
+	private void processStartWar(ClanPlayer requesterCp, Clan requesterClan, Clan targetClan, List<String> accepts,
 			List<String> denies) {
 		if (requesterClan != null && targetClan != null) {
 		    if (!accepts.isEmpty()) {
-                if (!plugin.getProtectionManager().addWar(new War(requesterClan, targetClan))) {
-                    return;
-                }
-		        requesterClan.addWarringClan(targetClan);
-		        targetClan.addWarringClan(requesterClan);
-
-		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war",
-                        targetClan.getName(), requesterClan.getColorTag()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war",
-                        requesterClan.getName(), targetClan.getColorTag()));
+		        plugin.getProtectionManager().addWar(requesterCp, requesterClan, targetClan);
 		    } else {
 		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0),
                         requesterClan.getName()));
