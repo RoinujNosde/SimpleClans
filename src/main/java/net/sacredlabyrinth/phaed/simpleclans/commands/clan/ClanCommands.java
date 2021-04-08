@@ -126,11 +126,11 @@ public class ClanCommands extends BaseCommand {
 
     @Subcommand("%invite")
     @CommandPermission("simpleclans.leader.invite")
-    @CommandCompletion("@non_members")
+    @CommandCompletion("@non_members:ignore_vanished")
     @Conditions("rank:name=INVITE")
     @Description("{@@command.description.invite}")
     public void invite(Player sender, ClanPlayer cp, Clan clan,
-                       @Conditions("not_banned|not_in_clan|online") @Name("player") ClanPlayerInput invited) {
+                       @Conditions("not_banned|not_in_clan|online:ignore_vanished") @Name("player") ClanPlayerInput invited) {
         Player invitedPlayer = invited.getClanPlayer().toPlayer();
         if (invitedPlayer == null) return;
         if (!permissions.has(invitedPlayer, "simpleclans.member.can-join")) {
