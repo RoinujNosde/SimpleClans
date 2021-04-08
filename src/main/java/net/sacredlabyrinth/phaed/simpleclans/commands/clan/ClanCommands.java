@@ -127,7 +127,7 @@ public class ClanCommands extends BaseCommand {
 
     @Subcommand("%invite")
     @CommandPermission("simpleclans.leader.invite")
-    @CommandCompletion("@non_vanished_members")
+    @CommandCompletion("@non_members:ignore_vanished")
     @Conditions("rank:name=INVITE")
     @Description("{@@command.description.invite}")
     public void invite(Player sender, ClanPlayer cp, Clan clan,
