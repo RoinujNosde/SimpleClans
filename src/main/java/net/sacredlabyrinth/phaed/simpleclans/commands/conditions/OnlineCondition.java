@@ -22,7 +22,9 @@ public class OnlineCondition extends AbstractParameterCondition<ClanPlayerInput>
 
     @Override
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context, BukkitCommandExecutionContext execContext, ClanPlayerInput value) throws InvalidCommandArgument {
-        if (value.getClanPlayer().toPlayer() == null || (context.hasConfig("ignore_vanished") && VanishUtils.isVanished(execContext.getSender(), value.getClanPlayer().toPlayer()))) {
+        boolean isVanished = !VanishUtils.isVanished(execContext.getSender(), value.getClanPlayer().toPlayer());
+
+        if (value.getClanPlayer().toPlayer() == null || (context.hasConfig("ignore_vanished") && isVanished)) {
             throw new ConditionFailedException(lang("other.player.must.be.online", execContext.getSender()));
         }
     }
