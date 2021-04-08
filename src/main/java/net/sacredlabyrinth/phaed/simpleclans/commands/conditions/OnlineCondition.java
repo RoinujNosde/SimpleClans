@@ -27,7 +27,9 @@ public class OnlineCondition extends AbstractParameterCondition<ClanPlayerInput>
 
         if (player != null) {
             boolean isVanished = VanishUtils.isVanished(execContext.getSender(), player);
-            if (!(isVanished && context.hasConfig("ignore_vanished"))) return;
+            if (!isVanished || !context.hasConfig("ignore_vanished")) {
+                return;
+            }
         }
 
         throw new ConditionFailedException(lang("other.player.must.be.online", execContext.getSender()));
