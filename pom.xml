@@ -216,6 +216,7 @@
             <groupId>com.plotsquared</groupId>
             <artifactId>plotsquared-bukkitapi</artifactId>
             <version>3.1</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>com.sk89q.worldedit</groupId>
