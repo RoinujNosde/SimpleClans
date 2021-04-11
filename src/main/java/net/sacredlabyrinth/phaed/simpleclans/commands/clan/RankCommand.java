@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
 import net.sacredlabyrinth.phaed.simpleclans.events.DeleteRankEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerRankUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -39,11 +40,17 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.assign")
     @CommandCompletion("@clan_members @ranks")
     @Description("{@@command.description.rank.assign}")
-    public void assign(Player player,
+    public void assign(ClanPlayer player,
                        Clan clan,
                        @Name("member") @Conditions("same_clan") ClanPlayerInput member,
                        @Name("rank") Rank rank) {
         ClanPlayer memberInput = member.getClanPlayer();
+
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, memberInput, clan, clan.getRank(memberInput.getRankId()), rank);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
         if (memberInput.getRankId().equals(rank.getName())) {
             ChatBlock.sendMessage(player, lang("player.already.has.that.rank", player));
             return;
@@ -58,10 +65,16 @@ public class RankCommand extends BaseCommand {
     @CommandPermission("simpleclans.leader.rank.unassign")
     @CommandCompletion("@clan_members")
     @Description("{@@command.description.rank.unassign}")
-    public void unassign(Player player, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
-        ClanPlayer cpInput = cp.getClanPlayer();
-        cpInput.setRank(null);
-        storage.updateClanPlayer(cpInput);
+    public void unassign(ClanPlayer player, Clan clan, @Conditions("same_clan") @Name("member") ClanPlayerInput cp) {
+        ClanPlayer memberInput = cp.getClanPlayer();
+
+        PlayerRankUpdateEvent event = new PlayerRankUpdateEvent(player, memberInput, clan, clan.getRank(memberInput.getRankId()), null);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
+        memberInput.setRank(null);
+        storage.updateClanPlayer(memberInput);
         ChatBlock.sendMessage(player, AQUA + lang("player.unassigned.from.rank", player));
     }
 

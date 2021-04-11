@@ -1549,13 +1549,21 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Add a clan to be at war with
      */
-    public void addWarringClan(Clan clan) {
+    public void addWarringClan(@Nullable ClanPlayer requestPlayer, Clan targetClan) {
         List<String> warring = flags.getStringList(WARRING_KEY);
-        if (!warring.contains(clan.getTag())) {
-            warring.add(clan.getTag());
+        if (!warring.contains(targetClan.getTag())) {
+            warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
+            if (requestPlayer != null) {
+                this.addBb(requestPlayer.getName(), ChatColor.AQUA + lang("you.are.at.war",
+                        this.getName(), targetClan.getColorTag()));
+            }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
+    }
+
+    public void addWarringClan(Clan targetClan) {
+        addWarringClan(null, targetClan);
     }
 
     /**

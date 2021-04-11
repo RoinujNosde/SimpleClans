@@ -1,25 +1,22 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author phaed
@@ -451,6 +448,10 @@ public final class SettingsManager {
             plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
                     " that matches their clan tag.");
         }
+    }
+
+    public boolean isWarRequestEnabled() {
+        return getConfig().getBoolean("war-and-protection.war-start.request-enabled", true);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -993,7 +994,7 @@ public final class SettingsManager {
      * @return the serverName
      */
     public String getServerName() {
-        return ChatUtils.parseColors(serverName);
+        return Helper.parseColors(serverName);
     }
 
     /**
@@ -1823,6 +1824,10 @@ public final class SettingsManager {
 
     public void setForceCommandPriority(boolean forceCommandPriority) {
         this.forceCommandPriority = forceCommandPriority;
+    }
+
+    public int getMembersOnlineMaxDifference() {
+        return getConfig().getInt("war-and-protection.war-start.members-online-max-difference", 5);
     }
 
     public int getMaxMembers() {
