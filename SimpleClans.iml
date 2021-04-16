@@ -22,7 +22,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.16-R0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.26" level="project" />
@@ -103,7 +103,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:PlotSquared-Core:5.13.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:PlotSquared-Bukkit:5.13.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:plotsquared-api:3.1" level="project" />
-    <orderEntry type="library" name="Maven: com.plotsquared:plotsquared-bukkitapi:3.1" level="project" />
-    <orderEntry type="library" name="Maven: net.milkbowl.vault:VaultAPI:1.7" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:plotsquared-bukkitapi:3.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.milkbowl.vault:VaultAPI:1.7" level="project" />
   </component>
 </module>

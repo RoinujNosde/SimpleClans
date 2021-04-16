@@ -112,6 +112,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      *
      * @return the name
      */
+    @Placeholder("name")
     public String getName() {
         return displayName;
     }
@@ -130,6 +131,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      *
      * @return the name
      */
+    @Placeholder("clean_name")
     public String getCleanName() {
         return displayName.toLowerCase();
     }
