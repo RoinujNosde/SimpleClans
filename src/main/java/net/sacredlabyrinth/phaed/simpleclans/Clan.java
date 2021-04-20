@@ -955,7 +955,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     @Placeholder("total_kills")
     public int getTotalKills() {
-        return getTotalCivilian() + getTotalNeutral() + getTotalRival();
+        return getTotalCivilian() + getTotalNeutral() + getTotalRival() + getTotalAlly();
     }
 
     /**
@@ -965,16 +965,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public int getTotalRival() {
         int total = 0;
 
-        if (members.isEmpty()) {
-            return total;
-        }
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
+        for (ClanPlayer cp : getMembers()) {
             total += cp.getRivalKills();
         }
 
@@ -988,16 +979,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public int getTotalNeutral() {
         int total = 0;
 
-        if (members.isEmpty()) {
-            return total;
-        }
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
+        for (ClanPlayer cp : getMembers()) {
             total += cp.getNeutralKills();
         }
 
@@ -1011,17 +993,19 @@ public class Clan implements Serializable, Comparable<Clan> {
     public int getTotalCivilian() {
         int total = 0;
 
-        if (members.isEmpty()) {
-            return total;
+        for (ClanPlayer cp : getMembers()) {
+            total += cp.getCivilianKills();
         }
 
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
+        return total;
+    }
 
-            total += cp.getCivilianKills();
+    @Placeholder("total_ally")
+    public int getTotalAlly() {
+        int total = 0;
+
+        for (ClanPlayer cp : getMembers()) {
+            total += cp.getAllyKills();
         }
 
         return total;

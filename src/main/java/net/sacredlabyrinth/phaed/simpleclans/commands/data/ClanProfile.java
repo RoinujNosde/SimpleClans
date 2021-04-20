@@ -32,6 +32,7 @@ public class ClanProfile extends Sendable {
                 .replace("%clan_rival_kills%", String.valueOf(clan.getTotalRival()))
                 .replace("%clan_neutral_kills%", String.valueOf(clan.getTotalNeutral()))
                 .replace("%clan_civilian_kills%", String.valueOf(clan.getTotalCivilian()))
+                .replace("%clan_ally_kills%", String.valueOf(clan.getTotalAlly()))
                 .replace("%clan_deaths%", String.valueOf(clan.getTotalDeaths()))
                 .replace("%clan_fee_enabled%", getFeeEnabled())
                 .replace("%clan_fee_value%", String.valueOf(clan.getMemberFee()))

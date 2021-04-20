@@ -27,7 +27,7 @@ public class Kill {
 	}
 	
 	public enum Type {
-		CIVILIAN("c"), RIVAL("r"), NEUTRAL("n");
+		CIVILIAN("c"), RIVAL("r"), NEUTRAL("n"), ALLY("a");
 		
 		Type(String shortName) {
 			this.shortName = shortName;

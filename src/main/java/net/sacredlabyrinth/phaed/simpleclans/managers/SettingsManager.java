@@ -1322,6 +1322,10 @@ public final class SettingsManager {
         return clanChatPlayerBracketRight;
     }
 
+    public double getKwAlly() {
+        return getConfig().getDouble("kill-weights.ally");
+    }
+
     /**
      * @return the kwRival
      */

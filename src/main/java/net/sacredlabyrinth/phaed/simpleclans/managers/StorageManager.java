@@ -123,6 +123,7 @@ public final class StorageManager {
                     		+ " `neutral_kills` int(11) default NULL,"
                     		+ " `rival_kills` int(11) default NULL,"
                     		+ " `civilian_kills` int(11) default NULL,"
+                            + " `ally_kills` int(11) default NULL,"
                     		+ " `deaths` int(11) default NULL,"
                     		+ " `last_seen` bigint NOT NULL,"
                     		+ " `join_date` bigint NOT NULL,"
@@ -199,6 +200,7 @@ public final class StorageManager {
                     		+ " `neutral_kills` int(11) default NULL,"
                     		+ " `rival_kills` int(11) default NULL,"
                     		+ " `civilian_kills` int(11) default NULL,"
+                            + " `ally_kills` int(11) default NULL,"
                     		+ " `deaths` int(11) default NULL,"
                     		+ " `last_seen` bigint NOT NULL,"
                     		+ " `join_date` bigint NOT NULL,"
@@ -858,9 +860,11 @@ public final class StorageManager {
                 " locale = '" + cp.getLocale().toLanguageTag() + "'," +
                 " resign_times = '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes())) +"'," +
                 " leader = " + (cp.isLeader() ? 1 : 0) + ", tag = '" + Helper.escapeQuotes(cp.getTag()) + "'," +
-                " friendly_fire = " + (cp.isFriendlyFire() ? 1 : 0) + ", neutral_kills = " + cp.getNeutralKills() + "," +
-                " rival_kills = " + cp.getRivalKills() + ", civilian_kills = " + cp.getCivilianKills() + "," +
-                " deaths = " + cp.getDeaths() + ", last_seen = '" + cp.getLastSeen() + "'," +
+                " friendly_fire = " + (cp.isFriendlyFire() ? 1 : 0) +
+                ", neutral_kills = " + cp.getNeutralKills() +
+                ", ally_kills = " + cp.getAllyKills() +
+                ", rival_kills = " + cp.getRivalKills() + ", civilian_kills = " + cp.getCivilianKills() +
+                ", deaths = " + cp.getDeaths() + ", last_seen = '" + cp.getLastSeen() + "'," +
                 " packed_past_clans = '" + Helper.escapeQuotes(cp.getPackedPastClans()) + "'," +
                 " trusted = " + (cp.isTrusted() ? 1 : 0) + ", flags = '" + Helper.escapeQuotes(cp.getFlags()) + "'," +
                 " name = '" + cp.getName() + "' WHERE `uuid` = '" + cp.getUniqueId().toString() + "';";
@@ -1106,6 +1110,11 @@ public final class StorageManager {
         }
         if (!core.existsColumn("sc_clans", "banner")) {
             core.execute("ALTER TABLE sc_clans ADD COLUMN `banner` text;");
+        }
+
+        // From 2.15.1 to 2.15.2
+        if (!core.existsColumn("sc_players", "ally_kills")) {
+            core.execute("ALTER TABLE sc_players ADD COLUMN `ally_kills` int(11) DEFAULT NULL;");
         }
 
         if (plugin.getSettingsManager().isUseMysql()) {

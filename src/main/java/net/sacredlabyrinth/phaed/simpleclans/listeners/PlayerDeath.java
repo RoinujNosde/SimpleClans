@@ -72,11 +72,14 @@ public class PlayerDeath implements Listener {
     }
 
     private void addKill(@NotNull ClanPlayer victim, @NotNull ClanPlayer attacker) {
-        if (victim.getClan() == null || attacker.getClan() == null || !victim.getClan().isVerified() ||
-                !attacker.getClan().isVerified()) {
+        Clan victimClan = victim.getClan();
+        Clan attackerClan = attacker.getClan();
+        if (victimClan == null || attackerClan == null || !victimClan.isVerified() || !attackerClan.isVerified()) {
             addKill(Kill.Type.CIVILIAN, attacker, victim);
-        } else if (attacker.getClan().isRival(victim.getTag())) {
+        } else if (attackerClan.isRival(victim.getTag())) {
             addKill(Kill.Type.RIVAL, attacker, victim);
+        } else if (attackerClan.isAlly(victimClan.getTag()) || attackerClan.equals(victimClan)) {
+            addKill(Kill.Type.ALLY, attacker, victim);
         } else {
             addKill(Kill.Type.NEUTRAL, attacker, victim);
         }

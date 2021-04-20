@@ -31,9 +31,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     private String tag;
     private @Nullable Clan clan;
     private boolean friendlyFire;
-    private int neutralKills;
-    private int rivalKills;
-    private int civilianKills;
+    private final Map<Kill.Type, Integer> kills = new HashMap<>();
     private int deaths;
     private long lastSeen;
     private long joinDate;
@@ -76,9 +74,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         }
         this.lastSeen = (new Date()).getTime();
         this.joinDate = (new Date()).getTime();
-        this.neutralKills = 0;
-        this.rivalKills = 0;
-        this.civilianKills = 0;
         this.tag = "";
     }
 
@@ -268,7 +263,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     @Placeholder("total_kills")
     public int getTotalKills() {
-        return getRivalKills() + getCivilianKills() + getNeutralKills();
+        return getRivalKills() + getCivilianKills() + getNeutralKills() + getAllyKills();
     }
 
     /**
@@ -278,7 +273,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("rival_kills")
     public int getRivalKills() {
-        return rivalKills;
+        return kills.getOrDefault(Kill.Type.RIVAL, 0);
     }
 
     /**
@@ -287,7 +282,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param rivalKills the rivalKills to set
      */
     public void setRivalKills(int rivalKills) {
-        this.rivalKills = rivalKills;
+        kills.put(Kill.Type.RIVAL, rivalKills);
     }
 
     /**
@@ -305,7 +300,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("civilian_kills")
     public int getCivilianKills() {
-        return civilianKills;
+        return kills.getOrDefault(Kill.Type.CIVILIAN, 0);
     }
 
     /**
@@ -314,7 +309,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param civilianKills the civilianKills to set
      */
     public void setCivilianKills(int civilianKills) {
-        this.civilianKills = civilianKills;
+        kills.put(Kill.Type.CIVILIAN, civilianKills);
     }
 
     /**
@@ -332,7 +327,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("neutral_kills")
     public int getNeutralKills() {
-        return neutralKills;
+        return kills.getOrDefault(Kill.Type.NEUTRAL, 0);
     }
 
     /**
@@ -341,7 +336,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param neutralKills the neutralKills to set
      */
     public void setNeutralKills(int neutralKills) {
-        this.neutralKills = neutralKills;
+        kills.put(Kill.Type.NEUTRAL, neutralKills);
     }
 
     /**
@@ -352,20 +347,20 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         setNeutralKills(getNeutralKills() + 1);
     }
 
+    public void setAllyKills(int allyKills) {
+        kills.put(Kill.Type.ALLY, allyKills);
+    }
+
+    @Placeholder("ally_kills")
+    public int getAllyKills() {
+        return kills.getOrDefault(Kill.Type.ALLY, 0);
+    }
+
     /**
      * Adds one kill to this player (does not update to db)
      */
     public void addKill(Kill.Type type) {
-        switch (type) {
-            case CIVILIAN:
-                civilianKills++;
-                break;
-            case NEUTRAL:
-                neutralKills++;
-                break;
-            case RIVAL:
-                rivalKills++;
-        }
+        kills.compute(type, (t, c) -> c == null ? 1 : c + 1);
     }
 
     /**
@@ -437,7 +432,10 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
         SimpleClans plugin = SimpleClans.getInstance();
-        return ((double) rivalKills * plugin.getSettingsManager().getKwRival()) + ((double) neutralKills * plugin.getSettingsManager().getKwNeutral()) + ((double) civilianKills * plugin.getSettingsManager().getKwCivilian());
+        return ((double) getRivalKills() * plugin.getSettingsManager().getKwRival()) +
+                ((double) getNeutralKills() * plugin.getSettingsManager().getKwNeutral()) +
+                ((double) getAllyKills() * plugin.getSettingsManager().getKwAlly()) +
+                ((double) getCivilianKills() * plugin.getSettingsManager().getKwCivilian());
     }
 
     /**

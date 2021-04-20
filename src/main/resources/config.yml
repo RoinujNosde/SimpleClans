@@ -125,6 +125,7 @@ kill-weights:
     rival: 2.0
     civilian: 0.0
     neutral: 1.0
+    ally: -1.0
     deny-same-ip-kills: false
 clan:
     homebase-teleport-wait-secs: 10
