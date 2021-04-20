@@ -123,6 +123,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * withdraws money to the clan
      */
+    @Deprecated
     public void withdraw(double amount, Player player) {
         BankWithdrawEvent event = new BankWithdrawEvent(player, this, amount);
         Bukkit.getPluginManager().callEvent(event);
@@ -139,6 +140,20 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         } else {
             player.sendMessage(ChatColor.AQUA + lang("clan.bank.not.enough.money", player));
+        }
+    }
+
+    public Response withdraw(double amount) {
+        if (amount < 0) {
+            return Response.NEGATIVE_VALUE;
+        }
+
+        if (getBalance() >= amount) {
+                setBalance(getBalance() - amount);
+                SimpleClans.getInstance().getStorageManager().updateClan(this);
+                return Response.SUCCESS;
+        } else {
+            return Response.NOT_ENOUGH_BALANCE;
         }
     }
 

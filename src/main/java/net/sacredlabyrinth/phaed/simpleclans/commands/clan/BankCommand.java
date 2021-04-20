@@ -4,7 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -49,8 +51,22 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(player, RED + message);
             return;
         }
-        amount = Math.abs(amount);
-        clan.withdraw(amount, player);
+
+        switch (clan.withdraw(amount)) {
+            case SUCCESS:
+                if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
+                    player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
+                    clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
+                }
+                break;
+            case NEGATIVE_VALUE:
+                player.sendMessage(lang("you.can.t.define.negative.value", player));
+                break;
+            case NOT_ENOUGH_BALANCE:
+                player.sendMessage(lang("clan.bank.not.enough.money", player));
+                break;
+        }
+
     }
 
     @Subcommand("%deposit %all")

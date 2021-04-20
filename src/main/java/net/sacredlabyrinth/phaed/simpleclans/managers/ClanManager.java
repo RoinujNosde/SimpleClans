@@ -1120,12 +1120,20 @@ public final class ClanManager {
                 }
             }
         } else {
-            double balance = clan.getBalance();
-            if (price > balance) {
-                player.sendMessage(ChatColor.RED + lang("clan.bank.not.enough.money",player));
-                return false;
+            switch (clan.withdraw(price)) {
+                case SUCCESS:
+                    if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, price)) {
+                        player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
+                        clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", price));
+                    }
+                    break;
+                case NEGATIVE_VALUE:
+                    player.sendMessage(lang("you.can.t.define.negative.value", player));
+                    break;
+                case NOT_ENOUGH_BALANCE:
+                    player.sendMessage(lang("clan.bank.not.enough.money", player));
+                    break;
             }
-            clan.withdraw(price, player);
         }
 
         return true;
