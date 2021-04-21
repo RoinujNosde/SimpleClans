@@ -9,7 +9,6 @@ import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -64,8 +63,8 @@ public class BankCommand extends BaseCommand {
         switch (clan.withdraw(amount)) {
             case SUCCESS:
                 if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
-                    player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
-                    clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
+                    player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
+                    clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 }
                 break;
             case NEGATIVE_VALUE:
@@ -113,7 +112,7 @@ public class BankCommand extends BaseCommand {
                 switch (clan.deposit(amount)) {
                     case SUCCESS:
                         player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
-                        clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.deposit", amount));
+                        clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
                         break;
                     case NEGATIVE_VALUE:
                         player.sendMessage(lang(RED + "you.can.t.define.negative.value", player));
