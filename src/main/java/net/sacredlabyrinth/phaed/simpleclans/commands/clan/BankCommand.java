@@ -53,15 +53,14 @@ public class BankCommand extends BaseCommand {
             return;
         }
 
-        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-
         switch (clan.withdraw(amount)) {
             case SUCCESS:
                 if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
+                    ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), clan.getBalance() - amount);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) {
+                        return;
+                    }
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 }
@@ -100,16 +99,15 @@ public class BankCommand extends BaseCommand {
             return;
         }
 
-        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
                 switch (clan.deposit(amount)) {
                     case SUCCESS:
+                        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), clan.getBalance() + amount);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if (event.isCancelled()) {
+                            return;
+                        }
                         player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
                         clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
                         break;

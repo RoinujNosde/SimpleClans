@@ -2,8 +2,8 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
@@ -1079,16 +1079,17 @@ public final class ClanManager {
                 }
             }
         } else {
-            BankWithdrawEvent event = new BankWithdrawEvent(player, clan, price);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return false;
-            }
             switch (clan.withdraw(price)) {
                 case SUCCESS:
                     if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, price)) {
+                        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), clan.getBalance() + price);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if (event.isCancelled()) {
+                            return false;
+                        }
                         player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
                         clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", price));
+                        return true;
                     }
                     break;
                 case NEGATIVE_VALUE:
@@ -1100,7 +1101,7 @@ public final class ClanManager {
             }
         }
 
-        return true;
+        return false;
     }
 
     /**

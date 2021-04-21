@@ -34,14 +34,13 @@ public class BankCommands extends BaseCommand {
         Clan clan = clanInput.getClan();
         Response response = clan.withdraw(amount);
 
-        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-
         switch (response) {
             case SUCCESS:
+                ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), clan.getBalance() + amount);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return;
+                }
                 sender.sendMessage(lang("clan.admin.take", sender, amount, clan.getName()));
                 clan.addBb(sender.getName(), AQUA + lang("bb.clan.take", sender, amount));
                 break;
@@ -62,14 +61,13 @@ public class BankCommands extends BaseCommand {
         Clan clan = clanInput.getClan();
         Response response = clan.withdraw(amount);
 
-        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-
         switch (response) {
             case SUCCESS:
+                ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), clan.getBalance() + amount);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return;
+                }
                 sender.sendMessage(lang("clan.admin.give", sender, amount, clan.getName()));
                 clan.addBb(sender.getName(), AQUA + lang("bb.clan.give", sender, amount));
                 break;
@@ -89,14 +87,14 @@ public class BankCommands extends BaseCommand {
     public void set(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
 
+        if (amount < 0) {
+            sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
+            return;
+        }
+
         ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            return;
-        }
-        
-        if (amount < 0) {
-            sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
             return;
         }
         sender.sendMessage(AQUA + lang("clan.admin.set", sender, amount, clan.getName()));
