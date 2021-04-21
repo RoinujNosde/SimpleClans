@@ -58,6 +58,13 @@ public class BankCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.set}")
     public void set(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
-
+        Clan clan = clanInput.getClan();
+        if (amount < 0) {
+            sender.sendMessage(lang("you.can.t.define.negative.value", sender));
+            return;
+        }
+        sender.sendMessage(lang("clan.admin.set", sender, amount, clan.getName()));
+        clan.addBb(sender.getName(), AQUA + lang("bb.clan.set", sender));
+        clan.setBalance(amount);
     }
 }
