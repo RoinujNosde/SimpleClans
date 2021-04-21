@@ -120,6 +120,10 @@ public class Clan implements Serializable, Comparable<Clan> {
             player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money", player));
         }
     }
+
+    /**
+     * deposits money to the clan
+     */
     public Response deposit(double amount) {
         if (amount < 0) {
             return Response.NEGATIVE_VALUE;
@@ -153,6 +157,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
     }
 
+    /**
+     * withdraws money to the clan
+     */
     public Response withdraw(double amount) {
         if (amount < 0) {
             return Response.NEGATIVE_VALUE;

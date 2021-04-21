@@ -5,11 +5,13 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Response;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import static net.md_5.bungee.api.ChatColor.RED;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static org.bukkit.ChatColor.AQUA;
 
@@ -44,14 +46,14 @@ public class BankCommands extends BaseCommand {
 
         switch (response) {
             case SUCCESS:
-                sender.sendMessage(lang("clan.admin.take", sender));
-                clan.addBb(sender.getName(), AQUA + lang("bb.clan.take", sender));
+                sender.sendMessage(lang("clan.admin.take", sender, amount, clan.getName()));
+                clan.addBb(sender.getName(), AQUA + lang("bb.clan.take", sender, amount));
                 break;
             case NEGATIVE_VALUE:
-                sender.sendMessage(lang("you.can.t.define.negative.value", sender));
+                sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
                 break;
             case NOT_ENOUGH_BALANCE:
-                sender.sendMessage(lang("clan.admin.bank.not.enough.money", sender, clan.getName()));
+                sender.sendMessage(RED + lang("clan.admin.bank.not.enough.money", sender, clan.getName()));
                 break;
         }
     }
@@ -61,6 +63,29 @@ public class BankCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.give}")
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
+        Clan clan = clanInput.getClan();
+        Response response = clan.withdraw(amount);
+
+        if (sender instanceof Player) {
+            BankDepositEvent event = new BankDepositEvent(((Player) sender), clan, amount);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return;
+            }
+        }
+
+        switch (response) {
+            case SUCCESS:
+                sender.sendMessage(lang("clan.admin.give", sender, amount, clan.getName()));
+                clan.addBb(sender.getName(), AQUA + lang("bb.clan.give", sender, amount));
+                break;
+            case NEGATIVE_VALUE:
+                sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
+                break;
+            case NOT_ENOUGH_BALANCE:
+                sender.sendMessage(RED + lang("clan.admin.bank.not.enough.money", sender, clan.getName()));
+                break;
+        }
     }
 
     @Subcommand("%admin %set")
@@ -70,10 +95,10 @@ public class BankCommands extends BaseCommand {
     public void set(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
         if (amount < 0) {
-            sender.sendMessage(lang("you.can.t.define.negative.value", sender));
+            sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
             return;
         }
-        sender.sendMessage(lang("clan.admin.set", sender, amount, clan.getName()));
+        sender.sendMessage(AQUA + lang("clan.admin.set", sender, amount, clan.getName()));
         clan.addBb(sender.getName(), AQUA + lang("bb.clan.set", sender));
         clan.setBalance(amount);
     }

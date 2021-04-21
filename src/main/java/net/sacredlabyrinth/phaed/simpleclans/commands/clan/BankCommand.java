@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Bukkit;
@@ -100,7 +101,29 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(player, RED + message);
             return;
         }
-        amount = Math.abs(amount);
-        clan.deposit(amount, player);
+
+        BankDepositEvent event = new BankDepositEvent(player, clan, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
+            if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
+                switch (clan.deposit(amount)) {
+                    case SUCCESS:
+                        player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
+                        clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.deposit", amount));
+                        break;
+                    case NEGATIVE_VALUE:
+                        player.sendMessage(lang(RED + "you.can.t.define.negative.value", player));
+                        break;
+                }
+            } else {
+                player.sendMessage(AQUA + lang("not.sufficient.money", player));
+            }
+        } else {
+            player.sendMessage(AQUA + lang("not.sufficient.money", player));
+        }
     }
 }
