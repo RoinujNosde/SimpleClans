@@ -17,8 +17,9 @@ public class PlayerRankUpdateEvent extends Event implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private final ClanPlayer target;
     private final ClanPlayer issuer;
-    private final Rank oldRank;
-    private final Rank newRank;
+
+    private Rank oldRank;
+    private Rank newRank;
     private final Clan clan;
     private boolean cancelled;
 
@@ -53,6 +54,14 @@ public class PlayerRankUpdateEvent extends Event implements Cancellable {
     @NotNull
     public ClanPlayer getTarget() {
         return target;
+    }
+
+    public void setOldRank(Rank oldRank) {
+        this.oldRank = oldRank;
+    }
+
+    public void setNewRank(Rank newRank) {
+        this.newRank = newRank;
     }
 
     @Override

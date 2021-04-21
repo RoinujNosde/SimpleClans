@@ -5,8 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -54,7 +53,7 @@ public class BankCommand extends BaseCommand {
             return;
         }
 
-        BankWithdrawEvent event = new BankWithdrawEvent(player, clan, amount);
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), amount);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
@@ -101,7 +100,7 @@ public class BankCommand extends BaseCommand {
             return;
         }
 
-        BankDepositEvent event = new BankDepositEvent(player, clan, amount);
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), amount);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;

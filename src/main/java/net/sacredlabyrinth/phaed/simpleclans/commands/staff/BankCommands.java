@@ -5,11 +5,9 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Response;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import static net.md_5.bungee.api.ChatColor.RED;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -36,12 +34,10 @@ public class BankCommands extends BaseCommand {
         Clan clan = clanInput.getClan();
         Response response = clan.withdraw(amount);
 
-        if (sender instanceof Player) {
-            BankWithdrawEvent event = new BankWithdrawEvent(((Player) sender), clan, amount);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return;
-            }
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
         }
 
         switch (response) {
@@ -66,12 +62,10 @@ public class BankCommands extends BaseCommand {
         Clan clan = clanInput.getClan();
         Response response = clan.withdraw(amount);
 
-        if (sender instanceof Player) {
-            BankDepositEvent event = new BankDepositEvent(((Player) sender), clan, amount);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return;
-            }
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
         }
 
         switch (response) {
@@ -94,6 +88,13 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.set}")
     public void set(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
+
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        
         if (amount < 0) {
             sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
             return;
