@@ -5,7 +5,10 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Response;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static org.bukkit.ChatColor.AQUA;
@@ -31,6 +34,14 @@ public class BankCommands extends BaseCommand {
         Clan clan = clanInput.getClan();
         Response response = clan.withdraw(amount);
 
+        if (sender instanceof Player) {
+            BankWithdrawEvent event = new BankWithdrawEvent(((Player) sender), clan, amount);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return;
+            }
+        }
+
         switch (response) {
             case SUCCESS:
                 sender.sendMessage(lang("clan.admin.take", sender));
@@ -50,7 +61,6 @@ public class BankCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.give}")
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
-
     }
 
     @Subcommand("%admin %set")

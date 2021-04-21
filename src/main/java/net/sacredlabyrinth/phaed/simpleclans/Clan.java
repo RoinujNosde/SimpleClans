@@ -99,6 +99,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * deposits money to the clan
      */
+    @Deprecated
     public void deposit(double amount, Player player) {
         BankDepositEvent event = new BankDepositEvent(player, this, amount);
         Bukkit.getPluginManager().callEvent(event);
@@ -118,6 +119,15 @@ public class Clan implements Serializable, Comparable<Clan> {
         } else {
             player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money", player));
         }
+    }
+    public Response deposit(double amount) {
+        if (amount < 0) {
+            return Response.NEGATIVE_VALUE;
+        }
+
+        setBalance(getBalance() + amount);
+        SimpleClans.getInstance().getStorageManager().updateClan(this);
+        return Response.SUCCESS;
     }
 
     /**
