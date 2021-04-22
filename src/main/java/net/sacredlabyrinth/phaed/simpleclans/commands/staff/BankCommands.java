@@ -3,7 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.staff;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.Response;
+import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import org.bukkit.Bukkit;
@@ -32,9 +32,9 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.take}")
     public void take(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
-        Response response = clan.withdraw(amount);
+        EconomyResponse economyResponse = clan.withdraw(amount);
 
-        switch (response) {
+        switch (economyResponse) {
             case SUCCESS:
                 ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), clan.getBalance() + amount);
                 Bukkit.getPluginManager().callEvent(event);
@@ -59,9 +59,9 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.give}")
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
-        Response response = clan.withdraw(amount);
+        EconomyResponse economyResponse = clan.withdraw(amount);
 
-        switch (response) {
+        switch (economyResponse) {
             case SUCCESS:
                 ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), clan.getBalance() + amount);
                 Bukkit.getPluginManager().callEvent(event);

@@ -124,14 +124,14 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * deposits money to the clan
      */
-    public Response deposit(double amount) {
+    public EconomyResponse deposit(double amount) {
         if (amount < 0) {
-            return Response.NEGATIVE_VALUE;
+            return EconomyResponse.NEGATIVE_VALUE;
         }
 
         setBalance(getBalance() + amount);
         SimpleClans.getInstance().getStorageManager().updateClan(this);
-        return Response.SUCCESS;
+        return EconomyResponse.SUCCESS;
     }
 
     /**
@@ -160,17 +160,17 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * withdraws money to the clan
      */
-    public Response withdraw(double amount) {
+    public EconomyResponse withdraw(double amount) {
         if (amount < 0) {
-            return Response.NEGATIVE_VALUE;
+            return EconomyResponse.NEGATIVE_VALUE;
         }
 
         if (getBalance() >= amount) {
                 setBalance(getBalance() - amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
-                return Response.SUCCESS;
+                return EconomyResponse.SUCCESS;
         } else {
-            return Response.NOT_ENOUGH_BALANCE;
+            return EconomyResponse.NOT_ENOUGH_BALANCE;
         }
     }
 

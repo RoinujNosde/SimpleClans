@@ -1,5 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
-public enum Response {
+public enum EconomyResponse {
     SUCCESS, NEGATIVE_VALUE, NOT_ENOUGH_BALANCE
 }
