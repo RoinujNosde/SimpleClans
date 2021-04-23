@@ -32,15 +32,10 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.take}")
     public void take(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
-        EconomyResponse economyResponse = clan.withdraw(amount);
+        EconomyResponse economyResponse = clan.withdraw(sender, amount);
 
         switch (economyResponse) {
             case SUCCESS:
-                ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), clan.getBalance() + amount);
-                Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
-                    return;
-                }
                 sender.sendMessage(lang("clan.admin.take", sender, amount, clan.getName()));
                 clan.addBb(sender.getName(), AQUA + lang("bb.clan.take", sender, amount));
                 break;
@@ -49,6 +44,8 @@ public class BankCommands extends BaseCommand {
                 break;
             case NOT_ENOUGH_BALANCE:
                 sender.sendMessage(RED + lang("clan.admin.bank.not.enough.money", sender, clan.getName()));
+                break;
+            default:
                 break;
         }
     }
@@ -59,15 +56,10 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.give}")
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
-        EconomyResponse economyResponse = clan.withdraw(amount);
+        EconomyResponse economyResponse = clan.withdraw(sender, amount);
 
         switch (economyResponse) {
             case SUCCESS:
-                ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), clan.getBalance() + amount);
-                Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
-                    return;
-                }
                 sender.sendMessage(lang("clan.admin.give", sender, amount, clan.getName()));
                 clan.addBb(sender.getName(), AQUA + lang("bb.clan.give", sender, amount));
                 break;
@@ -76,6 +68,8 @@ public class BankCommands extends BaseCommand {
                 break;
             case NOT_ENOUGH_BALANCE:
                 sender.sendMessage(RED + lang("clan.admin.bank.not.enough.money", sender, clan.getName()));
+                break;
+            default:
                 break;
         }
     }
@@ -97,6 +91,7 @@ public class BankCommands extends BaseCommand {
         if (event.isCancelled()) {
             return;
         }
+
         sender.sendMessage(AQUA + lang("clan.admin.set", sender, amount, clan.getName()));
         clan.addBb(sender.getName(), AQUA + lang("bb.clan.set", sender));
         clan.setBalance(amount);

@@ -53,14 +53,9 @@ public class BankCommand extends BaseCommand {
             return;
         }
 
-        switch (clan.withdraw(amount)) {
+        switch (clan.withdraw(player, amount)) {
             case SUCCESS:
                 if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
-                    ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), clan.getBalance() - amount);
-                    Bukkit.getPluginManager().callEvent(event);
-                    if (event.isCancelled()) {
-                        return;
-                    }
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 }
@@ -71,8 +66,9 @@ public class BankCommand extends BaseCommand {
             case NOT_ENOUGH_BALANCE:
                 player.sendMessage(lang("clan.bank.not.enough.money", player));
                 break;
+            default:
+                break;
         }
-
     }
 
     @Subcommand("%deposit %all")

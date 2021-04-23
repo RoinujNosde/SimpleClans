@@ -160,15 +160,20 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * withdraws money to the clan
      */
-    public EconomyResponse withdraw(double amount) {
+    public EconomyResponse withdraw(CommandSender sender, double amount) {
         if (amount < 0) {
             return EconomyResponse.NEGATIVE_VALUE;
         }
 
         if (getBalance() >= amount) {
-                setBalance(getBalance() - amount);
-                SimpleClans.getInstance().getStorageManager().updateClan(this);
-                return EconomyResponse.SUCCESS;
+            ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, this, this.getBalance(), this.getBalance() + amount);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return EconomyResponse.CANCELED;
+            }
+            setBalance(getBalance() - amount);
+            SimpleClans.getInstance().getStorageManager().updateClan(this);
+            return EconomyResponse.SUCCESS;
         } else {
             return EconomyResponse.NOT_ENOUGH_BALANCE;
         }
