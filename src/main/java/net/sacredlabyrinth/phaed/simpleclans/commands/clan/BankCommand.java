@@ -5,9 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -97,18 +95,15 @@ public class BankCommand extends BaseCommand {
 
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
-                switch (clan.deposit(amount)) {
+                switch (clan.deposit(player, amount)) {
                     case SUCCESS:
-                        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(player, clan, clan.getBalance(), clan.getBalance() + amount);
-                        Bukkit.getPluginManager().callEvent(event);
-                        if (event.isCancelled()) {
-                            return;
-                        }
                         player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
                         clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
                         break;
                     case NEGATIVE_VALUE:
                         player.sendMessage(lang(RED + "you.can.t.define.negative.value", player));
+                        break;
+                    default:
                         break;
                 }
             } else {

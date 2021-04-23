@@ -56,7 +56,7 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.give}")
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
-        EconomyResponse economyResponse = clan.withdraw(sender, amount);
+        EconomyResponse economyResponse = clan.deposit(sender, amount);
 
         switch (economyResponse) {
             case SUCCESS:

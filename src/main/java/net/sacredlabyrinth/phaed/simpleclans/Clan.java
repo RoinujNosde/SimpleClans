@@ -124,9 +124,15 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * deposits money to the clan
      */
-    public EconomyResponse deposit(double amount) {
+    public EconomyResponse deposit(CommandSender sender, double amount) {
         if (amount < 0) {
             return EconomyResponse.NEGATIVE_VALUE;
+        }
+
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, this, this.getBalance(), this.getBalance() + amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return EconomyResponse.CANCELED;
         }
 
         setBalance(getBalance() + amount);
@@ -166,7 +172,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
 
         if (getBalance() >= amount) {
-            ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, this, this.getBalance(), this.getBalance() + amount);
+            ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, this, this.getBalance(), this.getBalance() - amount);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return EconomyResponse.CANCELED;
