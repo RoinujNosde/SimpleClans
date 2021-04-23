@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import static org.bukkit.ChatColor.RED;
 @Subcommand("%bank")
 @Conditions("%basic_conditions|economy|verified")
 public class BankCommand extends BaseCommand {
+
     @Dependency
     private PermissionsManager permissions;
 
@@ -93,21 +95,12 @@ public class BankCommand extends BaseCommand {
             return;
         }
 
-        if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
-            if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
-                switch (clan.deposit(player, amount)) {
-                    case SUCCESS:
-                        player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
-                        clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
-                        break;
-                    case NEGATIVE_VALUE:
-                        player.sendMessage(lang(RED + "you.can.t.define.negative.value", player));
-                        break;
-                    default:
-                        break;
-                }
+        if (permissions.playerHasMoney(player, amount) && permissions.playerChargeMoney(player, amount)) {
+            if (clan.deposit(player, amount) == EconomyResponse.SUCCESS) {
+                player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
+                clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
             } else {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player));
+                permissions.playerGrantMoney(player, amount);
             }
         } else {
             player.sendMessage(AQUA + lang("not.sufficient.money", player));

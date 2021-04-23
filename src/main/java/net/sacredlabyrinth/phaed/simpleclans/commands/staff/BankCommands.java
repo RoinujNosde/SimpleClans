@@ -15,9 +15,10 @@ import static org.bukkit.ChatColor.AQUA;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions")
+@Subcommand("%admin %bank")
 public class BankCommands extends BaseCommand {
 
-    @Subcommand("%admin %status")
+    @Subcommand("%status")
     @CommandPermission("simpleclans.admin.bankstatus")
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.status}")
@@ -26,7 +27,7 @@ public class BankCommands extends BaseCommand {
         sender.sendMessage(AQUA + lang("clan.admin.balance", sender, clan.getName(), clan.getBalance()));
     }
 
-    @Subcommand("%admin %take")
+    @Subcommand("%take")
     @CommandPermission("simpleclans.admin.take")
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.take}")
@@ -50,7 +51,7 @@ public class BankCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("%admin %give")
+    @Subcommand("%give")
     @CommandPermission("simpleclans.admin.give")
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.give}")
@@ -74,7 +75,7 @@ public class BankCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("%admin %set")
+    @Subcommand("%set")
     @CommandPermission("simpleclans.admin.set")
     @CommandCompletion("@clans")
     @Description("{@@command.description.bank.admin.set}")
