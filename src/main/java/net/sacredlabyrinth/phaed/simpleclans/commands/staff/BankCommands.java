@@ -34,6 +34,7 @@ public class BankCommands extends BaseCommand {
     public void take(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
         EconomyResponse economyResponse = clan.withdraw(sender, amount);
+        amount = Math.abs(amount);
 
         switch (economyResponse) {
             case SUCCESS:
@@ -58,6 +59,7 @@ public class BankCommands extends BaseCommand {
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
         EconomyResponse economyResponse = clan.deposit(sender, amount);
+        amount = Math.abs(amount);
 
         switch (economyResponse) {
             case SUCCESS:
@@ -81,11 +83,7 @@ public class BankCommands extends BaseCommand {
     @Description("{@@command.description.bank.admin.set}")
     public void set(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
-
-        if (amount < 0) {
-            sender.sendMessage(RED + lang("you.can.t.define.negative.value", sender));
-            return;
-        }
+        amount = Math.abs(amount);
 
         ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, clan, clan.getBalance(), amount);
         Bukkit.getPluginManager().callEvent(event);
