@@ -101,7 +101,7 @@ public class Helper {
      * @param jo the JSON Object
      * @return a list of ranks or null if the JSON String is null/empty
      */
-	public static @Nullable List<Rank> ranksFromJson(JSONObject jo) {
+	public static @Nullable List<Rank> ranksFromJson(@Nullable JSONObject jo) {
     	if (jo != null && !jo.isEmpty()) {
             Object ranks = jo.get("ranks");
             if (ranks != null) {
@@ -131,7 +131,7 @@ public class Helper {
      * @param jo the JSON object
      * @return the default rank or null if not found and/or it does not exist
      */
-    public static @Nullable String defaultRankFromJson(JSONObject jo) {
+    public static @Nullable String defaultRankFromJson(@Nullable JSONObject jo) {
 	    if (jo != null && !jo.isEmpty()) {
             if (!jo.containsKey("defaultRank")) {
                 return null;

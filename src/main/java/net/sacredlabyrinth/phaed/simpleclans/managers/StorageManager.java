@@ -15,13 +15,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.Date;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -50,8 +50,8 @@ public final class StorageManager {
     /**
      * Retrieve a player's pending chat lines
      *
-     * @param player
-     * @return
+     * @param player the Player
+     * @return the ChatBlock
      */
     public ChatBlock getChatBlock(Player player) {
     	return chatBlocks.get(player.getUniqueId().toString());
@@ -60,8 +60,6 @@ public final class StorageManager {
     /**
      * Store pending chat lines for a player
      *
-     * @param player
-     * @param cb
      */
     public void addChatBlock(CommandSender player, ChatBlock cb) {
 		UUID uuid = UUIDMigration.getForcedPlayerUUID(player.getName());
@@ -282,7 +280,6 @@ public final class StorageManager {
      * Import one ClanPlayer data from database to memory
      * Used for BungeeCord Reload ClanPlayer and your Clan
      *
-     * @param player
      */
     public void importFromDatabaseOnePlayer(Player player) {
         plugin.getClanManager().deleteClanPlayerFromMemory(player.getUniqueId());
@@ -351,7 +348,6 @@ public final class StorageManager {
     /**
      * Retrieves all simple clans from the database
      *
-     * @return
      */
     public List<Clan> retrieveClans() {
         List<Clan> out = new ArrayList<>();
@@ -426,11 +422,8 @@ public final class StorageManager {
     /**
      * Retrieves one Clan from the database
      * Used for BungeeCord Reload ClanPlayer and your Clan
-     *
-     * @param tagClan
-     * @return
      */
-    public Clan retrieveOneClan(String tagClan) {
+    public @Nullable Clan retrieveOneClan(String tagClan) {
         Clan out = null;
 
         String query = "SELECT * FROM  `sc_clans` WHERE `tag` = '" + tagClan + "';";
@@ -503,7 +496,6 @@ public final class StorageManager {
     /**
      * Retrieves all clan players from the database
      *
-     * @return
      */
     public List<ClanPlayer> retrieveClanPlayers() {
         List<ClanPlayer> out = new ArrayList<>();
@@ -524,6 +516,7 @@ public final class StorageManager {
                         int neutral_kills = res.getInt("neutral_kills");
                         int rival_kills = res.getInt("rival_kills");
                         int civilian_kills = res.getInt("civilian_kills");
+                        int ally_kills = res.getInt("ally_kills");
                         int deaths = res.getInt("deaths");
                         long last_seen = res.getLong("last_seen");
                         long join_date = res.getLong("join_date");
@@ -551,6 +544,7 @@ public final class StorageManager {
                         cp.setNeutralKills(neutral_kills);
                         cp.setRivalKills(rival_kills);
                         cp.setCivilianKills(civilian_kills);
+                        cp.setAllyKills(ally_kills);
                         cp.setDeaths(deaths);
                         cp.setLastSeen(last_seen);
                         cp.setJoinDate(join_date);
@@ -584,11 +578,8 @@ public final class StorageManager {
     /**
      * Retrieves one clan player from the database
      * Used for BungeeCord Reload ClanPlayer and your Clan
-     *
-     * @param playerUniqueId
-     * @return
      */
-    public ClanPlayer retrieveOneClanPlayer(UUID playerUniqueId) {
+    public @Nullable ClanPlayer retrieveOneClanPlayer(UUID playerUniqueId) {
         ClanPlayer out = null;
 
         String query = "SELECT * FROM `sc_players` WHERE `uuid` = '" + playerUniqueId.toString() + "';";
@@ -607,11 +598,12 @@ public final class StorageManager {
                         int neutral_kills = res.getInt("neutral_kills");
                         int rival_kills = res.getInt("rival_kills");
                         int civilian_kills = res.getInt("civilian_kills");
+                        int ally_kills = res.getInt("ally_kills");
                         int deaths = res.getInt("deaths");
                         long last_seen = res.getLong("last_seen");
                         long join_date = res.getLong("join_date");
                         String flags = res.getString("flags");
-                        String packed_past_clans = Helper.parseColors(res.getString("packed_past_clans"));
+                        String packed_past_clans = ChatUtils.parseColors(res.getString("packed_past_clans"));
                         String resign_times = res.getString("resign_times");
                         Locale locale = Helper.forLanguageTag(res.getString("locale"));
 
@@ -634,6 +626,7 @@ public final class StorageManager {
                         cp.setNeutralKills(neutral_kills);
                         cp.setRivalKills(rival_kills);
                         cp.setCivilianKills(civilian_kills);
+                        cp.setAllyKills(ally_kills);
                         cp.setDeaths(deaths);
                         cp.setLastSeen(last_seen);
                         cp.setJoinDate(join_date);
@@ -646,7 +639,7 @@ public final class StorageManager {
                             Clan clanDB = retrieveOneClan(tag);
                             Clan clan = SimpleClans.getInstance().getClanManager().getClan(tag);
 
-                            if (clan != null) {
+                            if (clan != null && clanDB != null) {
                                 Clan clanReSync = SimpleClans.getInstance().getClanManager().getClan(tag);
                                 clanReSync.setFlags(clanDB.getFlags());
                                 clanReSync.setVerified(clanDB.isVerified());
@@ -686,7 +679,6 @@ public final class StorageManager {
     /**
      * Insert a clan into the database
      *
-     * @param clan
      */
     public void insertClan(Clan clan) {
         String query = "INSERT INTO `sc_clans` (`banner`, `ranks`, `description`, `fee_enabled`, `fee_value`, `verified`, `tag`," +
@@ -717,7 +709,6 @@ public final class StorageManager {
     /**
      * Update a clan to the database asynchronously
      *
-     * @param clan
      */
     @Deprecated
     public void updateClanAsync(final Clan clan) {
@@ -756,7 +747,6 @@ public final class StorageManager {
     /**
      * Update a clan to the database
      *
-     * @param clan
      */
     public void updateClan(Clan clan) {
         updateClan(clan, true);
@@ -773,42 +763,48 @@ public final class StorageManager {
         if (updateLastUsed) {
             clan.updateLastUsed();
         }
-    	if (plugin.getSettingsManager().isSavePeriodically()) {
-    		modifiedClans.add(clan);
-    		return;
-    	}
-        core.update(getUpdateClanQuery(clan));
+        if (plugin.getSettingsManager().isSavePeriodically()) {
+            modifiedClans.add(clan);
+            return;
+        }
+        try (PreparedStatement st = prepareUpdateClanStatement(core.getConnection())) {
+            setValues(st, clan);
+            st.executeUpdate();
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, String.format("Error updating Clan %s", clan.getTag()), ex);
+        }
     }
-    
-    private String getUpdateClanQuery(Clan clan) {
-        String query = "UPDATE `sc_clans`" +
-                " SET ranks = '"+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks(), clan.getDefaultRank())) +"'," +
-                " banner = '" + Helper.escapeQuotes(YAMLSerializer.serialize(clan.getBanner())) + "'," +
-                " description = '" + Helper.escapeQuotes(clan.getDescription())+ "'," +
-                " fee_enabled = "+ (clan.isMemberFeeEnabled() ? 1 : 0) +"," +
-                " fee_value = '" + clan.getMemberFee() + "'," +
-                " verified = " + (clan.isVerified() ? 1 : 0) + "," +
-                " tag = '" + Helper.escapeQuotes(clan.getTag()) + "'," +
-                " color_tag = '" + Helper.escapeQuotes(clan.getColorTag()) + "'," +
-                " name = '" + Helper.escapeQuotes(clan.getName()) + "'," +
-                " friendly_fire = " + (clan.isFriendlyFire() ? 1 : 0) + "," +
-                " founded = '" + clan.getFounded() + "'," +
-                " last_used = '" + clan.getLastUsed() + "'," +
-                " packed_allies = '" + Helper.escapeQuotes(clan.getPackedAllies()) + "'," +
-                " packed_rivals = '" + Helper.escapeQuotes(clan.getPackedRivals()) + "'," +
-                " packed_bb = '" + Helper.escapeQuotes(clan.getPackedBb()) + "'," +
-                " cape_url = '" + Helper.escapeQuotes(clan.getCapeUrl()) + "'," +
-                " cape_url = '" + Helper.escapeQuotes(String.valueOf(clan.getCapeUrl())) + "'," +
-                " balance = '" + clan.getBalance() + "'," +
-                " flags = '" + Helper.escapeQuotes(clan.getFlags())
-                + "' WHERE tag = '" + Helper.escapeQuotes(clan.getTag()) + "';";
-        return query;
+
+    private PreparedStatement prepareUpdateClanStatement(Connection connection) throws SQLException {
+        String sql = "UPDATE `sc_clans` SET ranks = ?, banner = ?, description = ?, fee_enabled = ?, fee_value = ?, " +
+                "verified = ?, tag = ?, color_tag = ?, `name` = ?, friendly_fire = ?, founded = ?, last_used = ?, " +
+                "packed_allies = ?, packed_rivals = ?, packed_bb = ?, balance = ?, flags = ? WHERE tag = ?;";
+        return connection.prepareStatement(sql);
+    }
+
+    private void setValues(PreparedStatement statement, Clan clan) throws SQLException {
+        statement.setString(1, Helper.ranksToJson(clan.getRanks(), clan.getDefaultRank()));
+        statement.setString(2, YAMLSerializer.serialize(clan.getBanner()));
+        statement.setString(3, clan.getDescription());
+        statement.setInt(4, clan.isMemberFeeEnabled() ? 1 : 0);
+        statement.setDouble(5, clan.getMemberFee());
+        statement.setInt(6, clan.isVerified() ? 1 : 0);
+        statement.setString(7, clan.getTag());
+        statement.setString(8, clan.getColorTag());
+        statement.setString(9, clan.getName());
+        statement.setInt(10, clan.isFriendlyFire() ? 1 : 0);
+        statement.setLong(11, clan.getFounded());
+        statement.setLong(12, clan.getLastUsed());
+        statement.setString(13, clan.getPackedAllies());
+        statement.setString(14, clan.getPackedRivals());
+        statement.setString(15, clan.getPackedBb());
+        statement.setDouble(16, clan.getBalance());
+        statement.setString(17, clan.getFlags());
+        statement.setString(18, clan.getTag());
     }
 
     /**
      * Delete a clan from the database
-     *
-     * @param clan
      */
     public void deleteClan(Clan clan) {
         String query = "DELETE FROM `sc_clans` WHERE tag = '" + clan.getTag() + "';";
@@ -818,7 +814,6 @@ public final class StorageManager {
     /**
      * Insert a clan player into the database
      *
-     * @param cp
      */
     public void insertClanPlayer(ClanPlayer cp) {
     	String query = "INSERT INTO `sc_players` (`locale`, `resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
@@ -829,7 +824,6 @@ public final class StorageManager {
     /**
      * Update a clan player to the database asynchronously
      *
-     * @param cp
      */
     @Deprecated
     public void updateClanPlayerAsync(final ClanPlayer cp) {
@@ -844,36 +838,49 @@ public final class StorageManager {
     /**
      * Update a clan player to the database
      *
-     * @param cp
      */
     public void updateClanPlayer(ClanPlayer cp) {
         cp.updateLastSeen();
         if (plugin.getSettingsManager().isSavePeriodically()) {
-        	modifiedClanPlayers.add(cp);
-        	return;
+            modifiedClanPlayers.add(cp);
+            return;
         }
-        core.update(getUpdateClanPlayerQuery(cp));
+        try (PreparedStatement st = prepareUpdateClanPlayerStatement(core.getConnection())) {
+            setValues(st, cp);
+            st.executeUpdate();
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, String.format("Error updating ClanPlayer %s", cp.getName()), ex);
+        }
     }
-    
-    private String getUpdateClanPlayerQuery(ClanPlayer cp) {
-        return "UPDATE `sc_players` SET" +
-                " locale = '" + cp.getLocale().toLanguageTag() + "'," +
-                " resign_times = '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes())) +"'," +
-                " leader = " + (cp.isLeader() ? 1 : 0) + ", tag = '" + Helper.escapeQuotes(cp.getTag()) + "'," +
-                " friendly_fire = " + (cp.isFriendlyFire() ? 1 : 0) +
-                ", neutral_kills = " + cp.getNeutralKills() +
-                ", ally_kills = " + cp.getAllyKills() +
-                ", rival_kills = " + cp.getRivalKills() + ", civilian_kills = " + cp.getCivilianKills() +
-                ", deaths = " + cp.getDeaths() + ", last_seen = '" + cp.getLastSeen() + "'," +
-                " packed_past_clans = '" + Helper.escapeQuotes(cp.getPackedPastClans()) + "'," +
-                " trusted = " + (cp.isTrusted() ? 1 : 0) + ", flags = '" + Helper.escapeQuotes(cp.getFlags()) + "'," +
-                " name = '" + cp.getName() + "' WHERE `uuid` = '" + cp.getUniqueId().toString() + "';";
+
+    private PreparedStatement prepareUpdateClanPlayerStatement(Connection connection) throws SQLException {
+        String sql = "UPDATE `sc_players` SET locale = ?, resign_times = ?, leader = ?, tag = ?, friendly_fire = ?," +
+                " neutral_kills = ?, ally_kills = ?, rival_kills = ?, civilian_kills = ?, deaths = ?, last_seen = ?," +
+                " packed_past_clans = ?, trusted = ?, flags = ?, `name` = ? WHERE `uuid` = ?;";
+        return connection.prepareStatement(sql);
+    }
+
+    private void setValues(PreparedStatement statement, ClanPlayer cp) throws SQLException {
+        statement.setString(1, cp.getLocale().toLanguageTag());
+        statement.setString(2, Helper.resignTimesToJson(cp.getResignTimes()));
+        statement.setInt(3, cp.isLeader() ? 1 : 0);
+        statement.setString(4, cp.getTag());
+        statement.setInt(5, cp.isFriendlyFire() ? 1 : 0);
+        statement.setInt(6, cp.getNeutralKills());
+        statement.setInt(7, cp.getAllyKills());
+        statement.setInt(8, cp.getRivalKills());
+        statement.setInt(9, cp.getCivilianKills());
+        statement.setInt(10, cp.getDeaths());
+        statement.setLong(11, cp.getLastSeen());
+        statement.setString(12, cp.getPackedPastClans());
+        statement.setInt(13, cp.isTrusted() ? 1 : 0);
+        statement.setString(14, cp.getFlags());
+        statement.setString(15, cp.getName());
+        statement.setString(16, cp.getUniqueId().toString());
     }
 
     /**
      * Delete a clan player from the database
-     *
-     * @param cp
      */
     public void deleteClanPlayer(ClanPlayer cp) {
         final Clan clan = cp.getClan();
@@ -881,19 +888,14 @@ public final class StorageManager {
             clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(lang("has.been.purged"), cp.getName()));
             updateClan(clan, false);
         }
-		String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
-		core.delete(query);
-		deleteKills(cp.getUniqueId());
+        String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
+        core.delete(query);
+        deleteKills(cp.getUniqueId());
     }
-    
+
     /**
      * Insert a kill into the database
      *
-     * @param attacker
-     * @param attackerTag
-     * @param victim
-     * @param victimTag
-     * @param type
      */
     @Deprecated
     public void insertKill(Player attacker, String attackerTag, Player victim, String victimTag, String type) {
@@ -920,7 +922,6 @@ public final class StorageManager {
     /**
      * Delete a player's kill record form the database
      *
-     * @param playerName
      */
     @Deprecated
     public void deleteKills(String playerName) {
@@ -931,7 +932,6 @@ public final class StorageManager {
     /**
      * Delete a player's kill record form the database
      *
-     * @param playerUniqueId
      */
     public void deleteKills(UUID playerUniqueId) {
         String query = "DELETE FROM `sc_kills` WHERE `attacker_uuid` = '" + playerUniqueId + "'";
@@ -941,8 +941,6 @@ public final class StorageManager {
     /**
      * Returns a map of victim->count of all kills that specific player did
      *
-     * @param playerName
-     * @return
      */
     public Map<String, Integer> getKillsPerPlayer(String playerName) {
         HashMap<String, Integer> out = new HashMap<>();
@@ -975,7 +973,6 @@ public final class StorageManager {
     /**
      * Returns a map of tag->count of all kills
      *
-     * @return
      */
     public Map<String, Integer> getMostKilled() {
         HashMap<String, Integer> out = new HashMap<>();
@@ -1009,7 +1006,6 @@ public final class StorageManager {
     /**
      * Gets, asynchronously, a map of tag->count of all kills and notifies via callback when it's ready
      * 
-     * @param callback
      */
     public void getMostKilled(DataCallback<Map<String, Integer>> callback) {
     	new BukkitRunnable() {
@@ -1023,9 +1019,7 @@ public final class StorageManager {
     
     /**
      * Gets, asynchronously, a map of victim->count of all kills that specific player did and notifies via callback when it's ready
-     * 
-     * @param playerName
-     * @param callback
+     *
      */
     public void getKillsPerPlayer(final String playerName, final DataCallback<Map<String, Integer>> callback) {
     	new BukkitRunnable() {
@@ -1046,7 +1040,6 @@ public final class StorageManager {
     	/**
     	 * Notifies when the result is ready
     	 * 
-    	 * @param data
     	 */
     	void onResultReady(T data);
     }
@@ -1054,10 +1047,9 @@ public final class StorageManager {
     /**
      * Updates the database to the latest version
      *
-     * @param
      */
     private void updateDatabase() {
-        String query = null;
+        String query;
 
         /*
          * From 2.2.6.3 to 2.3
@@ -1161,7 +1153,6 @@ public final class StorageManager {
     /**
      * Updates the database to the latest version
      *
-     * @param
      */
     
 	private void updatePlayersToUUID() {
@@ -1214,28 +1205,31 @@ public final class StorageManager {
 	 * @since 2.10.2
 	 */
 	public void saveModified() {
-		try (Statement statement = core.getConnection().createStatement()) {
-			List<Clan> allClans = plugin.getClanManager().getClans();
-			for (Clan clan : modifiedClans) {
-				if (!allClans.contains(clan)) {
-					continue;
-				}
-				statement.addBatch(getUpdateClanQuery(clan));
-			}
-			List<ClanPlayer> allClanPlayers = plugin.getClanManager().getAllClanPlayers();
-			for (ClanPlayer cp : modifiedClanPlayers) {
-				if (!allClanPlayers.contains(cp)) {
-					continue;
-				}
-				statement.addBatch(getUpdateClanPlayerQuery(cp));
-			}
-			statement.executeBatch();
-			
-			modifiedClans.clear();
-			modifiedClanPlayers.clear();
-		} catch (SQLException e) {
-            plugin.getLogger().severe("Error saving modified Clans and ClanPlayers:");
-			e.printStackTrace();
-		}
-	}
+        try (PreparedStatement pst = prepareUpdateClanPlayerStatement(core.getConnection())) {
+            //removing purged players
+            modifiedClanPlayers.retainAll(plugin.getClanManager().getAllClanPlayers());
+            for (ClanPlayer cp : modifiedClanPlayers) {
+                setValues(pst, cp);
+                pst.addBatch();
+            }
+            pst.executeBatch();
+
+            modifiedClanPlayers.clear();
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error saving modified ClanPlayers:", ex);
+        }
+        try (PreparedStatement pst = prepareUpdateClanStatement(core.getConnection())) {
+            //removing disbanded clans
+            modifiedClans.retainAll(plugin.getClanManager().getClans());
+            for (Clan clan : modifiedClans) {
+                setValues(pst, clan);
+                pst.addBatch();
+            }
+            pst.executeBatch();
+
+            modifiedClans.clear();
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error saving modified Clans:", ex);
+        }
+    }
 }
