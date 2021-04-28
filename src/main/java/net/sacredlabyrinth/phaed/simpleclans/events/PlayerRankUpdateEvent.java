@@ -18,12 +18,13 @@ public class PlayerRankUpdateEvent extends Event implements Cancellable {
     private final ClanPlayer target;
     private final ClanPlayer issuer;
 
-    private Rank oldRank;
-    private Rank newRank;
+    private final Rank oldRank;
+    private final Rank newRank;
     private final Clan clan;
     private boolean cancelled;
 
-    public PlayerRankUpdateEvent(ClanPlayer issuer, ClanPlayer target, Clan clan, Rank oldRank, Rank newRank) {
+    public PlayerRankUpdateEvent(@NotNull ClanPlayer issuer, @NotNull ClanPlayer target, @NotNull Clan clan,
+                                 @Nullable Rank oldRank, @Nullable Rank newRank) {
         this.target = target;
         this.issuer = issuer;
         this.oldRank = oldRank;
@@ -54,14 +55,6 @@ public class PlayerRankUpdateEvent extends Event implements Cancellable {
     @NotNull
     public ClanPlayer getTarget() {
         return target;
-    }
-
-    public void setOldRank(Rank oldRank) {
-        this.oldRank = oldRank;
-    }
-
-    public void setNewRank(Rank newRank) {
-        this.newRank = newRank;
     }
 
     @Override
