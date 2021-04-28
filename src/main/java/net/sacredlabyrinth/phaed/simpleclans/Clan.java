@@ -240,7 +240,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
 
         this.balance = event.getNewBalance();
-        SimpleClans.getInstance().getStorageManager().updateClan(this);
+        if (cause != Cause.LOADING) {
+            SimpleClans.getInstance().getStorageManager().updateClan(this);
+        }
         return EconomyResponse.SUCCESS;
     }
 
