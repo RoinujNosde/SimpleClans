@@ -1389,23 +1389,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Displays bb to a player
      */
     public void displayBb(Player player) {
-        if (isVerified()) {
-            ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
-
-            int maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
-
-            while (bb.size() > maxSize) {
-                bb.remove(0);
-            }
-
-            for (String msg : bb) {
-                if (!sendBbTime(player, msg)) {
-                    ChatBlock.sendMessage(player, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
-                }
-            }
-            ChatBlock.sendBlank(player);
-        }
+        displayBb(player, -1);
     }
 
     /**
