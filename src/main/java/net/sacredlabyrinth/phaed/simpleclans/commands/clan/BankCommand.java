@@ -68,6 +68,8 @@ public class BankCommand extends BaseCommand {
                 if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
+                } else {
+                    clan.setBalance(player, ClanBalanceUpdateEvent.Cause.REVERT, clan.getBalance() + amount);
                 }
                 break;
             case NOT_ENOUGH_BALANCE:
