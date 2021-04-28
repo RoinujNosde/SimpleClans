@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.google.common.base.Charsets;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.storage.DBCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.MySQLCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
@@ -400,7 +401,7 @@ public final class StorageManager {
                         clan.setPackedBb(packed_bb);
                         clan.setFounded(founded);
                         clan.setLastUsed(last_used);
-                        clan.setBalance(balance);
+                        clan.setBalance(null, ClanBalanceUpdateEvent.Cause.LOADING, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
@@ -477,7 +478,7 @@ public final class StorageManager {
                         clan.setPackedBb(packed_bb);
                         clan.setFounded(founded);
                         clan.setLastUsed(last_used);
-                        clan.setBalance(balance);
+                        clan.setBalance(null, ClanBalanceUpdateEvent.Cause.LOADING, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
@@ -657,7 +658,7 @@ public final class StorageManager {
                                 clanReSync.setPackedBb(clanDB.getPackedBb());
                                 clanReSync.setFounded(clanDB.getFounded());
                                 clanReSync.setLastUsed(clanDB.getLastUsed());
-                                clanReSync.setBalance(clanDB.getBalance());
+                                clanReSync.setBalance(null, ClanBalanceUpdateEvent.Cause.LOADING, clanDB.getBalance());
                                 cp.setClan(clanReSync);
                             } else {
                                 plugin.getClanManager().importClan(clanDB);

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.*;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -97,16 +99,10 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * deposits money to the clan
+     * Deposits money to the clan
      */
     @Deprecated
     public void deposit(double amount, Player player) {
-        BankDepositEvent event = new BankDepositEvent(player, this, amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-        amount = event.getAmount();
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
                 player.sendMessage(ChatColor.AQUA + lang("player.clan.deposit", player, amount));
@@ -122,41 +118,26 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * deposits money to the clan
+     * Deposits money to the clan
      */
-    public EconomyResponse deposit(CommandSender sender, double amount) {
+    public EconomyResponse deposit(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
         if (amount < 0) {
             return EconomyResponse.NEGATIVE_VALUE;
         }
 
-        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, this, this.getBalance(), this.getBalance() + amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return EconomyResponse.CANCELED;
-        }
-
-        setBalance(getBalance() + amount);
-        SimpleClans.getInstance().getStorageManager().updateClan(this);
-        return EconomyResponse.SUCCESS;
+        return setBalance(sender, cause, getBalance() + amount);
     }
 
     /**
-     * withdraws money to the clan
+     * Withdraws money from the clan
      */
     @Deprecated
     public void withdraw(double amount, Player player) {
-        BankWithdrawEvent event = new BankWithdrawEvent(player, this, amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-        amount = event.getAmount();
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                 player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
                 addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
-                SimpleClans.getInstance().getStorageManager().updateClan(this);
             }
         } else {
             player.sendMessage(ChatColor.AQUA + lang("clan.bank.not.enough.money", player));
@@ -164,22 +145,15 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * withdraws money to the clan
+     * Withdraws money from the clan
      */
-    public EconomyResponse withdraw(CommandSender sender, double amount) {
+    public EconomyResponse withdraw(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
         if (amount < 0) {
             return EconomyResponse.NEGATIVE_VALUE;
         }
 
         if (getBalance() >= amount) {
-            ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(sender, this, this.getBalance(), this.getBalance() - amount);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return EconomyResponse.CANCELED;
-            }
-            setBalance(getBalance() - amount);
-            SimpleClans.getInstance().getStorageManager().updateClan(this);
-            return EconomyResponse.SUCCESS;
+            return setBalance(sender, cause, getBalance() - amount);
         } else {
             return EconomyResponse.NOT_ENOUGH_BALANCE;
         }
@@ -255,7 +229,19 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param balance the balance to set
      */
     public void setBalance(double balance) {
-        this.balance = balance;
+        setBalance(null, Cause.API, balance);
+    }
+
+    public EconomyResponse setBalance(@Nullable CommandSender updater, @NotNull Cause cause, double balance) {
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(updater, this, getBalance(), balance, cause);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return EconomyResponse.CANCELLED;
+        }
+
+        this.balance = event.getNewBalance();
+        SimpleClans.getInstance().getStorageManager().updateClan(this);
+        return EconomyResponse.SUCCESS;
     }
 
     /**

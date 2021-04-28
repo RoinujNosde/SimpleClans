@@ -1708,7 +1708,7 @@ public final class SettingsManager {
      * @return the HomeRegroupPrice
      */
     public double getHomeRegroupPrice() {
-        return eHomeRegroupPrice;
+        return Math.abs(eHomeRegroupPrice);
     }
 
     /**

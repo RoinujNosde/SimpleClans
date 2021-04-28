@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
@@ -1078,7 +1079,7 @@ public final class ClanManager {
                 }
             }
         } else {
-            switch (clan.withdraw(player, price)) {
+            switch (clan.withdraw(player, ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
                 case SUCCESS:
                     if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, price)) {
                         player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
@@ -1086,13 +1087,8 @@ public final class ClanManager {
                         return true;
                     }
                     break;
-                case NEGATIVE_VALUE:
-                    player.sendMessage(lang("you.can.t.define.negative.value", player));
-                    break;
                 case NOT_ENOUGH_BALANCE:
                     player.sendMessage(lang("clan.bank.not.enough.money", player));
-                    break;
-                default:
                     break;
             }
         }

@@ -6,46 +6,77 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ClanBalanceUpdateEvent extends Event implements Cancellable {
+
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    private @NotNull final CommandSender updater;
-
-    private @NotNull final Clan clan;
-    private double oldBalance;
+    private final CommandSender updater;
+    private final Clan clan;
+    private final Cause cause;
+    private final double balance;
     private double newBalance;
     private boolean cancelled;
 
-    public ClanBalanceUpdateEvent(@NotNull CommandSender updater, @NotNull Clan clan, double oldBalance, double newBalance) {
+    public ClanBalanceUpdateEvent(@Nullable CommandSender updater,
+                                  @NotNull Clan clan,
+                                  double balance,
+                                  double newBalance,
+                                  @NotNull Cause cause) {
         this.updater = updater;
-        this.oldBalance = oldBalance;
-        this.newBalance = oldBalance;
+        this.balance = balance;
+        this.newBalance = newBalance;
         this.clan = clan;
+        this.cause = cause;
     }
 
-    public @NotNull CommandSender getUpdater() {
+    /**
+     * @return the balance updater, may be null
+     */
+    public @Nullable CommandSender getUpdater() {
         return updater;
     }
 
+    /**
+     * @return the Clan involved
+     */
     public @NotNull Clan getClan() {
         return clan;
     }
 
-    public double getOldBalance() {
-        return oldBalance;
+    /**
+     * @return the Clan's current balance
+     */
+    public double getBalance() {
+        return balance;
     }
 
+    /**
+     * @return the Clan's new balance
+     */
     public double getNewBalance() {
         return newBalance;
     }
 
-    public void setOldBalance(double oldBalance) {
-        this.oldBalance = oldBalance;
+    /**
+     * Sets the Clan's new balance
+     *
+     * @param newBalance the new balance
+     * @throws IllegalArgumentException if newBalance is negative
+     */
+    public void setNewBalance(double newBalance) {
+        if (newBalance < 0) {
+            throw new IllegalArgumentException("newBalance cannot be negative");
+        }
+        this.newBalance = newBalance;
     }
 
-    public void setNewBalance(double newBalance) {
-        this.newBalance = newBalance;
+    /**
+     * @return the update cause
+     */
+    public @NotNull Cause getCause() {
+        return cause;
     }
 
     @Override
@@ -62,8 +93,35 @@ public class ClanBalanceUpdateEvent extends Event implements Cancellable {
         return cancelled;
     }
 
+    /**
+     * @throws IllegalStateException if the cause of the event is {@link Cause#REVERT}
+     */
     @Override
     public void setCancelled(boolean isCancelled) {
+        if (getCause() == Cause.REVERT) {
+            throw new IllegalStateException("cannot cancel REVERT update");
+        }
         this.cancelled = isCancelled;
+    }
+
+    public enum Cause {
+        UPKEEP,
+        MEMBER_FEE,
+        /**
+         * When a command such as /clan bank deposit causes the update
+         */
+        COMMAND,
+        /**
+         * When the balance is updated via API methods
+         */
+        API,
+        /**
+         * When the clan data is being loaded and the balance is set, usually on server start up or plugin reload
+         */
+        LOADING,
+        /**
+         * When a failed deposit is being refunded, cannot be cancelled
+         */
+        REVERT
     }
 }

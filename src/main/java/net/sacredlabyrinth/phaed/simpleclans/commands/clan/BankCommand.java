@@ -6,7 +6,11 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -17,7 +21,6 @@ import static org.bukkit.ChatColor.RED;
 @Subcommand("%bank")
 @Conditions("%basic_conditions|economy|verified")
 public class BankCommand extends BaseCommand {
-
     @Dependency
     private PermissionsManager permissions;
 
@@ -45,6 +48,7 @@ public class BankCommand extends BaseCommand {
         processWithdraw(player, clan, amount);
     }
 
+    @SuppressWarnings("deprecation")
     private void processWithdraw(Player player, Clan clan, double amount) {
         if (!clan.isAllowWithdraw()) {
             String message = getCurrentCommandManager().getCommandReplacements()
@@ -52,21 +56,22 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(player, RED + message);
             return;
         }
+        amount = Math.abs(amount);
+        BankWithdrawEvent event = new BankWithdrawEvent(player, clan, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
 
-        switch (clan.withdraw(player, amount)) {
+        switch (clan.withdraw(player, ClanBalanceUpdateEvent.Cause.COMMAND, amount)) {
             case SUCCESS:
                 if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 }
                 break;
-            case NEGATIVE_VALUE:
-                player.sendMessage(lang("you.can.t.define.negative.value", player));
-                break;
             case NOT_ENOUGH_BALANCE:
                 player.sendMessage(lang("clan.bank.not.enough.money", player));
-                break;
-            default:
                 break;
         }
     }
@@ -87,6 +92,7 @@ public class BankCommand extends BaseCommand {
         processDeposit(player, clan, amount);
     }
 
+    @SuppressWarnings("deprecation")
     private void processDeposit(Player player, Clan clan, double amount) {
         if (!clan.isAllowDeposit()) {
             String message = getCurrentCommandManager().getCommandReplacements()
@@ -94,16 +100,25 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(player, RED + message);
             return;
         }
-
-        if (permissions.playerHasMoney(player, amount) && permissions.playerChargeMoney(player, amount)) {
-            if (clan.deposit(player, amount) == EconomyResponse.SUCCESS) {
+        amount = Math.abs(amount);
+        BankDepositEvent event = new BankDepositEvent(player, clan, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        if (!permissions.playerHasMoney(player, amount)) {
+            player.sendMessage(AQUA + lang("not.sufficient.money", player));
+            return;
+        }
+        EconomyResponse response = clan.deposit(player, ClanBalanceUpdateEvent.Cause.COMMAND, amount);
+        if (response == EconomyResponse.SUCCESS) {
+            if (permissions.playerChargeMoney(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
                 clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
             } else {
-                permissions.playerGrantMoney(player, amount);
+                //Reverts the deposit if something went wrong with Vault
+                clan.setBalance(player, ClanBalanceUpdateEvent.Cause.REVERT, clan.getBalance() - amount);
             }
-        } else {
-            player.sendMessage(AQUA + lang("not.sufficient.money", player));
         }
     }
 }
