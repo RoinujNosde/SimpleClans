@@ -797,6 +797,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             out.add(cp);
         }
 
+        Collections.sort(out);
+
         return out;
     }
 
@@ -871,22 +873,12 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Get all clan's members
+     *
+     * @deprecated use {@link Clan#getMembers()}
      */
+    @Deprecated
     public List<ClanPlayer> getAllMembers() {
-        List<ClanPlayer> out = new ArrayList<>();
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
-            out.add(cp);
-        }
-
-        Collections.sort(out);
-
-        return out;
+        return getMembers();
     }
 
     /**
@@ -1396,21 +1388,29 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Displays bb to a player
      *
      * @param maxSize amount of lines to display
-     * @implNote may want to refactor displaybb(Player) to use this?
      */
     public void displayBb(Player player, int maxSize) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getBbAccentColor();
+            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor();
+            ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
 
-            List<String> localBb = new ArrayList<>(bb);
+            List<String> localBb;
+            if (maxSize == -1) {
+                localBb = bb;
+                maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
+            } else {
+                localBb = new ArrayList<>(bb);
+            }
             while (localBb.size() > maxSize) {
                 localBb.remove(0);
             }
 
             for (String msg : localBb) {
                 if (!sendBbTime(player, msg)) {
-                    ChatBlock.sendMessage(player, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
+                    String bbColor = SimpleClans.getInstance().getSettingsManager().getBbColor();
+                    ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
                 }
             }
             ChatBlock.sendBlank(player);
@@ -1423,26 +1423,20 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param msg the bb message
      * @return true if sent
      */
-    @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "deprecation"})
+    @SuppressWarnings("deprecation")
     private boolean sendBbTime(Player player, String msg) {
         try {
             int index = msg.indexOf("_");
-            if (index < 1)
+            if (index < 1) {
                 return false;
-            long time;
-            time = (System.currentTimeMillis()
-                    - Long.parseLong(msg.substring(0, index))) / 1000L;
-            msg = String.join("", ChatBlock
-                    .getColorizedMessage(SimpleClans.getInstance()
-                            .getSettingsManager().getBbAccentColor() + "* " +
-                            SimpleClans.getInstance().getSettingsManager()
-                                    .getBbColor() + ChatUtils.parseColors(
-                            msg.substring(++index))));
+            }
+            long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getBbAccentColor();
+            String bbColor = SimpleClans.getInstance().getSettingsManager().getBbColor();
+            msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
             TextComponent textComponent = new TextComponent(msg);
-            textComponent.setHoverEvent(
-                    new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            TextComponent.fromLegacyText(
-                                    Dates.formatTime(time, 1) + lang("bb.ago"))));
+            textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
+                    Dates.formatTime(time, 1) + lang("bb.ago"))));
             player.spigot().sendMessage(textComponent);
             return true;
         } catch (Throwable rock) {
