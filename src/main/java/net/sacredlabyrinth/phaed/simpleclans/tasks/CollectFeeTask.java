@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
 import java.text.MessageFormat;
 
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -57,7 +58,7 @@ public class CollectFeeTask extends BukkitRunnable {
                             if (success) {
                                 ChatBlock.sendMessage(cp.toPlayer(), ChatColor.AQUA + 
                                         MessageFormat.format(lang("fee.collected",cp.toPlayer()), memberFee));
-                                clan.setBalance(clan.getBalance() + memberFee);
+                                clan.deposit(cp.toPlayer(), ClanBalanceUpdateEvent.Cause.MEMBER_FEE, memberFee);
                                 plugin.getStorageManager().updateClan(clan);
                             } else {
                             	clan.removePlayerFromClan(cp.getUniqueId());

@@ -29,6 +29,14 @@ permissions:
     description: Can see all clan chats
   simpleclans.admin.resetkdr:
     description: Can reset player kdr (of all or just one)
+  simpleclans.admin.bank.status:
+    description: Can check the balance of a clan
+  simpleclans.admin.bank.take:
+    description: Can take money from a clan
+  simpleclans.admin.bank.give:
+    description: Can give money to a clan
+  simpleclans.admin.bank.set:
+    description: Can set the balance of a clan
   simpleclans.mod.verify:
     description: Can verify simpleclans
   simpleclans.mod.ban:
@@ -197,6 +205,10 @@ permissions:
       simpleclans.admin.demote: true
       simpleclans.admin.promote: true
       simpleclans.admin.permanent: true
+      simpleclans.admin.bank.status: true
+      simpleclans.admin.bank.take: true
+      simpleclans.admin.bank.give: true
+      simpleclans.admin.bank.set: true
   simpleclans.mod.*:
     description: Permissions for moderators
     default: op

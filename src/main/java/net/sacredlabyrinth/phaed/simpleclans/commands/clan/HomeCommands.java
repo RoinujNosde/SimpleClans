@@ -40,10 +40,10 @@ public class HomeCommands extends BaseCommand {
             return;
         }
 
-        processTeleport(player, cp, clan, player.getLocation());
+        processRegroup(player, cp, clan, player.getLocation());
     }
 
-    private void processTeleport(Player player, ClanPlayer cp, Clan clan, Location location) {
+    private void processRegroup(Player player, ClanPlayer cp, Clan clan, Location location) {
         HomeRegroupEvent homeRegroupEvent = new HomeRegroupEvent(clan, cp, VanishUtils.getNonVanished(player, clan), location);
         plugin.getServer().getPluginManager().callEvent(homeRegroupEvent);
 
@@ -69,7 +69,7 @@ public class HomeCommands extends BaseCommand {
             return;
         }
 
-        processTeleport(player, cp, clan, location);
+        processRegroup(player, cp, clan, location);
     }
 
     @Subcommand("%home")

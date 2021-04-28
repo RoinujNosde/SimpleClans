@@ -142,8 +142,7 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!settingsManager.isTeleportOnSpawn() ||
-                settingsManager.isBlacklistedWorld(player.getWorld())) {
+        if (!settingsManager.isTeleportOnSpawn() || settingsManager.isBlacklistedWorld(player.getWorld())) {
             return;
         }
 

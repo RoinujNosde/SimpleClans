@@ -7,6 +7,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * @deprecated use {@link ClanBalanceUpdateEvent}
+ */
+@Deprecated
 public class BankWithdrawEvent extends PlayerEvent implements Cancellable {
 
     private final Clan clan;
