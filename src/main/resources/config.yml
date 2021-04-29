@@ -56,12 +56,16 @@ war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-    - WorldGuardProvider
-    - WorldGuard6Provider
-    - PlotSquared5Provider
-    - PlotSquared3Provider
-    - GriefPreventionProvider
-    listener-priority: HIGHEST
+        - WorldGuardProvider
+        - WorldGuard6Provider
+        - PlotSquared5Provider
+        - PlotSquared3Provider
+        - GriefPreventionProvider
+    listeners:
+        priority: HIGHEST
+        ignored-list:
+            PLACE:
+                - "PLAYER_HEAD"
     set-base-only-in-land: false
     war-normal-expiration-time: 0
     war-disconnect-expiration-time: 0

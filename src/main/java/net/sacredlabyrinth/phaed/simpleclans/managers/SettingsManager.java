@@ -200,7 +200,6 @@ public final class SettingsManager {
     private boolean warEnabled;
     private boolean landSharing;
     private List<String> protectionProviders;
-    private EventPriority warListenerPriority;
     private boolean onlyLeadersCanCreateLands;
     private boolean onlyOneLandPerClan;
     private boolean setBaseOnlyInLand;
@@ -417,7 +416,6 @@ public final class SettingsManager {
         warEnabled = getConfig().getBoolean("war-and-protection.war-enabled", false);
         landSharing = getConfig().getBoolean("war-and-protection.land-sharing", true);
         protectionProviders = getConfig().getStringList("war-and-protection.protection-providers");
-        warListenerPriority = EventPriority.valueOf(getConfig().getString("war-and-protection.listener-priority", "HIGHEST"));
         onlyLeadersCanCreateLands = getConfig().getBoolean("war-and-protection.land-creation.only-leaders", false);
         onlyOneLandPerClan = getConfig().getBoolean("war-and-protection.land-creation.only-one-per-clan", false);
         setBaseOnlyInLand = getConfig().getBoolean("war-and-protection.set-base-only-in-land", false);
@@ -481,7 +479,11 @@ public final class SettingsManager {
     }
 
     public EventPriority getWarListenerPriority() {
-        return warListenerPriority;
+        return EventPriority.valueOf(getConfig().getString("war-and-protection.listeners.priority", "HIGHEST"));
+    }
+
+    public List<String> getIgnoredList(ProtectionManager.Action action) {
+        return getConfig().getStringList("war-and-protection.listeners.ignored-list." + action.name());
     }
 
     public boolean isActionAllowedInWar(@NotNull ProtectionManager.Action action) {
