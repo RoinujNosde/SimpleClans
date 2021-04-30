@@ -77,7 +77,7 @@ public class SCPlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         if (settingsManager.isBlacklistedWorld(player.getWorld())) {
@@ -142,8 +142,7 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!settingsManager.isTeleportOnSpawn() ||
-                settingsManager.isBlacklistedWorld(player.getWorld())) {
+        if (!settingsManager.isTeleportOnSpawn() || settingsManager.isBlacklistedWorld(player.getWorld())) {
             return;
         }
 

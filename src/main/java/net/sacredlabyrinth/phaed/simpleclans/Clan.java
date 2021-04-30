@@ -6,19 +6,23 @@ import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 /**
  * @author phaed
@@ -95,16 +99,10 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * deposits money to the clan
-     *
+     * Deposits money to the clan
      */
+    @Deprecated
     public void deposit(double amount, Player player) {
-        BankDepositEvent event = new BankDepositEvent(player, this, amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-        amount = event.getAmount();
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
                 player.sendMessage(ChatColor.AQUA + lang("player.clan.deposit", player, amount));
@@ -112,33 +110,52 @@ public class Clan implements Serializable, Comparable<Clan> {
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
-                player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money",player));
+                player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money", player));
             }
         } else {
-            player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money",player));
+            player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money", player));
         }
     }
 
     /**
-     * withdraws money to the clan
-     *
+     * Deposits money to the clan
      */
-    public void withdraw(double amount, Player player) {
-        BankWithdrawEvent event = new BankWithdrawEvent(player, this, amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
+    public EconomyResponse deposit(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
+        if (amount < 0) {
+            return EconomyResponse.NEGATIVE_VALUE;
         }
-        amount = event.getAmount();
+
+        return setBalance(sender, cause, getBalance() + amount);
+    }
+
+    /**
+     * Withdraws money from the clan
+     */
+    @Deprecated
+    public void withdraw(double amount, Player player) {
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                 player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
                 addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
-                SimpleClans.getInstance().getStorageManager().updateClan(this);
             }
         } else {
-            player.sendMessage(ChatColor.AQUA + lang("clan.bank.not.enough.money",player));
+            player.sendMessage(ChatColor.AQUA + lang("clan.bank.not.enough.money", player));
+        }
+    }
+
+    /**
+     * Withdraws money from the clan
+     */
+    public EconomyResponse withdraw(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
+        if (amount < 0) {
+            return EconomyResponse.NEGATIVE_VALUE;
+        }
+
+        if (getBalance() >= amount) {
+            return setBalance(sender, cause, getBalance() - amount);
+        } else {
+            return EconomyResponse.NOT_ENOUGH_BALANCE;
         }
     }
 
@@ -160,27 +177,25 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Returns the clan's description
-     * 
+     *
      * @return the description or null if it doesn't have one
      */
     public String getDescription() {
-		return description;
-	}
+        return description;
+    }
 
     /**
      * (used internally)
-     * 
      */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	/**
+    /**
      * Sets the clan's fee
-     * 
      */
     public void setMemberFee(double fee) {
         if (fee < 0) {
@@ -188,16 +203,16 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
         this.fee = fee;
     }
-    
+
     /**
      * Returns the clan's fee
-     * 
+     *
      * @return the fee
      */
     public double getMemberFee() {
         return fee;
     }
-    
+
     /**
      * Returns the clan's balance
      *
@@ -214,7 +229,21 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param balance the balance to set
      */
     public void setBalance(double balance) {
-        this.balance = balance;
+        setBalance(null, Cause.API, balance);
+    }
+
+    public EconomyResponse setBalance(@Nullable CommandSender updater, @NotNull Cause cause, double balance) {
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(updater, this, getBalance(), balance, cause);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return EconomyResponse.CANCELLED;
+        }
+
+        this.balance = event.getNewBalance();
+        if (cause != Cause.LOADING) {
+            SimpleClans.getInstance().getStorageManager().updateClan(this);
+        }
+        return EconomyResponse.SUCCESS;
     }
 
     /**
@@ -270,12 +299,26 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Returns the number of days the clan has been inactive
-     *
      */
     @Placeholder("inactivedays")
     public int getInactiveDays() {
         Timestamp now = new Timestamp((new Date()).getTime());
         return (int) Math.floor(Dates.differenceInDays(new Timestamp(getLastUsed()), now));
+    }
+
+    /**
+     * Returns the max number of days the clan can be inactive
+     * A number <= 0 means it won't be purged
+     */
+    public int getMaxInactiveDays() {
+        if (this.isPermanent()) {
+            return -1;
+        }
+
+        int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getPurgeClan();
+        int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getPurgeUnverified();
+
+        return this.isVerified() ? verifiedClanInactiveDays : unverifiedClanInactiveDays;
     }
 
     /**
@@ -313,7 +356,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return confirmation
      */
     public boolean isMember(Player player) {
-    	return this.members.contains(player.getUniqueId().toString());
+        return this.members.contains(player.getUniqueId().toString());
     }
 
     /**
@@ -374,7 +417,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * The string representation of the founded date
-     *
      */
     @Placeholder("founded")
     public String getFoundedString() {
@@ -411,29 +453,26 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Adds a bulletin board message without announcer
-     *
      */
     public void addBb(String msg) {
         addBbWithoutSaving(msg);
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
-    
-    
+
+
     /**
      * Adds a bulletin board message without saving it to the database
-     * 
      */
     public void addBbWithoutSaving(String msg) {
         while (bb.size() > SimpleClans.getInstance().getSettingsManager().getBbSize()) {
             bb.remove(0);
         }
 
-        bb.add(System.currentTimeMillis() + "_" + msg);   
+        bb.add(System.currentTimeMillis() + "_" + msg);
     }
-    
+
     /**
      * Adds a bulletin board message without announcer and saves it to the database
-     *
      *
      * @param updateLastUsed should the clan's last used time be updated as well?
      */
@@ -452,16 +491,15 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * (used internally)
-     *
      */
     public void importMember(ClanPlayer cp) {
         String uuid;
-		if (cp.getUniqueId() != null) {
-			uuid = cp.getUniqueId().toString();
-		} else {
-			return;
-		}
-     
+        if (cp.getUniqueId() != null) {
+            uuid = cp.getUniqueId().toString();
+        } else {
+            return;
+        }
+
         if (!this.members.contains(uuid)) {
             this.members.add(uuid);
         }
@@ -469,7 +507,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * (used internally)
-     *
      */
     public void removeMember(UUID playerUniqueId) {
         this.members.remove(playerUniqueId.toString());
@@ -477,7 +514,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Get total clan size
-     *
      */
     @Placeholder("size")
     public int getSize() {
@@ -509,7 +545,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Check if the tag is a rival
-     *
      */
     public boolean isRival(String tag) {
         return rivals.contains(tag);
@@ -517,7 +552,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Check if the tag is an ally
-     *
      */
     public boolean isAlly(String tag) {
         return allies.contains(tag);
@@ -526,7 +560,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Tells you if the clan is verified, always returns true if no verification
      * is required
-     *
      */
     @Placeholder("is_verified")
     public boolean isVerified() {
@@ -541,6 +574,15 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    @Placeholder("is_permanent")
+    public boolean isPermanent() {
+        return flags.getBoolean("permanent", false);
+    }
+
+    public void setPermanent(boolean permanent) {
+        flags.put("permanent", permanent);
     }
 
     /**
@@ -620,7 +662,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Returns a separator delimited string with all the ally clan's colored
      * tags
-     *
      */
     public String getAllyString(String sep) {
         StringBuilder out = new StringBuilder();
@@ -645,7 +686,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Returns a separator delimited string with all the rival clan's colored
      * tags
-     *
      */
     public String getRivalString(String sep) {
         StringBuilder out = new StringBuilder();
@@ -701,7 +741,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the leaders
      */
     public boolean isLeader(Player player) {
-    	return isLeader(player.getUniqueId());
+        return isLeader(player.getUniqueId());
     }
 
 
@@ -727,22 +767,22 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Get all members that must pay the fee (that excludes leaders and players with the permission to bypass it)
-     * 
+     *
      * @return the fee payers
      */
     public Set<ClanPlayer> getFeePayers() {
-    	Set<ClanPlayer> feePayers = new HashSet<>();
-    	
-    	getNonLeaders().forEach(cp -> {
-    		OfflinePlayer op=  Bukkit.getOfflinePlayer(cp.getUniqueId());
-    		if (!SimpleClans.getInstance().getPermissionsManager().has(null, op, "simpleclans.member.bypass-fee")) {
-        		feePayers.add(cp);
-        	}
-    	});
-    	
-    	return feePayers;
+        Set<ClanPlayer> feePayers = new HashSet<>();
+
+        getNonLeaders().forEach(cp -> {
+            OfflinePlayer op = Bukkit.getOfflinePlayer(cp.getUniqueId());
+            if (!SimpleClans.getInstance().getPermissionsManager().has(null, op, "simpleclans.member.bypass-fee")) {
+                feePayers.add(cp);
+            }
+        });
+
+        return feePayers;
     }
-    
+
     /**
      * Get all members (leaders, and non-leaders) in the clan
      *
@@ -758,6 +798,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
             out.add(cp);
         }
+
+        Collections.sort(out);
 
         return out;
     }
@@ -834,27 +876,15 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Get all clan's members
      *
+     * @deprecated use {@link Clan#getMembers()}
      */
+    @Deprecated
     public List<ClanPlayer> getAllMembers() {
-        List<ClanPlayer> out = new ArrayList<>();
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
-            out.add(cp);
-        }
-
-        Collections.sort(out);
-
-        return out;
+        return getMembers();
     }
 
     /**
      * Get all the ally clan's members
-     *
      */
     public Set<ClanPlayer> getAllAllyMembers() {
         Set<ClanPlayer> out = new HashSet<>();
@@ -872,9 +902,8 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Gets the clan's total KDR
-     *
      */
-    @Placeholder("total_kdr")
+    @Placeholder(value = "total_kdr", resolver = "kdr")
     @Placeholder(value = "topclans_position", resolver = "ranking_position")
     public float getTotalKDR() {
         if (members.isEmpty()) {
@@ -903,7 +932,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Gets the clan's total KDR
-     *
      */
     @Placeholder("total_deaths")
     public int getTotalDeaths() {
@@ -927,7 +955,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Gets average weighted kills for the clan
-     *
      */
     @Placeholder("average_wk")
     public int getAverageWK() {
@@ -951,27 +978,17 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     @Placeholder("total_kills")
     public int getTotalKills() {
-        return getTotalCivilian() + getTotalNeutral() + getTotalRival();
+        return getTotalCivilian() + getTotalNeutral() + getTotalRival() + getTotalAlly();
     }
 
     /**
      * Gets total rival kills for the clan
-     *
      */
     @Placeholder("total_rival")
     public int getTotalRival() {
         int total = 0;
 
-        if (members.isEmpty()) {
-            return total;
-        }
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
+        for (ClanPlayer cp : getMembers()) {
             total += cp.getRivalKills();
         }
 
@@ -980,22 +997,12 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Gets total neutral kills for the clan
-     *
      */
     @Placeholder("total_neutral")
     public int getTotalNeutral() {
         int total = 0;
 
-        if (members.isEmpty()) {
-            return total;
-        }
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
+        for (ClanPlayer cp : getMembers()) {
             total += cp.getNeutralKills();
         }
 
@@ -1004,23 +1011,24 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Gets total civilian kills for the clan
-     *
      */
     @Placeholder("total_civilian")
     public int getTotalCivilian() {
         int total = 0;
 
-        if (members.isEmpty()) {
-            return total;
+        for (ClanPlayer cp : getMembers()) {
+            total += cp.getCivilianKills();
         }
 
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
+        return total;
+    }
 
-            total += cp.getCivilianKills();
+    @Placeholder("total_ally")
+    public int getTotalAlly() {
+        int total = 0;
+
+        for (ClanPlayer cp : getMembers()) {
+            total += cp.getAllyKills();
         }
 
         return total;
@@ -1028,7 +1036,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Check whether the clan has crossed the rival limit
-     *
      */
     public boolean reachedRivalLimit() {
         int rivalCount = rivals.size();
@@ -1042,7 +1049,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Add a new player to the clan
-     *
      */
     public void addPlayerToClan(ClanPlayer cp) {
         cp.removePastClan(getColorTag());
@@ -1067,7 +1073,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (player != null) {
             SimpleClans.getInstance().getClanManager().updateDisplayName(player);
         }
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerJoinedClanEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerJoinedClanEvent(this, cp));
     }
 
     @SuppressWarnings("deprecation")
@@ -1077,7 +1083,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Remove a player from a clan
-     *
      */
     public void removePlayerFromClan(UUID playerUniqueId) {
         ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(playerUniqueId);
@@ -1107,7 +1112,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (matched != null) {
             SimpleClans.getInstance().getClanManager().updateDisplayName(matched);
         }
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerKickedClanEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerKickedClanEvent(this, cp));
     }
 
     @SuppressWarnings("deprecation")
@@ -1117,7 +1122,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Promote a member to a leader of a clan
-     *
      */
     public void promote(UUID playerUniqueId) {
         ClanPlayer cp = SimpleClans.getInstance().getClanManager().getCreateClanPlayer(playerUniqueId);
@@ -1130,7 +1134,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerPromoteEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerPromoteEvent(this, cp));
     }
 
     @SuppressWarnings("deprecation")
@@ -1140,7 +1144,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Demote a leader back to a member of a clan
-     *
      */
     public void demote(UUID playerUniqueId) {
         ClanPlayer cp = SimpleClans.getInstance().getClanManager().getCreateClanPlayer(playerUniqueId);
@@ -1152,12 +1155,11 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new PlayerDemoteEvent(this, cp));
+        Bukkit.getPluginManager().callEvent(new PlayerDemoteEvent(this, cp));
     }
 
     /**
      * Add an ally to a clan, and the clan to the ally
-     *
      */
     public void addAlly(Clan ally) {
         removeRival(ally.getTag());
@@ -1168,12 +1170,11 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(ally);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new AllyClanAddEvent(this, ally));
+        Bukkit.getPluginManager().callEvent(new AllyClanAddEvent(this, ally));
     }
 
     /**
      * Remove an ally form the clan, and the clan from the ally
-     *
      */
     public void removeAlly(Clan ally) {
         removeAlly(ally.getTag());
@@ -1181,12 +1182,11 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(ally);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new AllyClanRemoveEvent(this, ally));
+        Bukkit.getPluginManager().callEvent(new AllyClanRemoveEvent(this, ally));
     }
 
     /**
      * Add a rival to the clan, and the clan to the rival
-     *
      */
     public void addRival(Clan rival) {
         removeAlly(rival.getTag());
@@ -1197,12 +1197,11 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(rival);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new RivalClanAddEvent(this, rival));
+        Bukkit.getPluginManager().callEvent(new RivalClanAddEvent(this, rival));
     }
 
     /**
      * Removes a rival from the clan, the clan from the rival
-     *
      */
     public void removeRival(Clan rival) {
         removeRival(rival.getTag());
@@ -1210,7 +1209,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
         SimpleClans.getInstance().getStorageManager().updateClan(rival);
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new RivalClanRemoveEvent(this, rival));
+        Bukkit.getPluginManager().callEvent(new RivalClanRemoveEvent(this, rival));
     }
 
     /**
@@ -1223,66 +1222,63 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Check whether any clan member is online
-     *
      */
     @Placeholder("is_anyonline")
     public boolean isAnyOnline() {
-		for (String member : members) {
-			if (Helper.isOnline(UUID.fromString(member))) {
-				return true;
-			}
-		}
+        for (String member : members) {
+            if (Helper.isOnline(UUID.fromString(member))) {
+                return true;
+            }
+        }
 
         return false;
     }
-    
+
     /**
      * Checks if there are enough leaders online to vote
-     * 
+     *
      * @param cp the one to demote
      * @return true if there are
      */
     public boolean enoughLeadersOnlineToDemote(ClanPlayer cp) {
         List<ClanPlayer> online = getOnlineLeaders();
         online.remove(cp);
-        
+
         double minimum = SimpleClans.getInstance().getSettingsManager().getPercentageOnlineToDemote();
         // all leaders minus the one being demoted
         double totalLeaders = getLeaders().size() - 1;
         double onlineLeaders = online.size();
-        
-        
+
+
         return ((onlineLeaders / totalLeaders) * 100) >= minimum;
     }
 
     /**
      * Gets the online leaders
-     * 
+     *
      * @return the online leaders
      */
     public List<ClanPlayer> getOnlineLeaders() {
         return getOnlineMembers().stream().filter(ClanPlayer::isLeader).collect(Collectors.toList());
     }
-    
+
     /**
      * Check whether all leaders of a clan are online
-     *
      */
     public boolean allLeadersOnline() {
         List<ClanPlayer> leaders = getLeaders();
 
-		for (ClanPlayer leader : leaders) {
-			if (!Helper.isOnline(leader.getUniqueId())) {
-				return false;
-			}
-		}
+        for (ClanPlayer leader : leaders) {
+            if (!Helper.isOnline(leader.getUniqueId())) {
+                return false;
+            }
+        }
 
         return true;
     }
 
     /**
      * Check whether all leaders, except for the one passed in, are online
-     *
      */
     @Deprecated
     public boolean allOtherLeadersOnline(String playerName) {
@@ -1303,7 +1299,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Check whether all leaders, except for the one passed in, are online
-     *
      */
     public boolean allOtherLeadersOnline(UUID playerUniqueId) {
         List<ClanPlayer> leaders = getLeaders();
@@ -1323,7 +1318,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Change a clan's tag
-     *
      */
     public void changeClanTag(String tag) {
         setColorTag(tag);
@@ -1332,7 +1326,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Announce message to a whole clan
-     *
      */
     public void clanAnnounce(String playerName, String msg) {
         String message = SimpleClans.getInstance().getSettingsManager().getClanChatAnnouncementColor() + msg;
@@ -1350,7 +1343,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Announce message to a all the leaders of a clan
-     *
      */
     public void leaderAnnounce(String msg) {
         String message = SimpleClans.getInstance().getSettingsManager().getClanChatAnnouncementColor() + msg;
@@ -1369,7 +1361,6 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Add a new bb message and announce it to all online members of a clan
-     *
      */
     public void addBb(String announcerName, String msg) {
         if (isVerified()) {
@@ -1377,10 +1368,9 @@ public class Clan implements Serializable, Comparable<Clan> {
             clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
         }
     }
-    
+
     /**
      * Add a new bb message and announce it to all online members of a clan
-     *
      */
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
@@ -1391,47 +1381,38 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Displays bb to a player
-     *
      */
     public void displayBb(Player player) {
-        if (isVerified()) {
-            ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
-
-            int maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
-
-            while (bb.size() > maxSize) {
-                bb.remove(0);
-            }
-
-            for (String msg : bb) {
-                if (!sendBbTime(player, msg)) {
-                    ChatBlock.sendMessage(player, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
-                }
-            }
-            ChatBlock.sendBlank(player);
-        }
+        displayBb(player, -1);
     }
 
     /**
      * Displays bb to a player
-     * @implNote may want to refactor displaybb(Player) to use this?
      *
      * @param maxSize amount of lines to display
      */
     public void displayBb(Player player, int maxSize) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", SimpleClans.getInstance().getSettingsManager().getBbAccentColor(), SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor(), getName()));
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getBbAccentColor();
+            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor();
+            ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
 
-            List<String> localBb = new ArrayList<>(bb);
+            List<String> localBb;
+            if (maxSize == -1) {
+                localBb = bb;
+                maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
+            } else {
+                localBb = new ArrayList<>(bb);
+            }
             while (localBb.size() > maxSize) {
                 localBb.remove(0);
             }
 
             for (String msg : localBb) {
                 if (!sendBbTime(player, msg)) {
-                    ChatBlock.sendMessage(player, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
+                    String bbColor = SimpleClans.getInstance().getSettingsManager().getBbColor();
+                    ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
                 }
             }
             ChatBlock.sendBlank(player);
@@ -1440,29 +1421,24 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Sends a bb message with the timestamp in a hover message, if the bb message is timestamped
+     *
      * @param msg the bb message
      * @return true if sent
      */
-    @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "deprecation"})
+    @SuppressWarnings("deprecation")
     private boolean sendBbTime(Player player, String msg) {
         try {
             int index = msg.indexOf("_");
-            if (index < 1)
+            if (index < 1) {
                 return false;
-            long time;
-            time = (System.currentTimeMillis() 
-                    - Long.parseLong(msg.substring(0, index))) / 1000L;
-            msg = String.join("", ChatBlock
-                    .getColorizedMessage(SimpleClans.getInstance()
-                            .getSettingsManager().getBbAccentColor() + "* " + 
-                            SimpleClans.getInstance().getSettingsManager()
-                                    .getBbColor() + ChatUtils.parseColors(
-                            msg.substring(++index))));
+            }
+            long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getBbAccentColor();
+            String bbColor = SimpleClans.getInstance().getSettingsManager().getBbColor();
+            msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
             TextComponent textComponent = new TextComponent(msg);
-            textComponent.setHoverEvent(
-                    new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            TextComponent.fromLegacyText(
-                                    Dates.formatTime(time, 1) + lang("bb.ago"))));
+            textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
+                    Dates.formatTime(time, 1) + lang("bb.ago"))));
             player.spigot().sendMessage(textComponent);
             return true;
         } catch (Throwable rock) {
@@ -1471,12 +1447,28 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
-     * Disband a clan
+     * Disbands the clan
+     *
+     * @param sender   who is trying to disband
+     * @param announce should it be announced?
+     * @param force    should it be force disbanded?
      */
-    public void disband() {
-        SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DisbandClanEvent(this));
+    public void disband(@Nullable CommandSender sender, boolean announce, boolean force) {
         Collection<ClanPlayer> clanPlayers = SimpleClans.getInstance().getClanManager().getAllClanPlayers();
         List<Clan> clans = SimpleClans.getInstance().getClanManager().getClans();
+
+        if (this.isPermanent() && !force) {
+            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent"));
+            return;
+        }
+
+        if (announce) {
+            if (SimpleClans.getInstance().getSettingsManager().isDisableMessages() && sender != null) {
+                this.clanAnnounce(sender.getName(), AQUA + lang("clan.has.been.disbanded", this.getName()));
+            } else {
+                SimpleClans.getInstance().getClanManager().serverAnnounce(ChatColor.AQUA + lang("clan.has.been.disbanded", this.getName()));
+            }
+        }
 
         for (ClanPlayer cp : clanPlayers) {
             if (cp.getTag().equals(getTag())) {
@@ -1491,35 +1483,38 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         }
 
+        Bukkit.getPluginManager().callEvent(new DisbandClanEvent(this));
         clans.remove(this);
 
         for (Clan c : clans) {
             String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("you.are.no.longer.at.war"), c.getName(), getColorTag()));
+                c.addBb(disbanded, ChatColor.AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("has.been.disbanded.rivalry.ended"), getName()));
+                c.addBb(disbanded, ChatColor.AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + MessageFormat.format(lang("has.been.disbanded.alliance.ended"), getName()));
+                c.addBb(disbanded, ChatColor.AQUA + lang("has.been.disbanded.alliance.ended", getName()));
             }
         }
-
-        final Clan thisOne = this;
+        SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
 
         SimpleClans.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SimpleClans.getInstance(), () -> {
-            SimpleClans.getInstance().getClanManager().removeClan(thisOne.getTag());
-            SimpleClans.getInstance().getStorageManager().deleteClan(thisOne);
+            SimpleClans.getInstance().getClanManager().removeClan(this.getTag());
+            SimpleClans.getInstance().getStorageManager().deleteClan(this);
         }, 1);
+    }
+
+    public void disband() {
+        disband(null, true, false);
     }
 
     /**
      * Whether this clan can be rivaled
-     *
      */
     @Placeholder("is_unrivable")
     public boolean isUnrivable() {
@@ -1546,20 +1541,26 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Add a clan to be at war with
-     *
      */
-    public void addWarringClan(Clan clan) {
+    public void addWarringClan(@Nullable ClanPlayer requestPlayer, Clan targetClan) {
         List<String> warring = flags.getStringList(WARRING_KEY);
-        if (!warring.contains(clan.getTag())) {
-            warring.add(clan.getTag());
+        if (!warring.contains(targetClan.getTag())) {
+            warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
+            if (requestPlayer != null) {
+                this.addBb(requestPlayer.getName(), ChatColor.AQUA + lang("you.are.at.war",
+                        this.getName(), targetClan.getColorTag()));
+            }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
     }
 
+    public void addWarringClan(Clan targetClan) {
+        addWarringClan(null, targetClan);
+    }
+
     /**
      * Remove a warring clan
-     *
      */
     public boolean removeWarringClan(Clan clan) {
         List<String> warring = flags.getStringList(WARRING_KEY);
@@ -1640,8 +1641,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         float yaw = flags.getNumber("homeYaw").floatValue();
         float pitch = flags.getNumber("homePitch").floatValue();
         Location location = new Location(world, x, y, z, yaw, pitch);
-        if (location.getBlock().getType() != Material.AIR ||
-                location.clone().add(0, 1, 0).getBlock().getType() != Material.AIR) {
+        if (!Helper.isAir(location.getBlock().getType(), location.clone().add(0, 1, 0).getBlock().getType())) {
             location.setY(world.getHighestBlockYAt(location) + 1);
         }
         return location;
@@ -1673,21 +1673,20 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Checks if the fee is enabled
-     * 
+     *
      * @return true if enabled
      */
     public boolean isMemberFeeEnabled() {
         return feeEnabled;
     }
-    
+
     /**
      * Enables or disables the fee
-     * 
      */
     public void setMemberFeeEnabled(boolean enable) {
         feeEnabled = enable;
     }
-    
+
     /**
      * @return the allowWithdraw
      */
@@ -1720,86 +1719,83 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Checks if the clan has the specified rank
-     * 
+     *
      * @param name the rank
      */
-	public boolean hasRank(@Nullable String name) {
-		return getRank(name) != null;
-	}
+    public boolean hasRank(@Nullable String name) {
+        return getRank(name) != null;
+    }
 
-	/**
-	 * Creates a rank
-	 * 
-	 */
-	public void createRank(String name) {
-		ranks.add(new Rank(name));
-	}
+    /**
+     * Creates a rank
+     */
+    public void createRank(String name) {
+        Rank rank = new Rank(name);
+        ranks.add(rank);
+    }
 
-	/**
-	 * Returns the clan's ranks
-	 * 
-	 * @return the ranks
-	 */
-	public List<Rank> getRanks() {
-		return ranks;
-	}
+    /**
+     * Returns the clan's ranks
+     *
+     * @return the ranks
+     */
+    public List<Rank> getRanks() {
+        return ranks;
+    }
 
-	/**
-	 * Sets the clan's ranks
-	 * 
-	 */
-	public void setRanks(@Nullable List<Rank> ranks) {
-		if (ranks == null) {
-			ranks = new ArrayList<>();
-		}
-		this.ranks = ranks;
-	}
+    /**
+     * Sets the clan's ranks
+     */
+    public void setRanks(@Nullable List<Rank> ranks) {
+        if (ranks == null) {
+            ranks = new ArrayList<>();
+        }
+        this.ranks = ranks;
+    }
 
-	/**
-	 * Deletes a rank with the specified name
-	 * 
-	 */
-	public void deleteRank(String name) {
-		Rank r = getRank(name);
-		if (r != null) {
-			ranks.remove(r);
+    /**
+     * Deletes a rank with the specified name
+     */
+    public void deleteRank(String name) {
+        Rank r = getRank(name);
+        if (r != null) {
+            ranks.remove(r);
 
-			getMembers().forEach(cp -> {
-				if (Objects.equals(cp.getRankId(), r.getName())) {
-					cp.setRank("");
-					SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
-				}
-			});
-            SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DeleteRankEvent(r));
-		}
-	}
+            getMembers().forEach(cp -> {
+                if (Objects.equals(cp.getRankId(), r.getName())) {
+                    cp.setRank("");
+                    SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
+                }
+            });
+        }
+    }
 
-	/**
-	 * Gets a rank with the specified name or null if not found
-	 * 
-	 * @param name the rank name
-	 * @return a rank or null
-	 */
-	public @Nullable Rank getRank(@Nullable String name) {
-		if (name != null) {
-			for (Rank r : ranks) {
-				if (r.getName().equals(name)) {
-					return r;
-				}
-			}	
-		}
-		return null;
-	}
+    /**
+     * Gets a rank with the specified name or null if not found
+     *
+     * @param name the rank name
+     * @return a rank or null
+     */
+    public @Nullable Rank getRank(@Nullable String name) {
+        if (name != null) {
+            for (Rank r : ranks) {
+                if (r.getName().equals(name)) {
+                    return r;
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * Sets the default rank for this clan.
      *
      * @param name The name of the rank to be set as default
      */
-	public void setDefaultRank(@Nullable String name) {
-	    // I don't know how this could happen, but if it somehow does, here's a check for it
-	    if (!hasRank(name)) {
-	        defaultRank = null;
+    public void setDefaultRank(@Nullable String name) {
+        // I don't know how this could happen, but if it somehow does, here's a check for it
+        if (!hasRank(name)) {
+            defaultRank = null;
         } else {
             defaultRank = name;
         }
@@ -1811,15 +1807,15 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return The default rank or null if there is no default
      */
     public @Nullable String getDefaultRank() {
-	    return defaultRank;
+        return defaultRank;
     }
 
     public void setBanner(@Nullable ItemStack banner) {
-	    if (banner == null) {
-	        this.banner = null;
-	        return;
+        if (banner == null) {
+            this.banner = null;
+            return;
         }
-	    banner = banner.clone();
+        banner = banner.clone();
         banner.setAmount(1);
         ItemMeta itemMeta = banner.getItemMeta();
         if (itemMeta != null) {
@@ -1833,8 +1829,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     public @Nullable ItemStack getBanner() {
-	    if (banner != null) {
-	        return banner.clone();
+        if (banner != null) {
+            return banner.clone();
         }
         return null;
     }

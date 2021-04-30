@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -28,33 +28,23 @@ public class ChatBlock {
     private boolean padRight = true;
 
     public void setCropRight(boolean cropRight) {
-    	this.cropRight = cropRight;
+        this.cropRight = cropRight;
     }
-    
+
     public void setPadRight(boolean padRight) {
-    	this.padRight = padRight;
+        this.padRight = padRight;
     }
-    
-    /**
-     * @param columnAlignment
-     */
+
     public void setAlignment(String... columnAlignment) {
         columnAlignments.addAll(Arrays.asList(columnAlignment));
     }
 
-    /**
-     * @param columnFlex
-     */
     public void setFlexibility(boolean... columnFlex) {
         for (boolean flex : columnFlex) {
             columnFlexes.add(flex);
         }
     }
 
-    /**
-     * @param columnPercentages
-     * @param prefix
-     */
     public void setColumnSizes(String prefix, double... columnPercentages) {
         int ll = LINE_LENGTH;
 
@@ -67,73 +57,38 @@ public class ChatBlock {
         }
     }
 
-    /**
-     * @return
-     */
     public boolean hasContent() {
         return !rows.isEmpty();
     }
 
-    /**
-     * @param contents
-     */
     public void addRow(String... contents) {
         rows.add(contents);
     }
 
-    /**
-     * @return
-     */
     public int size() {
         return rows.size();
     }
 
-    /**
-     * @return
-     */
     public boolean isEmpty() {
         return rows.isEmpty();
     }
 
-    /**
-     *
-     */
     public void clear() {
         rows.clear();
     }
 
-    /**
-     * @param player
-     * @return
-     */
     public boolean sendBlock(CommandSender player) {
         return sendBlock(player, null, 0);
     }
 
-    /**
-     * @param player
-     * @param prefix
-     * @return
-     */
     public boolean sendBlock(CommandSender player, String prefix) {
         return sendBlock(player, prefix, 0);
     }
 
-    /**
-     * @param player
-     * @param amount
-     * @return
-     */
     public boolean sendBlock(CommandSender player, int amount) {
         return sendBlock(player, null, amount);
     }
 
-    /**
-     * @param player
-     * @param prefix
-     * @param amount
-     * @return
-     */
     boolean sendBlock(CommandSender player, String prefix, int amount) {
         if (player == null) {
             return false;
@@ -194,27 +149,27 @@ public class ChatBlock {
                     }
                 } else if (align.equalsIgnoreCase("l")) {
                     if (msgLength(section) > colsize) {
-                    	if (cropRight) {
-                    		col = cropRightToFit(section, colsize);
+                        if (cropRight) {
+                            col = cropRightToFit(section, colsize);
                         } else {
-                        	col = section;
+                            col = section;
                         }
                     } else if (msgLength(section) < colsize) {
-                    	if (padRight) {
-                    		col = paddRightToFit(section, colsize);
-                    	} else {
-                    		col = section;
-                    	}
+                        if (padRight) {
+                            col = paddRightToFit(section, colsize);
+                        } else {
+                            col = section;
+                        }
                     }
                 } else if (align.equalsIgnoreCase("c")) {
                     if (msgLength(section) > colsize) {
-                    	if (cropRight) {
-                    		col = cropRightToFit(section, colsize);
-                    	} else {
-                    		col = section;
-                    	}
+                        if (cropRight) {
+                            col = cropRightToFit(section, colsize);
+                        } else {
+                            col = section;
+                        }
                     } else if (msgLength(section) < colsize) {
-                    	col = centerInLineOf(section, colsize);
+                        col = centerInLineOf(section, colsize);
                     }
                 }
 
@@ -279,7 +234,7 @@ public class ChatBlock {
             // crop and print out
             String msg = (prefix_used ? empty_prefix : prefix + " ") + finalString;
             if (cropRight) {
-            	msg = cropRightToFit(msg, LINE_LENGTH);
+                msg = cropRightToFit(msg, LINE_LENGTH);
             }
             if (color.length() > 0) {
                 msg = color + msg;
@@ -304,10 +259,6 @@ public class ChatBlock {
         return out;
     }
 
-    /**
-     * @param col
-     * @return
-     */
     int getMaxWidth(int col) {
         double maxWidth = 0;
 
@@ -318,19 +269,10 @@ public class ChatBlock {
         return (int) maxWidth;
     }
 
-    /**
-     * @param msg
-     * @return
-     */
     public static String centerInLine(String msg) {
         return centerInLineOf(msg, LINE_LENGTH);
     }
 
-    /**
-     * @param msg
-     * @param lineLength
-     * @return
-     */
     private static String centerInLineOf(String msg, double lineLength) {
         double length = msgLength(msg);
         double diff = lineLength - length;
@@ -355,10 +297,6 @@ public class ChatBlock {
         return msg;
     }
 
-    /**
-     * @param str
-     * @return
-     */
     public static String makeEmpty(String str) {
         if (str == null) {
             return "";
@@ -367,11 +305,6 @@ public class ChatBlock {
         return paddLeftToFit("", msgLength(str));
     }
 
-    /**
-     * @param msg
-     * @param length
-     * @return
-     */
     private static String cropRightToFit(String msg, double length) {
         if (msg == null || msg.length() == 0 || length == 0) {
             return "";
@@ -384,11 +317,6 @@ public class ChatBlock {
         return msg;
     }
 
-    /**
-     * @param msg
-     * @param length
-     * @return
-     */
     private static String cropLeftToFit(String msg, double length) {
         if (msg == null || msg.length() == 0 || length == 0) {
             return "";
@@ -402,11 +330,11 @@ public class ChatBlock {
     }
 
     /**
-     * Padds left til the string is a certain size
+     * Pads left til the string is a certain size
      *
-     * @param msg
-     * @param length
-     * @return
+     * @param msg    the message to pad
+     * @param length the message length
+     * @return the padded message
      */
     private static String paddLeftToFit(String msg, double length) {
         if (msgLength(msg) >= length) {
@@ -421,11 +349,11 @@ public class ChatBlock {
     }
 
     /**
-     * Padds right til the string is a certain size
+     * Pads right til the string is a certain size
      *
-     * @param msg
-     * @param length
-     * @return
+     * @param msg    the message to pad
+     * @param length the message length
+     * @return the padded message
      */
     private static String paddRightToFit(String msg, double length) {
         if (msgLength(msg) >= length) {
@@ -441,9 +369,6 @@ public class ChatBlock {
 
     /**
      * Finds the length on the screen of a string. Ignores colors.
-     *
-     * @param str
-     * @return
      */
     private static double msgLength(String str) {
         double length = 0;
@@ -464,9 +389,6 @@ public class ChatBlock {
 
     /**
      * Finds the visual length of the character on the screen.
-     *
-     * @param x
-     * @return
      */
     private static int charLength(char x) {
         String normalized = StringSimplifier.simplifiedString(x + "");
@@ -492,7 +414,6 @@ public class ChatBlock {
 
     /**
      * Cuts the message apart into whole words short enough to fit on one line
-     *
      */
     private static String[] wordWrap(String msg) {
         // Split each word apart
@@ -546,8 +467,6 @@ public class ChatBlock {
         return out.toArray(new String[0]);
     }
 
-    /**
-     */
     private static String combineSplit(String[] string) {
         StringBuilder builder = new StringBuilder();
         for (String aString : string) {
@@ -561,7 +480,6 @@ public class ChatBlock {
 
     /**
      * Cuts apart a word that is too long to fit on one line
-     *
      */
     private static String[] wordCut(int lengthBefore, String str) {
         int length = lengthBefore;
@@ -595,7 +513,6 @@ public class ChatBlock {
 
     /**
      * Outputs a single line out, crops overflow
-     *
      */
     public static void saySingle(CommandSender receiver, String msg) {
         if (receiver == null) {
@@ -607,7 +524,6 @@ public class ChatBlock {
 
     /**
      * Outputs a message to a user
-     *
      */
     public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
@@ -622,6 +538,19 @@ public class ChatBlock {
 //        }
     }
 
+    public static void sendMessage(@Nullable ClanPlayer receiver, @NotNull String msg) {
+        if (receiver == null) {
+            return;
+        }
+
+        Player player = receiver.toPlayer();
+        if (player == null) {
+            return;
+        }
+
+        player.sendMessage(ChatUtils.parseColors(msg));
+    }
+
     public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
         sendMessage(receiver, lang(key, receiver, args));
     }
@@ -632,7 +561,6 @@ public class ChatBlock {
 
     /**
      * Send blank line
-     *
      */
     public static void sendBlank(CommandSender receiver) {
         if (receiver == null) {
@@ -644,12 +572,11 @@ public class ChatBlock {
 
     /**
      * Colors each line
-     *
      */
     public static String[] say(String message) {
         return colorize(wordWrap(message));
     }
-    
+
     public static String[] getColorizedMessage(String msg) {
         return colorize(wordWrap(msg));
     }
@@ -663,7 +590,7 @@ public class ChatBlock {
     }
 
     public static @Nullable String colorize(String message) {
-        return colorizeBase(new String[]{ message })[0];
+        return colorizeBase(new String[]{message})[0];
     }
 
 

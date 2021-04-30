@@ -10,7 +10,7 @@ import java.text.ParseException;
  * @author RoinujNosde
  */
 public class KDRFormat {
-    private static final DecimalFormat FORMATTER = new DecimalFormat("#.#");
+    private static final DecimalFormat FORMATTER = new DecimalFormat("#.##");
 
     static {
         FORMATTER.setParseBigDecimal(true);

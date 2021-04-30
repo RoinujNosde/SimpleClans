@@ -55,7 +55,7 @@ public class MySQLCore implements DBCore {
     @Override
     public Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
+            if (connection == null || connection.isClosed() || !connection.isValid(0)) {
                 initialize();
             }
         } catch (SQLException e) {

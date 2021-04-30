@@ -1,23 +1,22 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import com.cryptomorin.xseries.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author phaed
@@ -201,7 +200,6 @@ public final class SettingsManager {
     private boolean warEnabled;
     private boolean landSharing;
     private List<String> protectionProviders;
-    private EventPriority warListenerPriority;
     private boolean onlyLeadersCanCreateLands;
     private boolean onlyOneLandPerClan;
     private boolean setBaseOnlyInLand;
@@ -418,7 +416,6 @@ public final class SettingsManager {
         warEnabled = getConfig().getBoolean("war-and-protection.war-enabled", false);
         landSharing = getConfig().getBoolean("war-and-protection.land-sharing", true);
         protectionProviders = getConfig().getStringList("war-and-protection.protection-providers");
-        warListenerPriority = EventPriority.valueOf(getConfig().getString("war-and-protection.listener-priority", "HIGHEST"));
         onlyLeadersCanCreateLands = getConfig().getBoolean("war-and-protection.land-creation.only-leaders", false);
         onlyOneLandPerClan = getConfig().getBoolean("war-and-protection.land-creation.only-one-per-clan", false);
         setBaseOnlyInLand = getConfig().getBoolean("war-and-protection.set-base-only-in-land", false);
@@ -451,6 +448,10 @@ public final class SettingsManager {
         }
     }
 
+    public boolean isWarRequestEnabled() {
+        return getConfig().getBoolean("war-and-protection.war-start.request-enabled", true);
+    }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isWarEnabled() {
         return warEnabled;
@@ -459,6 +460,10 @@ public final class SettingsManager {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isLandSharing() {
         return landSharing;
+    }
+
+    public boolean isEditAllLands() {
+        return getConfig().getBoolean("war-and-protection.edit-all-lands", false);
     }
 
     public int getWarNormalExpirationTime() {
@@ -474,7 +479,11 @@ public final class SettingsManager {
     }
 
     public EventPriority getWarListenerPriority() {
-        return warListenerPriority;
+        return EventPriority.valueOf(getConfig().getString("war-and-protection.listeners.priority", "HIGHEST"));
+    }
+
+    public List<String> getIgnoredList(ProtectionManager.Action action) {
+        return getConfig().getStringList("war-and-protection.listeners.ignored-list." + action.name());
     }
 
     public boolean isActionAllowedInWar(@NotNull ProtectionManager.Action action) {
@@ -1315,6 +1324,10 @@ public final class SettingsManager {
         return clanChatPlayerBracketRight;
     }
 
+    public double getKwAlly() {
+        return getConfig().getDouble("kill-weights.ally");
+    }
+
     /**
      * @return the kwRival
      */
@@ -1701,7 +1714,7 @@ public final class SettingsManager {
      * @return the HomeRegroupPrice
      */
     public double getHomeRegroupPrice() {
-        return eHomeRegroupPrice;
+        return Math.abs(eHomeRegroupPrice);
     }
 
     /**
@@ -1817,6 +1830,10 @@ public final class SettingsManager {
 
     public void setForceCommandPriority(boolean forceCommandPriority) {
         this.forceCommandPriority = forceCommandPriority;
+    }
+
+    public int getMembersOnlineMaxDifference() {
+        return getConfig().getInt("war-and-protection.war-start.members-online-max-difference", 5);
     }
 
     public int getMaxMembers() {

@@ -10,6 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -211,13 +213,15 @@ public final class RequestManager {
     }
 
     public void processResults(Request req) {
-    	Clan requesterClan = req.getClan();
-    	ClanPlayer requesterCp = req.getRequester();
+    	Clan requestClan = req.getClan();
+    	ClanPlayer requester = req.getRequester();
     	
     	String target = req.getTarget();
-    	//may be null
+
+        @Nullable
     	Clan targetClan = plugin.getClanManager().getClan(target);
-    	//may be null
+
+        @Nullable
     	UUID targetPlayer = UUIDMigration.getForcedPlayerUUID(target);
     	
     	List<String> accepts = req.getAccepts();
@@ -225,35 +229,35 @@ public final class RequestManager {
     	
     	switch (req.getType()) {
     		case START_WAR:
-    			processStartWar(requesterClan, requesterCp, targetClan, accepts, denies);
+    			processStartWar(requester, requestClan, targetClan, accepts, denies);
     			break;
     		case END_WAR:
-    			processEndWar(requesterClan, requesterCp, targetClan, accepts, denies);
+    			processEndWar(requester, requestClan, targetClan, accepts, denies);
     			break;
     		case CREATE_ALLY:
-				processCreateAlly(requesterClan, requesterCp, targetClan, accepts, denies);
+				processCreateAlly(requester, requestClan, targetClan, accepts, denies);
                 break;
     		case BREAK_RIVALRY:
-    			processBreakRivalry(requesterClan, requesterCp, targetClan, accepts, denies);
+    			processBreakRivalry(requester, requestClan, targetClan, accepts, denies);
                 break;
     		case DEMOTE: case PROMOTE:
     			if (!req.votingFinished() || targetPlayer == null) {
     				return;
     			}
-    			target = requesterClan.getTag();
+    			target = requestClan.getTag();
     			
     			if (req.getType() == ClanRequest.DEMOTE) {
-    				processDemote(req, requesterClan, targetPlayer, denies);
+    				processDemote(req, requestClan, targetPlayer, denies);
     			}
     			if (req.getType() == ClanRequest.PROMOTE) {
-    				processPromote(req, requesterClan, targetPlayer, denies);
+    				processPromote(req, requestClan, targetPlayer, denies);
     			}
     			break;
     		case DISBAND:
     			if (!req.votingFinished()) {
     				return;
     			}
-				processDisband(requesterClan, denies);
+				processDisband(requestClan, denies);
                 break;
     		default:
     			return;
@@ -264,106 +268,96 @@ public final class RequestManager {
         req.cleanVotes();
     }
 
-	private void processDisband(Clan requesterClan, List<String> denies) {
+	private void processDisband(Clan requestClan, List<String> denies) {
 		if (denies.isEmpty()) {
-		    requesterClan.addBb(lang("leaders"), ChatColor.AQUA + lang("has.been.disbanded", requesterClan.getName()));
-		    requesterClan.disband();
+		    requestClan.disband();
 		} else {
 		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-		    requesterClan.leaderAnnounce(ChatColor.RED + lang("clan.deletion", deniers));
+		    requestClan.leaderAnnounce(ChatColor.RED + lang("clan.deletion", deniers));
 		}
 	}
 
-	private void processPromote(Request req, Clan requesterClan, UUID targetPlayer, List<String> denies) {
+	private void processPromote(Request req, Clan requestClan, UUID targetPlayer, List<String> denies) {
 		String promotedName = req.getTarget();
 		if (denies.isEmpty()) {
-		    requesterClan.addBb(lang("leaders"), ChatColor.AQUA + lang("promoted.to.leader", promotedName));
-		    requesterClan.promote(targetPlayer);
+		    requestClan.addBb(lang("leaders"), ChatColor.AQUA + lang("promoted.to.leader", promotedName));
+		    requestClan.promote(targetPlayer);
 		} else {
 		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-		    requesterClan.leaderAnnounce(ChatColor.RED + lang("denied.the.promotion", deniers, promotedName));
+		    requestClan.leaderAnnounce(ChatColor.RED + lang("denied.the.promotion", deniers, promotedName));
 		}
 	}
 
-	private void processDemote(Request req, Clan requesterClan, UUID targetPlayer, List<String> denies) {
+	private void processDemote(Request req, Clan requestClan, UUID targetPlayer, List<String> denies) {
 		String demotedName = req.getTarget();
 
 		if (denies.isEmpty()) {
-			requesterClan.addBb(lang("leaders"), ChatColor.AQUA
+			requestClan.addBb(lang("leaders"), ChatColor.AQUA
 					+ lang("demoted.back.to.member", demotedName));
-			requesterClan.demote(targetPlayer);
+			requestClan.demote(targetPlayer);
 		} else {
 			String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-			requesterClan.leaderAnnounce(
+			requestClan.leaderAnnounce(
 					ChatColor.RED + lang("denied.demotion", deniers, demotedName));
 		}
 	}
 
-	private void processBreakRivalry(Clan requesterClan, ClanPlayer requesterCp, Clan targetClan, List<String> accepts,
+	private void processBreakRivalry(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
 			List<String> denies) {
-		if (targetClan != null && requesterClan != null) {
+		if (targetClan != null && requestClan != null) {
 		    if (!accepts.isEmpty()) {
-		    	requesterClan.removeRival(targetClan);
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("broken.the.rivalry", accepts.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("broken.the.rivalry.with", requesterCp.getName(), targetClan.getName()));
+		    	requestClan.removeRival(targetClan);
+		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("broken.the.rivalry", accepts.get(0), requestClan.getName()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("broken.the.rivalry.with", requester.getName(), targetClan.getName()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.to.make.peace", denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("peace.agreement.denied", targetClan.getName()));
+		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.to.make.peace", denies.get(0), requestClan.getName()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("peace.agreement.denied", targetClan.getName()));
 		    }
 		}
 	}
 
-	private void processCreateAlly(Clan requesterClan, ClanPlayer requesterCp, Clan targetClan, List<String> accepts,
+	private void processCreateAlly(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
 			List<String> denies) {
-		if (targetClan != null && requesterClan != null) {
+		if (targetClan != null && requestClan != null) {
 		    if (!accepts.isEmpty()) {
-		        requesterClan.addAlly(targetClan);
+		        requestClan.addAlly(targetClan);
 
-		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("accepted.an.alliance", accepts.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("created.an.alliance", requesterCp.getName(), targetClan.getName()));
+		        targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("accepted.an.alliance", accepts.get(0), requestClan.getName()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("created.an.alliance", requester.getName(), targetClan.getName()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.an.alliance", denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("the.alliance.was.denied", targetClan.getName()));
+		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.an.alliance", denies.get(0), requestClan.getName()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("the.alliance.was.denied", targetClan.getName()));
 		    }
 		}
 	}
 
-	private void processEndWar(Clan requesterClan, ClanPlayer requesterCp, Clan targetClan, List<String> accepts,
-			List<String> denies) {
-		if (requesterClan != null && targetClan != null) {
+	private void processEndWar(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
+                               List<String> denies) {
+		if (requestClan != null && targetClan != null) {
 		    if (!accepts.isEmpty()) {
-                War war = plugin.getProtectionManager().getWar(requesterClan, requesterClan);
+                War war = plugin.getProtectionManager().getWar(requestClan, requestClan);
                 plugin.getProtectionManager().removeWar(war, WarEndEvent.Reason.REQUEST);
-		    	requesterClan.removeWarringClan(targetClan);
-		    	targetClan.removeWarringClan(requesterClan);
+		    	requestClan.removeWarringClan(targetClan);
+		    	targetClan.removeWarringClan(requestClan);
 
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", accepts.get(0), requesterClan.getColorTag()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", requesterClan.getName(), targetClan.getColorTag()));
+		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", accepts.get(0), requestClan.getColorTag()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", requestClan.getName(), targetClan.getColorTag()));
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.end", denies.get(0), requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
+		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.war.end", denies.get(0), requestClan.getName()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
 		    }
 		}
 	}
 
-	private void processStartWar(Clan requesterClan, ClanPlayer requesterCp, Clan targetClan, List<String> accepts,
+	private void processStartWar(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
 			List<String> denies) {
-		if (requesterClan != null && targetClan != null) {
+		if (requestClan != null && targetClan != null) {
 		    if (!accepts.isEmpty()) {
-                if (!plugin.getProtectionManager().addWar(new War(requesterClan, targetClan))) {
-                    return;
-                }
-		        requesterClan.addWarringClan(targetClan);
-		        targetClan.addWarringClan(requesterClan);
-
-		        targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war",
-                        targetClan.getName(), requesterClan.getColorTag()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("you.are.at.war",
-                        requesterClan.getName(), targetClan.getColorTag()));
+		        plugin.getProtectionManager().addWar(requester, requestClan, targetClan);
 		    } else {
-		    	targetClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0),
-                        requesterClan.getName()));
-		        requesterClan.addBb(requesterCp.getName(), ChatColor.AQUA + lang("end.war.denied",
+		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0),
+                        requestClan.getName()));
+		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("end.war.denied",
                         targetClan.getName()));
 		    }
 		}
@@ -385,6 +379,19 @@ public final class RequestManager {
             }
         }
 
+    }
+
+    public void removeRequest(@NotNull String keyOrTarget) {
+        Iterator<Map.Entry<String, Request>> iterator = requests.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Request> entry = iterator.next();
+            final String requester = entry.getKey();
+            final String target = entry.getValue().getTarget();
+            if (keyOrTarget.equals(requester) || keyOrTarget.equals(target)) {
+                entry.getValue().cleanVotes();
+                iterator.remove();
+            }
+        }
     }
 
     /**

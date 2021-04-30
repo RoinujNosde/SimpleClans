@@ -9,10 +9,7 @@ import net.sacredlabyrinth.phaed.simpleclans.events.WarStartEvent;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.LandProtection;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -106,6 +103,9 @@ public class ProtectionManager {
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
+                if (owner == null) {
+                    continue;
+                }
                 Player involved;
                 if (other != null && player.getUniqueId().equals(owner)) {
                     involved = other;
@@ -121,15 +121,22 @@ public class ProtectionManager {
         return false;
     }
 
-    public boolean addWar(@NotNull War war) {
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean addWar(@NotNull ClanPlayer requester, Clan requestClan, Clan targetClan) {
+        War war = new War(requestClan, targetClan);
+
         if (wars.containsKey(war)) {
             return false;
         }
+
         WarStartEvent event = new WarStartEvent(war);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return false;
         }
+
+        requestClan.addWarringClan(requester, targetClan);
+        targetClan.addWarringClan(requester, requestClan);
 
         wars.put(war, scheduleTask(war, settingsManager.getWarNormalExpirationTime()));
         return true;
@@ -236,20 +243,32 @@ public class ProtectionManager {
                 logger.log(Level.WARNING, String.format("Error instantiating provider %s", className), ex);
             }
             if (instance instanceof ProtectionProvider) {
-                ProtectionProvider provider = (ProtectionProvider) instance;
-                String requiredPlugin = provider.getRequiredPluginName();
-                if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
-                    logger.warning(String.format("Required plugin %s for the provider %s was not found!",
-                            requiredPlugin, instance.getClass().getSimpleName()));
-                    continue;
-                }
-                provider.setup();
-                providers.add(provider);
-                landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
+                registerProvider((ProtectionProvider) instance);
             } else {
                 logger.warning(String.format("%s is not an instance of ProtectionProvider", className));
             }
         }
+    }
+
+    private void registerProvider(ProtectionProvider provider) {
+        String requiredPlugin = provider.getRequiredPluginName();
+        String providerName = provider.getClass().getSimpleName();
+        if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
+            logger.warning(String.format("Required plugin %s for the provider %s was not found!",
+                    requiredPlugin, providerName));
+            return;
+        }
+        try {
+            provider.setup();
+        } catch (LinkageError | Exception throwable) {
+            logger.log(Level.WARNING, String.format("Error registering provider %s", providerName));
+            if (settingsManager.isDebugging()) {
+                throwable.printStackTrace();
+            }
+            return;
+        }
+        providers.add(provider);
+        landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
     }
 
     @NotNull

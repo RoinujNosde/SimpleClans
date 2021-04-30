@@ -1,9 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Objects;
-
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -15,10 +11,13 @@ import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Objects;
+
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
- *
  * @author roinujnosde
  */
 public class ResignPrompt extends StringPrompt {
@@ -35,26 +34,22 @@ public class ResignPrompt extends StringPrompt {
         if (clan == null) {
             return END_OF_CONVERSATION;
         }
-        		
+
         if (yes.equalsIgnoreCase(input)) {
-            if (!clan.isLeader(player) || clan.getLeaders().size() > 1) {
+            if (clan.isPermanent() || !clan.isLeader(player) || clan.getLeaders().size() > 1) {
                 clan.addBb(player.getName(), ChatColor.AQUA + lang("0.has.resigned", player.getName()));
                 cp.addResignTime(clan.getTag());
                 clan.removePlayerFromClan(player.getUniqueId());
-                
+
                 return new MessagePromptImpl(ChatColor.AQUA + lang("resign.success", player));
             } else if (clan.isLeader(player) && clan.getLeaders().size() == 1) {
-                clan.disband();
-                String msgKey = "clan.has.been.disbanded";
-                //message for the server
-                plugin.getClanManager().serverAnnounce(ChatColor.AQUA + lang(msgKey, clan.getName()));
-                //message for the player
-                return new MessagePromptImpl(ChatColor.AQUA + lang(msgKey, player,  clan.getName()));
+                clan.disband(player, true, false);
+                return null;
             } else {
                 return new MessagePromptImpl(ChatColor.RED + lang("last.leader.cannot.resign.you.must.appoint.another.leader.or.disband.the.clan", player));
             }
         } else {
-        	return new MessagePromptImpl(ChatColor.RED + lang("resign.request.cancelled", player));
+            return new MessagePromptImpl(ChatColor.RED + lang("resign.request.cancelled", player));
         }
     }
 
@@ -63,7 +58,7 @@ public class ResignPrompt extends StringPrompt {
         Player player = (Player) cc.getForWhom();
         return ChatColor.RED + MessageFormat.format(
                 lang("resign.confirmation", player), Arrays.asList(
-                    lang("resign.yes", player), lang("resign.no", player)));
+                        lang("resign.yes", player), lang("resign.no", player)));
     }
 
 }

@@ -56,12 +56,20 @@ war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-    - WorldGuardProvider
-    - GriefPreventionProvider
-    listener-priority: HIGHEST
+        - WorldGuardProvider
+        - WorldGuard6Provider
+        - PlotSquared5Provider
+        - PlotSquared3Provider
+        - GriefPreventionProvider
+    listeners:
+        priority: HIGHEST
+        ignored-list:
+            PLACE:
+                - "PLAYER_HEAD"
     set-base-only-in-land: false
     war-normal-expiration-time: 0
     war-disconnect-expiration-time: 0
+    edit-all-lands: false
     land-creation:
         only-leaders: false
         only-one-per-clan: false
@@ -72,6 +80,9 @@ war-and-protection:
         PLACE: true
         DAMAGE: true
         INTERACT_ENTITY: true
+    war-start:
+        request-enabled: true
+        members-online-max-difference: 5
 kdr-grinding-prevention:
     enable-max-kills: false
     max-kills-per-victim: 10
@@ -118,6 +129,7 @@ kill-weights:
     rival: 2.0
     civilian: 0.0
     neutral: 1.0
+    ally: -1.0
     deny-same-ip-kills: false
 clan:
     homebase-teleport-wait-secs: 10

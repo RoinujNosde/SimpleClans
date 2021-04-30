@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,18 +39,19 @@ public class Lookup extends Sendable {
             String lookup = lang("player.lookup", sender)
                     .replace("%player_name%", target.getName())
                     .replace("%clan_name%", getClanName())
-                    .replace("%player_rank%", Helper.parseColors(target.getRankDisplayName()))
+                    .replace("%player_rank%", ChatUtils.parseColors(target.getRankDisplayName()))
                     .replace("%player_status%", getPlayerStatus())
                     .replace("%player_kdr%", KDRFormat.format(target.getKDR()))
                     .replace("%player_rival_kills%", String.valueOf(target.getRivalKills()))
                     .replace("%player_neutral_kills%", String.valueOf(target.getNeutralKills()))
                     .replace("%player_civilian_kills%", String.valueOf(target.getCivilianKills()))
+                    .replace("%player_ally_kills%", String.valueOf(target.getAllyKills()))
                     .replace("%player_deaths%", String.valueOf(target.getDeaths()))
                     .replace("%player_join_date%", target.getJoinDateString())
                     .replace("%player_last_seen%", target.getLastSeenString(sender))
                     .replace("%player_past_clans%", target.getPastClansString(headColor + ", "))
                     .replace("%player_inactive_days%", String.valueOf(target.getInactiveDays()))
-                    .replace("%player_max_inactive_days%", String.valueOf(sm.getPurgePlayers()))
+                    .replace("%player_max_inactive_days%", Helper.formatMaxInactiveDays(sm.getPurgePlayers()))
                     .replace("%kill_type_line%", getKillTypeLine());
             sender.sendMessage(lookup);
         } else {
@@ -84,7 +86,7 @@ public class Lookup extends Sendable {
         if (target.isTrusted()) {
             return sm.getPageTrustedColor() + lang("trusted", sender);
         }
-        if (target.getRankId() != null && !target.getRankId().isEmpty()) {
+        if (!target.getRankId().isEmpty()) {
             return sm.getPageTrustedColor() + lang("in.rank", sender);
         }
         return sm.getPageUnTrustedColor() + lang("untrusted", sender);
@@ -98,8 +100,13 @@ public class Lookup extends Sendable {
 
             if (targetClan == null) {
                 killType = DARK_GRAY + lang("civilian", sender);
-            } else if (senderClan != null && senderClan.isRival(targetClan.getTag())) {
-                killType = WHITE + lang("rival", sender);
+            } else if (senderClan != null) {
+                if (senderClan.isRival(targetClan.getTag())) {
+                    killType = WHITE + lang("rival", sender);
+                }
+                if (senderClan.equals(targetClan) || senderClan.isAlly(targetClan.getTag())) {
+                    killType = RED + lang("ally", sender);
+                }
             }
 
             killTypeLine = lang("player.lookup.killtype", sender).replace("%player_kill_type%", killType);

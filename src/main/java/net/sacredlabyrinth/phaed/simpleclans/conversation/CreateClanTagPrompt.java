@@ -1,7 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
@@ -46,7 +46,7 @@ public class CreateClanTagPrompt extends StringPrompt {
 
     @Nullable
     private Prompt validateTag(SimpleClans plugin, Player player, @NotNull String clanTag) {
-        String cleanTag = Helper.stripColors(clanTag);
+        String cleanTag = ChatUtils.stripColors(clanTag);
         if (plugin.getClanManager().isClan(cleanTag)) {
             return new MessagePromptImpl(ChatColor.RED +
                     lang("clan.with.this.tag.already.exists", player), this);

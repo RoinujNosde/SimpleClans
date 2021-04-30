@@ -8,6 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
@@ -17,6 +18,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -28,6 +31,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author phaed
@@ -97,7 +101,7 @@ public class Helper {
      * @param jo the JSON Object
      * @return a list of ranks or null if the JSON String is null/empty
      */
-	public static @Nullable List<Rank> ranksFromJson(JSONObject jo) {
+	public static @Nullable List<Rank> ranksFromJson(@Nullable JSONObject jo) {
     	if (jo != null && !jo.isEmpty()) {
             Object ranks = jo.get("ranks");
             if (ranks != null) {
@@ -127,7 +131,7 @@ public class Helper {
      * @param jo the JSON object
      * @return the default rank or null if not found and/or it does not exist
      */
-    public static @Nullable String defaultRankFromJson(JSONObject jo) {
+    public static @Nullable String defaultRankFromJson(@Nullable JSONObject jo) {
 	    if (jo != null && !jo.isEmpty()) {
             if (!jo.containsKey("defaultRank")) {
                 return null;
@@ -900,7 +904,7 @@ public class Helper {
      * 
      * @param cp Sender
      * @param msg The chat message
-     * @return The formated message
+     * @return The formatted message
      */
     public static String formatSpyClanChat(ClanPlayer cp, String msg) {
         msg = stripColors(msg);
@@ -910,5 +914,48 @@ public class Helper {
         } else {
             return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + msg;
         }
+    }
+
+    /**
+     * Formats max inactive days to an infinity symbol if it's negative or 0
+     *
+     * @param max inactive days
+     * @return formatted message
+     */
+    public static String formatMaxInactiveDays(int max) {
+        if (max <= 0) {
+            return "∞";
+        } else {
+            return String.valueOf(max);
+        }
+    }
+
+    @NotNull
+    public static String getFormattedClanStatus(Clan clan, CommandSender sender) {
+        ArrayList<String> statuses = new ArrayList<>();
+        if (clan.isPermanent()) {
+            statuses.add(lang("permanent", sender));
+        }
+        if (clan.isVerified()) {
+            statuses.add(lang("verified", sender));
+        } else {
+            statuses.add(lang("unverified", sender));
+        }
+        return String.join(", ", statuses);
+    }
+
+    /**
+     * Checks if all passed materials are some kind of AIR
+     *
+     * @param materials materials to test
+     * @return true if all materials are AIR
+     */
+    public static boolean isAir(@NotNull Material... materials) {
+        for (Material m : materials) {
+            if (!m.name().contains("AIR")) {
+                return false;
+            }
+        }
+        return true;
     }
 }

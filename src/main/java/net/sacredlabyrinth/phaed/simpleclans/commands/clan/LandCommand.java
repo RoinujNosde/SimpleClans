@@ -6,11 +6,13 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CommandAlias("%clan")
 @Subcommand("%land")
@@ -20,6 +22,18 @@ public class LandCommand extends BaseCommand {
 
     @Dependency
     private ProtectionManager protection;
+    @Dependency
+    private SettingsManager settings;
+
+    private Set<Land> getLands(ClanPlayer cp, Location location) {
+        Player player = Objects.requireNonNull(cp.toPlayer());
+        if (settings.isEditAllLands()) {
+            return protection.getLands(player, location);
+        } else {
+            return protection.getLandsAt(location).stream().filter(l -> l.getOwners().contains(player.getUniqueId()))
+                    .collect(Collectors.toSet());
+        }
+    }
 
     @Subcommand("%allow")
     public class AllowCommand extends BaseCommand {
@@ -29,8 +43,7 @@ public class LandCommand extends BaseCommand {
         }
 
         private void allow(ClanPlayer cp, ProtectionManager.Action action, Location location, boolean notify) {
-            Set<Land> lands = protection.getLands(Objects.requireNonNull(cp.toPlayer()), location);
-            for (Land land : lands) {
+            for (Land land : getLands(cp, location)) {
                 cp.allow(action, land.getId());
             }
             if (notify) {
@@ -99,8 +112,7 @@ public class LandCommand extends BaseCommand {
         }
 
         private void block(ClanPlayer cp, ProtectionManager.Action action, Location location, boolean notify) {
-            Set<Land> lands = protection.getLands(Objects.requireNonNull(cp.toPlayer()), location);
-            for (Land land : lands) {
+            for (Land land : getLands(cp, location)) {
                 cp.disallow(action, land.getId());
             }
             if (notify) {

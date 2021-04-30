@@ -74,7 +74,7 @@ public class LandProtection implements Listener {
                     cancelWithMessage(player, event, "only.clan.members.can.create.lands");
                     return;
                 }
-                for (ClanPlayer member : clan.getAllMembers()) {
+                for (ClanPlayer member : clan.getMembers()) {
                     Set<Land> lands = protectionManager.getLandsOf(Bukkit.getOfflinePlayer(member.getUniqueId()), player.getWorld());
                     if (lands.size() > 0) {
                         cancelWithMessage(player, event, "only.one.land.per.clan");
@@ -111,7 +111,11 @@ public class LandProtection implements Listener {
                 return;
             }
             BlockPlaceEvent blockPlaceEvent = (BlockPlaceEvent) event;
-            if (protectionManager.can(PLACE, blockPlaceEvent.getBlock().getLocation(), blockPlaceEvent.getPlayer())) {
+            Block block = blockPlaceEvent.getBlock();
+            if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
+                return;
+            }
+            if (protectionManager.can(PLACE, block.getLocation(), blockPlaceEvent.getPlayer())) {
                 blockPlaceEvent.setCancelled(false);
             }
         }, plugin, false);
@@ -191,7 +195,11 @@ public class LandProtection implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlace(BlockPlaceEvent event) {
-        if (protectionManager.can(PLACE, event.getBlock().getLocation(), event.getPlayer())) {
+        Block block = event.getBlock();
+        if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
+            return;
+        }
+        if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
             event.setCancelled(true);
         }
     }

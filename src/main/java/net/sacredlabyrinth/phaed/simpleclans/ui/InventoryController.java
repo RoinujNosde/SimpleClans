@@ -3,10 +3,8 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import java.util.*;
-
 import net.sacredlabyrinth.phaed.simpleclans.events.ComponentClickEvent;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.ConfirmationFrame;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.WarningFrame;
 import org.bukkit.Bukkit;
@@ -22,6 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -134,11 +134,11 @@ public class InventoryController implements Listener {
 		SimpleClans plugin = SimpleClans.getInstance();
 		PermissionsManager pm = plugin.getPermissionsManager();
 		if (permission instanceof String) {
-			String permS = (String) permission;
-			boolean leaderPerm = permS.contains("simpleclans.leader") && !permS.equalsIgnoreCase("simpleclans.leader.create");
+			String perms = (String) permission;
+			boolean leaderPerm = perms.contains("simpleclans.leader") && !perms.equalsIgnoreCase("simpleclans.leader.create");
 			ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
 
-			return pm.has(player, permS) && (!leaderPerm || (cp != null && cp.isLeader()));
+			return pm.has(player, perms) && (!leaderPerm || (cp != null && cp.isLeader()));
 		}
 		return pm.has(player, (RankPermission) permission, false);
 	}
