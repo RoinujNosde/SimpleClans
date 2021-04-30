@@ -18,9 +18,12 @@ public class ClanPlayerInputContextResolver extends AbstractInputOnlyContextReso
     @Override
     public ClanPlayerInput getContext(BukkitCommandExecutionContext context) throws InvalidCommandArgument {
         String arg = context.popFirstArg();
-        @SuppressWarnings("deprecation")
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arg);
-        ClanPlayer cp = clanManager.getCreateClanPlayer(offlinePlayer.getUniqueId());
+        ClanPlayer cp = clanManager.getAnyClanPlayer(arg);
+        if (cp == null) {
+            @SuppressWarnings("deprecation")
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arg);
+            cp = clanManager.getCreateClanPlayer(offlinePlayer.getUniqueId());
+        }
 
         return new ClanPlayerInput(cp);
     }
