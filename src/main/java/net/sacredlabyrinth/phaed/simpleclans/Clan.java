@@ -1766,7 +1766,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                     cp.setRank("");
                     SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
                 }
-            });SimpleClans.getInstance().getServer().getPluginManager().callEvent(new DeleteRankEvent(r));
+            });
         }
     }
 
