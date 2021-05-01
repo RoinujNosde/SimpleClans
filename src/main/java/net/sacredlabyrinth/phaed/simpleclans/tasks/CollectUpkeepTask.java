@@ -33,7 +33,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
     	int minute = settingsManager.getTasksCollectUpkeepMinute();
         long delay = Helper.getDelayTo(hour, minute);
 
-        this.runTaskTimerAsynchronously(SimpleClans.getInstance(), delay * 20, 86400 * 20);
+        this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);
     }
 
     /**

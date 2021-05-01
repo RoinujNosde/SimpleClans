@@ -448,6 +448,14 @@ public final class SettingsManager {
         }
     }
 
+    public boolean isBankLogEnabled() {
+        return getConfig().getBoolean("economy.bank-log.enable", false);
+    }
+
+    public String getBankLogType() {
+        return getConfig().getString("economy.bank-log.type", "CSV").toLowerCase();
+    }
+
     public boolean isWarRequestEnabled() {
         return getConfig().getBoolean("war-and-protection.war-start.request-enabled", true);
     }
