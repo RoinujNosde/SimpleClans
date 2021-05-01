@@ -19,7 +19,8 @@ import static org.bukkit.ChatColor.RED;
 public class CreateRankNamePrompt extends StringPrompt {
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
-        return lang("insert.rank.name", (Player) context.getForWhom());
+        Player forWhom = (Player) context.getForWhom();
+        return lang("insert.rank.name", forWhom, lang("no", forWhom));
     }
 
     @Override
@@ -27,7 +28,7 @@ public class CreateRankNamePrompt extends StringPrompt {
         SimpleClans plugin = (SimpleClans) context.getPlugin();
         Player player = (Player) context.getForWhom();
         Clan clan = (Clan) context.getSessionData("clan");
-        String no = lang("create.rank.no");
+        String no = lang("no", player);
         if (clan == null || plugin == null) return END_OF_CONVERSATION;
         if (input == null) return this;
 
@@ -35,19 +36,19 @@ public class CreateRankNamePrompt extends StringPrompt {
         PreCreateRankEvent event = new PreCreateRankEvent(player, clan, rank);
         Bukkit.getServer().getPluginManager().callEvent(event);
         rank = event.getRankName();
-        
+
         if (event.isCancelled()) {
             return null;
         }
 
         if (input.equalsIgnoreCase(no)) {
-            return new MessagePromptImpl(AQUA + lang("clan.create.request.cancelled", player));
+            return new MessagePromptImpl(AQUA + lang("rank.create.request.cancelled", player));
         }
 
         if (clan.hasRank(rank)) {
             return new MessagePromptImpl(RED + lang("rank.already.exists", player), this);
         }
-        
+
         clan.createRank(rank);
         Bukkit.getServer().getPluginManager().callEvent(new CreateRankEvent(player, clan, clan.getRank(rank)));
         plugin.getStorageManager().updateClan(clan, true);
