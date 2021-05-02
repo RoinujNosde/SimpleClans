@@ -76,7 +76,7 @@ public class GeneralCommands extends BaseCommand {
         initialData.put(TAG_KEY, tag);
         initialData.put(NAME_KEY, name);
         Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateClanTagPrompt())
-                .withLocalEcho(true).withConversationCanceller(new RequestCanceller(player, AQUA + lang("clan.create.request.cancelled", player)))
+                .withLocalEcho(true).withConversationCanceller(new RequestCanceller(player, RED + lang("clan.create.request.cancelled", player)))
                 .withTimeout(60).withInitialSessionData(initialData).buildConversation(player);
         conversation.begin();
     }

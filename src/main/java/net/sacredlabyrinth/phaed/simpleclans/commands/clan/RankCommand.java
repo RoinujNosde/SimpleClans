@@ -85,7 +85,7 @@ public class RankCommand extends BaseCommand {
     public void create(Player player, Clan clan) {
         Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateRankNamePrompt())
                 .withLocalEcho(true)
-                .withConversationCanceller(new RequestCanceller(player, AQUA + lang("clan.create.request.cancelled", player)))
+                .withConversationCanceller(new RequestCanceller(player, RED + lang("rank.create.request.cancelled", player)))
                 .withTimeout(60).buildConversation(player);
         conversation.getContext().setSessionData("clan", clan);
         conversation.begin();
