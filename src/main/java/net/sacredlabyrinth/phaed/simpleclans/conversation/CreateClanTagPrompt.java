@@ -22,7 +22,7 @@ public class CreateClanTagPrompt extends StringPrompt {
         if (context.getSessionData(TAG_KEY) != null) {
             return "";
         }
-        return lang("insert.clan.tag", forWhom, lang("no", forWhom));
+        return lang("insert.clan.tag", forWhom, lang("cancel.no", forWhom));
     }
 
     @Override
@@ -34,14 +34,12 @@ public class CreateClanTagPrompt extends StringPrompt {
     public @Nullable Prompt acceptInput(@NotNull ConversationContext context, @Nullable String input) {
         Player player = (Player) context.getForWhom();
         SimpleClans plugin = (SimpleClans) context.getPlugin();
-        String no = lang("no", player);
         input = input != null ? input : (String) context.getSessionData(TAG_KEY);
         context.setSessionData(TAG_KEY, null);
         if (input == null || plugin == null) return this;
 
         Prompt errorPrompt = validateTag(plugin, player, input);
         if (errorPrompt != null) return errorPrompt;
-        if (input.equalsIgnoreCase(no)) return new MessagePromptImpl(lang("clan.create.request.cancelled", player));
         context.setSessionData(TAG_KEY, input);
         return new CreateClanNamePrompt();
     }

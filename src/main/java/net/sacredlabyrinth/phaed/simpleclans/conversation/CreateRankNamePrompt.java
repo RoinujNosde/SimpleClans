@@ -20,7 +20,7 @@ public class CreateRankNamePrompt extends StringPrompt {
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
         Player forWhom = (Player) context.getForWhom();
-        return lang("insert.rank.name", forWhom, lang("no", forWhom));
+        return lang("insert.rank.name", forWhom, lang("cancel.no", forWhom));
     }
 
     @Override
@@ -28,7 +28,6 @@ public class CreateRankNamePrompt extends StringPrompt {
         SimpleClans plugin = (SimpleClans) context.getPlugin();
         Player player = (Player) context.getForWhom();
         Clan clan = (Clan) context.getSessionData("clan");
-        String no = lang("no", player);
         if (clan == null || plugin == null) return END_OF_CONVERSATION;
         if (input == null) return this;
 
@@ -39,10 +38,6 @@ public class CreateRankNamePrompt extends StringPrompt {
 
         if (event.isCancelled()) {
             return null;
-        }
-
-        if (input.equalsIgnoreCase(no)) {
-            return new MessagePromptImpl(AQUA + lang("rank.create.request.cancelled", player));
         }
 
         if (clan.hasRank(rank)) {

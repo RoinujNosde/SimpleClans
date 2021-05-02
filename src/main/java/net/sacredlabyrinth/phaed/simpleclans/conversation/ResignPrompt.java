@@ -27,7 +27,7 @@ public class ResignPrompt extends StringPrompt {
         final SimpleClans plugin = (SimpleClans) cc.getPlugin();
 
         Player player = (Player) cc.getForWhom();
-        String yes = lang("yes", player);
+        String yes = lang("cancel.yes", player);
         ClanManager cm = Objects.requireNonNull(plugin).getClanManager();
         ClanPlayer cp = cm.getCreateClanPlayer(player.getUniqueId());
         Clan clan = cp.getClan();
@@ -58,7 +58,7 @@ public class ResignPrompt extends StringPrompt {
         Player player = (Player) cc.getForWhom();
         return ChatColor.RED + MessageFormat.format(
                 lang("resign.confirmation", player), Arrays.asList(
-                        lang("yes", player), lang("no", player)));
+                        lang("cancel.yes", player), lang("cancel.no", player)));
     }
 
 }
