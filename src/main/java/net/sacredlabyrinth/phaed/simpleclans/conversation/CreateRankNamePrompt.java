@@ -20,7 +20,7 @@ public class CreateRankNamePrompt extends StringPrompt {
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
         Player forWhom = (Player) context.getForWhom();
-        return lang("insert.rank.name", forWhom, lang("cancel.no", forWhom));
+        return lang("insert.rank.name", forWhom, lang("cancel", forWhom));
     }
 
     @Override

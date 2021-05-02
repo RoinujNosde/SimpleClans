@@ -22,7 +22,7 @@ public class CreateClanTagPrompt extends StringPrompt {
         if (context.getSessionData(TAG_KEY) != null) {
             return "";
         }
-        return lang("insert.clan.tag", forWhom, lang("cancel.no", forWhom));
+        return lang("insert.clan.tag", forWhom, lang("cancel", forWhom));
     }
 
     @Override
