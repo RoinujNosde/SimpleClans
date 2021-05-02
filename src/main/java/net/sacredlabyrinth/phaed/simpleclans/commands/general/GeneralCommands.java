@@ -13,7 +13,7 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
-import net.sacredlabyrinth.phaed.simpleclans.conversation.RequestCanceller;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.MessageCanceller;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
@@ -76,7 +76,7 @@ public class GeneralCommands extends BaseCommand {
         initialData.put(TAG_KEY, tag);
         initialData.put(NAME_KEY, name);
         Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateClanTagPrompt())
-                .withLocalEcho(true).withConversationCanceller(new RequestCanceller(player, RED + lang("clan.create.request.cancelled", player)))
+                .withLocalEcho(true).withConversationCanceller(new MessageCanceller(player, RED + lang("clan.create.request.cancelled", player)))
                 .withTimeout(60).withInitialSessionData(initialData).buildConversation(player);
         conversation.begin();
     }
