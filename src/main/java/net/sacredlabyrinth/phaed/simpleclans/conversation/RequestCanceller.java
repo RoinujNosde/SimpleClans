@@ -8,20 +8,20 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
-public class MessageCanceller implements ConversationCanceller {
+public class RequestCanceller implements ConversationCanceller {
 
     @NotNull
-    private final String closedMessage;
+    private final String cancelledMessage;
     @NotNull
     private final String escapeSequence;
 
-    public MessageCanceller(@NotNull String escapeSequence, @NotNull String closedMessage) {
+    public RequestCanceller(@NotNull String escapeSequence, @NotNull String cancelledMessage) {
         this.escapeSequence = escapeSequence;
-        this.closedMessage = closedMessage;
+        this.cancelledMessage = cancelledMessage;
     }
 
-    public MessageCanceller(@NotNull CommandSender sender, @NotNull String closedMessage) {
-        this(lang("cancel", sender), closedMessage);
+    public RequestCanceller(@NotNull CommandSender sender, @NotNull String cancelledMessage) {
+        this(lang("cancel", sender), cancelledMessage);
     }
 
     @Override
@@ -31,16 +31,18 @@ public class MessageCanceller implements ConversationCanceller {
     @Override
     public boolean cancelBasedOnInput(@NotNull ConversationContext context, @NotNull String input) {
         if (input.equalsIgnoreCase(escapeSequence)) {
-            context.getForWhom().sendRawMessage(closedMessage);
+            context.getForWhom().sendRawMessage(cancelledMessage);
             return true;
         }
 
         return false;
     }
 
+    //a clone that is not a clone, nice one, Bukkit
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @NotNull
     @Override
     public ConversationCanceller clone() {
-        return new MessageCanceller(this.escapeSequence, this.closedMessage);
+        return new RequestCanceller(this.escapeSequence, this.cancelledMessage);
     }
 }
