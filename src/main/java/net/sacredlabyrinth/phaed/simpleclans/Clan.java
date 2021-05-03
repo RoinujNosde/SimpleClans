@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.*;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.*;
 
 /**
  * @author phaed
@@ -683,6 +682,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         return ChatUtils.parseColors(out.toString());
     }
 
+    @Deprecated
+    public String getAllyString(String sep) {
+        return BLACK + getAllyString(sep, null);
+    }
+
     /**
      * Returns a separator delimited string with all the rival clan's colored
      * tags
@@ -711,6 +715,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
 
         return ChatUtils.parseColors(out.toString());
+    }
+
+    @Deprecated
+    public String getRivalString(String sep) {
+        return BLACK + getRivalString(sep, null);
     }
 
     /**
