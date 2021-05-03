@@ -319,6 +319,11 @@ public final class ClanManager {
     @SuppressWarnings("deprecation")
     @Nullable
     public ClanPlayer getAnyClanPlayer(String playerName) {
+        for (ClanPlayer cp : getAllClanPlayers()) {
+            if (cp.getName().equals(playerName)) {
+                return cp;
+            }
+        }
         return getAnyClanPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
     }
 
