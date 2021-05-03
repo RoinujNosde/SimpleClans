@@ -663,7 +663,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Returns a separator delimited string with all the ally clan's colored
      * tags
      */
-    public String getAllyString(String sep) {
+    public String getAllyString(String sep, @Nullable CommandSender viewer) {
         StringBuilder out = new StringBuilder();
 
         for (String allyTag : getAllies()) {
@@ -677,7 +677,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
 
         if (out.toString().trim().isEmpty()) {
-            return ChatColor.BLACK + "None";
+            return lang("none", viewer);
         }
 
         return ChatUtils.parseColors(out.toString());
@@ -687,7 +687,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Returns a separator delimited string with all the rival clan's colored
      * tags
      */
-    public String getRivalString(String sep) {
+    public String getRivalString(String sep, @Nullable CommandSender viewer) {
         StringBuilder out = new StringBuilder();
 
         for (String rivalTag : getRivals()) {
@@ -707,7 +707,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
 
         if (out.toString().trim().isEmpty()) {
-            return ChatColor.BLACK + "None";
+            return lang("none", viewer);
         }
 
         return ChatUtils.parseColors(out.toString());
