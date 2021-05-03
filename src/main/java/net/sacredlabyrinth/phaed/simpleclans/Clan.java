@@ -684,7 +684,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     @Deprecated
     public String getAllyString(String sep) {
-        return BLACK + getAllyString(sep, null);
+        return getAllyString(sep, null);
     }
 
     /**
@@ -719,7 +719,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     @Deprecated
     public String getRivalString(String sep) {
-        return BLACK + getRivalString(sep, null);
+        return getRivalString(sep, null);
     }
 
     /**
