@@ -682,6 +682,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         return ChatUtils.parseColors(out.toString());
     }
 
+    /**
+     * @deprecated use {@link Clan#getAllyString(String, CommandSender)}
+     */
     @Deprecated
     public String getAllyString(String sep) {
         return getAllyString(sep, null);
@@ -717,6 +720,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         return ChatUtils.parseColors(out.toString());
     }
 
+    /**
+     * @deprecated use {@link Clan#getRivalString(String, CommandSender)}
+     */
     @Deprecated
     public String getRivalString(String sep) {
         return getRivalString(sep, null);
