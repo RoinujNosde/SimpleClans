@@ -334,7 +334,11 @@ public final class StorageManager {
         List<ClanPlayer> purge = new ArrayList<>();
 
         for (ClanPlayer cp : cps) {
-            if (cp.getInactiveDays() > purgePlayers && !cp.isLeader()) {
+            //let the clan be purged first
+            if (cp.isLeader() && cp.getClan() != null) {
+                continue;
+            }
+            if (cp.getInactiveDays() > purgePlayers) {
                 purge.add(cp);
             }
         }
