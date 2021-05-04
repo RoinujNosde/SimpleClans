@@ -579,7 +579,7 @@ public final class ClanManager {
         }
 
         if (out.length() == 0) {
-            out = ChatColor.BLACK + "None";
+            out = lang("none", player);
         }
 
         return out;
@@ -650,7 +650,7 @@ public final class ClanManager {
         }
 
         if (out.length() == 0) {
-            out = ChatColor.BLACK + "None";
+            out = lang("none", player);
         }
 
         return out;
@@ -738,7 +738,7 @@ public final class ClanManager {
         count += getFoodPoints(inv, XMaterial.COOKED_BEEF, 8, 12.8);
 
         if (count == 0) {
-            return ChatColor.BLACK + lang("none", player);
+            return lang("none", player);
         } else {
             return ((int) count) + "" + ChatColor.GOLD + "p";
         }

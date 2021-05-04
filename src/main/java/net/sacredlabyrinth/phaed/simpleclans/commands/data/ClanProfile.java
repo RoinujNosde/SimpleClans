@@ -36,8 +36,8 @@ public class ClanProfile extends Sendable {
                 .replace("%clan_deaths%", String.valueOf(clan.getTotalDeaths()))
                 .replace("%clan_fee_enabled%", getFeeEnabled())
                 .replace("%clan_fee_value%", String.valueOf(clan.getMemberFee()))
-                .replace("%clan_allies%", clan.getAllyString(subColor + ", "))
-                .replace("%clan_rivals%", clan.getRivalString(subColor + ", "))
+                .replace("%clan_allies%", clan.getAllyString(subColor + ", ", sender))
+                .replace("%clan_rivals%", clan.getRivalString(subColor + ", ", sender))
                 .replace("%clan_founded%", clan.getFoundedString())
                 .replace("%clan_inactive_days%", String.valueOf(clan.getInactiveDays()))
                 .replace("%clan_max_inactive_days%", Helper.formatMaxInactiveDays(clan.getMaxInactiveDays()));

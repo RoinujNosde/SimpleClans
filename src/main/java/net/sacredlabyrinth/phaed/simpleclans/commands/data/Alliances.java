@@ -30,7 +30,7 @@ public class Alliances extends Sendable {
                 continue;
             }
 
-            chatBlock.addRow("  " + AQUA + clan.getName(), clan.getAllyString(DARK_GRAY + ", "));
+            chatBlock.addRow("  " + AQUA + clan.getName(), clan.getAllyString(DARK_GRAY + ", ", sender));
         }
 
         sendBlock();
