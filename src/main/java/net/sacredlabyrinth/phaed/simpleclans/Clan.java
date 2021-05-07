@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.*;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.*;
 
 /**
  * @author phaed
@@ -663,7 +662,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Returns a separator delimited string with all the ally clan's colored
      * tags
      */
-    public String getAllyString(String sep) {
+    public String getAllyString(String sep, @Nullable CommandSender viewer) {
         StringBuilder out = new StringBuilder();
 
         for (String allyTag : getAllies()) {
@@ -677,17 +676,25 @@ public class Clan implements Serializable, Comparable<Clan> {
         out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
 
         if (out.toString().trim().isEmpty()) {
-            return ChatColor.BLACK + "None";
+            return lang("none", viewer);
         }
 
         return ChatUtils.parseColors(out.toString());
     }
 
     /**
+     * @deprecated use {@link Clan#getAllyString(String, CommandSender)}
+     */
+    @Deprecated
+    public String getAllyString(String sep) {
+        return getAllyString(sep, null);
+    }
+
+    /**
      * Returns a separator delimited string with all the rival clan's colored
      * tags
      */
-    public String getRivalString(String sep) {
+    public String getRivalString(String sep, @Nullable CommandSender viewer) {
         StringBuilder out = new StringBuilder();
 
         for (String rivalTag : getRivals()) {
@@ -707,10 +714,18 @@ public class Clan implements Serializable, Comparable<Clan> {
         out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
 
         if (out.toString().trim().isEmpty()) {
-            return ChatColor.BLACK + "None";
+            return lang("none", viewer);
         }
 
         return ChatUtils.parseColors(out.toString());
+    }
+
+    /**
+     * @deprecated use {@link Clan#getRivalString(String, CommandSender)}
+     */
+    @Deprecated
+    public String getRivalString(String sep) {
+        return getRivalString(sep, null);
     }
 
     /**

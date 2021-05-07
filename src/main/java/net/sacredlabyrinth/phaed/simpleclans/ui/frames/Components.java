@@ -111,8 +111,8 @@ public class Components {
                     lang("gui.clandetails.clan.lore.deaths", viewer, clan.getTotalDeaths()),
                     lang("gui.clandetails.clan.lore.fee", viewer, clan.isMemberFeeEnabled()
                             ? lang("fee.enabled", viewer) : lang("fee.disabled", viewer), clan.getMemberFee()),
-                    lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer))),
-                    lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer))),
+                    lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer), viewer)),
+                    lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer), viewer)),
                     lang("gui.clandetails.clan.lore.founded", viewer, clan.getFoundedString()),
                     lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), Helper.formatMaxInactiveDays(clan.getMaxInactiveDays())));
         } else {
