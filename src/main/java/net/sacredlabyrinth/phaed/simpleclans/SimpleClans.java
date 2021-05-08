@@ -8,6 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.storage.CSVBankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
@@ -52,6 +53,7 @@ public class SimpleClans extends JavaPlugin {
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
     private BankLogger bankLogger;
+
     /**
      * @return the logger
      */
@@ -102,7 +104,7 @@ public class SimpleClans extends JavaPlugin {
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
 
-        bankLogger = new BankLogger(this);
+        bankLogger = new CSVBankLogger(this);
 
         logStatus();
         startTasks();
