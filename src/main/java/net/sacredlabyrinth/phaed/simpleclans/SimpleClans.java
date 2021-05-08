@@ -7,6 +7,7 @@ import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
@@ -23,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -37,7 +37,6 @@ public class SimpleClans extends JavaPlugin {
 
     private final ArrayList<String> messages = new ArrayList<>();
 
-    private static final ArrayList<String> bankLogs = new ArrayList<>();
     private static SimpleClans instance;
     private static LanguageResource languageResource;
     private static final Logger logger = Logger.getLogger("SimpleClans");
@@ -52,6 +51,7 @@ public class SimpleClans extends JavaPlugin {
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
+    private BankLogger bankLogger;
     /**
      * @return the logger
      */
@@ -101,6 +101,8 @@ public class SimpleClans extends JavaPlugin {
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
+
+        bankLogger = new BankLogger(this);
 
         logStatus();
         startTasks();
@@ -177,9 +179,6 @@ public class SimpleClans extends JavaPlugin {
         if (getSettingsManager().isCachePlayerHeads()) {
             new PlayerHeadCacheTask(this).start();
         }
-        if (getSettingsManager().isBankLogEnabled()) {
-            new SaveBankLogTask().start();
-        }
     }
 
     @Override
@@ -234,6 +233,10 @@ public class SimpleClans extends JavaPlugin {
 
     public ProtectionManager getProtectionManager() {
         return protectionManager;
+    }
+
+    public BankLogger getBankLogger() {
+        return bankLogger;
     }
 
     /**
@@ -305,14 +308,6 @@ public class SimpleClans extends JavaPlugin {
 
     public TeleportManager getTeleportManager() {
         return teleportManager;
-    }
-
-    public static void bankLog(String... data) {
-        bankLogs.addAll(Arrays.asList(data));
-    }
-
-    public static ArrayList<String> getBankLogs() {
-        return bankLogs;
     }
 
     @Deprecated

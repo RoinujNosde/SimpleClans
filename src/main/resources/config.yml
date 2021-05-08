@@ -127,7 +127,9 @@ economy:
     charge-upkeep-only-if-member-fee-enabled: true
     bank-log:
         enable: false
-        type: CSV
+        # Should we left space for another options?
+        #   Size: 10 - max size (in megabytes) of log files
+        #   Limit: 5 - max count of log files
 kill-weights:
     rival: 2.0
     civilian: 0.0

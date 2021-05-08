@@ -5,8 +5,10 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
+import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
 import org.bukkit.command.CommandSender;
 
 import static net.md_5.bungee.api.ChatColor.RED;
@@ -60,6 +62,9 @@ public class BankCommand extends BaseCommand {
             ChatBlock.sendMessage(sender, AQUA + lang("clan.admin.give", sender, amount, clan.getName()));
             clan.addBb(sender.getName(), AQUA + lang("bb.clan.give", sender, amount));
         }
+
+        // Example of usage:
+        SimpleClans.getInstance().getBankLogger().log(sender, clan, economyResponse, BankLogger.Operation.DEPOSIT, amount);
     }
 
     @Subcommand("%set")
