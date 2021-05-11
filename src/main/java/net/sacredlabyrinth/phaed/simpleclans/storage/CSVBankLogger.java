@@ -28,7 +28,7 @@ public class CSVBankLogger implements BankLogger {
         }
 
         try {
-            FileHandler fh = new FileHandler(getFilePath(), (int) (100 * Math.pow(10, 6)), 1, true);
+            FileHandler fh = new FileHandler(getFilePath(), (int) (plugin.getSettingsManager().getBankLogSize() * Math.pow(10, 6)), 1, true);
             fh.setFormatter(new CSVFormatter());
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");
