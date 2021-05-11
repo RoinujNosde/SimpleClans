@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +28,7 @@ public class CSVBankLogger implements BankLogger {
         }
 
         try {
-            FileHandler fh = new FileHandler(getFilePath(), (int) (100 * Math.pow(10, 6)), 10, false);
+            FileHandler fh = new FileHandler(getFilePath(), (int) (100 * Math.pow(10, 6)), 1, true);
             fh.setFormatter(new CSVFormatter());
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");
@@ -62,8 +61,8 @@ public class CSVBankLogger implements BankLogger {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @NotNull
     String getFilePath() {
-        String folderPath = plugin.getDataFolder().getPath() + File.separator + "bankLogs";
-        String filePath = folderPath + File.separator + DateFormat.getDateInstance().format(new Date()) + "_%u_%g.csv";
+        String folderPath = plugin.getDataFolder().getPath() + File.separator + "logs";
+        String filePath = folderPath + File.separator + "bank.csv";
 
         File file = new File(folderPath);
         if (!file.exists()) {
