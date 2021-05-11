@@ -4,8 +4,12 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
+import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -19,8 +23,10 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.sacredlabyrinth.phaed.simpleclans.EconomyResponse.*;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.*;
+import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause;
+import static net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger.Operation.*;
 import static org.bukkit.ChatColor.*;
 
 /**
@@ -104,15 +110,15 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void deposit(double amount, Player player) {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
-                player.sendMessage(ChatColor.AQUA + lang("player.clan.deposit", player, amount));
-                addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.deposit", amount));
+                player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
+                addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
-                player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money", player));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player));
             }
         } else {
-            player.sendMessage(ChatColor.AQUA + lang("not.sufficient.money", player));
+            player.sendMessage(AQUA + lang("not.sufficient.money", player));
         }
     }
 
@@ -120,11 +126,18 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Deposits money to the clan
      */
     public EconomyResponse deposit(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
+        EconomyResponse response = null;
+
         if (amount < 0) {
-            return EconomyResponse.NEGATIVE_VALUE;
+            response = NEGATIVE_VALUE;
         }
 
-        return setBalance(sender, cause, getBalance() + amount);
+        if (response == null) {
+            response = setBalance(sender, cause, DEPOSIT, getBalance() + amount);
+        }
+
+        SimpleClans.getInstance().getBankLogger().log(sender, this, response, DEPOSIT, amount);
+        return response;
     }
 
     /**
@@ -134,12 +147,12 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void withdraw(double amount, Player player) {
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
-                player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, amount));
-                addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", amount));
+                player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
+                addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
             }
         } else {
-            player.sendMessage(ChatColor.AQUA + lang("clan.bank.not.enough.money", player));
+            player.sendMessage(AQUA + lang("clan.bank.not.enough.money", player));
         }
     }
 
@@ -147,15 +160,22 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Withdraws money from the clan
      */
     public EconomyResponse withdraw(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
+        EconomyResponse response = null;
+
         if (amount < 0) {
-            return EconomyResponse.NEGATIVE_VALUE;
+            response = NEGATIVE_VALUE;
         }
 
         if (getBalance() >= amount) {
-            return setBalance(sender, cause, getBalance() - amount);
+            if (response == null) {
+                response = setBalance(sender, cause, WITHDRAW, getBalance() - amount);
+            }
         } else {
-            return EconomyResponse.NOT_ENOUGH_BALANCE;
+            response = NOT_ENOUGH_BALANCE;
         }
+
+        SimpleClans.getInstance().getBankLogger().log(sender, this, response, WITHDRAW, amount);
+        return response;
     }
 
     /**
@@ -228,21 +248,26 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param balance the balance to set
      */
     public void setBalance(double balance) {
-        setBalance(null, Cause.API, balance);
+        setBalance(null, Cause.API, SET, balance);
     }
 
-    public EconomyResponse setBalance(@Nullable CommandSender updater, @NotNull Cause cause, double balance) {
+    public EconomyResponse setBalance(@Nullable CommandSender updater, @NotNull Cause cause, @NotNull BankLogger.Operation operation, double balance) {
+        EconomyResponse response = SUCCESS;
+
         ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(updater, this, getBalance(), balance, cause);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            return EconomyResponse.CANCELLED;
+            response = CANCELLED;
         }
 
         this.balance = event.getNewBalance();
         if (cause != Cause.LOADING) {
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
-        return EconomyResponse.SUCCESS;
+        if (cause == Cause.COMMAND && operation == SET) {
+            SimpleClans.getInstance().getBankLogger().log(updater, this, response, SET, balance);
+        }
+        return response;
     }
 
     /**
@@ -702,7 +727,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
             if (rival != null) {
                 if (isWarring(rivalTag)) {
-                    out.append(ChatColor.DARK_RED).append("[").append(ChatUtils.stripColors(rival.getColorTag()))
+                    out.append(DARK_RED).append("[").append(ChatUtils.stripColors(rival.getColorTag()))
                             .append("]").append(sep);
                 } else {
                     out.append(rival.getColorTag()).append(sep);
@@ -1112,7 +1137,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getPermissionsManager().removeClanPlayerPermissions(cp);
 
         cp.setClan(null);
-        cp.addPastClan(getColorTag() + (cp.isLeader() ? ChatColor.DARK_RED + "*" : ""));
+        cp.addPastClan(getColorTag() + (cp.isLeader() ? DARK_RED + "*" : ""));
         cp.setLeader(false);
         cp.setTrusted(false);
         cp.setJoinDate(0);
@@ -1353,7 +1378,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         }
 
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("clan.announce") + ChatColor.AQUA + "] " + ChatColor.AQUA + "[" + Helper.getColorName(playerName) + ChatColor.WHITE + "] " + message);
+        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(AQUA + "[" + lang("clan.announce") + AQUA + "] " + AQUA + "[" + Helper.getColorName(playerName) + WHITE + "] " + message);
     }
 
     /**
@@ -1371,7 +1396,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 ChatBlock.sendMessage(pl, message);
             }
         }
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("leader.announce") + ChatColor.AQUA + "] " + ChatColor.WHITE + message);
+        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(AQUA + "[" + lang("leader.announce") + AQUA + "] " + WHITE + message);
     }
 
     /**
@@ -1481,7 +1506,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             if (SimpleClans.getInstance().getSettingsManager().isDisableMessages() && sender != null) {
                 this.clanAnnounce(sender.getName(), AQUA + lang("clan.has.been.disbanded", this.getName()));
             } else {
-                SimpleClans.getInstance().getClanManager().serverAnnounce(ChatColor.AQUA + lang("clan.has.been.disbanded", this.getName()));
+                SimpleClans.getInstance().getClanManager().serverAnnounce(AQUA + lang("clan.has.been.disbanded", this.getName()));
             }
         }
 
@@ -1491,7 +1516,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 cp.setClan(null);
 
                 if (isVerified()) {
-                    cp.addPastClan(getColorTag() + (cp.isLeader() ? ChatColor.DARK_RED + "*" : ""));
+                    cp.addPastClan(getColorTag() + (cp.isLeader() ? DARK_RED + "*" : ""));
                 }
 
                 cp.setLeader(false);
@@ -1505,15 +1530,15 @@ public class Clan implements Serializable, Comparable<Clan> {
             String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, ChatColor.AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
+                c.addBb(disbanded, AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
+                c.addBb(disbanded, AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, ChatColor.AQUA + lang("has.been.disbanded.alliance.ended", getName()));
+                c.addBb(disbanded, AQUA + lang("has.been.disbanded.alliance.ended", getName()));
             }
         }
         SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
@@ -1563,7 +1588,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
             if (requestPlayer != null) {
-                this.addBb(requestPlayer.getName(), ChatColor.AQUA + lang("you.are.at.war",
+                this.addBb(requestPlayer.getName(), AQUA + lang("you.are.at.war",
                         this.getName(), targetClan.getColorTag()));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);

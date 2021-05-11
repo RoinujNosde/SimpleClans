@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.util.logging.*;
 
 public class CSVBankLogger implements BankLogger {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final SimpleClans plugin;
 
     public CSVBankLogger(SimpleClans plugin) {
@@ -33,19 +34,22 @@ public class CSVBankLogger implements BankLogger {
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");
             logger.addHandler(fh);
+            if (!plugin.getSettingsManager().isDebugging()) {
+                logger.setUseParentHandlers(false);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void log(CommandSender sender, Clan clan, EconomyResponse economyResponse, Operation operation, double amount) {
+    public void log(@Nullable CommandSender sender, @NotNull Clan clan, @NotNull EconomyResponse economyResponse, @NotNull Operation operation, double amount) {
         if (!plugin.getSettingsManager().isBankLogEnabled()) {
             return;
         }
 
         List<String> logList = new ArrayList<>();
-        logList.add(sender.getName());
+        logList.add(sender != null ? sender.getName() : "API");
         logList.add(clan.getName());
         logList.add(economyResponse.name());
         logList.add(operation.name());

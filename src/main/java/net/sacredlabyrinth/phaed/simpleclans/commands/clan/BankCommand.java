@@ -10,6 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -69,7 +70,7 @@ public class BankCommand extends BaseCommand {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 } else {
-                    clan.setBalance(player, ClanBalanceUpdateEvent.Cause.REVERT, clan.getBalance() + amount);
+                    clan.setBalance(player, ClanBalanceUpdateEvent.Cause.REVERT, BankLogger.Operation.WITHDRAW, clan.getBalance() + amount);
                 }
                 break;
             case NOT_ENOUGH_BALANCE:
@@ -119,7 +120,7 @@ public class BankCommand extends BaseCommand {
                 clan.addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
             } else {
                 //Reverts the deposit if something went wrong with Vault
-                clan.setBalance(player, ClanBalanceUpdateEvent.Cause.REVERT, clan.getBalance() - amount);
+                clan.setBalance(player, ClanBalanceUpdateEvent.Cause.REVERT, BankLogger.Operation.DEPOSIT, clan.getBalance() - amount);
             }
         }
     }
