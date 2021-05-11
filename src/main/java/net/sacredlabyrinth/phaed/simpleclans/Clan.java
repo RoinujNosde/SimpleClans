@@ -136,7 +136,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             response = setBalance(sender, cause, DEPOSIT, getBalance() + amount);
         }
 
-        SimpleClans.getInstance().getBankLogger().log(sender, this, response, DEPOSIT, amount);
+        SimpleClans.getInstance().getBankLogger().log(sender, this, response, DEPOSIT, cause, amount);
         return response;
     }
 
@@ -166,15 +166,15 @@ public class Clan implements Serializable, Comparable<Clan> {
             response = NEGATIVE_VALUE;
         }
 
-        if (getBalance() >= amount) {
-            if (response == null) {
-                response = setBalance(sender, cause, WITHDRAW, getBalance() - amount);
-            }
-        } else {
+        if (getBalance() < amount) {
             response = NOT_ENOUGH_BALANCE;
         }
 
-        SimpleClans.getInstance().getBankLogger().log(sender, this, response, WITHDRAW, amount);
+        if (response == null) {
+            response = setBalance(sender, cause, WITHDRAW, getBalance() - amount);
+        }
+
+        SimpleClans.getInstance().getBankLogger().log(sender, this, response, WITHDRAW, cause, amount);
         return response;
     }
 
@@ -262,10 +262,10 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         this.balance = event.getNewBalance();
         if (cause != Cause.LOADING) {
+            if (operation == SET) {
+                SimpleClans.getInstance().getBankLogger().log(updater, this, response, SET, cause, balance);
+            }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
-        }
-        if (cause == Cause.COMMAND && operation == SET) {
-            SimpleClans.getInstance().getBankLogger().log(updater, this, response, SET, balance);
         }
         return response;
     }

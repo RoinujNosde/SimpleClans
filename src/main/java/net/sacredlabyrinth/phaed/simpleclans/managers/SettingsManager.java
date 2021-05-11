@@ -452,13 +452,6 @@ public final class SettingsManager {
         return getConfig().getBoolean("economy.bank-log.enable", false);
     }
 
-    public String getBankLogType() {
-        return getConfig().getString("economy.bank-log.type", "csv");
-    }
-
-    public int getBankLogSize() {
-        return getConfig().getInt("economy.bank-log.size", 100);
-    }
     public boolean isWarRequestEnabled() {
         return getConfig().getBoolean("war-and-protection.war-start.request-enabled", true);
     }

@@ -127,8 +127,6 @@ economy:
     charge-upkeep-only-if-member-fee-enabled: true
     bank-log:
         enable: false
-        type: csv
-        size: 100
 kill-weights:
     rival: 2.0
     civilian: 0.0
