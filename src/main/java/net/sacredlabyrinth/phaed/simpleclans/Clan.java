@@ -4,7 +4,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
-import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static net.sacredlabyrinth.phaed.simpleclans.EconomyResponse.*;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause;
-import static net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger.Operation.*;
+import static net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger.Operation.*;
 import static org.bukkit.ChatColor.*;
 
 /**

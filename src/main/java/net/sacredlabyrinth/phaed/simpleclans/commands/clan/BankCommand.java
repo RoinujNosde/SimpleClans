@@ -10,7 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

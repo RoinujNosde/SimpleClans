@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.storage;
+package net.sacredlabyrinth.phaed.simpleclans.loggers;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;

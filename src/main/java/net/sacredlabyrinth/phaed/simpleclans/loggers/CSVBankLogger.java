@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.storage;
+package net.sacredlabyrinth.phaed.simpleclans.loggers;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
@@ -10,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,7 +82,24 @@ public class CSVBankLogger implements BankLogger {
             folder.mkdirs();
         }
 
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                makeHeader(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return filePath;
+    }
+
+    private void makeHeader(File file) throws FileNotFoundException {
+        try (PrintWriter pw = new PrintWriter(file)) {
+            String header = "Date,Sender,Clan Name,Response,Operation,Cause,Sender Balance,Amount,Clan Balance";
+            pw.println(header);
+        }
     }
 
     @NotNull
@@ -90,11 +109,11 @@ public class CSVBankLogger implements BankLogger {
 
     static class CSVFormatter extends Formatter {
 
+        private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
+
         @Override
         public String format(LogRecord record) {
-            Date now = new Date(record.getMillis());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-            return dateFormat.format(now) + "," + record.getMessage() + "\n";
+            return dateFormat.format(record.getMillis()) + "," + record.getMessage() + "\n";
         }
     }
 }

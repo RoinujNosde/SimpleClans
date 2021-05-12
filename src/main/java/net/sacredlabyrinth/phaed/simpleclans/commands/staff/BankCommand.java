@@ -7,7 +7,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
-import net.sacredlabyrinth.phaed.simpleclans.storage.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import org.bukkit.command.CommandSender;
 
 import static net.md_5.bungee.api.ChatColor.RED;
