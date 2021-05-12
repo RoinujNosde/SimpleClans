@@ -10,12 +10,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class BankLog {
     private final DecimalFormat decimalFormat = new DecimalFormat("##.##");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
 
     private final CommandSender sender;
     private final Clan clan;
@@ -42,6 +45,7 @@ public class BankLog {
         double senderMoney = (sender instanceof Player) ? SimpleClans.getInstance().getPermissionsManager().playerGetMoney((Player) sender) : 0;
 
         List<String> values = new ArrayList<>();
+        values.add(dateFormat.format(new Date()));
         values.add(sender != null ? sender.getName() : "API");
         values.add(clan.getName());
         values.add(economyResponse.name());

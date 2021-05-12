@@ -88,11 +88,9 @@ public class CSVBankLogger implements BankLogger {
 
     static class CSVFormatter extends Formatter {
 
-        private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");
-
         @Override
         public String format(LogRecord record) {
-            return dateFormat.format(record.getMillis()) + "," + record.getMessage() + "\n";
+            return record.getMessage() + "\n";
         }
     }
 }
