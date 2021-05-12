@@ -7,6 +7,8 @@ import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.CSVBankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
@@ -35,6 +37,7 @@ import java.util.regex.Pattern;
 public class SimpleClans extends JavaPlugin {
 
     private final ArrayList<String> messages = new ArrayList<>();
+
     private static SimpleClans instance;
     private static LanguageResource languageResource;
     private static final Logger logger = Logger.getLogger("SimpleClans");
@@ -48,6 +51,8 @@ public class SimpleClans extends JavaPlugin {
     private ProtectionManager protectionManager;
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
+
+    private BankLogger bankLogger;
 
     /**
      * @return the logger
@@ -99,6 +104,8 @@ public class SimpleClans extends JavaPlugin {
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
 
+        bankLogger = new CSVBankLogger(this);
+
         logStatus();
         startTasks();
         startMetrics();
@@ -137,33 +144,33 @@ public class SimpleClans extends JavaPlugin {
     }
 
     private void startMetrics() {
-    	Metrics metrics = new Metrics(this, 7131);
-    	SettingsManager sm = getSettingsManager();
-    	ClanManager cm = getClanManager();
-    	String on = "enabled";
-    	String off = "disabled";
-    	
-    	metrics.addCustomChart(new Metrics.SingleLineChart("clans", () -> cm.getClans().size()));
-    	metrics.addCustomChart(new Metrics.SingleLineChart("clan_players", () -> cm.getAllClanPlayers().size()));
-    	metrics.addCustomChart(new Metrics.SimplePie("language", () -> sm.getLanguage().toString()));
-    	metrics.addCustomChart(new Metrics.SimplePie("machine_language", () -> Locale.getDefault().toString()));
-    	metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.isLanguagePerPlayer() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.isUseMysql() ? "MySQL" : "SQLite"));
-    	metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.isSavePeriodically() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.getSaveInterval())));
-    	metrics.addCustomChart(new Metrics.SimplePie("upkeep", () -> sm.isClanUpkeep() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("member_fee", () -> sm.isMemberFee() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("rejoin_cooldown", () -> sm.isRejoinCooldown() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("clan_verification", () -> sm.isRequireVerification() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("money_per_kill", () -> sm.isMoneyPerKill() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("threads", () -> sm.getUseThreads() ? on : off));
-    	metrics.addCustomChart(new Metrics.SimplePie("bungeecord", () -> sm.getUseBungeeCord() ? on : off));
+        Metrics metrics = new Metrics(this, 7131);
+        SettingsManager sm = getSettingsManager();
+        ClanManager cm = getClanManager();
+        String on = "enabled";
+        String off = "disabled";
+
+        metrics.addCustomChart(new Metrics.SingleLineChart("clans", () -> cm.getClans().size()));
+        metrics.addCustomChart(new Metrics.SingleLineChart("clan_players", () -> cm.getAllClanPlayers().size()));
+        metrics.addCustomChart(new Metrics.SimplePie("language", () -> sm.getLanguage().toString()));
+        metrics.addCustomChart(new Metrics.SimplePie("machine_language", () -> Locale.getDefault().toString()));
+        metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.isLanguagePerPlayer() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.isUseMysql() ? "MySQL" : "SQLite"));
+        metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.isSavePeriodically() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.getSaveInterval())));
+        metrics.addCustomChart(new Metrics.SimplePie("upkeep", () -> sm.isClanUpkeep() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("member_fee", () -> sm.isMemberFee() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("rejoin_cooldown", () -> sm.isRejoinCooldown() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("clan_verification", () -> sm.isRequireVerification() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("money_per_kill", () -> sm.isMoneyPerKill() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("threads", () -> sm.getUseThreads() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("bungeecord", () -> sm.getUseBungeeCord() ? on : off));
     }
 
     private void startTasks() {
-    	if (getSettingsManager().isSavePeriodically()) {
-    		new SaveDataTask().start();
-    	}
+        if (getSettingsManager().isSavePeriodically()) {
+            new SaveDataTask().start();
+        }
         if (getSettingsManager().isMemberFee()) {
             new CollectFeeTask().start();
         }
@@ -179,9 +186,9 @@ public class SimpleClans extends JavaPlugin {
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelTasks(this);
-    	if (getSettingsManager().isSavePeriodically()) {
-    		getStorageManager().saveModified();
-    	}
+        if (getSettingsManager().isSavePeriodically()) {
+            getStorageManager().saveModified();
+        }
         getStorageManager().closeConnection();
         getPermissionsManager().savePermissions();
     }
@@ -228,6 +235,10 @@ public class SimpleClans extends JavaPlugin {
 
     public ProtectionManager getProtectionManager() {
         return protectionManager;
+    }
+
+    public BankLogger getBankLogger() {
+        return bankLogger;
     }
 
     /**

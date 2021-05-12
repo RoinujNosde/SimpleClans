@@ -448,6 +448,10 @@ public final class SettingsManager {
         }
     }
 
+    public boolean isBankLogEnabled() {
+        return getConfig().getBoolean("economy.bank-log.enable", false);
+    }
+
     public boolean isWarRequestEnabled() {
         return getConfig().getBoolean("war-and-protection.war-start.request-enabled", true);
     }
