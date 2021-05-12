@@ -4,6 +4,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLog;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -136,7 +137,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             response = setBalance(sender, cause, DEPOSIT, getBalance() + amount);
         }
 
-        SimpleClans.getInstance().getBankLogger().log(sender, this, response, DEPOSIT, cause, amount);
+        SimpleClans.getInstance().getBankLogger().log(new BankLog(sender, this, response, DEPOSIT, cause, amount));
         return response;
     }
 
@@ -174,7 +175,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             response = setBalance(sender, cause, WITHDRAW, getBalance() - amount);
         }
 
-        SimpleClans.getInstance().getBankLogger().log(sender, this, response, WITHDRAW, cause, amount);
+        SimpleClans.getInstance().getBankLogger().log(new BankLog(sender, this, response, WITHDRAW, cause, amount));
         return response;
     }
 
@@ -263,7 +264,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.balance = event.getNewBalance();
         if (cause != Cause.LOADING) {
             if (operation == SET) {
-                SimpleClans.getInstance().getBankLogger().log(updater, this, response, SET, cause, balance);
+                SimpleClans.getInstance().getBankLogger().log(new BankLog(updater, this, response, SET, cause, balance));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
