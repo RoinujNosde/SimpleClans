@@ -129,6 +129,11 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 | `simpleclans.admin.promote` | Can promote players to clan leaders |
 | `simpleclans.admin.all-seeing-eye` | Can see all clan chats |
 | `simpleclans.admin.reload` | Can reload configuration |
+| `simpleclans.admin.permanent` | Can toggle clan permanent status |
+| `simpleclans.admin.bank.status` | Can check the balance of a clan |
+| `simpleclans.admin.bank.take` | Can take money from a clan |
+| `simpleclans.admin.bank.give` | Can give money to a clan |
+| `simpleclans.admin.bank.set` | Can set the balance of a clan |
 
 ### Other Nodes
 
