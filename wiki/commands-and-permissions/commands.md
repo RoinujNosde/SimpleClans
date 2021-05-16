@@ -128,6 +128,10 @@ description: null
 | `/clan resetkdr (player)` | Resets a player's KDR |
 | `/clan admin demote (player)` | Demotes a leader from any clan |
 | `/clan admin promote (player)` | Promotes a member from any clan |
+| `/clan admin permanent (clan)`  | Toggles permanent status of any clan |
+| `/clan admin bank give (clan) (amount)`  | Gives an amount of money to a clan's bank |
+| `/clan admin bank take (clan) (amount)` | Takes an amount of money from a clan's bank |
+| `/clan admin bank set (clan) (amount)` | Sets an amount of money to a clan's bank |
 
 
 
