@@ -5,7 +5,7 @@
     <artifactId>SimpleClans</artifactId>
     <version>2.15.2</version>
     <name>SimpleClans</name>
-    <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
+    <url>https://www.spigotmc.org/resources/simpleclans.71242/</url>
 
     <build>
         <finalName>${project.name}</finalName>
@@ -87,6 +87,10 @@
                         <relocation>
                             <pattern>org.reflections</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.reflections</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javassist</pattern>
+                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.javassist</shadedPattern>
                         </relocation>
                     </relocations>
                     <artifactSet>
