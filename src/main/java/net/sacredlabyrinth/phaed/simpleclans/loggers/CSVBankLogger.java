@@ -11,6 +11,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
 
+/**
+ * Logs all bank actions to one csv file per day.
+ * @since v.2.15.3
+ */
 public class CSVBankLogger implements BankLogger {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
