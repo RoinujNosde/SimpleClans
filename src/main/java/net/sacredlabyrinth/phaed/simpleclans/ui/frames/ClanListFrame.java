@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl;
@@ -17,22 +18,26 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class ClanListFrame extends SCFrame {
 	private final SimpleClans plugin = SimpleClans.getInstance();
-	private final List<Clan> clans = plugin.getClanManager().getClans();
+	private final List<Clan> clans;
 	private final Paginator paginator;
 	private final RankingNumberResolver<Clan, BigDecimal> rankingResolver;
 
 	public ClanListFrame(SCFrame parent, Player viewer) {
 		super(parent, viewer);
+		SettingsManager sm = plugin.getSettingsManager();
+		clans = plugin.getClanManager().getClans().stream()
+				.filter(clan -> clan.isVerified() || sm.isShowUnverifiedOnList()).collect(Collectors.toList());
 		paginator = new Paginator(getSize() - 9, clans);
 		plugin.getClanManager().sortClansByKDR(clans);
 
 		rankingResolver = new RankingNumberResolver<>(clans, c -> KDRFormat.toBigDecimal(c.getTotalKDR()), false,
-				plugin.getSettingsManager().getRankingType());
+				sm.getRankingType());
 	}
 
 	@Override
