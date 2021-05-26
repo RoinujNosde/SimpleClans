@@ -8,39 +8,242 @@ description: null
 
 ## General Settings
 
-* `enable-gui` - Enables the GUI. 
-* `disable-messages` - This will disable broadcasts from the plugin such as "Clan created", "Clan disbanded", etc. 
-* `tameable-mobs-sharing` -  
-* `teleport-blocks` -  
-* `teleport-home-on-spawn` - Players will be teleported to their clan's home when they respawn. 
-* `drop-items-on-clan-home` -  
-* `keep-items-on-clan-home` -  
-* `item-list` -  
-* `show-debug-info` -  
-* `mchat-integration` -  
-* `enable-auto-groups` -  
-* `chat-compatibility-mode` -  
-* `rival-limit-percent` -  
-* `use-colorcode-from-prefix-for-name` -  
-* `display-chat-tags` -  
-* `unrivable-clans` -  
-* `show-unverified-on-list` -  
-* `blacklisted-worlds` -  
-* `banned-players` -  
-* `disallowed-tags` -  
-* `language` -  
-* `language-per-player` -  
-* `disallowed-tag-colors` -  
-* `server-name` -  
-* `new-clan-verification-required` -  
-* `allow-regroup-command` -  
-* `allow-reset-kdr` -  
-* `rejoin-cooldown` -  
-* `rejoin-cooldown-enabled` -  
-* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\) 
-* `ranking-type` - Valid options: ORDINAL and DENSE
-  * `DENSE`: if players have the same KDR, they will have the same rank position. Ex.: 12234
-  * `ORDINAL`: Every player will have a different rank position. Ex.: 12345
+<table>
+  <thead>
+    <tr>
+      <th style="text-align:left">Option</th>
+      <th style="text-align:left">Description</th>
+      <th style="text-align:left">Default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left"><code>enable-gui</code>
+      </td>
+      <td style="text-align:left">Enables the GUI</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>disable-messages</code>
+      </td>
+      <td style="text-align:left">Disables broadcasts from plugin (&quot;Clan Created&quot;, &quot;Clan
+        Disbanded&quot;, etc.)</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>tameable-mobs-sharing</code>
+      </td>
+      <td style="text-align:left">If true, tameable mobs will be shared with your clan members. It also
+        disables any clan damage to them</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>teleport-blocks</code>
+      </td>
+      <td style="text-align:left">Fancy teleporting (placed glass block below)</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>teleport-home-on-spawn</code>
+      </td>
+      <td style="text-align:left">Players will be teleported to their clan&apos;s home when they respawn</td>
+      <td
+      style="text-align:left"><code>false</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>drop-items-on-clan-home</code>
+      </td>
+      <td style="text-align:left">Drops defined items on teleporting to clan home</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>keep-items-on-clan-home</code>
+      </td>
+      <td style="text-align:left">Keeps defined items on teleporting to clan home</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>item-list</code>
+      </td>
+      <td style="text-align:left">List of defined items (used with <code>keep-item-on-clan-home</code> and <code>drop-items-on-clan-home</code>)</td>
+      <td
+      style="text-align:left"><code>[]</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>show-debug-info</code>
+      </td>
+      <td style="text-align:left">Shows debug info on console</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>enable-auto-groups</code>
+      </td>
+      <td style="text-align:left">Manages group of a clan player by auto.
+        <br />(For example, a leader would be added to <code>sc_leader</code> group, trusted
+        player to <code>sc_trusted</code>, etc.)</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>chat-compatibility-mode</code>
+      </td>
+      <td style="text-align:left">Changes method of initiate tags.
+        <br />If you have a problem with tags, try to disable it.</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>rival-limit-percent</code>
+      </td>
+      <td style="text-align:left">
+        <p>The percent of possible rivals per clan</p>
+        <p>Formula: <code>(rivalsOfClan - 1) *  rivalLimitPercent / 100</code>
+        </p>
+      </td>
+      <td style="text-align:left"><code>50</code>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>use-colorcode-from-prefix-for-name</code>
+      </td>
+      <td style="text-align:left">Uses the last color code in the end of prefix</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>display-chat-tags</code>
+      </td>
+      <td style="text-align:left">Shows clan tags in chat</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>unrivable-clans</code>
+      </td>
+      <td style="text-align:left">The list of clans, which can&apos;t be rivaled</td>
+      <td style="text-align:left">See Example below</td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>show-unverified-on-list</code>
+      </td>
+      <td style="text-align:left">
+        <p>Shows or not unverified clans on <code>/clan list</code>
+        </p>
+        <p>(Doesn&apos;t affect on GUI)</p>
+      </td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>blacklisted-worlds</code>
+      </td>
+      <td style="text-align:left">Currently unavailable. Work in progress</td>
+      <td style="text-align:left"><code>[]</code>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>banned-players</code>
+      </td>
+      <td style="text-align:left">List of banned players from using plugin</td>
+      <td style="text-align:left"><code>[]</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>disallowed-tags</code>
+      </td>
+      <td style="text-align:left">List of tags, which wouldn&apos;t be used on clan creation</td>
+      <td style="text-align:left">See Example below</td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>language</code>
+      </td>
+      <td style="text-align:left">Default language</td>
+      <td style="text-align:left"><code>en</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>user-language-selector</code>
+      </td>
+      <td style="text-align:left">Allows players to change their language</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>disallowed-tag-colors</code>
+      </td>
+      <td style="text-align:left">The list of tag colors, which wouldn&apos;t be used on clan creation</td>
+      <td
+      style="text-align:left">See Example below</td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>server-name</code>
+      </td>
+      <td style="text-align:left">The name of your server</td>
+      <td style="text-align:left"><code>&amp;4SimpleClans</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>new-clan-verification-required</code>
+      </td>
+      <td style="text-align:left">Should new clans requires being verified?</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>allow-regroup-command</code>
+      </td>
+      <td style="text-align:left">Allows players to use regroup command</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>allow-reset-kdr</code>
+      </td>
+      <td style="text-align:left">Allows players to reset their KDR</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>rejoin-cooldown</code>
+      </td>
+      <td style="text-align:left">The time in <del>years</del> minutes, when player will can join after resigning
+        to the same clan</td>
+      <td style="text-align:left"><code>60</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>rejoin-cooldown-enabled</code>
+      </td>
+      <td style="text-align:left">Should rejoin cooldown be enabled?</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>ranking-type</code>
+      </td>
+      <td style="text-align:left">
+        <p><code>DENSE</code>: if players have the same KDR, they will have the same
+          rank position. Ex.: 12234</p>
+        <p><code>ORDINAL</code>: Every player will have a different rank position.
+          Ex.: 12345</p>
+      </td>
+      <td style="text-align:left"><code>DENSE</code>
+        <br />
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 #### Example
 
@@ -81,7 +284,6 @@ settings:
     allow-reset-kdr: false
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
-    min-to-verify: 1
     ranking-type: DENSE
 ```
 
@@ -279,6 +481,7 @@ kill-weights:
 * `ff-on-by-default` - 
 * `min-length` - 
 * `min-size-to-set-ally` - 
+* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\)
 
 #### Example
 
@@ -298,6 +501,7 @@ clan:
     ff-on-by-default: false
     min-length: 2
     min-size-to-set-ally: 3
+    min-to-verify: 1
 ```
 
 ## Tasks
