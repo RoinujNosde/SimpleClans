@@ -6,27 +6,24 @@ description: null
 
 ## Необходимые плагины
 
+Вы вправе использовать и другие плагины, изменяющие таб, если они поддерживают PlacehodlerAPI.
+
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [PlayerListPlus](https://www.spigotmc.org/resources/%E2%99%9B-playerlistplus-%E2%99%9B-1-8-1-14-3-tablist-editor.55878/) \(Вы можете использовать и другие плагины на таб, если он поддерживает PlaceholderAPI\)
+* [TAB](https://www.spigotmc.org/resources/tab-1-7-x-1-16-5-free-version.57806/)
 
 ## Пошагово
 
-1. Откройте конфиг PlayerListPlus и измените format, добавив`%simpleclans_clan_color_tag%`:
+1. Откройте конфиг TAB и измените format, добавив`%simpleclans_clan_color_tag%`:
 
-{% code title="Example:" %}
+{% code title="Пример:" %}
 ```yaml
-slot-items:
-#   This slot items will shows all players
- PLAYERS:
-     format: "%simpleclans_clan_color_tag%&c.$displayname"
-     type: PLAYER_LIST
-     hidevanished: true
-     ping: true
-     skin: true
+Groups:
+    _OTHER_:
+        tabprefix: "%simpleclans_clan_color_tag%%vault-prefix% "
 ```
 {% endcode %}
 
-2. Перезапустите сервер \(или перезагрузите конфиг\) и наслаждайтесь!
+2. Перезапустите сервер \(или перезагрузите конфиг: `/tab reload`\) и наслаждайтесь!
 
 ## Скриншот
 
