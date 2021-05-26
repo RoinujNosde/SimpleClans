@@ -149,7 +149,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        if (clan.getSize() >= settings.getMaxMembers()) {
+        if (clan.getSize() >= settings.getMaxMembers() && settings.getMaxMembers() > 0) {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.members.reached.limit", sender));
             return;
         }
