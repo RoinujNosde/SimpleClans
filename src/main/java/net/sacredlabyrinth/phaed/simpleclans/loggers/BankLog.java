@@ -16,6 +16,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Class responsible for logging bank related transactions.
+ * @since 2.15.3
+ */
 public class BankLog {
     private final DecimalFormat decimalFormat = new DecimalFormat("##.##");
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - HH:mm");

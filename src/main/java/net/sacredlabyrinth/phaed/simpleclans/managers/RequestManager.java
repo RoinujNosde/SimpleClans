@@ -416,7 +416,7 @@ public final class RequestManager {
                     ask(req);
                     req.incrementAskCount();				
 			}
-		}}.runTaskTimerAsynchronously(plugin, 0, plugin.getSettingsManager().getRequestFreqencySecs() * 20L);
+		}}.runTaskTimerAsynchronously(plugin, 0, plugin.getSettingsManager().getRequestFrequencySecs() * 20L);
     }
 
     /**
