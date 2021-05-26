@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -998,7 +999,7 @@ public final class SettingsManager {
      * @return the serverName
      */
     public String getServerName() {
-        return Helper.parseColors(serverName);
+        return ChatUtils.parseColors(serverName);
     }
 
     /**
@@ -1030,9 +1031,9 @@ public final class SettingsManager {
     }
 
     /**
-     * @return the requestFreqencySecs
+     * @return the requestFrequencySecs
      */
-    public int getRequestFreqencySecs() {
+    public int getRequestFrequencySecs() {
         return requestFreqencySecs;
     }
 

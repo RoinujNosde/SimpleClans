@@ -562,9 +562,8 @@ public class Helper {
     }
 
     /*
-     * Retrieves the last color code @param msg @return
-     */
-    /**
+     * Retrieves the last color code
+     *
      * @param msg
      * @return
      */
