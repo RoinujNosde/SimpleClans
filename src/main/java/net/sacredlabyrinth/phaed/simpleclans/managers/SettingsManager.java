@@ -31,7 +31,6 @@ public final class SettingsManager {
     private boolean keepOnHome;
     private boolean debugging;
     private final SimpleClans plugin;
-    private boolean mChatIntegration;
     private boolean pvpOnlywhileInWar;
     private boolean useColorCodeFromPrefix;
     private boolean confirmationForPromote;
@@ -248,7 +247,6 @@ public final class SettingsManager {
             }
         }
         debugging = getConfig().getBoolean("settings.show-debug-info");
-        mChatIntegration = getConfig().getBoolean("settings.mchat-integration");
         pvpOnlywhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
         enableAutoGroups = getConfig().getBoolean("settings.enable-auto-groups");
         useColorCodeFromPrefix = getConfig().getBoolean("settings.use-colorcode-from-prefix-for-name");
@@ -1645,10 +1643,6 @@ public final class SettingsManager {
 
     public boolean isPvpOnlywhileInWar() {
         return pvpOnlywhileInWar;
-    }
-
-    public boolean ismChatIntegration() {
-        return mChatIntegration;
     }
 
     public boolean isDebugging() {
