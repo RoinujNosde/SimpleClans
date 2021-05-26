@@ -357,6 +357,7 @@ public class ClanCommands extends BaseCommand {
     @Subcommand("%resign")
     @CommandPermission("simpleclans.member.resign")
     @Description("{@@command.description.resign}")
+    @HelpSearchTags("leave")
     public void resign(@Conditions("clan_member") Player player) {
         new ConversationFactory(plugin)
                 .withFirstPrompt(new ResignPrompt())

@@ -22,7 +22,6 @@ settings:
     keep-items-on-clan-home: false
     item-list: []
     show-debug-info: false
-    mchat-integration: true
     enable-auto-groups: false
     chat-compatibility-mode: true
     rival-limit-percent: 50
