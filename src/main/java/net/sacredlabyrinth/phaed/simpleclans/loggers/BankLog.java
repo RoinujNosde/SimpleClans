@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * The general format for message of bank logging.
+ * Class responsible for logging bank related transactions.
  * @since 2.15.3
  */
 public class BankLog {

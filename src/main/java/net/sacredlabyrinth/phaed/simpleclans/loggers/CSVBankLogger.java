@@ -13,7 +13,7 @@ import java.util.logging.*;
 
 /**
  * Logs all bank actions to one csv file per day.
- * @since v.2.15.3
+ * @since 2.15.3
  */
 public class CSVBankLogger implements BankLogger {
 
