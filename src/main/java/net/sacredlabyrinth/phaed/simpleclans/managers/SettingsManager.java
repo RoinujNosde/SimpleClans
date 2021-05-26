@@ -32,7 +32,7 @@ public final class SettingsManager {
     private boolean keepOnHome;
     private boolean debugging;
     private final SimpleClans plugin;
-    private boolean pvpOnlywhileInWar;
+    private boolean pvpOnlyWhileInWar;
     private boolean useColorCodeFromPrefix;
     private boolean confirmationForPromote;
     private boolean confirmationForDemote;
@@ -248,7 +248,7 @@ public final class SettingsManager {
             }
         }
         debugging = getConfig().getBoolean("settings.show-debug-info");
-        pvpOnlywhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
+        pvpOnlyWhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
         enableAutoGroups = getConfig().getBoolean("settings.enable-auto-groups");
         useColorCodeFromPrefix = getConfig().getBoolean("settings.use-colorcode-from-prefix-for-name");
         bannedPlayers = getConfig().getStringList("settings.banned-players");
@@ -1642,8 +1642,8 @@ public final class SettingsManager {
         return enableAutoGroups;
     }
 
-    public boolean isPvpOnlywhileInWar() {
-        return pvpOnlywhileInWar;
+    public boolean isPvpOnlyWhileInWar() {
+        return pvpOnlyWhileInWar;
     }
 
     public boolean isDebugging() {

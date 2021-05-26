@@ -35,7 +35,7 @@ public class PvPOnlyInWar implements Listener {
         Clan attackerClan = plugin.getClanManager().getClanByPlayerUniqueId(attacker.getUniqueId());
         Clan victimClan = plugin.getClanManager().getClanByPlayerUniqueId(victim.getUniqueId());
 
-        if (plugin.getSettingsManager().isPvpOnlywhileInWar()) {
+        if (plugin.getSettingsManager().isPvpOnlyWhileInWar()) {
             process(event, attacker, victim, attackerClan, victimClan);
         }
     }

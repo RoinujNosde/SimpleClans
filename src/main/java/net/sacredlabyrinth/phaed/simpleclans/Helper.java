@@ -151,7 +151,7 @@ public class Helper {
     @SuppressWarnings("unchecked")
 	public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
     	if (ranks == null)
-    		ranks = new ArrayList<Rank>();
+    		ranks = new ArrayList<>();
     	
     	JSONArray array = new JSONArray();
     	for (Rank rank : ranks) {
@@ -159,9 +159,7 @@ public class Helper {
     		o.put("name", rank.getName());
     		o.put("displayName", rank.getDisplayName());
     		JSONArray permArray = new JSONArray();
-    		for (String p : rank.getPermissions()) {
-    			permArray.add(p);
-    		}
+            permArray.addAll(rank.getPermissions());
     		o.put("permissions", permArray);
     		array.add(o);
     	}
@@ -269,6 +267,7 @@ public class Helper {
      * @param input
      * @return
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static boolean isShort(String input) {
         try {
             Short.parseShort(input);

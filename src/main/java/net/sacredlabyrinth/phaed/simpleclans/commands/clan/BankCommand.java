@@ -5,13 +5,9 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
-import org.bukkit.Bukkit;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -49,7 +45,6 @@ public class BankCommand extends BaseCommand {
         processWithdraw(player, clan, amount);
     }
 
-    @SuppressWarnings("deprecation")
     private void processWithdraw(Player player, Clan clan, double amount) {
         if (!clan.isAllowWithdraw()) {
             String message = getCurrentCommandManager().getCommandReplacements()
@@ -58,15 +53,9 @@ public class BankCommand extends BaseCommand {
             return;
         }
         amount = Math.abs(amount);
-        BankWithdrawEvent event = new BankWithdrawEvent(player, clan, amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
-
         switch (clan.withdraw(player, ClanBalanceUpdateEvent.Cause.COMMAND, amount)) {
             case SUCCESS:
-                if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
+                if (permissions.playerGrantMoney(player, amount)) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
                 } else {
@@ -95,7 +84,6 @@ public class BankCommand extends BaseCommand {
         processDeposit(player, clan, amount);
     }
 
-    @SuppressWarnings("deprecation")
     private void processDeposit(Player player, Clan clan, double amount) {
         if (!clan.isAllowDeposit()) {
             String message = getCurrentCommandManager().getCommandReplacements()
@@ -104,11 +92,6 @@ public class BankCommand extends BaseCommand {
             return;
         }
         amount = Math.abs(amount);
-        BankDepositEvent event = new BankDepositEvent(player, clan, amount);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
         if (!permissions.playerHasMoney(player, amount)) {
             player.sendMessage(AQUA + lang("not.sufficient.money", player));
             return;
