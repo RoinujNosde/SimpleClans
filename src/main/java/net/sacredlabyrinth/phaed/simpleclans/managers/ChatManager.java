@@ -1,16 +1,17 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -82,7 +83,7 @@ public final class ChatManager {
                         }
 
                         String message = formatChat(channel, clanPlayer, event.getMessage(), event.getPlaceholders());
-                        String eyeMessage = formatSpyClanChat(clanPlayer, message);
+                        String eyeMessage = formatSpyChat(clanPlayer, message);
                         plugin.getLogger().info(message);
 
                         for (ClanPlayer cp : receivers) {
@@ -122,40 +123,29 @@ public final class ChatManager {
         return message;
     }
 
-    private String formatSpyClanChat(ClanPlayer cp, String msg) {
-        msg = ChatUtils.stripColors(msg);
+    private String formatSpyChat(ClanPlayer cp, String message) {
+        message = ChatUtils.stripColors(message);
 
-        if (msg.contains(ChatUtils.stripColors(cp.getClan().getColorTag()))) {
-            return ChatColor.DARK_GRAY + msg;
+        if (message.contains(ChatUtils.stripColors(Objects.requireNonNull(cp.getClan()).getColorTag()))) {
+            return ChatColor.DARK_GRAY + message;
         } else {
-            return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + msg;
+            return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + message;
         }
     }
 
-    private void sendToAllSeeing(String msg, List<ClanPlayer> cps) {
-        Collection<Player> players = Helper.getOnlinePlayers();
-
-        for (Player player : players) {
-            if (plugin.getPermissionsManager().has(player, "simpleclans.admin.all-seeing-eye")) {
-                boolean alreadySent = false;
-
-                ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-
-                if (cp != null && cp.isMuted()) {
-                    continue;
-                }
-
-                for (ClanPlayer cpp : cps) {
-                    if (cpp.getName().equalsIgnoreCase(player.getName())) {
-                        alreadySent = true;
-                    }
-                }
-
-                if (!alreadySent) {
-                    ChatBlock.sendMessage(player, msg);
-                }
-            }
-        }
+    /*
+        1. Gets all online players (clan players)
+        2. If online player contains permission and not muted
+        3. Subtracts this online players from the receivers to avoid repetition
+        4. Sends message
+     */
+    private void sendToAllSeeing(String message, List<ClanPlayer> receivers) {
+        List<ClanPlayer> onlinePlayers = plugin.getClanManager().getOnlineClanPlayers().stream()
+                .filter(player -> plugin.getPermissionsManager().has(player.toPlayer(), "simpleclans.admin.all-seeing-eye"))
+                .filter(player -> !player.isMuted())
+                .collect(Collectors.toList());
+        onlinePlayers.removeAll(receivers);
+        onlinePlayers.forEach(receiver -> ChatBlock.sendMessage(receiver, message));
     }
 
     private String replacePlaceholders(String messageFormat,

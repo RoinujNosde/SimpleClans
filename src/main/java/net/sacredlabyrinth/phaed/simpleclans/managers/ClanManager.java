@@ -22,6 +22,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -231,6 +232,13 @@ public final class ClanManager {
     }
 
     /**
+     * Returns the collection of all online clan players, including the disabled ones
+     */
+    public List<ClanPlayer> getOnlineClanPlayers() {
+        return clanPlayers.values().stream().filter(cp -> Helper.isOnline(cp.getUniqueId())).collect(Collectors.toList());
+    }
+
+    /**
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan Used for BungeeCord Reload ClanPlayer and your Clan
      */
@@ -370,7 +378,7 @@ public final class ClanManager {
         if (plugin.getSettingsManager().isDisableMessages()) {
             return;
         }
-        Collection<Player> players = Helper.getOnlinePlayers();
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
         for (Player player : players) {
             ChatBlock.sendMessage(player, ChatColor.DARK_GRAY + "* " + ChatColor.AQUA + msg);
