@@ -265,7 +265,7 @@ public class SimpleClans extends JavaPlugin {
     public static String optionalLang(@NotNull String key, @Nullable ClanPlayer clanPlayer, Object... arguments) {
         Locale locale = instance.getSettingsManager().getLanguage();
         if (clanPlayer != null && instance.getSettingsManager().isLanguagePerPlayer()) {
-            locale = Helper.getLocale(clanPlayer);
+            locale = clanPlayer.getLocale();
         }
 
         String lang = languageResource.getLang(key, locale);

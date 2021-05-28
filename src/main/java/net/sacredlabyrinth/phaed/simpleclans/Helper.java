@@ -77,14 +77,9 @@ public class Helper {
     public static Locale getLocale(@NotNull Player player) {
         ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
         if (clanPlayer != null) {
-            return getLocale(clanPlayer);
+            return clanPlayer.getLocale();
         }
         return null;
-    }
-
-    @NotNull
-    public static Locale getLocale(@NotNull ClanPlayer clanPlayer) {
-        return clanPlayer.getLocale();
     }
 
     public static @Nullable JSONObject parseJson(String json) {
