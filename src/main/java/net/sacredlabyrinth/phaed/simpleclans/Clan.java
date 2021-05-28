@@ -867,6 +867,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         return out;
     }
 
+
     /**
      * Get all leaders in the clan
      *
@@ -935,6 +936,18 @@ public class Clan implements Serializable, Comparable<Clan> {
 
             if (ally != null) {
                 out.addAll(ally.getMembers());
+            }
+        }
+
+        return out;
+    }
+
+    public Set<ClanPlayer> getOnlineAllyMembers() {
+        Set<ClanPlayer> out = new HashSet<>();
+
+        for (ClanPlayer allyMember : getAllAllyMembers()) {
+            if (allyMember.toPlayer() != null) {
+                out.add(allyMember);
             }
         }
 

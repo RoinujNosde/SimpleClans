@@ -1,20 +1,27 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- *
  * @author RoinujNosde
  */
 public class ChatEvent extends Event implements Cancellable {
+
+    /*
+     * Todo: change Type to Channel in 3.0
+     * (and probably refactor the entire class)
+     *
+     * receivers would be @Nullable
+     */
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private String message;
@@ -23,7 +30,7 @@ public class ChatEvent extends Event implements Cancellable {
     private final Map<String, String> placeholders = new HashMap<>();
     private final Type type;
     private boolean cancelled;
-    
+
     public ChatEvent(String message, ClanPlayer sender, List<ClanPlayer> receivers, Type type) {
         if (message == null || sender == null || receivers == null || type == null) {
             throw new IllegalArgumentException("none of the args can be null");
@@ -32,7 +39,7 @@ public class ChatEvent extends Event implements Cancellable {
         this.sender = sender;
         this.receivers = receivers;
         this.type = type;
-    }    
+    }
 
     @Override
     public boolean isCancelled() {
@@ -47,9 +54,10 @@ public class ChatEvent extends Event implements Cancellable {
     public enum Type {
         ALLY, CLAN
     }
-    
+
     /**
      * Gets the chat type
+     *
      * @return the chat type
      */
     public Type getType() {
@@ -69,10 +77,10 @@ public class ChatEvent extends Event implements Cancellable {
      * Adds a placeholder and its value to the chat message
      *
      * @param placeholderName the placeholder name
-     * @param value the String to be replaced
+     * @param value           the String to be replaced
      * @throws IllegalArgumentException if one of the args are null; if one of
-     * the args are empty; if the placeholder name equals "clan", "nick-color",
-     * "player", "rank" or "message"
+     *                                  the args are empty; if the placeholder name equals "clan", "nick-color",
+     *                                  "player", "rank" or "message"
      */
     public void addPlaceholder(String placeholderName, String value) {
         if (placeholderName == null || value == null) {
@@ -107,6 +115,7 @@ public class ChatEvent extends Event implements Cancellable {
 
     /**
      * Changes the chat message
+     *
      * @param message the new message
      */
     public void setMessage(String message) {

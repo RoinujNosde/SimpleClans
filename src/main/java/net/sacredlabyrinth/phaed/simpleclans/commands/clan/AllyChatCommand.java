@@ -2,9 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
-import org.bukkit.entity.Player;
 
 @CommandAlias("%ally_chat")
 @Description("{@@command.description.ally}")
@@ -13,18 +13,18 @@ import org.bukkit.entity.Player;
 public class AllyChatCommand extends BaseCommand {
 
     @Dependency
-    private ClanManager clanManager;
+    private ChatManager chatManager;
     @Dependency
     private SettingsManager settingsManager;
 
     @Default
     @HelpSearchTags("chat")
     @CommandCompletion("@chat_subcommands")
-    public void sendMessage(Player player, @Name("message") String message) {
+    public void sendMessage(ClanPlayer cp, @Name("message") String message) {
         if (!settingsManager.isAllyChatEnable()) {
             return;
         }
-        clanManager.processAllyChat(player, message);
+        chatManager.processChat(ClanPlayer.Channel.ALLY, cp, message);
     }
 
 }

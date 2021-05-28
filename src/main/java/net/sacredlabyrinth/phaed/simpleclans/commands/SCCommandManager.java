@@ -6,6 +6,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.completions.AbstractAsyncCompletion;
 import net.sacredlabyrinth.phaed.simpleclans.commands.completions.AbstractCompletion;
@@ -60,6 +61,7 @@ public class SCCommandManager extends PaperCommandManager {
         registerDependency(PermissionsManager.class, plugin.getPermissionsManager());
         registerDependency(RequestManager.class, plugin.getRequestManager());
         registerDependency(ProtectionManager.class, plugin.getProtectionManager());
+        registerDependency(ChatManager.class, plugin.getChatManager());
     }
 
     private void registerCompletions() {
@@ -169,7 +171,7 @@ public class SCCommandManager extends PaperCommandManager {
         );
 
         SUBCOMMANDS.forEach(s -> {
-            String command = optionalLang(s + ".command", null);
+            String command = optionalLang(s + ".command", (ClanPlayer) null);
             if (command == null) {
                 command = s;
             }

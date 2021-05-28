@@ -739,7 +739,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
             if (channelName != null) {
                 return Channel.valueOf(channelName);
             }
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException ignored) {
+        }
         return Channel.NONE;
     }
 
@@ -759,13 +760,16 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     @Deprecated
-    public void setGlobalChat(boolean globalChat) {}
+    public void setGlobalChat(boolean globalChat) {
+    }
 
     @Deprecated
-    public void setAllyChat(boolean allyChat) {}
+    public void setAllyChat(boolean allyChat) {
+    }
 
     @Deprecated
-    public void setClanChat(boolean clanChat) {}
+    public void setClanChat(boolean clanChat) {
+    }
 
     public void setChannel(@NotNull Channel channel) {
         flags.put("channel", channel.toString());
@@ -787,7 +791,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     @Deprecated
-    public void setCapeEnabled(boolean capeEnabled) {}
+    public void setCapeEnabled(boolean capeEnabled) {
+    }
 
     @Placeholder("is_tag_enabled")
     public boolean isTagEnabled() {
@@ -858,10 +863,29 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         }
     }
 
+    public void mute(Channel channel, boolean b) {
+        switch (channel) {
+            case CLAN:
+                clanChatMute = b;
+                break;
+            case ALLY:
+                allyChatMute = b;
+        }
+    }
+
+
+    /**
+     * @deprecated use {@link ClanPlayer#mute(Channel, boolean)}
+     */
+    @Deprecated
     public void setMuted(boolean b) {
         clanChatMute = b;
     }
 
+    /**
+     * @deprecated use {@link ClanPlayer#mute(Channel, boolean)}
+     */
+    @Deprecated
     public void setMutedAlly(boolean b) {
         allyChatMute = b;
     }
@@ -900,6 +924,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     public enum Channel {
+        INGAME,
+        DISCORD,
         CLAN,
         ALLY,
         NONE

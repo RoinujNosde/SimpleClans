@@ -2,7 +2,6 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -245,7 +243,7 @@ public final class ClanManager {
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan
      */
-    public @Nullable ClanPlayer getClanPlayer(OfflinePlayer player) {
+    public @Nullable ClanPlayer getClanPlayer(@NotNull OfflinePlayer player) {
         return getClanPlayer(player.getUniqueId());
     }
 
@@ -253,7 +251,7 @@ public final class ClanManager {
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan
      */
-    public @Nullable ClanPlayer getClanPlayer(Player player) {
+    public @Nullable ClanPlayer getClanPlayer(@NotNull Player player) {
         return getClanPlayer((OfflinePlayer) player);
     }
 
@@ -311,6 +309,7 @@ public final class ClanManager {
      * not currently in one, their data file persists and can be accessed. their
      * clan will be null though.
      */
+
     @Nullable
     public ClanPlayer getAnyClanPlayer(UUID playerUniqueId) {
         return clanPlayers.get(playerUniqueId.toString());
@@ -1122,182 +1121,6 @@ public final class ClanManager {
         }
 
         return true;
-    }
-
-    /**
-     * Processes a clan chat command
-     */
-    public void processClanChat(Player player, String tag, String msg) {
-        Clan clan = plugin.getClanManager().getClan(tag);
-
-        if (clan == null || !clan.isMember(player)) {
-            return;
-        }
-
-        processClanChat(player, msg);
-    }
-
-    /**
-     * Processes a clan chat command
-     */
-    public void processClanChat(Player player, final String msg) {
-        final ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-
-        if (cp == null) {
-            return;
-        }
-
-        String[] split = msg.split(" ");
-
-        if (split.length == 0) {
-            return;
-        }
-
-        String command = split[0];
-
-        if (command.equals(lang("join", player))) {
-            cp.setChannel(ClanPlayer.Channel.CLAN);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("joined.clan.chat", player));
-        } else if (command.equals(lang("leave", player))) {
-            cp.setChannel(ClanPlayer.Channel.NONE);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("left.clan.chat", player));
-        } else if (command.equals(lang("mute", player))) {
-            if (!cp.isMuted()) {
-                cp.setMuted(true);
-                ChatBlock.sendMessage(player, lang("muted.clan.chat", player));
-            } else {
-                cp.setMuted(false);
-                ChatBlock.sendMessage(player, lang("unmuted.clan.chat", player));
-            }
-        } else {
-            final List<ClanPlayer> receivers = new LinkedList<>();
-            for (ClanPlayer p : cp.getClan().getOnlineMembers()) {
-                if (!p.isMuted()) {
-                    receivers.add(p);
-                }
-            }
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    ChatEvent ce = new ChatEvent(msg, cp, receivers, ChatEvent.Type.CLAN);
-                    Bukkit.getServer().getPluginManager().callEvent(ce);
-
-                    if (ce.isCancelled()) {
-                        return;
-                    }
-
-                    String message = Helper.formatClanChat(cp, ce.getMessage(), ce.getPlaceholders());
-                    String eyeMessage = Helper.formatSpyClanChat(cp, message);
-                    plugin.getServer().getConsoleSender().sendMessage(eyeMessage);
-
-                    for (ClanPlayer p : ce.getReceivers()) {
-                        ChatBlock.sendMessage(p.toPlayer(), message);
-                    }
-
-                    sendToAllSeeing(eyeMessage, ce.getReceivers());
-                }
-            }.runTask(plugin);
-        }
-    }
-
-    public void sendToAllSeeing(String msg, List<ClanPlayer> cps) {
-        Collection<Player> players = Helper.getOnlinePlayers();
-
-        for (Player player : players) {
-            if (plugin.getPermissionsManager().has(player, "simpleclans.admin.all-seeing-eye")) {
-                boolean alreadySent = false;
-
-                ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
-
-                if (cp != null && cp.isMuted()) {
-                    continue;
-                }
-
-                for (ClanPlayer cpp : cps) {
-                    if (cpp.getName().equalsIgnoreCase(player.getName())) {
-                        alreadySent = true;
-                    }
-                }
-
-                if (!alreadySent) {
-                    ChatBlock.sendMessage(player, msg);
-                }
-            }
-        }
-    }
-
-    /**
-     * Processes a ally chat command
-     */
-    public void processAllyChat(Player player, final String msg) {
-        final ClanPlayer cp = getClanPlayer(player);
-
-        if (cp == null) {
-            return;
-        }
-
-        String[] split = msg.split(" ");
-
-        if (split.length == 0) {
-            return;
-        }
-
-        String command = split[0];
-
-        if (command.equals(lang("join", player))) {
-            cp.setChannel(ClanPlayer.Channel.ALLY);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("joined.ally.chat", player));
-        } else if (command.equals(lang("leave", player))) {
-            cp.setChannel(ClanPlayer.Channel.NONE);
-            plugin.getStorageManager().updateClanPlayer(cp);
-            ChatBlock.sendMessage(player, lang("left.ally.chat", player));
-        } else if (command.equals(lang("mute", player))) {
-            if (!cp.isMutedAlly()) {
-                cp.setMutedAlly(true);
-                ChatBlock.sendMessage(player, lang("muted.ally.chat", player));
-            } else {
-                cp.setMutedAlly(false);
-                ChatBlock.sendMessage(player, lang("unmuted.ally.chat", player));
-            }
-        } else {
-            final List<ClanPlayer> receivers = new LinkedList<>();
-            Set<ClanPlayer> allies = cp.getClan().getAllAllyMembers();
-            allies.addAll(cp.getClan().getMembers());
-            for (ClanPlayer ally : allies) {
-                if (ally.isMutedAlly()) {
-                    continue;
-                }
-                if (player.getUniqueId().equals(ally.getUniqueId())) {
-                    continue;
-                }
-                receivers.add(ally);
-            }
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    ChatEvent ce = new ChatEvent(msg, cp, receivers, ChatEvent.Type.ALLY);
-                    Bukkit.getServer().getPluginManager().callEvent(ce);
-
-                    if (ce.isCancelled()) {
-                        return;
-                    }
-
-                    String message = Helper.formatAllyChat(cp, ce.getMessage(), ce.getPlaceholders());
-                    plugin.getLogger().info(message);
-
-                    ChatBlock.sendMessage(cp, message);
-
-                    for (ClanPlayer p : ce.getReceivers()) {
-                        ChatBlock.sendMessage(p, message);
-                    }
-                }
-            }.runTask(plugin);
-        }
     }
 
     /**

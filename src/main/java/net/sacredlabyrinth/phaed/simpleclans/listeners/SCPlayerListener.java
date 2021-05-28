@@ -66,13 +66,7 @@ public class SCPlayerListener implements Listener {
                 ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
                 return;
             }
-            switch (channel) {
-                case CLAN:
-                    plugin.getClanManager().processClanChat(player, event.getMessage());
-                    break;
-                case ALLY:
-                    plugin.getClanManager().processAllyChat(player, event.getMessage());
-            }
+            plugin.getChatManager().processChat(channel, cp, event.getMessage());
             event.setCancelled(true);
         }
     }

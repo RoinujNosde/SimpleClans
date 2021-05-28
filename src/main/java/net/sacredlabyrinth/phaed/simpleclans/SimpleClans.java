@@ -6,9 +6,9 @@ import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
-import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.CSVBankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
@@ -49,6 +49,7 @@ public class SimpleClans extends JavaPlugin {
     private PermissionsManager permissionsManager;
     private TeleportManager teleportManager;
     private ProtectionManager protectionManager;
+    private ChatManager chatManager;
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
@@ -102,6 +103,7 @@ public class SimpleClans extends JavaPlugin {
         migrateChatFormat();
         registerEvents();
         permissionsManager.loadPermissions();
+        chatManager = new ChatManager(this);
         commandManager = new SCCommandManager(this);
 
         bankLogger = new CSVBankLogger(this);
@@ -237,6 +239,10 @@ public class SimpleClans extends JavaPlugin {
         return protectionManager;
     }
 
+    public ChatManager getChatManager() {
+        return chatManager;
+    }
+
     public BankLogger getBankLogger() {
         return bankLogger;
     }
@@ -256,13 +262,10 @@ public class SimpleClans extends JavaPlugin {
     }
 
     @Nullable
-    public static String optionalLang(@NotNull String key, @Nullable Player player, Object... arguments) {
-        Locale locale = getInstance().getSettingsManager().getLanguage();
-        if (player != null && instance.getSettingsManager().isLanguagePerPlayer()) {
-            Locale playerLocale = Helper.getLocale(player);
-            if (playerLocale != null) {
-                locale = playerLocale;
-            }
+    public static String optionalLang(@NotNull String key, @Nullable ClanPlayer clanPlayer, Object... arguments) {
+        Locale locale = instance.getSettingsManager().getLanguage();
+        if (clanPlayer != null && instance.getSettingsManager().isLanguagePerPlayer()) {
+            locale = Helper.getLocale(clanPlayer);
         }
 
         String lang = languageResource.getLang(key, locale);
@@ -277,9 +280,27 @@ public class SimpleClans extends JavaPlugin {
         return MessageFormat.format(message, arguments);
     }
 
+    @Nullable
+    public static String optionalLang(@NotNull String key, @Nullable Player player, Object... arguments) {
+        ClanPlayer clanPlayer = null;
+        if (player != null) {
+            clanPlayer = instance.getClanManager().getAnyClanPlayer(player.getUniqueId());
+        }
+        return optionalLang(key, clanPlayer, arguments);
+    }
+
     @NotNull
     public static String lang(@NotNull String key, @Nullable Player player, Object... arguments) {
         String lang = optionalLang(key, player, arguments);
+        if (lang == null) {
+            return key;
+        }
+        return lang;
+    }
+
+    @NotNull
+    public static String lang(@NotNull String key, @Nullable ClanPlayer clanPlayer, Object... arguments) {
+        String lang = optionalLang(key, clanPlayer, arguments);
         if (lang == null) {
             return key;
         }
