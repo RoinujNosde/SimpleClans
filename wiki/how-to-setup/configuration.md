@@ -147,7 +147,7 @@ description: null
     <tr>
       <td style="text-align:left"><code>blacklisted-worlds</code>
       </td>
-      <td style="text-align:left">Currently unavailable. Work in progress</td>
+      <td style="text-align:left">Disables SimpleClans at defined worlds</td>
       <td style="text-align:left"><code>[]</code>
         <br />
       </td>
