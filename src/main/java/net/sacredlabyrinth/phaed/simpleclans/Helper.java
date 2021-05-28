@@ -69,11 +69,13 @@ public class Helper {
     
     /**
      * Gets the Player locale
-     * 
+     *
+     * @deprecated no usages, use {@link ClanPlayer#getLocale()}
      * @param player the player
      * @return the locale
      */
     @Nullable
+    @Deprecated
     public static Locale getLocale(@NotNull Player player) {
         ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
         if (clanPlayer != null) {
@@ -238,9 +240,11 @@ public class Helper {
     /**
      * Check for integer
      *
+     * @deprecated no usages
      * @param o
      * @return
      */
+    @Deprecated
     public static boolean isInteger(Object o) {
         return o instanceof java.lang.Integer;
     }
@@ -248,9 +252,11 @@ public class Helper {
     /**
      * Check for byte
      *
+     * @deprecated no usages
      * @param input
      * @return
      */
+    @Deprecated
     public static boolean isByte(String input) {
         try {
             Byte.parseByte(input);
@@ -263,10 +269,12 @@ public class Helper {
     /**
      * Check for short
      *
+     * @deprecated no usages
      * @param input
      * @return
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Deprecated
     public static boolean isShort(String input) {
         try {
             Short.parseShort(input);
@@ -279,9 +287,11 @@ public class Helper {
     /**
      * Check for integer
      *
+     * @deprecated no usages
      * @param input
      * @return
      */
+    @Deprecated
     public static boolean isInteger(String input) {
         try {
             Integer.parseInt(input);
@@ -294,9 +304,11 @@ public class Helper {
     /**
      * Check for float
      *
+     * @deprecated no usages
      * @param input
      * @return
      */
+    @Deprecated
     public static boolean isFloat(String input) {
         try {
             Float.parseFloat(input);
@@ -309,9 +321,11 @@ public class Helper {
     /**
      * Check for string
      *
+     * @deprecated no usages
      * @param o
      * @return
      */
+    @Deprecated
     public static boolean isString(Object o) {
         return o instanceof java.lang.String;
     }
@@ -319,9 +333,11 @@ public class Helper {
     /**
      * Check for boolean
      *
+     * @deprecated no usages
      * @param o
      * @return
      */
+    @Deprecated
     public static boolean isBoolean(Object o) {
         return o instanceof java.lang.Boolean;
     }
@@ -329,10 +345,12 @@ public class Helper {
     /**
      * Remove a character from a string
      *
+     * @deprecated no usages
      * @param s
      * @param c
      * @return
      */
+    @Deprecated
     public static String removeChar(String s, char c) {
         String r = "";
 
@@ -348,10 +366,12 @@ public class Helper {
     /**
      * Remove first character from a string
      *
+     * @deprecated no usages
      * @param s
      * @param c
      * @return
      */
+    @Deprecated
     public static String removeFirstChar(String s, char c) {
         String r = "";
 
@@ -368,9 +388,11 @@ public class Helper {
     /**
      * Capitalize first word of sentence
      *
+     * @deprecated no usages
      * @param content
      * @return
      */
+    @Deprecated
     public static String capitalize(String content) {
         if (content.length() < 2) {
             return content;
@@ -383,11 +405,13 @@ public class Helper {
     /**
      * Return plural word if count is bigger than one
      *
+     * @deprecated no usages
      * @param count
      * @param word
      * @param ending
      * @return
      */
+    @Deprecated
     public static String plural(int count, String word, String ending) {
         return count == 1 ? word : word + ending;
     }
@@ -443,9 +467,11 @@ public class Helper {
     /**
      * Converts a player array to ArrayList<Player>
      *
+     * @deprecated no usages
      * @param values
      * @return
      */
+    @Deprecated
     public static List<Player> fromPlayerArray(Player... values) {
         List<Player> results = new ArrayList<>();
         Collections.addAll(results, values);
@@ -479,9 +505,11 @@ public class Helper {
     /**
      * Removes first item from a string array
      *
+     * @deprecated no usages
      * @param args
      * @return
      */
+    @Deprecated
     public static String[] removeFirst(String[] args) {
         List<String> out = fromArray(args);
 
@@ -494,9 +522,11 @@ public class Helper {
     /**
      * Converts a string array to a space separated string
      *
+     * @deprecated no usages
      * @param args
      * @return
      */
+    @Deprecated
     public static String toMessage(String[] args) {
         StringBuilder out = new StringBuilder();
 
@@ -559,7 +589,7 @@ public class Helper {
         return ChatUtils.stripColors(msg);
     }
 
-    /*
+    /**
      * Retrieves the last color code
      *
      * @param msg
@@ -664,7 +694,7 @@ public class Helper {
      * @return
      */
     public static boolean isOnline(UUID playerUniqueId) {
-        Collection<Player> online = getOnlinePlayers();
+        Collection<? extends Player> online = Bukkit.getOnlinePlayers();
 
         for (Player o : online) {
             if (o.getUniqueId().equals(playerUniqueId)) {
@@ -696,9 +726,11 @@ public class Helper {
     /**
      * Test if a url is valid
      *
+     * @deprecated no usages
      * @param strUrl
      * @return
      */
+    @Deprecated
     public static boolean testURL(String strUrl) {
         try {
             URL url = new URL(strUrl);
@@ -753,10 +785,12 @@ public class Helper {
      * Whether the two locations refer to the same location, ignoring pitch and
      * yaw
      *
+     * @deprecated no usages
      * @param loc
      * @param loc2
      * @return
      */
+    @Deprecated
     public static boolean isSameLocation(Location loc, Location loc2) {
         return loc.getX() == loc2.getX() && loc.getY() == loc2.getY() && loc.getZ() == loc2.getZ();
     }
@@ -807,6 +841,7 @@ public class Helper {
     }
 
     @SuppressWarnings("unchecked")
+    @Deprecated
 	public static Collection<Player> getOnlinePlayers() {
         try {
             Method method = Bukkit.class.getDeclaredMethod("getOnlinePlayers");
