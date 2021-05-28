@@ -63,10 +63,8 @@ public class PlayerListFrame extends SCFrame {
 		if (onlineOnly) {
 			players = new ArrayList<>(Bukkit.getOnlinePlayers());
 		} else {
-			players = clanManager.getAllClanPlayers().stream().map(ClanPlayer::getUniqueId)
-					.map(Bukkit::getOfflinePlayer).collect(Collectors.toList());
-			List<Player> onlinePlayers = Bukkit.getOnlinePlayers().stream().filter(p -> !players.contains(p))
-					.collect(Collectors.toList());
+			List<Player> onlinePlayers = clanManager.getOnlineClanPlayers().stream().
+					map(ClanPlayer::toPlayer).collect(Collectors.toList());
 			players.addAll(onlinePlayers);
 		}
 		players = players.stream().filter(p -> p.getName() != null).collect(Collectors.toList());

@@ -67,13 +67,13 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=WAR_END")
     @Description("{@@command.description.war.end}")
     @CommandCompletion("@warring_clans")
-    public void endWar(Player player, ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
+    public void endWar(ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
         Clan war = other.getClan();
         if (issuerClan.isWarring(war.getTag())) {
             requestManager.addWarEndRequest(cp, war, issuerClan);
-            ChatBlock.sendMessage(player, AQUA + lang("leaders.asked.to.end.rivalry", player, war.getName()));
+            ChatBlock.sendMessage(cp, AQUA + lang("leaders.asked.to.end.rivalry", cp, war.getName()));
         } else {
-            ChatBlock.sendMessage(player, RED + lang("clans.not.at.war", player));
+            ChatBlock.sendMessage(cp, RED + lang("clans.not.at.war", cp));
         }
     }
 

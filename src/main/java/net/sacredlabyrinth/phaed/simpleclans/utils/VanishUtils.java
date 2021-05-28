@@ -16,7 +16,7 @@ public class VanishUtils {
     private VanishUtils() {}
 
     public static @NotNull List<ClanPlayer> getNonVanished(@Nullable CommandSender viewer, @NotNull Clan clan) {
-        return getNonVanished(viewer, clan.getAllMembers());
+        return getNonVanished(viewer, clan.getMembers());
     }
 
     public static @NotNull List<ClanPlayer> getNonVanished(@Nullable CommandSender viewer,
