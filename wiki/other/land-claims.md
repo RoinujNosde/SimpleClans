@@ -1,5 +1,5 @@
 ---
-description: This page contains information about sharing your land with clan members.
+description: This page contains information about sharing your lands with clan members.
 ---
 
 # Land Claims Plugins

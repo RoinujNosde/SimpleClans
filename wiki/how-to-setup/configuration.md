@@ -308,7 +308,8 @@ settings:
     <tr>
       <td style="text-align:left"><code>land-sharing</code>
       </td>
-      <td style="text-align:left">Enables the land sharing feature on the server</td>
+      <td style="text-align:left">Enables the <a href="https://simpleclans.gitbook.io/simpleclans/other/land-claims">land sharing</a> feature
+        on the server</td>
       <td style="text-align:left"><code>true</code>
       </td>
     </tr>
