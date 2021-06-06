@@ -16,7 +16,7 @@ Here is the full command list:
 | Command | Description |
 | :--- | :--- |
 | `/clan land allow [action]` | Allows **the specified action** on this land to your clan members |
-| `/clan land block [action]` | Blocks **the specified action** actions on this land to your clan members |
+| `/clan land block [action]` | Blocks **the specified action** on this land to your clan members |
 
 Actions list:
 
