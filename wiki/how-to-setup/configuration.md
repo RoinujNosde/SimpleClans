@@ -217,8 +217,8 @@ description: null
     <tr>
       <td style="text-align:left"><code>rejoin-cooldown</code>
       </td>
-      <td style="text-align:left">The time in <del>years</del> minutes, when player will can join after resigning
-        to the same clan</td>
+      <td style="text-align:left">The time in minutes, when player will can join after resigning to the
+        same clan</td>
       <td style="text-align:left"><code>60</code>
       </td>
     </tr>
@@ -285,6 +285,181 @@ settings:
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
     ranking-type: DENSE
+```
+
+## War and protection
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align:left">Option</th>
+      <th style="text-align:left">Description</th>
+      <th style="text-align:left">Default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left"><code>war-enabled</code>
+      </td>
+      <td style="text-align:left">Enables the war feature on the server</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>land-sharing</code>
+      </td>
+      <td style="text-align:left">Enables the land sharing feature on the server</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>protection-providers</code>
+      </td>
+      <td style="text-align:left">The list of land claim providers</td>
+      <td style="text-align:left">See Example below</td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>listeners.priority</code>
+      </td>
+      <td style="text-align:left">
+        <p>It&apos;s <b>not recommended </b>to change it.</p>
+        <p>Used to set the priority of the overridden events</p>
+      </td>
+      <td style="text-align:left"><code>HIGHEST</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>listeners.ignored-list.place</code>
+      </td>
+      <td style="text-align:left">
+        <p>The list of items that will be ignored by SimpleClans.
+          <br />
+        </p>
+        <p><b>For example</b>, WorldGuard blocked player&apos; head in the region.
+          If player&apos; head is not on the list, SimpleClans will make WG allow
+          the placement</p>
+      </td>
+      <td style="text-align:left">See Example below</td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>set-base-only-in-land</code>
+      </td>
+      <td style="text-align:left">Allows a clan player to set the clan base only on claimed land</td>
+      <td
+      style="text-align:left"><code>false</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>war-normal-expiration-time</code>
+      </td>
+      <td style="text-align:left">The time of war expiration independently
+        <br />(in minutes)</td>
+      <td style="text-align:left"><code>0</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>war-disconnect-expiration-time</code>
+      </td>
+      <td style="text-align:left">The time of war expiration if all members from <b>one </b>clan disconnects
+        (in minutes)</td>
+      <td style="text-align:left"><code>0</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>edit-all-lands</code>
+      </td>
+      <td style="text-align:left">Allows a clan player to change the action of all the lands instead of
+        the one on which it stands</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>war-actions</code>
+      </td>
+      <td style="text-align:left">The list of permitted actions regarding clan lands during the war</td>
+      <td
+      style="text-align:left">See Example below</td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>war-start.request-enabled</code>
+      </td>
+      <td style="text-align:left">If true, a war will require the approval from the clan leaders</td>
+      <td
+      style="text-align:left"><code>true</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>war-start.members-online-max-difference</code>
+      </td>
+      <td style="text-align:left">
+        <p>If the difference between the online members of two clans is greater than
+          the one set, the war will not start</p>
+        <p>
+          <br /><b>Example 1:<br /></b>Config value: <em>5</em>
+        </p>
+        <p>Clan #1 has 10 members online</p>
+        <p>Clan #2 has 5 members online</p>
+        <p>Max difference between clans = 10 - 5 = 5
+          <br />The war <em>will </em>start.
+          <br /><b>Example 2:</b>
+          <br />Config value: 5</p>
+        <p>Clan #1 has 11 members online</p>
+        <p>Clan #2 has 5 members online</p>
+        <p>Max difference between clans = 11 - 5 = 6</p>
+        <p>The war <em>will not</em> start.</p>
+      </td>
+      <td style="text-align:left"><code>5</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>land-creation.only-leaders</code>
+      </td>
+      <td style="text-align:left">Allows only clan leaders to create lands</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>land-creation.only-one-per-clan</code>
+      </td>
+      <td style="text-align:left">Allows to have only one land per clan</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+```yaml
+war-and-protection:
+  war-enabled: false
+  land-sharing: true
+  protection-providers:
+  - WorldGuardProvider
+  - WorldGuard6Provider
+  - PlotSquared5Provider
+  - PlotSquared3Provider
+  - GriefPreventionProvider
+  listeners:
+    priority: HIGHEST
+    ignored-list:
+      PLACE:
+      - PLAYER_HEAD
+  set-base-only-in-land: false
+  war-normal-expiration-time: 0
+  war-disconnect-expiration-time: 0
+  edit-all-lands: false
+  war-actions:
+    CONTAINER: true
+    INTERACT: true
+    BREAK: true
+    PLACE: true
+    DAMAGE: true
+    INTERACT_ENTITY: true
+  war-start:
+    request-enabled: true
+    members-online-max-difference: 5
+  land-creation:
+    only-leaders: false
+    only-one-per-clan: false
 ```
 
 ## Tags Format
