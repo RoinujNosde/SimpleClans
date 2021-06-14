@@ -149,7 +149,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        if (clan.getSize() >= settings.getMaxMembers()) {
+        if (clan.getSize() >= settings.getMaxMembers() && settings.getMaxMembers() > 0) {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.members.reached.limit", sender));
             return;
         }
@@ -357,6 +357,7 @@ public class ClanCommands extends BaseCommand {
     @Subcommand("%resign")
     @CommandPermission("simpleclans.member.resign")
     @Description("{@@command.description.resign}")
+    @HelpSearchTags("leave")
     public void resign(@Conditions("clan_member") Player player) {
         new ConversationFactory(plugin)
                 .withFirstPrompt(new ResignPrompt())

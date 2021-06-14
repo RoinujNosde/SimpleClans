@@ -1233,7 +1233,7 @@ public final class ClanManager {
      * Processes a ally chat command
      */
     public void processAllyChat(Player player, final String msg) {
-        final ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
+        final ClanPlayer cp = getClanPlayer(player);
 
         if (cp == null) {
             return;
@@ -1290,11 +1290,10 @@ public final class ClanManager {
                     String message = Helper.formatAllyChat(cp, ce.getMessage(), ce.getPlaceholders());
                     plugin.getLogger().info(message);
 
-                    Player self = cp.toPlayer();
-                    ChatBlock.sendMessage(self, message);
+                    ChatBlock.sendMessage(cp, message);
 
                     for (ClanPlayer p : ce.getReceivers()) {
-                        ChatBlock.sendMessage(p.toPlayer(), message);
+                        ChatBlock.sendMessage(p, message);
                     }
                 }
             }.runTask(plugin);
