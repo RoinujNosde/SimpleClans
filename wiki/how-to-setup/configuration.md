@@ -4,7 +4,7 @@ description: null
 
 # Configuration
 
-[The main configuration file for SimpleClans can be found here.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
+The main configuration file for SimpleClans can be found [here.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
 
 ## General Settings
 
@@ -463,22 +463,23 @@ war-and-protection:
     only-one-per-clan: false
 ```
 
-## Tags Format
+## Tags
+
+
+* `default-color` - color used when the clan leader didn't set any colors
+* `max-length` - maximum length for tags
+* `bracket` - brackets are the characters around the tag, ex.: `[ ]`
+  * `color` - the bracket color
+  * `leader-color` - this color is used when the player is a leader
+  * `left` - the left character
+  * `right` - the right character
+* `min-length` - minimum length for tags
+* `separator` - the separator is a character that separates the tag and the player name
+  * `color` - the separator color
+  * `leader-color` - this color is used when the player is a leader
+  * `char` - the separator character
 
 #### Example
-
-* `default-color` - 
-* `max-length` - 
-* `bracket` - 
-  * `color` - 
-  * `leader-color` - 
-  * `left` - 
-  * `right` - 
-* `min-length` - 
-* `separator` - 
-  * `color` - 
-  * `leader-color` - 
-  * `char` - 
 
 ```yaml
 tag:
@@ -498,14 +499,8 @@ tag:
 
 ## General Commands
 
-* `more` - 
-* `ally` - 
-* `clan` - 
-* `accept` - 
-* `deny` - 
-* `global` - 
-* `clan_chat` - 
-* `force-priority` - 
+In this section you can edit the base commands of the plugin.
+Enable `force-priority` if other plugins are interfering with the commands.
 
 #### Example
 
@@ -523,10 +518,10 @@ commands:
 
 ## KDR Grinding Prevention
 
-* `enable-max-kills` - 
-* `max-kills-per-victim` - 
-* `enable-kill-delay` - 
-* `delay-between-kills` - 
+* `enable-max-kills` - by enabling this, you can set a limit on kills per victim.
+* `max-kills-per-victim` - this is the limit of kills per victim. If it's set to 10, for example, killing the same player for the 11th time won't affect the KDR
+* `enable-kill-delay` - enables a delay between kills
+* `delay-between-kills` - this is the delay in minutes between kills
 
 #### Example
 
@@ -538,59 +533,34 @@ kdr-grinding-prevention:
     delay-between-kills: 5
 ```
 
-## List Commands
-
-* `size` - 
-* `kdr` - 
-* `name` - 
-* `founded` - 
-* `active` - 
-* `asc` - 
-* `desc` - 
-* `default` - 
-
-#### Example
-
-```yaml
-list:
-    size: size
-    kdr: kdr
-    name: name
-    founded: founded
-    active: active
-    asc: asc
-    desc: desc
-    default: kdr
-```
-
 ## Economy
 
-* `creation-price` - 
-* `purchase-clan-create` - 
-* `verification-price` - 
-* `purchase-clan-verify` - 
-* `invite-price` - 
-* `purchase-clan-invite` - 
-* `home-teleport-price` - 
-* `purchase-home-teleport` - 
-* `home-teleport-set-price` - 
-* `purchase-home-teleport-set` - 
-* `home-regroup-price` - 
-* `purchase-home-regroup` - 
-* `unique-tax-on-regroup` - 
-* `issuer-pays-regroup` - 
-* `money-per-kill` - 
-* `money-per-kill-kdr-multipier` - 
-* `purchase-reset-kdr` - 
-* `reset-kdr-price` - 
-* `purchase-member-fee-set` - 
-* `member-fee-set-price` - 
-* `member-fee-enabled` - 
-* `max-member-fee` - 
-* `upkeep` - 
-* `upkeep-enabled` - 
-* `multiply-upkeep-by-clan-size` - 
-* `charge-upkeep-only-if-member-fee-enabled` - 
+* `creation-price` - the price to create a clan
+* `purchase-clan-create` - players must pay to create a clan
+* `verification-price` - the price to verify a clan
+* `purchase-clan-verify` - players must pay to verify their clans
+* `invite-price` - the price to invite a player to your clan 
+* `purchase-clan-invite` - players must pay to invite
+* `home-teleport-price` - the price to teleport to the clan's home
+* `purchase-home-teleport` - players must pay to teleport
+* `home-teleport-set-price` - the price to set the clan's home
+* `purchase-home-teleport-set` - players must pay to set the clan's home
+* `home-regroup-price` - the price for regrouping the clan members
+* `purchase-home-regroup` - players (or the clan) must pay to regroup
+* `unique-tax-on-regroup` - if false, the price is multiplied by the amount of online members of the clan
+* `issuer-pays-regroup` - if enabled, the player issuing the command pays for the regroup, otherwise the clan pays it
+* `money-per-kill` - enables a prize in money for the killer clan
+* `money-per-kill-kdr-multipier` - this is multiplied by the attacker's KDR, the result is the money prize for the clan
+* `purchase-reset-kdr` - if resetting the KDR is enabled
+* `reset-kdr-price` - the price to reset one's KDR
+* `purchase-member-fee-set` - players must pay to set the member fee
+* `member-fee-set-price` - the price to set the member fee
+* `member-fee-enabled` - if clans can charge a daily fee from their members
+* `max-member-fee` - the maximum amount clans can set for their member fee
+* `upkeep` - the daily price for maintaining a clan (if not paid, the clan is disbanded)
+* `upkeep-enabled` - if clans must pay the upkeep
+* `multiply-upkeep-by-clan-size` - if the upkeep price should be multiplied by the amount of members
+* `charge-upkeep-only-if-member-fee-enabled` - if the upkeep should be charged only for clans that choose to enable the member fee
 
 #### Example
 
@@ -626,10 +596,9 @@ economy:
 
 ## Kill Weights
 
-* `rival` - 
-* `civilian` - 
-* `neutral` - 
-* `deny-same-ip-kills` - 
+Here you can set the weight of every kill type. The weight can be negative too.
+It's used to calculate the KDR like so:
+\(Kill Count * Kill Wight\) / Death Count = KDR
 
 #### Example
 
@@ -638,25 +607,26 @@ kill-weights:
     rival: 2.0
     civilian: 0.0
     neutral: 1.0
+    ally: -1.0
     deny-same-ip-kills: false
 ```
 
 ## Clan Settings
 
-* `homebase-teleport-wait-secs` - 
-* `homebase-can-be-set-only-once` - 
-* `min-size-to-set-rival` - 
-* `max-length` - 
-* `max-description-length` - 
-* `min-description-length` - 
-* `max-members` - 
-* `confirmation-for-promote` - 
-* `trust-members-by-default` - 
-* `confirmation-for-demote` - 
-* `percentage-online-to-demote` - 
-* `ff-on-by-default` - 
-* `min-length` - 
-* `min-size-to-set-ally` - 
+* `homebase-teleport-wait-secs` - the amount of seconds players must wait before teleporting to their clan' home
+* `homebase-can-be-set-only-once` - if the clan's home can be set only once
+* `min-size-to-set-rival` - the minimum amount of members a clan needs to add rivals
+* `max-length` - the max length of the clan's name
+* `max-description-length` - the maximum length of the clan's description
+* `min-description-length` - the minimum length of the clan's description
+* `max-members` - the maximum amount of members a clan can have
+* `confirmation-for-promote` - if other leaders must confirm the promotion of members
+* `trust-members-by-default` - if members are set as trusted by default
+* `confirmation-for-demote` - if other leaders (except the one being demoted, of course) must confirm the demotion
+* `percentage-online-to-demote` - the percentage of online leaders to demote
+* `ff-on-by-default` - if the clan's friendly-fire is enabled by default
+* `min-length` - the minimum length of the clan's name
+* `min-size-to-set-ally` - the minimum amount of members a clan needs to add allies
 * `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\)
 
 #### Example
@@ -682,15 +652,9 @@ clan:
 
 ## Tasks
 
-* `collect-upkeep` - 
-  * `hour` - 
-  * `minute` - 
-* `collect-upkeep-warning` - 
-  * `hour` - 
-  * `minute` - 
-* `collect-fee` - 
-  * `hour` - 
-  * `minute` - 
+This section allows you to set the time of collection for the two types of fee. The fees are described on the economy section.
+The collect-upkeep-warning is sent when the clan doesn't have enough money to pay for its upkeep.
+The time is in the 24-hour clock.
 
 #### Example
 
@@ -887,4 +851,3 @@ performance:
 ```yaml
 safe-civilians: false
 ```
-
