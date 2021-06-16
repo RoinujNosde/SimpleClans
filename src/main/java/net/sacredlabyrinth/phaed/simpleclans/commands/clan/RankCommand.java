@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.RequestCanceller;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.events.DeleteRankEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerRankUpdateEvent;
@@ -82,6 +83,7 @@ public class RankCommand extends BaseCommand {
     @Description("{@@command.description.rank.create}")
     public void create(Player player, Clan clan) {
         SCConversation conversation = new SCConversation(plugin, player, new CreateRankNamePrompt(), 60);
+        conversation.addConversationCanceller(new RequestCanceller(player, RED + lang("rank.create.request.cancelled", player)));
         conversation.getContext().setSessionData("clan", clan);
         conversation.begin();
     }
