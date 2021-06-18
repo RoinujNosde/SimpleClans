@@ -106,7 +106,7 @@ The main configuration file for SimpleClans can be found [here.](https://github.
       </td>
       <td style="text-align:left">
         <p>The percent of possible rivals per clan</p>
-        <p>Formula: <code>(rivalsOfClan - 1) *  rivalLimitPercent / 100</code>
+        <p>Formula: <code>(rivalsOfClan - 1) * rivalLimitPercent / 100</code>
         </p>
       </td>
       <td style="text-align:left"><code>50</code>
@@ -245,7 +245,7 @@ The main configuration file for SimpleClans can be found [here.](https://github.
   </tbody>
 </table>
 
-#### Example
+### Example
 
 ```yaml
 settings:
@@ -323,7 +323,7 @@ settings:
       <td style="text-align:left"><code>listeners.priority</code>
       </td>
       <td style="text-align:left">
-        <p>It&apos;s <b>not recommended </b>to change it.</p>
+        <p>It&apos;s <b>not recommended</b> to change it.</p>
         <p>Used to set the priority of the overridden events</p>
       </td>
       <td style="text-align:left"><code>HIGHEST</code>
@@ -361,7 +361,7 @@ settings:
     <tr>
       <td style="text-align:left"><code>war-disconnect-expiration-time</code>
       </td>
-      <td style="text-align:left">The time of war expiration if all members from <b>one </b>clan disconnects
+      <td style="text-align:left">The time of war expiration if all members from <b>one</b> clan disconnects
         (in minutes)</td>
       <td style="text-align:left"><code>0</code>
       </td>
@@ -401,7 +401,7 @@ settings:
         <p>Clan #1 has 10 members online</p>
         <p>Clan #2 has 5 members online</p>
         <p>Max difference between clans = 10 - 5 = 5
-          <br />The war <em>will </em>start.
+          <br />The war <em>will</em> start.
           <br /><b>Example 2:</b>
           <br />Config value: 5</p>
         <p>Clan #1 has 11 members online</p>
@@ -465,7 +465,6 @@ war-and-protection:
 
 ## Tags
 
-
 * `default-color` - color used when the clan leader didn't set any colors
 * `max-length` - maximum length for tags
 * `bracket` - brackets are the characters around the tag, ex.: `[ ]`
@@ -479,7 +478,7 @@ war-and-protection:
   * `leader-color` - this color is used when the player is a leader
   * `char` - the separator character
 
-#### Example
+### Example
 
 ```yaml
 tag:
@@ -499,10 +498,9 @@ tag:
 
 ## General Commands
 
-In this section you can edit the base commands of the plugin.
-Enable `force-priority` if other plugins are interfering with the commands.
+In this section you can edit the base commands of the plugin. Enable `force-priority` if other plugins are interfering with the commands.
 
-#### Example
+### Example
 
 ```yaml
 commands:
@@ -523,7 +521,7 @@ commands:
 * `enable-kill-delay` - enables a delay between kills
 * `delay-between-kills` - this is the delay in minutes between kills
 
-#### Example
+### Example
 
 ```yaml
 kdr-grinding-prevention:
@@ -546,7 +544,7 @@ kdr-grinding-prevention:
 * `home-teleport-set-price` - the price to set the clan's home
 * `purchase-home-teleport-set` - players must pay to set the clan's home
 * `home-regroup-price` - the price for regrouping the clan members
-* `purchase-home-regroup` - players (or the clan) must pay to regroup
+* `purchase-home-regroup` - players \(or the clan\) must pay to regroup
 * `unique-tax-on-regroup` - if false, the price is multiplied by the amount of online members of the clan
 * `issuer-pays-regroup` - if enabled, the player issuing the command pays for the regroup, otherwise the clan pays it
 * `money-per-kill` - enables a prize in money for the killer clan
@@ -557,12 +555,12 @@ kdr-grinding-prevention:
 * `member-fee-set-price` - the price to set the member fee
 * `member-fee-enabled` - if clans can charge a daily fee from their members
 * `max-member-fee` - the maximum amount clans can set for their member fee
-* `upkeep` - the daily price for maintaining a clan (if not paid, the clan is disbanded)
+* `upkeep` - the daily price for maintaining a clan \(if not paid, the clan is disbanded\)
 * `upkeep-enabled` - if clans must pay the upkeep
 * `multiply-upkeep-by-clan-size` - if the upkeep price should be multiplied by the amount of members
 * `charge-upkeep-only-if-member-fee-enabled` - if the upkeep should be charged only for clans that choose to enable the member fee
 
-#### Example
+### Example
 
 ```yaml
 economy:
@@ -596,11 +594,9 @@ economy:
 
 ## Kill Weights
 
-Here you can set the weight of every kill type. The weight can be negative too.
-It's used to calculate the KDR like so:
-\(Kill Count * Kill Wight\) / Death Count = KDR
+Here you can set the weight of every kill type. The weight can be negative too. It's used to calculate the KDR like so: \(Kill Count \* Kill Wight\) / Death Count = KDR
 
-#### Example
+### Example
 
 ```yaml
 kill-weights:
@@ -622,14 +618,14 @@ kill-weights:
 * `max-members` - the maximum amount of members a clan can have
 * `confirmation-for-promote` - if other leaders must confirm the promotion of members
 * `trust-members-by-default` - if members are set as trusted by default
-* `confirmation-for-demote` - if other leaders (except the one being demoted, of course) must confirm the demotion
+* `confirmation-for-demote` - if other leaders \(except the one being demoted, of course\) must confirm the demotion
 * `percentage-online-to-demote` - the percentage of online leaders to demote
 * `ff-on-by-default` - if the clan's friendly-fire is enabled by default
 * `min-length` - the minimum length of the clan's name
 * `min-size-to-set-ally` - the minimum amount of members a clan needs to add allies
 * `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\)
 
-#### Example
+### Example
 
 ```yaml
 clan:
@@ -652,11 +648,13 @@ clan:
 
 ## Tasks
 
-This section allows you to set the time of collection for the two types of fee. The fees are described on the economy section.
-The collect-upkeep-warning is sent when the clan doesn't have enough money to pay for its upkeep.
+This section allows you to set the time of collection for the two types of fee. The fees are described on the economy section. 
+
+The collect-upkeep-warning is sent when the clan doesn't have enough money to pay for its upkeep. 
+
 The time is in the 24-hour clock.
 
-#### Example
+### Example
 
 ```yaml
 tasks:
@@ -682,7 +680,7 @@ tasks:
 * `separator` - 
 * `size` - 
 
-#### Example
+### Example
 
 ```yaml
 page:
@@ -698,16 +696,16 @@ page:
 
 ## Clan Chat
 
-* `enable` - 
-* `tag-based-clan-chat` - 
-* `announcement-color` - 
-* `format` - 
-* `rank` - 
-* `leader-color:` - 
-* `trusted-color` - 
-* `member-color` - 
+* `enable` - enables the clan chat
+* `tag-based-clan-chat` - if true, the command to talk on the clan chat is the clan tag
+* `announcement-color` - color used for announcements
+* `format` - the chat format
+* `rank` - the member's rank format \(used on the format\)
+* `leader-color` - the color for leaders \(%nick-color%\)
+* `trusted-color` - the color for trusted players \(%nick-color%\)
+* `member-color` - the color for non-leaders and non-trusted players \(%nick-color%\)
 
-#### Example
+### Example
 
 ```yaml
 clanchat:
@@ -723,11 +721,13 @@ clanchat:
 
 ## Request
 
-* `message-color` - 
-* `ask-frequency-secs` - 
-* `max-asks-per-request` - 
+Requests are messages sent to players to decide \(accept or deny\) on something \(joining a clan, promoting someone, etc\).
 
-#### Example
+* `message-color` - the message color
+* `ask-frequency-secs` - the interval in seconds between each message
+* `max-asks-per-request` - maximum amount of messages before the request expires
+
+### Example
 
 ```yaml
 request:
@@ -738,13 +738,13 @@ request:
 
 ## Bulletin Board
 
-* `color` - 
-* `accent-color` - 
-* `show-on-login` - 
-* `size` - 
-* `login-size` - 
+* `color` - the color
+* `accent-color` - the accent color 
+* `show-on-login` - if enabled, the BB is sent to clan members when they login 
+* `size` - the BB size \(when using its command\)
+* `login-size` - the BB size on login 
 
-#### Example
+### Example
 
 ```yaml
 bb:
@@ -757,14 +757,9 @@ bb:
 
 ## Ally Chat
 
-* `enable` - 
-* `format` - 
-* `rank` - 
-* `leader-color` - 
-* `trusted-color` - 
-* `member-color` - 
+The Ally Chat config works just like the [Clan Chat](configuration.md#clan-chat) one.
 
-#### Example
+### Example
 
 ```yaml
 allychat:
@@ -778,11 +773,9 @@ allychat:
 
 ## Purge Data
 
-* `inactive-player-data-days` - 
-* `inactive-clan-days` - 
-* `unverified-clan-days` - 
+This feature allows you to purge data of inactive players or clans. 
 
-#### Example
+### Example
 
 ```yaml
 purge:
@@ -793,14 +786,11 @@ purge:
 
 ## mySQL Settings
 
-* `username` - 
-* `host` - 
-* `port` - 
-* `enable` - 
-* `password` - 
-* `database` - 
+The plugin supports SQLite and MySQL. By disabling MySQL, SQLite will be used automatically.
 
-#### Example
+Set your credentials below to use MySQL on SimpleClans.
+
+### Example
 
 ```yaml
 mysql:
@@ -814,9 +804,11 @@ mysql:
 
 ## Permissions
 
-* `auto-group-groupname` - 
+In this section, you can give clans specific permissions. In the example below, members of the clan "YourClanNameHere" will receive the permission "test.permission".
 
-#### Example
+* `auto-group-groupname` - if enabled, members of clans will receive the permission "group.TAG" \(tag, of course, gets replaced\). **Be careful with this setting, if you are using LuckPerms, players could create a clan called "admin" and be automatically added to the corresponding group. If you are using it, disable the creation of such clans \(mod, admin, etc\).**
+
+### Example
 
 ```yaml
 permissions:
@@ -830,9 +822,9 @@ permissions:
 * `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true. 
 * `save-interval` - The interval **in minutes** in which changes are written to the database. 
 * `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true. 
-* `use-bungeecord` - 
+* `use-bungeecord` - **deprecated setting, BungeeCord is not fully supported**
 
-#### Example
+### Example
 
 ```yaml
 performance:
@@ -846,8 +838,9 @@ performance:
 
 * `safe-civilians` - Civilians are safe from PvP, even civilian vs civilian combat is disabled
 
-#### Example
+### Example
 
 ```yaml
 safe-civilians: false
 ```
+
