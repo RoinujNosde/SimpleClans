@@ -16,7 +16,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT
 @CommandAlias("%ally_chat")
 @Description("{@@command.description.ally}")
 @CommandPermission("simpleclans.member.ally")
-@Conditions("%basic_conditions|clan_member|ally_chat|rank:name=ALLY_CHAT")
+@Conditions("%basic_conditions|clan_member|can_chat:type=ALLY|rank:name=ALLY_CHAT")
 public class AllyChatCommand extends BaseCommand {
 
     @Dependency

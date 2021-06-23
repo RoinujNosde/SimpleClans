@@ -14,7 +14,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 
 @CommandAlias("%clan_chat")
-@Conditions("%basic_conditions|clan_member|clan_chat")
+@Conditions("%basic_conditions|clan_member|can_chat:type=CLAN")
 @CommandPermission("simpleclans.member.chat")
 @Description("{@@command.description.chat}")
 public class ChatCommand extends BaseCommand {
