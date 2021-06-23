@@ -17,7 +17,7 @@ import java.util.Map;
 public class ChatEvent extends Event implements Cancellable {
 
     /*
-     * Todo: refactor it in 3.0
+     * Todo: refactor Type to Channel in 3.0
      */
 
     private static final HandlerList HANDLER_LIST = new HandlerList();

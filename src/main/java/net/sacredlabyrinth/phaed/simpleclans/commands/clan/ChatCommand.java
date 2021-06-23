@@ -9,10 +9,12 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
+import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 
 @CommandAlias("%clan_chat")
-@Conditions("%basic_conditions|clan_member")
+@Conditions("%basic_conditions|clan_member|clan_chat")
 @CommandPermission("simpleclans.member.chat")
 @Description("{@@command.description.chat}")
 public class ChatCommand extends BaseCommand {
@@ -30,7 +32,7 @@ public class ChatCommand extends BaseCommand {
         if (!settingsManager.getClanChatEnable()) {
             return;
         }
-        chatManager.processChat(ClanPlayer.Channel.CLAN, cp, message);
+        chatManager.proceedChat(SPIGOT, CLAN, cp, message);
     }
 
     @Subcommand("%join")
@@ -47,9 +49,11 @@ public class ChatCommand extends BaseCommand {
 
     @Subcommand("%leave")
     public void leave(ClanPlayer clanPlayer) {
-        clanPlayer.setChannel(ClanPlayer.Channel.NONE);
-        storageManager.updateClanPlayer(clanPlayer);
-        ChatBlock.sendMessage(clanPlayer, lang("left.clan.chat", clanPlayer));
+        if (clanPlayer.getChannel() == CLAN) {
+            clanPlayer.setChannel(NONE);
+            storageManager.updateClanPlayer(clanPlayer);
+            ChatBlock.sendMessage(clanPlayer, lang("left.clan.chat", clanPlayer));
+        }
     }
 
     @Subcommand("%mute")
