@@ -9,13 +9,13 @@ public class SCMessage {
     private final Source source;
     private final ClanPlayer.Channel channel;
     private final Player sender;
-    private String message;
+    private String content;
 
-    public SCMessage(@NotNull Source source, @NotNull ClanPlayer.Channel channel, @NotNull Player sender, String message) {
+    public SCMessage(@NotNull Source source, @NotNull ClanPlayer.Channel channel, @NotNull Player sender, String content) {
         this.source = source;
         this.channel = channel;
         this.sender = sender;
-        this.message = message;
+        this.content = content;
     }
 
     public ClanPlayer.Channel getChannel() {
@@ -26,16 +26,16 @@ public class SCMessage {
         return sender;
     }
 
-    public String getMessage() {
-        return message;
+    public String getContent() {
+        return content;
     }
 
     public Source getSource() {
         return source;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     enum Source {

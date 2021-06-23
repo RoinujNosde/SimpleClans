@@ -12,12 +12,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public final class ChatManager {
 
@@ -25,6 +24,13 @@ public final class ChatManager {
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
+        if (plugin.getSettingsManager().isDiscordChatEnabled()) {
+            setupDiscord();
+        }
+    }
+
+    public void setupDiscord() {
+
     }
 
     public void processChat(@NotNull ClanPlayer.Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
@@ -32,69 +38,46 @@ public final class ChatManager {
             return;
         }
 
-        String command = message.split(" ")[0];
-        String channelLower = channel.name().toLowerCase();
-        Channel playerChannel = clanPlayer.getChannel();
+        Clan clan = clanPlayer.getClan();
+        if (clan == null) {
+            return;
+        }
 
-        if (channel == Channel.CLAN || channel == Channel.ALLY) {
-            if (command.equals(lang("join", clanPlayer))) {
-                if (playerChannel != channel) {
-                    clanPlayer.setChannel(channel);
-                    plugin.getStorageManager().updateClanPlayer(clanPlayer);
-                    ChatBlock.sendMessage(clanPlayer, lang("joined." + channelLower + ".chat"));
-                } else {
-                    ChatBlock.sendMessage(clanPlayer, lang("already.joined." + channelLower + ".chat"));
-                }
-            } else if (command.equals(lang("leave", clanPlayer))) {
-                clanPlayer.setChannel(ClanPlayer.Channel.NONE);
-                plugin.getStorageManager().updateClanPlayer(clanPlayer);
-                ChatBlock.sendMessage(clanPlayer, lang("left." + channelLower + ".chat", clanPlayer));
-            } else if (command.equals(lang("mute", clanPlayer))) {
-                if (!clanPlayer.isMuted()) {
-                    clanPlayer.mute(channel, true);
-                    ChatBlock.sendMessage(clanPlayer, lang("muted." + channelLower + ".chat", clanPlayer));
-                } else {
-                    clanPlayer.mute(channel, false);
-                    ChatBlock.sendMessage(clanPlayer, lang("unmuted." + channelLower + ".chat", clanPlayer));
-                }
-            } else {
-                Clan clan = clanPlayer.getClan();
-                if (clan == null) {
-                    return;
-                }
-
-                List<ClanPlayer> receivers = clan.getOnlineMembers().stream().filter(member -> !member.isMuted()).collect(Collectors.toList());
-                if (channel == Channel.ALLY) {
-                    receivers.addAll(clan.getOnlineAllyMembers().stream().filter(allymember -> !allymember.isMutedAlly()).collect(Collectors.toList()));
-                }
-
+        List<ClanPlayer> receivers = new ArrayList<>();
+        switch (channel) {
+            case ALLY:
+                receivers.addAll(clan.getOnlineAllyMembers().stream().filter(allymember -> !allymember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.add(clanPlayer);
+                break;
+            case CLAN:
+                receivers.addAll(clan.getOnlineMembers().stream().filter(member -> !member.isMuted()).collect(Collectors.toList()));
+        }
             /*
               TODO: Make it async, change Type to Channel
               (and move it to another method, probably?)
              */
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        ChatEvent event = new ChatEvent(message, clanPlayer, receivers, ChatEvent.Type.ALLY);
-                        Bukkit.getServer().getPluginManager().callEvent(event);
 
-                        if (event.isCancelled()) {
-                            return;
-                        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                ChatEvent event = new ChatEvent(message, clanPlayer, receivers, ChatEvent.Type.ALLY);
+                Bukkit.getServer().getPluginManager().callEvent(event);
 
-                        String message = formatChat(channel, clanPlayer, event.getMessage(), event.getPlaceholders());
-                        String eyeMessage = formatSpyChat(clanPlayer, message);
-                        plugin.getLogger().info(message);
+                if (event.isCancelled()) {
+                    return;
+                }
 
-                        for (ClanPlayer cp : receivers) {
-                            ChatBlock.sendMessage(cp, message);
-                        }
+                String message = formatChat(channel, clanPlayer, event.getMessage(), event.getPlaceholders());
+                String eyeMessage = formatSpyChat(clanPlayer, message);
+                plugin.getLogger().info(message);
 
-                        sendToAllSeeing(eyeMessage, receivers);
-                    }
-                }.runTask(plugin);
+                for (ClanPlayer cp : receivers) {
+                    ChatBlock.sendMessage(cp, message);
+                }
+
+                sendToAllSeeing(eyeMessage, receivers);
             }
-        }
+        }.runTask(plugin);
     }
 
     private String formatChat(Channel channel, ClanPlayer cp, String msg, Map<String, String> placeholders) {
