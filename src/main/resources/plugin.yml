@@ -6,6 +6,7 @@ softdepend:
   - PlaceholderAPI
   - LuckPerms
   - WorldGuard
+  - DiscordSRV
 loadbefore:
   - GriefPrevention
   - PlotSquared

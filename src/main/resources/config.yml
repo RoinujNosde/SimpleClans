@@ -194,6 +194,16 @@ allychat:
     leader-color: '4'
     trusted-color: 'f'
     member-color: '7'
+discordchat:
+    enable: false
+    format: "<%player%> %rank%: %message%"
+    rank: "[%rank%]"
+    voice:
+        channel-format: "%clan%"
+        category-format: "SC - VoiceChannels"
+    text:
+        channel-format: "%clan%"
+        category-format: "SC - TextChannels"
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7

@@ -92,6 +92,10 @@
                             <pattern>javassist</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.javassist</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>discordsrv</pattern>
+                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.discordsrv</shadedPattern>
+                        </relocation>
                     </relocations>
                     <artifactSet>
                         <excludes>
@@ -232,6 +236,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.discordsrv</groupId>
+            <artifactId>discordsrv</artifactId>
+            <version>1.21.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <!-- Repositories -->
@@ -271,6 +281,10 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>Scarsz-Nexus</id>
+            <url>https://nexus.scarsz.me/content/groups/public/</url>
         </repository>
     </repositories>
 

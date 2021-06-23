@@ -438,6 +438,33 @@ public final class SettingsManager {
         }
     }
 
+    public boolean isDiscordChatEnabled() {
+        return getConfig().getBoolean("discordchat.enable", false);
+    }
+    public String getDiscordChatFormat() {
+        return getConfig().getString("discordchat.format", "<%player%> %rank%: %message%");
+    }
+
+    public String getDiscordRankFormat() {
+        return getConfig().getString("discordchat.rank", "[%rank%]");
+    }
+
+    public String getDiscordTextCategoryFormat() {
+        return getConfig().getString("discordchat.text.category-format", "SC - TextChannels");
+    }
+
+    public String getDiscordTextChannelFormat() {
+        return getConfig().getString("discordchat.text.channel-format", "%clan%");
+    }
+
+    public String getDiscordVoiceCategoryFormat() {
+        return getConfig().getString("discordchat.voice.category-format", "SC - VoiceChannels");
+    }
+
+    public String getDiscordVoiceChannelFormat() {
+        return getConfig().getString("discordchat.voice.channel-format", "%clan%");
+    }
+
     private void warnAboutAutoGroupGroupName() {
         Plugin luckPerms = Bukkit.getServer().getPluginManager().getPlugin("LuckPerms");
         if (luckPerms != null && autoGroupGroupName) {

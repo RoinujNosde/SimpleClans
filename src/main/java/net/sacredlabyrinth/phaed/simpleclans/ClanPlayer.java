@@ -924,8 +924,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     public enum Channel {
-        INGAME,
-        DISCORD,
         CLAN,
         ALLY,
         NONE
