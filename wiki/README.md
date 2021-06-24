@@ -1,24 +1,24 @@
 ---
-description: Welcome to the SimpleClans Wiki!
+description: SimpleClans Wiki'ye hoş geldiniz!
 ---
 
-# Introduction
+# Giriş
 
-Here you will find a complete set of documentation including installation, configuration, permissions and usage for SimpleClans.
+Burada SimpleClans için kurulum, yapılandırma, izinler ve kullanım dahil olmak üzere eksiksiz bir belge seti bulacaksınız.
 
-## Support
+## Destek
 
-`1) The Wiki`
+`1) Wiki`
 
-You should always check this wiki carefully for the answer to your question! Even if it seems hidden, it may be here!
+Sorunuzun cevabı için her zaman bu wiki'yi dikkatlice kontrol etmelisiniz! Gizli görünse bile, burada olabilir!
 
-`2) The Discord`
+`2) Discord`
 
-If the wiki does not have your answer, feel free to join [the discord](https://discord.gg/CkNwgdE) server to ask for help.
+Wiki'de cevabınız yoksa, yardım istemek için [discord](https://discord.gg/CkNwgdE) sunucusuna katılmaktan çekinmeyin.
 
-## Bugs and Suggestions
+## Hatalar ve Öneriler
 
-`Issue Tracker`
+`Sorun İzleyici`
 
-If you believe you have found a bug in the plugin, feel free to make an issue on the [issue tracker!](https://github.com/RoinujNosde/SimpleClans/issues) Bugs will be looked into and addressed at the earliest opportunity.
+Eklentide bir hata bulduğunuzu düşünüyorsanız, [sorun izleyicide](https://github.com/RoinujNosde/SimpleClans/issues) sorunu bildirmekten çekinmeyin! Hatalar incelenecek ve ilk fırsatta ele alınacaktır.
 

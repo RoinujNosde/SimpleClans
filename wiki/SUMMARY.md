@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Introduction](README.md)
+* [Giriş](README.md)
 * [Discord Support](https://discord.gg/CkNwgdE)
 * [Bugs and Suggestions](https://github.com/RoinujNosde/SimpleClans/issues)
 
