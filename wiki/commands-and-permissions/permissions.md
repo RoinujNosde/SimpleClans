@@ -4,66 +4,66 @@ description: null
 
 # İzinler
 
-## SuperPerms Nodes \(Some auto added\)
+## Süper İzin Düğümleri \(Bazıları otomatik olarak eklendi\)
 
-These super permission nodes are a quick way to setup SimpleClans, some are automatically given \(See Auto Added\). If you wish to setup individual permissions to groups you will need to deny these auto added super permission nodes and setup permissions one by one after.
+Bu süper izin düğümleri, SimpleClans'ı kurmanın hızlı bir yoludur, bazıları otomatik olarak verilir \(Bkz. Otomatik Eklendi\). Gruplara bireysel izinler ayarlamak istiyorsanız, otomatik olarak eklenen bu süper izin düğümlerini ve kurulum izinlerini birer birer reddetmeniz gerekir.
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.anyone.*` \(Auto added\) | Permissions for anyone |
-| `simpleclans.member.*` \(Auto added\) | Permissions for those who can be clan members |
-| `simpleclans.leader.*` \(Auto added\) | Permissions for those who can be clan leaders |
-| `simpleclans.mod.*` \(Auto added to OPS\) | Permissions for moderators |
-| `simpleclans.admin.*` \(Auto added to OPS\) | Permissions for admins |
+| `simpleclans.anyone.*` \(Otomatik Eklendi\) | Herkes için izinler |
+| `simpleclans.member.*` \(Otomatik Eklendi\) | Klan üyesi olabilecekler için izinler |
+| `simpleclans.leader.*` \(Otomatik Eklendi\) | Klan lideri olabilecekler için izinler |
+| `simpleclans.mod.*` \(OP'lara Otomatik Eklendi\) | Moderatörler için izinler |
+| `simpleclans.admin.*` \(OP'lara Otomatik Eklendi\) | Yöneticiler için izinler |
 
-## Individual Nodes
+## Bireysel Düğümler
 
-\(You don't need to add these as they are all included if you've already added the node groups \(above\). They are only included here as reference in case you want to toggle a couple of them off individually. Then you can just drop those in, set to false, along with the node groups.\)
+\(Düğüm gruplarını zaten eklediyseniz \(yukarıda\) hepsi dahil oldukları için bunları eklemenize gerek yoktur. Bunlar, yalnızca birkaçını ayrı ayrı devre dışı bırakmak istemeniz durumunda referans olarak dahil edilmiştir. Düğüm gruplarıyla birlikte bunları yanlış olarak ayarlayın.\)
 
-### Anyone Nodes
+### Herkes İçin Düğümler
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.anyone.alliances` | Can view alliances by clan |
-| `simpleclans.anyone.leaderboard` | Can view the leaderboard |
-| `simpleclans.anyone.list` | Can list simpleclans |
-| `simpleclans.anyone.lookup` | Can lookup a player's info |
-| `simpleclans.anyone.profile` | Can view a clan's profile |
-| `simpleclans.anyone.rivalries` | Can view rivalries by clan |
-| `simpleclans.anyone.roster` | Can view a clan's member list |
+| `simpleclans.anyone.alliances` | Klana göre ittifakları görüntüleyebilir |
+| `simpleclans.anyone.leaderboard` | Skor tablosunu görüntüleyebilir |
+| `simpleclans.anyone.list` | Klanları listeleyebilir |
+| `simpleclans.anyone.lookup` | Bir oyuncunun bilgilerini arayabilir |
+| `simpleclans.anyone.profile` | Bir klanın profilini görüntüleyebilir |
+| `simpleclans.anyone.rivalries` | Klana göre rekabetleri görüntüleyebilir |
+| `simpleclans.anyone.roster` | Bir klanın üye listesini görüntüleyebilir |
 
-### Member Nodes
+### Üye Düğümleri
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.member.abstain` | Can abstain |
-| `simpleclans.member.accept` | Can accept |
-| `simpleclans.member.ally` | Can use ally chat |
-| `simpleclans.member.chat` | Can use clan chat |
-| `simpleclans.member.bank` | Can use the clan bank |
-| `simpleclans.member.bb-add` | Can add to his clan's bulletin board |
-| `simpleclans.member.bb-toggle` | Can toggle the bulletin board on/off |
-| `simpleclans.member.bb` | Can view his clan's bulletin board |
-| `simpleclans.member.can-join` | Can join clans |
-| `simpleclans.member.coords` | Can view his clan's coords |
-| `simpleclans.member.deny` | Can deny |
-| `simpleclans.member.ff` | Can toggle his own friendly fire |
-| `simpleclans.member.home` | Can tp to home base |
-| `simpleclans.member.kills` | Can view his and other's kills |
-| `simpleclans.member.lookup` | Can view his own player info |
-| `simpleclans.member.profile` | Can view his own clan's profile |
-| `simpleclans.member.resign` | Can resign from his clan |
-| `simpleclans.member.roster` | Can view his own clan's member list |
-| `simpleclans.member.stats` | Can view his clan stats |
-| `simpleclans.member.vitals` | Can view his clan's vitals |
-| `simpleclans.member.toggle.bb` | Can toggle bb on/off |
-| `simpleclans.member.tag-toggle` | Can hide/show their clan tag |
-| `simpleclans.member.fee-check` | Allows the member to check how much is the fee and if it's enabled |
-| `simpleclans.member.bypass-fee` | Can bypass the member fee |
+| `simpleclans.member.abstain` | Çekimser Kalabilir |
+| `simpleclans.member.accept` | Kabul edebilir |
+| `simpleclans.member.ally` | Müttefik sohbeti kullanabilir |
+| `simpleclans.member.chat` | Klan sohbetini kullanabilir |
+| `simpleclans.member.bank` | Klan bankasını kullanabilir |
+| `simpleclans.member.bb-add` | Klanının bülten panosuna ekleyebilir |
+| `simpleclans.member.bb-toggle` | Bülten panosunu açıp kapatabilir |
+| `simpleclans.member.bb` | Klanının bülten  panosunu görüntüleyebilir |
+| `simpleclans.member.can-join` | Klanlara katılabilir |
+| `simpleclans.member.coords` | Klanının koordinatlarını görebilir |
+| `simpleclans.member.deny` | Reddedebilir |
+| `simpleclans.member.ff` | Kendi dost ateşini değiştirebilir |
+| `simpleclans.member.home` | Klan evine ışınlanabilir olabilir |
+| `simpleclans.member.kills` | Kendisinin ve diğerlerinin öldürmelerini görebilir |
+| `simpleclans.member.lookup` | Kendi oyuncu bilgilerini görüntüleyebilir |
+| `simpleclans.member.profile` | Kendi klanının profilini görebilir |
+| `simpleclans.member.resign` | Klanından ayrılabilir |
+| `simpleclans.member.roster` | Kendi klanının üye listesini görüntüleyebilir |
+| `simpleclans.member.stats` | Klan istatistiklerini görüntüleyebilir |
+| `simpleclans.member.vitals` | Klanının hayati bilgilerini görebilir |
+| `simpleclans.member.toggle.bb` | Bülten Panosunu açıp kapatabilir |
+| `simpleclans.member.tag-toggle` | Klan etiketini gizleyebilir/gösterebilir |
+| `simpleclans.member.fee-check` | Üyenin ücretin ne kadar olduğunu ve etkin olup olmadığını kontrol etmesini sağlar |
+| `simpleclans.member.bypass-fee` | Üye ücretini atlayabilir |
 
-### Leader Nodes
+### Lider Düğümleri
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
 | `simpleclans.leader.fee` | allows the user to toggle the fee and set its value |
 | `simpleclans.leader.ally` | Can ally his clan with other clans |
