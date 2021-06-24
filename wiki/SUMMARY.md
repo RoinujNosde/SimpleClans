@@ -20,7 +20,7 @@
 * [Klan İttifakları ve Rekabetleri](commands-and-permissions/aliances-and-rivalries.md)
 * [İzinli Rütbeler](commands-and-permissions/ranks-with-permissions.md)
 
-## Other
+## Diğer <a id="other"></a>
 
 * [Known issues](other/known-issues.md)
 * [SimpleClans API Example](other/simpleclans-api.md)
