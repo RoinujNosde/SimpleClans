@@ -32,53 +32,53 @@ Liderler, rütbeler oluşturma ve onlara klan içinde çeşitli eylemler gerçek
 | `/clan rank permissions add (rütbe) (izin)` | Rütbeye izin ekler |
 | `/clan rank permissions remove (rütbe) (izin)` | Rütbeden bir izni kaldırır |
 
-## Available permissions for ranks
+## Rütbeler için mevcut izinler
 
-A player can view those permissions in-game using `/clan rank permissions`
+Bir oyuncu, `/clan rank permissions` kullanarak oyun içinde bu izinleri görüntüleyebilir.
 
-| Rank Permission | Description |
+| Rütbe izni | Açıklama |
 | :--- | :--- |
-| `ally.add` | can add an ally |
-| `ally.remove` | can remove an ally |
-| `ally.chat` | can use ally chat |
-| `bank.balance` | can view the bank balance |
-| `bank.deposit` | can deposit money |
-| `bank.withdraw` | can withdraw money |
-| `bb.add` | can add a message to bb |
-| `bb.clear` | can clear the bb |
-| `coords` | can view the clan's coords |
-| `fee.enable` | can enable the member fee |
-| `fee.set` | can change the fee value |
-| `home.regroup` | can regroup the clan |
-| `home.set` | can set the clan home |
-| `home.tp` | can tp to the clan home |
-| `invite` | can invite someone to the clan |
-| `kick` | can kick someone from the clan |
-| `modtag` | can modify the clan tag |
-| `rank.displayname` | can modify a rank's display name |
-| `rank.list` | can list the ranks |
-| `rival.add` | can add a rival |
-| `rival.remove` | can remove a rival |
-| `war.end` | can end a war |
-| `war.start` | can start a war |
-| `vitals` | can view the clan's vitals |
-| `stats` | can view the clan's stats |
-| `kills` | can view his or other's kills |
-| `mostkilled` | can view the mostkilled |
-| `description` | can change the clan's description |
+| `ally.add` | bir müttefik ekleyebilir |
+| `ally.remove` | bir müttefiki kaldırabilir |
+| `ally.chat` | müttefik sohbeti kullanabilir |
+| `bank.balance` | banka bakiyesini görüntüleyebilir |
+| `bank.deposit` | para yatırabilir |
+| `bank.withdraw` | para çekebilir |
+| `bb.add` | bülten panosuna mesaj ekleyebilir |
+| `bb.clear` | bülten panosunu temizleyebilir |
+| `coords` | klanın koordinatlarını görebilir |
+| `fee.enable` | üye ücretini etkinleştirebilir |
+| `fee.set` | ücret değerini değiştirebilir |
+| `home.regroup` | klanı yeniden gruplayabilir |
+| `home.set` | klan evini ayarlayabilir |
+| `home.tp` | klan evine ışınlanabilir |
+| `invite` | birini klana davet edebilir |
+| `kick` | birini klandan atabilir |
+| `modtag` | klan etiketini değiştirebilir |
+| `rank.displayname` | bir rütbenin görünen adını değiştirebilir |
+| `rank.list` | rütbeleri listeleyebilir |
+| `rival.add` | rakip ekleyebilir |
+| `rival.remove` | bir rakibi kaldırabilir |
+| `war.end` | bir savaşı bitirebilir |
+| `war.start` | bir savaş başlatabilir |
+| `vitals` | klanın hayati bilgilerini görüntüleyebilir |
+| `stats` | klanın istatistiklerini görüntüleyebilir |
+| `kills` | kendisinin veya başkalarının öldürmelerini görebilir |
+| `mostkilled` | en çok öldürülenleri görüntüleyebilir |
+| `description` | klanın açıklamasını değiştirebilir |
 
-## Permissions to use the rank commands
+## Rütbe komutlarını kullanma izinleri
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.leader.rank.assign` | Can assign a rank to a user |
-| `simpleclans.leader.rank.unassign` | Can unassign a player from a rank |
-| `simpleclans.leader.rank.create` | Can create a new rank |
-| `simpleclans.leader.rank.delete` | Can delete a new rank |
-| `simpleclans.leader.rank.list` | Can list all the ranks |
-| `simpleclans.leader.rank.setdisplayname` | Can set the display name of the rank |
-| `simpleclans.leader.rank.permissions.add` | Can add permissions to a rank |
-| `simpleclans.leader.rank.permissions.available` | Can list all available permissions |
-| `simpleclans.leader.rank.permissions.list` | Can list the rank's permissions |
-| `simpleclans.leader.rank.permissions.remove` | Can remove permissions from a rank |
+| `simpleclans.leader.rank.assign` | Bir kullanıcıya bir rütbe atayabilir |
+| `simpleclans.leader.rank.unassign` | Bir rütbeden bir oyuncunun atamasını kaldırabilir |
+| `simpleclans.leader.rank.create` | Yeni bir rütbe oluşturabilir |
+| `simpleclans.leader.rank.delete` | Bir rütbeyi silebilir |
+| `simpleclans.leader.rank.list` | Tüm rütbeleri listeleyebilir |
+| `simpleclans.leader.rank.setdisplayname` | Rütbenin görünen adını bir rütbeye ayarlayabilir |
+| `simpleclans.leader.rank.permissions.add` | Bir rütbeye izinler ekleyebilir |
+| `simpleclans.leader.rank.permissions.available` | Mevcut tüm izinleri listeleyebilir |
+| `simpleclans.leader.rank.permissions.list` | Rütbenin izinlerini listeleyebilir |
+| `simpleclans.leader.rank.permissions.remove` | Bir rütbeden izinleri kaldırabilir |
 
