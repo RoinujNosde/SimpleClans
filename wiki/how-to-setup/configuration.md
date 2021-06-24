@@ -2,17 +2,17 @@
 description: null
 ---
 
-# Configuration
+# Yapılandırma
 
-[The main configuration file for SimpleClans can be found here.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
+[SimpleClans için ana yapılandırma dosyası burada bulunabilir.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
 
-## General Settings
+## Genel Ayarlar
 
-* `enable-gui` - Enables the GUI. 
-* `disable-messages` - This will disable broadcasts from the plugin such as "Clan created", "Clan disbanded", etc. 
+* `enable-gui` - GUI'yi etkinleştirir.
+* `disable-messages` - Bu, "Klan oluşturuldu", "Klan dağıldı" vb. gibi eklentiden gelen yayınları devre dışı bırakacaktır.
 * `tameable-mobs-sharing` -  
 * `teleport-blocks` -  
-* `teleport-home-on-spawn` - Players will be teleported to their clan's home when they respawn. 
+* `teleport-home-on-spawn` - Oyuncular yeniden doğduklarında klanlarının evine ışınlanmasını sağlar.
 * `drop-items-on-clan-home` -  
 * `keep-items-on-clan-home` -  
 * `item-list` -  
@@ -37,12 +37,12 @@ description: null
 * `allow-reset-kdr` -  
 * `rejoin-cooldown` -  
 * `rejoin-cooldown-enabled` -  
-* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\) 
-* `ranking-type` - Valid options: ORDINAL and DENSE
-  * `DENSE`: if players have the same KDR, they will have the same rank position. Ex.: 12234
-  * `ORDINAL`: Every player will have a different rank position. Ex.: 12345
+* `min-to-verify` - Klanların doğrulanması için bu sayıda üyeye sahip olması gerekir \(moderatörler bunu atlayabilir\)
+* `ranking-type` - Geçerli seçenekler: ORDINAL ve DENSE
+  * `DENSE`: Oyuncular aynı KD'ye sahipse, aynı rütbe pozisyonuna sahip olacaklardır. Örn.: 12234
+  * `ORDINAL`: Her oyuncunun farklı bir rütbe pozisyonu olacaktır. Örn.: 12345
 
-### Example
+### Örnek
 
 ```yaml
 settings:
@@ -85,9 +85,9 @@ settings:
     ranking-type: DENSE
 ```
 
-## Tags Format
+## Etiketlerin Biçimi
 
-### Example
+### Örnek
 
 * `default-color` - 
 * `max-length` - 
@@ -118,7 +118,7 @@ tag:
         char: ' .'
 ```
 
-## General Commands
+## Genel Komutlar
 
 * `more` - 
 * `ally` - 
@@ -129,7 +129,7 @@ tag:
 * `clan_chat` - 
 * `force-priority` - 
 
-### Example
+### Örnek
 
 ```yaml
 commands:
@@ -143,14 +143,14 @@ commands:
     force-priority: true
 ```
 
-## KDR Grinding Prevention
+## Haksız KD Kazanmayı Önleme
 
 * `enable-max-kills` - 
 * `max-kills-per-victim` - 
 * `enable-kill-delay` - 
 * `delay-between-kills` - 
 
-### Example
+### Örnek
 
 ```yaml
 kdr-grinding-prevention:
@@ -160,7 +160,7 @@ kdr-grinding-prevention:
     delay-between-kills: 5
 ```
 
-## List Commands
+## Liste Komutları
 
 * `size` - 
 * `kdr` - 
@@ -171,7 +171,7 @@ kdr-grinding-prevention:
 * `desc` - 
 * `default` - 
 
-### Example
+### Örnek
 
 ```yaml
 list:
@@ -185,7 +185,7 @@ list:
     default: kdr
 ```
 
-## Economy
+## Ekonomi
 
 * `creation-price` - 
 * `purchase-clan-create` - 
@@ -214,7 +214,7 @@ list:
 * `multiply-upkeep-by-clan-size` - 
 * `charge-upkeep-only-if-member-fee-enabled` - 
 
-### Example
+### Örnek
 
 ```yaml
 economy:
@@ -246,14 +246,14 @@ economy:
     charge-upkeep-only-if-member-fee-enabled: true
 ```
 
-## Kill Weights
+## Öldürme Ağırlıkları
 
 * `rival` - 
 * `civilian` - 
 * `neutral` - 
 * `deny-same-ip-kills` - 
 
-### Example
+### Örnek
 
 ```yaml
 kill-weights:
@@ -263,7 +263,7 @@ kill-weights:
     deny-same-ip-kills: false
 ```
 
-## Clan Settings
+## Klan Ayarları
 
 * `homebase-teleport-wait-secs` - 
 * `homebase-can-be-set-only-once` - 
@@ -280,7 +280,7 @@ kill-weights:
 * `min-length` - 
 * `min-size-to-set-ally` - 
 
-### Example
+### Örnek
 
 ```yaml
 clan:
@@ -300,7 +300,7 @@ clan:
     min-size-to-set-ally: 3
 ```
 
-## Tasks
+## Görevler
 
 * `collect-upkeep` - 
   * `hour` - 
@@ -312,7 +312,7 @@ clan:
   * `hour` - 
   * `minute` - 
 
-### Example
+### Örnek
 
 ```yaml
 tasks:
@@ -327,7 +327,7 @@ tasks:
         minute: 0
 ```
 
-## Page
+## Sayfa
 
 * `untrusted-color` - 
 * `clan-name-color` - 
@@ -338,7 +338,7 @@ tasks:
 * `separator` - 
 * `size` - 
 
-### Example
+### Örnek
 
 ```yaml
 page:
@@ -352,7 +352,7 @@ page:
     size: 100
 ```
 
-## Clan Chat
+## Klan Sohbeti
 
 * `enable` - 
 * `tag-based-clan-chat` - 
@@ -363,7 +363,7 @@ page:
 * `trusted-color` - 
 * `member-color` - 
 
-### Example
+### Örnek
 
 ```yaml
 clanchat:
@@ -377,13 +377,13 @@ clanchat:
     member-color: '7'
 ```
 
-## Request
+## İstek
 
 * `message-color` - 
 * `ask-frequency-secs` - 
 * `max-asks-per-request` - 
 
-### Example
+### Örnek
 
 ```yaml
 request:
@@ -392,7 +392,7 @@ request:
     max-asks-per-request: 1440
 ```
 
-## Bulletin Board
+## Bülten Panosu
 
 * `color` - 
 * `accent-color` - 
@@ -400,7 +400,7 @@ request:
 * `size` - 
 * `login-size` - 
 
-### Example
+### Örnek
 
 ```yaml
 bb:
@@ -411,7 +411,7 @@ bb:
     login-size: 6
 ```
 
-## Ally Chat
+## Müttefik Sohbeti
 
 * `enable` - 
 * `format` - 
@@ -420,7 +420,7 @@ bb:
 * `trusted-color` - 
 * `member-color` - 
 
-### Example
+### Örnek
 
 ```yaml
 allychat:
@@ -432,13 +432,13 @@ allychat:
     member-color: '7'
 ```
 
-## Purge Data
+## Verileri Temizleme
 
 * `inactive-player-data-days` - 
 * `inactive-clan-days` - 
 * `unverified-clan-days` - 
 
-### Example
+### Örnek
 
 ```yaml
 purge:
@@ -447,7 +447,7 @@ purge:
     unverified-clan-days: 2
 ```
 
-## mySQL Settings
+## mySQL Ayarları
 
 * `username` - 
 * `host` - 
@@ -456,7 +456,7 @@ purge:
 * `password` - 
 * `database` - 
 
-### Example
+### Örnek
 
 ```yaml
 mysql:
@@ -468,11 +468,11 @@ mysql:
     database: ''
 ```
 
-## Permissions
+## İzinler
 
 * `auto-group-groupname` - 
 
-### Example
+### Örnek
 
 ```yaml
 permissions:
@@ -481,14 +481,14 @@ permissions:
   - test.permission
 ```
 
-## Performance
+## Performans
 
-* `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true. 
-* `save-interval` - The interval **in minutes** in which changes are written to the database. 
-* `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true. 
+* `save-periodically` - Eklenti, verilerini hemen değil, periyodik olarak kaydeder, doğru olarak ayarlanması **ÖNERİLİR**.
+* `save-interval` - Değişikliklerin veritabanına yazıldığı dakika cinsinden aralık.
+* `use-threads` - Eklenti, bu doğruysa, veritabanına bağlanmak için ana iş parçacığını kullanmaz, doğru olarak ayarlanması **ÖNERİLİR**.
 * `use-bungeecord` - 
 
-### Example
+### Örnek
 
 ```yaml
 performance:
@@ -498,11 +498,11 @@ performance:
   use-bungeecord: false
 ```
 
-## Safe Civilians
+## Sivilleri Koru
 
-* `safe-civilians` - Civilians are safe from PvP, even civilian vs civilian combat is disabled
+* `safe-civilians` - Siviller PvP'den güvende olur, sivillere karşı siviller için bile savaşlar devre dışı.
 
-### Example
+### Örnek
 
 ```yaml
 safe-civilians: false

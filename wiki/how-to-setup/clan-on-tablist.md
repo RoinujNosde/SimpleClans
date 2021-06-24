@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Clan on Tablist
+# Tab Listesinde Klan Adlarını Kullanma
 
 ## Plugins needed
 

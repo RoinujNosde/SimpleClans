@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Clan Below Player's Name
+# Oyuncu Adının Altında Klan Adı Gösterme
 
 ## Plugins needed
 

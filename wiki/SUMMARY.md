@@ -1,17 +1,17 @@
 # Table of contents
 
 * [Giriş](README.md)
-* [Discord Support](https://discord.gg/CkNwgdE)
-* [Bugs and Suggestions](https://github.com/RoinujNosde/SimpleClans/issues)
+* [Discord Destek](https://discord.gg/CkNwgdE)
+* [Hatalar ve Öneriler](https://github.com/RoinujNosde/SimpleClans/issues)
 
 ## How to Setup
 
-* [Configuration](how-to-setup/configuration.md)
-* [Translation](how-to-setup/translation.md)
-* [Member Fee](how-to-setup/member-fee.md)
-* [Clan Upkeep](how-to-setup/clan-upkeep.md)
-* [Clan Below Player's Name](how-to-setup/clan-below-players-name.md)
-* [Clan on Tablist](how-to-setup/clan-on-tablist.md)
+* [Yapılandırma](how-to-setup/configuration.md)
+* [Tercüme](how-to-setup/translation.md)
+* [Üye Ücreti](how-to-setup/member-fee.md)
+* [Klan Bakımı](how-to-setup/clan-upkeep.md)
+* [Oyuncu Adının Altında Klan Adı Gösterme](how-to-setup/clan-below-players-name.md)
+* [Tab Listesinde Klan Adlarını Kullanma](how-to-setup/clan-on-tablist.md)
 
 ## Commands and Permissions
 

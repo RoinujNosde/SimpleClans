@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Clan Upkeep
+# Klan Bakımı
 
 ## How does it work?
 

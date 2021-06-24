@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Translation
+# Tercüme
 
 ## Editing the plugin's messages
 

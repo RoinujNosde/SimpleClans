@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Member Fee
+# Üye Ücreti
 
 ## How does it work?
 
