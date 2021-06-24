@@ -2,11 +2,11 @@
 description: null
 ---
 
-# PlaceholderAPI Support
+# PlaceholderAPI Desteği
 
-## Available placeholders
+## Mevcut placeholderlar
 
-| Placeholder | Result | Description |  |
+| Placeholder | Sonuç | Açıklama |  |
 | :--- | :--- | :--- | :--- |
 | %simpleclans\_neutral\_kills% | INTEGER |  |  |
 | %simpleclans\_rival\_kills% | INTEGER |  |  |
@@ -29,12 +29,12 @@ description: null
 | %simpleclans\_is\_friendlyfire\_on% | BOOLEAN \(YES/NO\) |  |  |
 | %simpleclans\_is\_muted% | BOOLEAN \(YES/NO\) |  |  |
 | %simpleclans\_is\_mutedally% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_join\_date% | DATE | Month, Day, Year, Hour |  |
+| %simpleclans\_join\_date% | DATE | Ay, Gün, Yıl, Saat |  |
 | %simpleclans\_inactive\_days% | INTEGER |  |  |
 | %simpleclans\_lastseen% | INTEGER |  |  |
 | %simpleclans\_lastseendays% | INTEGER |  |  |
-| %simpleclans\_tag% | STRING | lowerscored Clan tag without color |  |
-| %simpleclans\_tag\_label% | STRING | Clan tag with correct mayus, color and at the end &c |  |
+| %simpleclans\_tag% | STRING | renksiz düşük puanlı Klan etiketi |  |
+| %simpleclans\_tag\_label% | STRING | Doğru mayus, renk ve sonunda &c ile klan etiketi |  |
 | %simpleclans\_rank% | STRING |  |  |
 | %simpleclans\_rank\_displayname% | STRING |  |  |
 | %simpleclans\_clanchat\_player\_color% |  |  |  |

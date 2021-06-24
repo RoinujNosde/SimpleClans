@@ -22,8 +22,8 @@
 
 ## Diğer <a id="other"></a>
 
-* [Known issues](other/known-issues.md)
-* [SimpleClans API Example](other/simpleclans-api.md)
-* [PlaceholderAPI Support](other/placeholderapi-support.md)
-* [Land Claims Plugins](other/land-claims.md)
+* [Bilinen Sorunlar](other/known-issues.md)
+* [SimpleClans API Örnek](other/simpleclans-api.md)
+* [PlaceholderAPI Desteği](other/placeholderapi-support.md)
+* [Claim\(Arazi\) Eklentileri](other/land-claims.md)
 

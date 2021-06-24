@@ -1,16 +1,16 @@
 ---
-description: List of the plugin's known issues and possible solutions.
+description: Eklentinin bilinen sorunlarının ve olası çözümlerinin listesi.
 ---
 
-# Known issues
+# Bilinen Sorunlar
 
-#### MySQL \#1366 - Incorrect string value
+#### MySQL \#1366 - Yanlış dize değeri
 
-This error happens when you try to insert characters that MySQL's current encoding doesn't support.
+Bu hata, MySQL'in mevcut kodlamasının desteklemediği karakterleri eklemeye çalıştığınızda meydana gelir.
 
-**Solution:** change MySQL's encoding to `utf8mb4`.  
-1. Open MySQL's `my.cnf`.  
-2. Add these configurations, save and restart MySQL:
+Çözüm**:** MySQL'in kodlamasını şu şekilde değiştir: `utf8mb4`.  
+1. MySQL'i açın: `my.cnf`.  
+2. Bu yapılandırmaları ekleyin, MySQL'i kaydedin ve yeniden başlatın:
 
 ```text
 [mysql]
@@ -20,9 +20,9 @@ character-set-server=utf8mb4
 collation-server=utf8mb4_unicode_ci
 ```
 
-#### KDR is not counted
+#### KD sayılmıyor
 
-Players report that their KDR is not changing.
+Oyuncular KD'lerinin değişmediğini bildiriyor.
 
-**Solution:** deny the permission `simpleclans.other.kdr-exempt`. In some permission plugins, just add a `-` before the node. Others accept the `false` value.
+**Çözüm:** `simpleclans.other.kdr-exempt`iznini reddet. Bazı izin eklentilerinde, izinden önce bir `-` ekleyin. Diğerleri `false` değeri kabul eder.
 

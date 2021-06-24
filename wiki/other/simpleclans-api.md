@@ -2,9 +2,9 @@
 description: null
 ---
 
-# SimpleClans API Example
+# SimpleClans API Örnek
 
-You can hook into SimpleClans plugin like so:
+SimpleClans eklentisine şu şekilde bağlanabilirsiniz:
 
 ```java
 private SimpleClans sc;
@@ -23,7 +23,7 @@ public void onEnable()
 ```java
 public void doClanStuff(Player player)
 {
-    // get a player's clan
+    // bir oyuncunun klanını al
 
     if (sc != null)
     {
@@ -35,11 +35,11 @@ public void doClanStuff(Player player)
         }
         else
         {
-            // player is not in a clan
+            // oyuncu bir klanda değil
         }
     }
 
-    // get a clan from a clan tag
+    // klan etiketinden klan al
 
     if (sc != null)
     {
@@ -47,15 +47,15 @@ public void doClanStuff(Player player)
 
         if (clan != null)
         {
-            // clan exists
+            // klan var
         }
     }
 }
 ```
 
-Every player has a **ClanPlayer** object which holds all his information, including his clan, and can be used to perform various operations on the player.
+Her oyuncunun, klanı da dahil olmak üzere tüm bilgilerini tutan ve oyuncu üzerinde çeşitli işlemler gerçekleştirmek için kullanılabilen bir **ClanPlayer** nesnesi vardır.
 
-The **Clan** object holds all the information for a clan and can be used to perform various operations on the clan.
+**Klan** nesnesi, bir klana ait tüm bilgileri tutar ve klanda çeşitli işlemleri gerçekleştirmek için kullanılabilir.
 
-The **ClanManager** holds all the **Clans** and **ClanPlayers** and contains methods that allow you to retrieve them.
+**ClanManager**, tüm **Klanları** ve **ClanPlayer'ları** tutar ve bunları almanıza izin veren yöntemler içerir.
 

@@ -2,14 +2,14 @@
 description: null
 ---
 
-# Land Claims Plugins
+# Claim\(Arazi\) Eklentileri
 
-## Configuration
+## Yapılandırma
 
 * `enable-auto-groups` - 
 * `auto-group-groupname`- 
 
-### Exemple
+### Örnek
 
 ```yaml
 settings:
@@ -22,17 +22,17 @@ permissions:
 
 ## GriefPrevention
 
-You can replace `<clantag>` with ANY clan tag \(ally, rival, etc\)
+`<clantag>` öğesini herhangi bir klan etiketiyle değiştirebilirsiniz. \(müttefik, rakip vb.\)
 
-| Command | Description |
+| Komut | Açıklama |
 | :--- | :--- |
-| `/Trust group.<clantag>` | Gives the Clan members permission to edit in your claim |
-| `/AccessTrust group.<clantag>` | Gives the Clan members permission to use your buttons, levers, and beds |
-| `/ContainerTrust group.<clantag>` | Gives the Clan members permission to use your buttons, levers, beds, crafting gear, containers, and animals |
-| `/PermissionTrust group.<clantag>` | Gives the Clan members permission to share their permission level with others |
-| `/UnTrust group.<clantag>` | Revokes any permissions granted to a Clan in your claim |
+| `/Trust group.<clantag>` | Klan üyelerine talebinizi düzenleme izni verir |
+| `/AccessTrust group.<clantag>` | Klan üyelerine düğmelerinizi, şalterlerinizi ve yataklarınızı kullanma izni verir |
+| `/ContainerTrust group.<clantag>` | Klan üyelerine düğmelerinizi, kollarınızı, yataklarınızı, işleme teçhizatınızı, kaplarınızı ve hayvanlarınızı kullanma izni verir |
+| `/PermissionTrust group.<clantag>` | Klan üyelerine izin düzeylerini başkalarıyla paylaşma izni verir |
+| `/UnTrust group.<clantag>` | Talebinizde bir Klana verilen tüm izinleri iptal eder |
 
-## Note
+## Not
 
-After the permission is given, the player must reconnect.
+İzin verildikten sonra, oyuncu yeniden bağlanmalıdır.
 
