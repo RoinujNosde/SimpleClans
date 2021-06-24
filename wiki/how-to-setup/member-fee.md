@@ -4,18 +4,18 @@ description: null
 
 # Üye Ücreti
 
-## How does it work?
+## Nasıl Çalışır?
 
-If enabled by the server and the clan, at `1am` a fee \(set by the leader\) is collected from the non-leaders. A member that doesn't have enough money to pay it will be automatically kicked from the clan. The collected fee is added to the clan bank.
+Eğer sunucu ve klan tarafından etkinleştirilirse, lider olmayanlardan saat 1'de \(lider tarafından belirlenen\) bir ücret alınır. Ödemek için yeterli parası olmayan bir üye otomatik olarak klandan atılır. Toplanan ücret klan bankasına eklenir.
 
-## Configuration
+## Yapılandırma
 
-* `member-fee-enabled` - Enables or disables the feature.
-* `max-member-fee` - Limits the fee, so leaders may not abuse the members.
-* `purchase-member-fee-set` - Enable this to charge the value below everytime a leader changes the fee value.
-* `member-fee-set-price` - Value to charge for changes on the fee value
+* `member-fee-enabled` - Özelliği etkinleştirir veya devre dışı bırakır.
+* `max-member-fee` - Ücreti sınırlar, böylece liderler üyeleri kötüye kullanamaz.
+* `purchase-member-fee-set` - Bir lider ücret değerini her değiştirdiğinde aşağıdaki değer kadar ücretlendirmek için bunu etkinleştirin.
+* `member-fee-set-price` - Ücret değerindeki değişiklikler için ücretlendirilecek değer
 
-#### Example
+#### Örnek
 
 ```yaml
 economy:
@@ -25,18 +25,18 @@ economy:
     member-fee-set-price: 1000.0
 ```
 
-## Permissions
+## İzinler
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.leader.fee` | Allows the user to toggle the fee and set its value |
-| `simpleclans.member.fee-check` | allows the member to check how much is the fee and if it's enabled |
+| `simpleclans.leader.fee` | Kullanıcının ücreti değiştirmesine ve değerini ayarlamasına izin verir |
+| `simpleclans.member.fee-check` | Üyenin ücretin ne kadar olduğunu ve etkin olup olmadığını kontrol etmesine izin verir |
 
-## Commands
+## Komutlar
 
-| Permission | Description | Permission |
+| İzin | Açıklama | İzin |
 | :--- | :--- | :--- |
-| `/clan toggle fee` | Enables/disables the fee | `simpleclans.leader.fee` |
-| `/clan fee set [amount]` | Sets the fee value | `simpleclans.leader.fee` |
-| `/clan fee check` | Checks the status of the fee | `simpleclans.member.fee-check` |
+| `/clan toggle fee` | Ücreti etkinleştirir/devre dışı bırakır | `simpleclans.leader.fee` |
+| `/clan fee set [amount]` | Ücret değerini ayarlar | `simpleclans.leader.fee` |
+| `/clan fee check` | Ücret durumunu kontrol eder | `simpleclans.member.fee-check` |
 
