@@ -31,9 +31,9 @@ Mevcut çeviriyi beğendiyseniz, ancak yalnızca birkaç satırı değiştirmek 
 
 > **Not**: Lütfen dil dosyanızın yeni mesajlar eklendiği zaman otomatik olarak **güncellenmediğini** unutmayın.
 
-## Share your translations!
+## Çevirilerinizi paylaşın!
 
-SimpleClans has a project on [Crowdin](https://crowdin.com/project/simpleclans). There you can translate the messages and suggest corrections!
+SimpleClans'ın [Crowdin'de ](https://crowdin.com/project/simpleclans)bir projesi var. Orada mesajları çevirebilir ve düzeltmeler önerebilirsiniz!
 
-> **Note**: if you have an old `language.yml` file for SimpleClans that you translated to your language, [open an issue here](https://github.com/RoinujNosde/SimpleClans/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), I will convert the file and add it to the plugin.
+> **Not**: if you have an old `language.yml` file for SimpleClans that you translated to your language, [open an issue here](https://github.com/RoinujNosde/SimpleClans/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), I will convert the file and add it to the plugin.
 
