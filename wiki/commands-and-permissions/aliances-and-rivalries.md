@@ -2,32 +2,32 @@
 description: null
 ---
 
-# Clan Alliances and Rivalries
+# Klan İttifakları ve Rekabetleri
 
-Any clan leader can send an request to start an alliance with any other clan with `/clan ally add`. If the request is accepted by a leader of the second clan, the alliance is formed. The alliance can be broken by any leader of either clan at any time with `/clan ally remove`, no one needs to accept the removal of an alliance.
+Herhangi bir klan lideri, `/clan ally add`ile başka bir klanla ittifak başlatmak için istek gönderebilir. İstek ikinci klanın lideri tarafından kabul edilirse ittifak kurulur. İttifak herhangi bir klanın herhangi bir lideri tarafından `/clan ally remove` ile herhangi bir zamanda bozulabilir, hiç kimse bir ittifakın kaldırılmasını kabul etmek zorunda değildir.
 
-Clan rivalries can be started by any clan at any time, no request is needed, rivalries are automatically formed once a clan leader decides he wants one by using `/clan rival add`. If someone has pissed you off and you want them as rivals, their permission is not needed. To break a clan rivalry on the other hand, you need the acceptance of the other clan, you must use `/clan rival remove` to send the other clan a request, once one of their leaders accept the rivalry is broken.
+Klan rekabetleri herhangi bir zamanda herhangi bir klan tarafından başlatılabilir, herhangi bir talep gerekmez, Bir klan lideri `/clan rival add` kullanarak bir tane istediğine karar verdiğinde, rekabetler otomatik olarak oluşturulur. Biri sizi kızdırdıysa ve onları rakip olarak istiyorsanız, onların iznine gerek yoktur. Öte yandan bir klan rekabetini kırmak için diğer klanın kabulüne ihtiyacınız var, Liderlerinden biri rekabetin bozulduğunu kabul ettiğinde, diğer klana istek göndermek için `/clan rival remove` komutunu kullanmalısınız.
 
-You can view a list of all clans and their allies with the `/clan alliances` command, or their rivals with the `/clan rivalries` command.
+`/clan alliances` komutu ile tüm klanların ve müttefiklerinin bir listesini görüntüleyebilirsiniz, veya `/clan rivalries` komutuyla rakipleri.
 
-## Commands
+## Komutlar
 
-| Commands | Description |
+| Komutlar | İzinler |
 | :--- | :--- |
-| `/clan ally add [tag]` | Send an request to start an alliance \(acceptance is required\) |
-| `/clan ally remove [tag]` | Remove alliance \(no acceptance is required\) |
-| `/clan rival add [tag]` | Starting a rivalry \(no acceptance is required\) |
-| `/clan rival remove [tag]` | Remove a rivalry \(acceptance is required\) |
-| `/clan alliances` | List all clans and their allies |
-| `/clan rivalries` | List all clans and their rivals |
+| `/clan ally add [tag]` | Bir ittifak başlatmak için bir istek gönderin \(kabul gereklidir\) |
+| `/clan ally remove [tag]` | İttifakı kaldır \(kabul gerekli değildir\) |
+| `/clan rival add [tag]` | Bir rekabet başlatmak \(kabul gerekli değildir\) |
+| `/clan rival remove [tag]` | Bir rekabeti kaldırın \(kabul gereklidir\) |
+| `/clan alliances` | Tüm klanları ve müttefiklerini listele |
+| `/clan rivalries` | Tüm klanları ve rakiplerini listele |
 
-## Permissions
+## İzinler
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.member.ally` | Can use ally chat |
-| `simpleclans.leader.ally` | Can ally his clan with other simpleclans |
-| `simpleclans.leader.rival` | Can start a rivalry with another clan |
-| `simpleclans.anyone.alliances` | Can view alliances by clan |
-| `simpleclans.anyone.rivalries` | Can view rivalries by clan |
+| `simpleclans.member.ally` | Müttefik sohbeti kullanabilir |
+| `simpleclans.leader.ally` | Klanını diğer klanlarla ittifak yapabilir |
+| `simpleclans.leader.rival` | Başka bir klanla rekabet başlatabilir |
+| `simpleclans.anyone.alliances` | Klana göre ittifakları görüntüleyebilir |
+| `simpleclans.anyone.rivalries` | Klana göre rekabetleri görüntüleyebilir |
 

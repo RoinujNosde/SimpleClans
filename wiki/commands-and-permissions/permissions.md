@@ -65,75 +65,75 @@ Bu süper izin düğümleri, SimpleClans'ı kurmanın hızlı bir yoludur, bazı
 
 | İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.leader.fee` | allows the user to toggle the fee and set its value |
-| `simpleclans.leader.ally` | Can ally his clan with other clans |
-| `simpleclans.leader.create` | Can create clans |
-| `simpleclans.leader.verify` | Can verify their clan |
-| `simpleclans.leader.demote` | Can demote clan leaders to normal players |
-| `simpleclans.leader.disband` | Can disband his own clan |
-| `simpleclans.leader.ff` | Can toggle his clan's friendly fire |
-| `simpleclans.leader.home-set` | Can set home base |
-| `simpleclans.leader.regroup.me` | Can teleport the entire clan to themself |
-| `simpleclans.leader.regroup.home` | Can teleport the entire clan to homebase |
-| `simpleclans.leader.invite` | Can invite players into his clan |
-| `simpleclans.leader.kick` | Can kick players form his clan |
-| `simpleclans.leader.modtag` | Can modify his clan's tag |
-| `simpleclans.leader.description` | Can modify their clan's description |
-| `simpleclans.leader.coloredtag` | Can use color codes in tags |
-| `simpleclans.leader.coloredrank` | Can use color codes in rank display names |
-| `simpleclans.leader.promotable` | Can be promoted to clan leader |
-| `simpleclans.leader.promote` | Can promote players to clan leaders |
-| `simpleclans.leader.rank.assign` | Can assign a rank to a user |
-| `simpleclans.leader.rank.unassign` | Can unassign a player from a rank |
-| `simpleclans.leader.rank.create` | Can create a new rank |
-| `simpleclans.leader.rank.delete` | Can delete a new rank |
-| `simpleclans.leader.rank.list` | Can list all the ranks |
-| `simpleclans.leader.rank.setdisplayname` | Can set the display name of the rank |
-| `simpleclans.leader.rank.permissions.add` | Can add permissions to a rank |
-| `simpleclans.leader.rank.permissions.available` | Can list all available permissions |
-| `simpleclans.leader.rank.permissions.list` | Can list the rank's permissions |
-| `simpleclans.leader.rank.permissions.remove` | Can remove permissions from a rank |
-| `simpleclans.leader.rival` | Can start a rivalry with another clan |
-| `simpleclans.leader.settrust` | Can set trust levels for members |
-| `simpleclans.leader.war` | Can start wars |
-| `simpleclans.leader.setbanner` | Can set his clan's banner |
-| `simpleclans.leader.withdraw-toggle:` | Can toggle clan bank withdraw |
-| `simpleclans.leader.deposit-toggle:` | Can toggle clan bank deposit |
-| `simpleclans.leader.bb-clear` | Clan clear their clan's bb |
+| `simpleclans.leader.fee` | Kullanıcının ücreti değiştirmesine ve değerini ayarlamasına izin verir |
+| `simpleclans.leader.ally` | Klanını diğer klanlarla ittifak yapabilir |
+| `simpleclans.leader.create` | Klanlar oluşturabilir |
+| `simpleclans.leader.verify` | Klanlarını doğrulayabilir |
+| `simpleclans.leader.demote` | Klan liderlerini normal oyunculara indirebilir |
+| `simpleclans.leader.disband` | Kendi klanını dağıtabilir |
+| `simpleclans.leader.ff` | Klanının dost ateşini açabilir |
+| `simpleclans.leader.home-set` | Klan evini ayarlayabilir |
+| `simpleclans.leader.regroup.me` | Tüm klanı kendisine ışınlayabilir |
+| `simpleclans.leader.regroup.home` | Tüm klanı klan evine ışınlayabilir |
+| `simpleclans.leader.invite` | Oyuncuları klanına davet edebilir |
+| `simpleclans.leader.kick` | Oyuncuları klanından atabilir |
+| `simpleclans.leader.modtag` | Klanının etiketini değiştirebilir |
+| `simpleclans.leader.description` | Klanlarının açıklamasını değiştirebilir |
+| `simpleclans.leader.coloredtag` | Etiketlerde renk kodlarını kullanabilir |
+| `simpleclans.leader.coloredrank` | Sıralama görünen adlarında renk kodlarını kullanabilir |
+| `simpleclans.leader.promotable` | Klan liderine terfi ettirilebilir |
+| `simpleclans.leader.promote` | Oyuncuları klan liderlerine terfi ettirebilir |
+| `simpleclans.leader.rank.assign` | Bir kullanıcıya bir rütbe atayabilir |
+| `simpleclans.leader.rank.unassign` | Bir rütbeden bir oyuncunun atamasını kaldırabilir |
+| `simpleclans.leader.rank.create` | Yeni bir rütbe oluşturabilir |
+| `simpleclans.leader.rank.delete` | Bir rütbeyi silebilir |
+| `simpleclans.leader.rank.list` | Tüm rütbeleri listeleyebilir |
+| `simpleclans.leader.rank.setdisplayname` | Rütbenin görünen adını ayarlayabilir |
+| `simpleclans.leader.rank.permissions.add` | Bir rütbeye izinler ekleyebilir |
+| `simpleclans.leader.rank.permissions.available` | Mevcut tüm izinleri listeleyebilir |
+| `simpleclans.leader.rank.permissions.list` | Rütbenin izinlerini listeleyebilir |
+| `simpleclans.leader.rank.permissions.remove` | Bir rütbeden izinleri kaldırabilir |
+| `simpleclans.leader.rival` | Başka bir klanla rekabet başlatabilir |
+| `simpleclans.leader.settrust` | Üyeler için güven seviyeleri belirleyebilir |
+| `simpleclans.leader.war` | Savaşları başlatabilir |
+| `simpleclans.leader.setbanner` | Klanının bayrağını ayarlayabilir |
+| `simpleclans.leader.withdraw-toggle:` | Klan bankasını geri çekme arasında geçiş yapabilir |
+| `simpleclans.leader.deposit-toggle:` | Klan banka mevduatını değiştirebilir |
+| `simpleclans.leader.bb-clear` | Klan bülten panosunu temizleyebilir |
 
-### Mod Nodes
+### Moderatör Düğümleri
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.mod.ban` | Can ban players from the entire plugin |
-| `simpleclans.mod.bypass` | Can bypass restrictions |
-| `simpleclans.mod.disband` | Can disband any clan |
-| `simpleclans.mod.globalff` | Can turn off global friendly fire protection |
-| `simpleclans.mod.home` | Can set other clan's home |
-| `simpleclans.mod.hometp` | Can teleport to all clans homes |
-| `simpleclans.mod.staffgui` | Can open the staff GUI |
-| `simpleclans.mod.place` | Can manually place players in clans |
-| `simpleclans.mod.keep-items` | Can keep items when teleporting home |
-| `simpleclans.mod.mostkilled` | Can view his and other's clans mostkilled |
-| `simpleclans.mod.nopvpinwar` | Can bypass PvP in wars |
-| `simpleclans.mod.unban` | Can unban players from the entire plugin |
-| `simpleclans.mod.verify` | Can verify clans |
+| `simpleclans.mod.ban` | Tüm eklentiden oyuncuları yasaklayabilir |
+| `simpleclans.mod.bypass` | Kısıtlamaları atlayabilir |
+| `simpleclans.mod.disband` | Herhangi bir klanı dağıtabilir |
+| `simpleclans.mod.globalff` | Küresel dost ateşi korumasını kapatabilir |
+| `simpleclans.mod.home` | Diğer klanların evini ayarlayabilir |
+| `simpleclans.mod.hometp` | Tüm klan evlerine ışınlanabilir |
+| `simpleclans.mod.staffgui` | Yönetici GUI'sini açabilir |
+| `simpleclans.mod.place` | Oyuncuları manuel olarak klanlara yerleştirebilir |
+| `simpleclans.mod.keep-items` | Eve ışınlanırken eşyaları tutabilir |
+| `simpleclans.mod.mostkilled` | Kendisinin ve diğerlerinin en çok öldürülen klanlarını görebilir |
+| `simpleclans.mod.nopvpinwar` | Savaşlarda PVP'yi atlayabilir |
+| `simpleclans.mod.unban` | Oyuncuların tüm eklentideki yasağını kaldırabilir |
+| `simpleclans.mod.verify` | Klanları doğrulayabilir |
 
-### Admin Nodes
+### Yönetici Düğümleri
 
-| Permission | Description |
+| İzin | Açıklama |
 | :--- | :--- |
 | `simpleclans.admin.resetkdr` | Can reset a player's or everyone's KDR |
-| `simpleclans.admin.purge` | Can purge a player |
-| `simpleclans.admin.demote` | Can demote a player back to member |
-| `simpleclans.admin.promote` | Can promote players to clan leaders |
-| `simpleclans.admin.all-seeing-eye` | Can see all clan chats |
-| `simpleclans.admin.reload` | Can reload configuration |
+| `simpleclans.admin.purge` | Bir oyuncuyu temizleyebilir |
+| `simpleclans.admin.demote` | Bir oyuncuyu tekrar üyeliğe indirebilir |
+| `simpleclans.admin.promote` | Oyuncuları klan liderlerine terfi ettirebilir |
+| `simpleclans.admin.all-seeing-eye` | Tüm klan sohbetlerini görebilir |
+| `simpleclans.admin.reload` | Yapılandırmayı yeniden yükleyebilir |
 
-### Other Nodes
+### Diğer Düğümler
 
-| Permission | Node |
+| İzin | Açıklama |
 | :--- | :--- |
-| `simpleclans.other.kdr-exempt` | The player's KDR is not affected on killing/dying \(check Known Issues\) |
-| `simpleclans.vip.resetkdr` | Can reset their KDR |
+| `simpleclans.other.kdr-exempt` | Oyuncunun KD'si öldürme/ölme işleminden etkilenmez \(Bilinen Sorunları kontrol edin\) |
+| `simpleclans.vip.resetkdr` | KD'lerini sıfırlayabilir |
 

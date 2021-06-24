@@ -17,8 +17,8 @@
 
 * [Komutlar](commands-and-permissions/commands.md)
 * [İzinler](commands-and-permissions/permissions.md)
-* [Clan Alliances and Rivalries](commands-and-permissions/aliances-and-rivalries.md)
-* [Ranks with Permissions](commands-and-permissions/ranks-with-permissions.md)
+* [Klan İttifakları ve Rekabetleri](commands-and-permissions/aliances-and-rivalries.md)
+* [İzinli Rütbeler](commands-and-permissions/ranks-with-permissions.md)
 
 ## Other
 

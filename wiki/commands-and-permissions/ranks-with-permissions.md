@@ -2,35 +2,35 @@
 description: null
 ---
 
-# Ranks with Permissions
+# İzinli Rütbeler
 
-## How does it work?
+## Nasıl Çalışır?
 
-Leaders have the ability to create ranks and give them permissions to perform several actions inside the clan. Unlike `/clan trust`, ranks with permissions allows leaders to have a finer control of who can do what. Ex.: A rank can handle invites \(`invite` permission\), another takes care of moderation \(`kick` permission\), etc
+Liderler, rütbeler oluşturma ve onlara klan içinde çeşitli eylemler gerçekleştirme izni verme yeteneğine sahiptir. `/clan trust` farklı olarak, izinlere sahip rütbeler, liderlerin kimin ne yapabileceğini daha iyi kontrol etmelerini sağlar. Ör.: Bir rütbe davetleri işleyebilir \(`davet etme` izni\), bir diğeri moderasyonla ilgilenir \(`atma` izni\), vb.
 
-## Suggested ranks
+## Önerilen Rütbeler
 
-| Ranks | Description | Permission |
+| Rütbe | Açıklama | İzin |
 | :--- | :--- | :---: |
-| **Coleader** | Helps take care of the clan | `all` |
-| **Treasurer** | Manages the clan's bank account | `bank.balance`, `bank.deposit`, `bank.withdraw` |
-| **Ambassador** | Manages the clan's relations with other clans | `ally.chat`, `ally.add`, `ally.remove`, `rival.add`, `rival.remove`, `war.end`, `war.start` |
-| **Recruit** | A member in trial | `stats`, `kills`, `mostkilled`, `rank.list` |
+| Yardımcı Lider | Klanın bakımına yardımcı olur | `all` |
+| **Hazinedar** | Klanın banka hesabını yönetir | `bank.balance`, `bank.deposit`, `bank.withdraw` |
+| Büyükelçi | Klanın diğer klanlarla ilişkilerini yönetir | `ally.chat`, `ally.add`, `ally.remove`, `rival.add`, `rival.remove`, `war.end`, `war.start` |
+| **Komutan** | Klan verilerini inceler | `stats`, `kills`, `mostkilled`, `rank.list` |
 
-## Ranks Commands
+## Rütbe Komutları
 
-| Command | Description |
+| Komut | Açıklama |
 | :--- | :--- |
-| `/clan rank create` | Creates a rank with this name |
-| `/clan rank setdisplayname [rank] [displayname]` | Sets the display name of the rank \(it can be more than one word and colored\) |
-| `/clan rank assign (player) (rank)` | Assigns a user to a rank |
-| `/clan rank unassign (player)` | Unassigns a user from a rank |
-| `/clan rank delete (rank)` | Deletes a rank |
-| `/clan rank list` | Lists the clan's ranks |
-| `/clan rank permissions` | Lists the available permissions for ranks |
-| `/clan rank permissions (rank)` | Lists the rank's permissions |
-| `/clan rank permissions add (rank) (permission)` | Adds a permission to the rank |
-| `/clan rank permissions remove (rank) (permission)` | Removes a permission from the rank |
+| `/clan rank create` | Bu adla bir rütbe oluşturur |
+| `/clan rank setdisplayname [rütbe] [görünen ad]` | Rütbenin görünen adını belirler \(birden fazla kelime ve renkli olabilir\) |
+| `/clan rank assign (oyuncu) (rütbe)` | Bir kullanıcıyı bir rütbeye atar |
+| `/clan rank unassign (oyuncu)` | Bir kullanıcının bir rütbeden atamasını kaldırır |
+| `/clan rank delete (rütbe)` | Rütbeyi siler |
+| `/clan rank list` | Klanın rütbelerini listeler |
+| `/clan rank permissions` | Rütbeler için mevcut izinleri listeler |
+| `/clan rank permissions (rütbe)` | Rütbenin izinlerini listeler |
+| `/clan rank permissions add (rütbe) (izin)` | Rütbeye izin ekler |
+| `/clan rank permissions remove (rütbe) (izin)` | Rütbeden bir izni kaldırır |
 
 ## Available permissions for ranks
 
