@@ -92,10 +92,6 @@
                             <pattern>javassist</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.javassist</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>discordsrv</pattern>
-                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.discordsrv</shadedPattern>
-                        </relocation>
                     </relocations>
                     <artifactSet>
                         <excludes>
@@ -279,12 +275,12 @@
             <url>https://plotsquared.com/mvn/</url>
         </repository>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 

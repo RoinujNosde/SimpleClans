@@ -29,10 +29,7 @@ public class AllyChatCommand extends BaseCommand {
     @Default
     @HelpSearchTags("chat")
     public void sendMessage(ClanPlayer cp, @Name("message") String message) {
-        if (!settingsManager.isAllyChatEnable()) {
-            return;
-        }
-        chatManager.proceedChat(SPIGOT, ALLY, cp, message);
+        chatManager.processChat(SPIGOT, ALLY, cp, message);
     }
 
     @Subcommand("%join")
@@ -53,6 +50,8 @@ public class AllyChatCommand extends BaseCommand {
             clanPlayer.setChannel(NONE);
             storageManager.updateClanPlayer(clanPlayer);
             ChatBlock.sendMessage(clanPlayer, lang("left.ally.chat", clanPlayer));
+        } else {
+            ChatBlock.sendMessage(clanPlayer, lang("chat.didnt.join", clanPlayer));
         }
     }
 

@@ -55,6 +55,6 @@ public class SCMessage {
     }
 
     public enum Source {
-        SPIGOT, DISCORD, BUNGEE, SPY
+        SPIGOT, DISCORD, BUNGEE
     }
 }

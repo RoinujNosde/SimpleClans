@@ -67,7 +67,7 @@ public class SCPlayerListener implements Listener {
                 ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
                 return;
             }
-            plugin.getChatManager().proceedChat(SCMessage.Source.SPIGOT, channel, cp, event.getMessage());
+            plugin.getChatManager().processChat(SCMessage.Source.SPIGOT, channel, cp, event.getMessage());
             event.setCancelled(true);
         }
     }

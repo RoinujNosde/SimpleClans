@@ -33,7 +33,7 @@ public final class ChatManager {
 
     }
 
-    public void proceedChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
+    public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
         if (message.isEmpty()) {
             return;
         }
