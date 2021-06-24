@@ -2,16 +2,20 @@
 description: null
 ---
 
-# Oyuncu Adının Altında Klan Adı Gösterme
+# Oyuncu Adının Altında veya Üstünde Klan Adı veya Etiketi Gösterme
 
-## Plugins needed
+## Gerekli Eklentiler
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [TAB](https://www.spigotmc.org/resources/tab-1-5-x-1-15-x-free-version.57806/) \(you can use a different tablist plugin, as long as it supports PlaceholderAPI\)
+* [TAB](https://www.spigotmc.org/resources/tab-1-5-x-1-15-x-free-version.57806/) \(PlaceholderAPI'yi desteklediği sürece farklı bir tab listesi eklentisi kullanabilirsiniz.\)
 
-## Step by step
+## Adım Adım
 
-1. Open TAB's config and edit the Groups section adding `%simpleclans_clan_color_tag%` to `belowname`:
+1. TAB'ın yapılandırmasını açın ve Gruplar bölümünü düzenleyin:
+
+ Altına eklemek için bu: `belowname` 
+
+Üstüne eklemek için bu: `abovename` kısmına bunu ekleyin:`%simpleclans_clan_name%` veya`%simpleclans_clan_color_tag%`
 
 {% code title="Example:" %}
 ```yaml
@@ -26,13 +30,13 @@ _OTHER_:
 ```
 {% endcode %}
 
-2. Find the option `belowname` or `classic-vanilla-belowname` and disable it.
+2. Aşağıdaki `belowname` veya`classic-vanilla-belowname` seçeneğini bulun ve devre dışı bırakın.
 
-3. Find the option `unlimited-nametag-prefix-suffix-mode` and enable it.
+3. `unlimited-nametag-prefix-suffix-mode` seçeneğini bulun ve etkinleştirin.
 
-4. Restart \(or reload\) and enjoy!
+4. Yeniden başlatın \(veya yeniden yükleyin\) ve keyfini çıkarın!
 
-## Screenshot
+## Ekran Fotoğrafı
 
-![](../.gitbook/assets/clans-below-name.png)
+![](../.gitbook/assets/klan.png)
 

@@ -10,7 +10,7 @@
 * [Tercüme](how-to-setup/translation.md)
 * [Üye Ücreti](how-to-setup/member-fee.md)
 * [Klan Bakımı](how-to-setup/clan-upkeep.md)
-* [Oyuncu Adının Altında Klan Adı Gösterme](how-to-setup/clan-below-players-name.md)
+* [Oyuncu Adının Altında veya Üstünde Klan Adı veya Etiketi Gösterme](how-to-setup/clan-below-players-name.md)
 * [Tab Listesinde Klan Adlarını Kullanma](how-to-setup/clan-on-tablist.md)
 
 ## Commands and Permissions
