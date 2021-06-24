@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Permissions
+# İzinler
 
 ## SuperPerms Nodes \(Some auto added\)
 

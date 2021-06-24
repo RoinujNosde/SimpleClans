@@ -4,7 +4,7 @@
 * [Discord Destek](https://discord.gg/CkNwgdE)
 * [Hatalar ve Öneriler](https://github.com/RoinujNosde/SimpleClans/issues)
 
-## How to Setup
+## Nasıl Kurulur <a id="how-to-setup"></a>
 
 * [Yapılandırma](how-to-setup/configuration.md)
 * [Tercüme](how-to-setup/translation.md)
@@ -13,10 +13,10 @@
 * [Oyuncu Adının Altında veya Üstünde Klan Adı veya Etiketi Gösterme](how-to-setup/clan-below-players-name.md)
 * [Tab Listesinde Klan Adlarını Kullanma](how-to-setup/clan-on-tablist.md)
 
-## Commands and Permissions
+## Komutlar ve İzinler <a id="commands-and-permissions"></a>
 
-* [Commands](commands-and-permissions/commands.md)
-* [Permissions](commands-and-permissions/permissions.md)
+* [Komutlar](commands-and-permissions/commands.md)
+* [İzinler](commands-and-permissions/permissions.md)
 * [Clan Alliances and Rivalries](commands-and-permissions/aliances-and-rivalries.md)
 * [Ranks with Permissions](commands-and-permissions/ranks-with-permissions.md)
 

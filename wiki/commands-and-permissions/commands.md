@@ -2,117 +2,117 @@
 description: null
 ---
 
-# Commands
+# Komutlar
 
-> Required arguments are marked with `(argument)`
+> Gerekli değişkenler`(argument)` ile işaretlenmiştir.
 >
-> Optional arguments are marked with `[argument]`
+> İsteğe bağlı bağımsız değişkenler `[argument]` ile işaretlenmiştir.
 
-## Anyone Commands
+## Varsayılan Komutlar
 
-| Command | Description | Verified only |  |  |  |  |  |
+| Komut | Açıklama | Sadece Doğrulananlar |  |  |  |  |  |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `/clan` | Opens the GUI or shows the help | No |  |  |  |  |  |
-| `/clan help` | Shows the plugin's commands | No |  |  |  |  |  |
-| `/clan create [tag] [name]` | Creates a new clan | No |  |  |  |  |  |
-| `/accept` | Accepts a request | No |  |  |  |  |  |
-| `/deny` | Denies a request | No |  |  |  |  |  |
-| `/more` | Shows more information | No |  |  |  |  |  |
-| `/clan leaderboard` | Shows the leaderboard | No |  |  |  |  |  |
-| \`/clan list \[name | size | kdr | founded | active\] \[asc | desc\]\` | Lists all clans | No |
-| `/clan rivalries` | Shows all clan rivalries | No |  |  |  |  |  |
-| `/clan alliances` | Shows all clan alliances | No |  |  |  |  |  |
-| `/clan lookup [player]` | Looks up your or another player's info | No |  |  |  |  |  |
-| `/clan profile [tag]` | Shows another clan's profile | Yes\* |  |  |  |  |  |
-| `/clan roster [tag]` | Shows another clan's roster | Yes\* |  |  |  |  |  |
-| \`/clan ff \(allow | auto\)\` | Toggles personal friendly fire | No |  |  |  |  |
-| `/clan resetkdr` | Resets your KDR | No |  |  |  |  |  |
+| `/clan` | GUI'yi açar veya yardımı gösterir | Hayır |  |  |  |  |  |
+| `/clan help` | Eklenti komutlarını gösterir | Hayır |  |  |  |  |  |
+| `/clan create [tag] [name]` | Yeni klan oluşturur | Hayır |  |  |  |  |  |
+| `/accept` | İsteği onaylar | Hayır |  |  |  |  |  |
+| `/deny` | İsteği reddeder | Hayır |  |  |  |  |  |
+| `/more` | Daha fazla bilgi gösterir | Hayır |  |  |  |  |  |
+| `/clan leaderboard` | Skor tablosunu gösterir | Hayır |  |  |  |  |  |
+| \`/clan list \[name | boyut | kdr | kurulmuş | aktif\] \[artan | azalan\]\` | Tüm klanları listeler | Hayır |
+| `/clan rivalries` | Tüm klan rekabetlerini gösterir | Hayır |  |  |  |  |  |
+| `/clan alliances` | Tüm klan ittifaklarını gösterir | Hayır |  |  |  |  |  |
+| `/clan lookup [player]` | Sizin veya başka bir oyuncunun bilgilerini arar | Hayır |  |  |  |  |  |
+| `/clan profile [tag]` | Başka bir klanın profilini gösterir | Evet\* |  |  |  |  |  |
+| `/clan roster [tag]` | Başka bir klanın kadrosunu gösterir | Evet\* |  |  |  |  |  |
+| `/clan ff (otomatik izin ver)` |  | Kişisel dost ateşini açar/kapatır | Hayır |  |  |  |  |
+| `/clan resetkdr` | KD'nizi sıfırlar | Hayır |  |  |  |  |  |
 
-\\* The target clan
+\\* Hedef Klan
 
-## Members Commands
+## Üye Komutları
 
-### General Commands
+### Genel Komutlar
 
-| Command | Description | Verified only |
+| Komut | Açıklama | Sadece Doğrulananlar |
 | :--- | :--- | :--- |
-| `/clan kills [player]` | Shows your or another player's kill counts | Yes |
-| `/clan toggle` | Toggles personal settings | Yes |
-| `/clan mostkilled` | Shows server-wide most killed counts | Yes |
-| `/clan resign` | Resigns from the clan | No |
-| `/clan fee check` | Checks if the fee is enabled and how much it costs | Yes |
-| `/clan vitals` | Shows your clan's vitals | Yes |
-| `/clan stats` | Shows your clan's stats | Yes |
-| `/clan profile` | Shows your clan's profile | Yes |
-| `/clan roster` | Shows your clan's roster | Yes |
-| `/clan coords` | Shows your clan's coords | Yes |
+| `/clan kills [player]` | Sizin veya başka bir oyuncunun öldürme sayılarını gösterir | Evet |
+| `/clan toggle` | Kişisel ayarları değiştirir | Evet |
+| `/clan mostkilled` | Sunucu genelinde en çok öldürülen sayıları gösterir | Evet |
+| `/clan resign` | Klandan ayrıl | Hayır |
+| `/clan fee check` | Ücretin etkin olup olmadığını ve ne kadar olduğunu kontrol eder | Evet |
+| `/clan vitals` | Klanınızın hayati özelliklerini gösterir | Evet |
+| `/clan stats` | Klanınızın istatistiklerini gösterir | Evet |
+| `/clan profile` | Klanınızın profilini gösterir | Evet |
+| `/clan roster` | Klanınızın kadrosunu gösterir | Evet |
+| `/clan coords` | Klanınızdakilerin kordinatlarını gösterir | Evet |
 
-### Chat Commands
+### Sohbet Komutları
 
-| Command | Description | Verified only |  |  |
+| Komut | Açıklama | Sadece Doğrulananlar |  |  |
 | :--- | :--- | :--- | :--- | :--- |
-| `/. (message)` | Sends a message to your clan's chat | No |  |  |
-| \`/. \[join | leave | mute\]\` | Joins/leaves/mutes your clan's chat | No |
-| `/ally (message)` | Sends a message to the ally chat | No |  |  |
-| \`/ally \[join | leave | mute\]\` | Joins/leaves/mutes the ally chat | No |
+| `/. (mesaj)` | Sends a message to your clan's chat | Hayır |  |  |
+| \`/. \[join, leave, mute\] | Klanınızın sohbetine katılır/çıkar/sessizleştirir | Hayır |  |  |
+| `/ally (mesaj)` | Müttefik sohbetine bir mesaj gönderir | Hayır |  |  |
+| \`/ally \[join, leave, mute\] | Müttefik sohbetine katılır/çıkar/sessizleştirir | Hayır |  |  |
 
-## Leaders Commands
+## Lider Komutları
 
-| Command | Description | Verified only |  |
+| Komut | Açıklama | Sadece Doğrulananlar |  |
 | :--- | :--- | :--- | :--- |
-| `/clan description (description)` | Modifies the clan's description | Yes |  |
-| `/clan invite (player)` | Invites a player | No |  |
-| `/clan kick (player)` | Kicks a player from the clan | No |  |
-| `/clan trust (player)` | Sets a member as trusted | No |  |
-| `/clan untrust (player)` | Sets a member as untrusted | No |  |
-| `/clan promote (member)` | Promotes a member to leader | No |  |
-| `/clan demote (leader)` | Demotes a leader to member | No |  |
-| `/clan setbanner` | Sets the clan's banner | Yes |  |
-| `/clan modtag (tag)` | Modifies your clan's tag \(only colors and case\) |  |  |
-| \`/clan clanff \(allow | block\)\` | Toggles clan's friendly fire | No |
-| \`/clan war \(start | end\) \(tag\)\` | Starts or ends a war | Yes |
-| \`/clan rival \(add | remove\) \(tag\)\` | Adds or removes a rival | Yes |
-| \`/clan ally \(add | remove\) \(tag\)\` | Adds or removes an ally | Yes |
-| `/clan verify` | Verifies your clan | No |  |
-| `/clan disband` | Disbands your clan | No |  |
-| `/clan fee set (amount)` | Sets the clan's member fee | No |  |
-| `/clan regroup me` | Regroups your clan members to your location | Yes |  |
-| `/clan regroup home` | Regroups your clan members to your clan's home | Yes |  |
-| `/clan home` | Teleports to your clan's home | Yes |  |
-| `/clan home clear` | Clears your clan's home | Yes |  |
-| `/clan home set` | Sets your clan's home | Yes |  |
-| `/clan rank create` | Creates a rank | Yes |  |
-| `/clan rank setdisplayname (rank) (displayname)` | Sets the display name of the rank \(it can contain colors and multiple words\) | Yes |  |
-| `/clan rank assign (player) (rank)` | Assigns a user to a rank | Yes |  |
-| `/clan rank unassign (player)` | Unassigns a user from a rank | Yes |  |
-| `/clan rank delete (rank)` | Deletes a rank | Yes |  |
-| `/clan rank list` | Lists the clan's ranks | Yes |  |
-| `/clan rank permissions` | Lists the available permissions for ranks | Yes |  |
-| `/clan rank permissions (rank)` | Lists the rank's permissions | Yes |  |
-| `/clan rank permissions add (rank) (permission)` | Adds a permission to the rank | Yes |  |
-| `/clan rank permissions remove (rank) (permission)` | Removes a permission from the rank | Yes |  |
+| `/clan description (açıklama)` | Klanın açıklamasını değiştirir | Evet |  |
+| `/clan invite (oyuncu)` | Bir oyuncu davet eder | Hayır |  |
+| `/clan kick (oyuncu)` | Klandan bir oyuncuyu tekmeler | Hayır |  |
+| `/clan trust (oyuncu)` | Bir üyeyi güvenilir olarak ayarlar | Hayır |  |
+| `/clan untrust (oyuncu)` | Bir üyeyi güvenilmeyen olarak ayarlar | Hayır |  |
+| `/clan promote (üye)` | Bir üyeyi liderliğe terfi ettirir | Hayır |  |
+| `/clan demote (lider)` | Bir lideri üyeliğe indirger | Hayır |  |
+| `/clan setbanner` | Klanın bayrağını ayarlar | Evet |  |
+| `/clan modtag (etiket)` | Klanınızın etiketini değiştirir \(yalnızca renkler ve büyük harf\) |  |  |
+| `/clan clanff (izin ver, engelle]` | Klanın dost ateşini açar/kapatır | Hayır |  |
+| `/clan war (başlat, bitir) (etiket)` | Savaş başlatır veya bitirir | Evet |  |
+| `/clan rival (ekle, kaldır) (etiket)` | Rakip ekler veya kaldırırEvet |  |  |
+| `/clan ally (ekle, kaldır) (etiket)` | Bir müttefik ekler veya kaldırır | Evet |  |
+| `/clan verify` | Klanınızı doğrular | Hayır |  |
+| `/clan disband` | Klanınızı dağıtır | Hayır |  |
+| `/clan fee set (miktar)` | Klanın üye ücretini belirler | Hayır |  |
+| `/clan regroup me` | Klan üyelerinizi konumunuza göre yeniden gruplandırır | Evet |  |
+| `/clan regroup home` | Klan üyelerinizi klanınızın evinde yeniden gruplandırır | Evet |  |
+| `/clan home` | Sizi klanınızın evine ışınlanır | Evet |  |
+| `/clan home clear` | Klanınızın evini temizler | Evet |  |
+| `/clan home set` | Klanınızın evini ayarlar | Evet |  |
+| `/clan rank create` | Bir rütbe oluşturur | Evet |  |
+| `/clan rank setdisplayname (rütbe) (görünecek isim)` | Rütbenin görünen adını ayarlar \(renkler ve birden çok kelime içerebilir\) | Evet |  |
+| `/clan rank assign (oyuncu) (rütbe)` | Bir kullanıcıyı bir rütbeye atar | Evet |  |
+| `/clan rank unassign (oyuncu)` | Bir kullanıcının bir rütbeden atamasını kaldırır | Evet |  |
+| `/clan rank delete (rütbe)` | Rütbeyi siler | Evet |  |
+| `/clan rank list` | Klanın rütbelerini listeler | Evet |  |
+| `/clan rank permissions` | Rütbeler için mevcut izinleri listeler | Evet |  |
+| `/clan rank permissions (rütbe)` | Rütbenin izinlerini listeler | Evet |  |
+| `/clan rank permissions add (rütbe) (izin)` | Rütbeye izin ekler | Evet |  |
+| `/clan rank permissions remove (rütbe) (izin)` | Rütbeden bir izni kaldırır | Evet |  |
 
-## Mod Commands
+## Moderatör Komutları
 
-| Command | Description |  |
+| Komut | Açıklama |  |
 | :--- | :--- | :--- |
-| `/clan place (player) (new clan)` | Places a player in a clan |  |
-| `/clan home set (tag)` | Sets a clan's home |  |
-| `/clan home tp (tag)` | Teleports to a clan's home |  |
-| `/clan ban (player)` | Bans a player from clan commands |  |
-| `/clan unban (player)` | Unbans a player from clan commands |  |
-| \`/clan globalff \(allow | auto\)\` | Toggles the global friendly-fire status |
-| `/clan verify (tag)` | Verifies a clan |  |
-| `/clan disband (tag)` | Disbands a clan |  |
+| `/clan place (oyuncu) (yeni klan)` | Bir oyuncuyu bir klana yerleştirir |  |
+| `/clan home set (etiket)` | Bir klanın evini ayarlar |  |
+| `/clan home tp (etiket)` | Bir klanın evine ışınlanır |  |
+| `/clan ban (oyuncu)` | Bir oyuncuyu klan komutlarından yasaklar |  |
+| `/clan unban (oyuncu)` | Bir oyuncunun klan komutlarından banını kaldırır |  |
+| `/clan globalff (otomatik izin ver)` | Küresel dost ateşi durumunu değiştirir |  |
+| `/clan verify (etiket)` | Bir klanı doğrular |  |
+| `/clan disband (etiket)` | Bir klanı dağıtır |  |
 
-## Admin Commands
+## Yönetici Komutları
 
-| Command | Description |
+| Komut | Açıklama |
 | :--- | :--- |
-| `/clan reload` | Reloads the plugin and its configuration \(some features may need a server restart\) |
-| `/clan purge` | Purges a player's data |
-| `/clan resetkdr everyone` | Resets everyone's KDR |
-| `/clan resetkdr (player)` | Resets a player's KDR |
-| `/clan admin demote (player)` | Demotes a leader from any clan |
-| `/clan admin promote (player)` | Promotes a member from any clan |
+| `/clan reload` | Eklentiyi ve yapılandırmasını yeniden yükler \(bazı özelliklerin güncellenmesi için sunucunun yeniden başlatılması gerekebilir\) |
+| `/clan purge` | Bir oyuncunun verilerini temizler |
+| `/clan resetkdr everyone` | Herkesin KD'sini sıfırlar |
+| `/clan resetkdr (oyuncu)` | Bir oyuncunun KD'sini sıfırlar |
+| `/clan admin demote (player)` | Herhangi bir klandan bir lideri düşürür |
+| `/clan admin promote (oyuncu)` | Herhangi bir klandan bir üyeyi terfi ettirir |
 
