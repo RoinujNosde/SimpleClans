@@ -35,5 +35,5 @@ Mevcut çeviriyi beğendiyseniz, ancak yalnızca birkaç satırı değiştirmek 
 
 SimpleClans'ın [Crowdin'de ](https://crowdin.com/project/simpleclans)bir projesi var. Orada mesajları çevirebilir ve düzeltmeler önerebilirsiniz!
 
-> **Not**: if you have an old `language.yml` file for SimpleClans that you translated to your language, [open an issue here](https://github.com/RoinujNosde/SimpleClans/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), I will convert the file and add it to the plugin.
+> **Not**: SimpleClans için kendi dilinize çevirdiğiniz eski bir `language.yml` dosyanız varsa, [burada bir konu açın](https://github.com/RoinujNosde/SimpleClans/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), dosyayı dönüştüreceğim ve eklentiye ekleyeceğim.
 
