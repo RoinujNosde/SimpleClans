@@ -4,27 +4,32 @@ description: null
 
 # Tercüme
 
-## Editing the plugin's messages
+## Eklenti mesajlarını düzenleme
 
-### Requirements:
+### Gereksinimler:
 
-* A ZIP explorer program \(such as [WinRAR](https://www.win-rar.com/download.html?&L=0) or [7-Zip](https://www.7-zip.org/download.html)\)
-* A Text editor like [NotePad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com/) or [Sublime Text](https://www.sublimetext.com/).
+* Bir ZIP düzenleme programı \([WinRAR](https://www.win-rar.com/download.html?&L=0) veya [7-Zip](https://www.7-zip.org/download.html) gibi\)
+* Bir metin düzenleyici \([NotePad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com/) veya [Sublime Text](https://www.sublimetext.com/) gibi\)
 
-### Step by step
+### Adım Adım
 
-1. Right click the plugin jar, click on "Open as" and choose the ZIP program;
-2. Copy the messages file corresponding to your language to the plugin's folder;
-   1. If there isn't one for your language, copy "messages.properties" instead and rename it with your language code appended. For example, if your language is Russian: `messages_ru_RU.properties`
-3. Edit the messages and save;
-4. Change `language` in config.yml to your language code;
-5. Reload the plugin using /clan reload.
+1. Eklenti dosyasına sağ tıklayıp Farklı aç'ı seçin;
+2. Dilinize karşılık gelen mesaj dosyasını eklentinin klasörüne kopyalayın;
+3. Mesajları düzenleyip kaydedin;
+4. `Yapılandırmada language` kısmını dil kodunuza göre ayarların\(örn: **tr\_TR**\);
+5. Eklentiyi /clan reload komutuyla yeniden yükleyin. \(Eğer dili türkçe olarak ayarladıysanız /klan yenile komutunu kullanabilirsiniz.\)
 
-### A little trick
+### Küçük bir numara
 
-If you like the current translation, but want to change only a few lines: 1. Copy the file to the plugin's folder; 2. Delete all messages except the ones you would like to edit; 3. Edit them and save.
+Mevcut çeviriyi beğendiyseniz, ancak yalnızca birkaç satırı değiştirmek istiyorsanız: 
 
-> **Note**: Please note that your custom `messages.properties` does not automatically update when new messages are added.
+1. Dosyayı eklentinin klasörüne kopyalayın; 
+
+2. Düzenlemek istediklerinizin dışındaki tüm mesajları silin; 
+
+3. Bunları düzenleyin ve kaydedin.
+
+> **Not**: Lütfen dil dosyanızın yeni mesajlar eklendiği zaman otomatik olarak **güncellenmediğini** unutmayın.
 
 ## Share your translations!
 
