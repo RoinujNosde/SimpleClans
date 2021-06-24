@@ -4,14 +4,14 @@ description: null
 
 # Tab Listesinde Klan Adlarını Kullanma
 
-## Plugins needed
+## Gerekli Eklentiler
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [PlayerListPlus](https://www.spigotmc.org/resources/%E2%99%9B-playerlistplus-%E2%99%9B-1-8-1-14-3-tablist-editor.55878/) \(you can use a different tablist plugin, as long as it supports PlaceholderAPI\)
+* [PlayerListPlus](https://www.spigotmc.org/resources/%E2%99%9B-playerlistplus-%E2%99%9B-1-8-1-14-3-tablist-editor.55878/) \(PlaceholderAPI'yi desteklediği sürece farklı bir tab listesi eklentisi kullanabilirsiniz.\)
 
-## Step by step
+## Adım Adım
 
-1. Open PlayerListPlus config and edit the formats adding `%simpleclans_clan_color_tag%`:
+1. PlayerListPlus yapılandırmasını açın ve formatlarını düzenleyin`%simpleclans_clan_color_tag%`:
 
 {% code title="Example:" %}
 ```yaml
@@ -26,9 +26,9 @@ slot-items:
 ```
 {% endcode %}
 
-1. Restart \(or reload\) and enjoy!
+1. Yeniden başlatın \(veya yeniden yükleyin\) ve keyfini çıkarın!
 
-## Screenshot
+## Ekran Görüntüsü
 
 ![](../.gitbook/assets/clans-tablist.png)
 

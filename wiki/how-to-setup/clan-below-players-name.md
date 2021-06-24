@@ -36,7 +36,7 @@ _OTHER_:
 
 4. Yeniden başlatın \(veya yeniden yükleyin\) ve keyfini çıkarın!
 
-## Ekran Fotoğrafı
+## Ekran Görüntüsü
 
 ![](../.gitbook/assets/klan.png)
 
