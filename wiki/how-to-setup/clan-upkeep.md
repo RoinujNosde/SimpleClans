@@ -4,11 +4,11 @@ description: null
 
 # Klan Bakımı
 
-## How does it work?
+## Nasıl Çalışır?
 
-If enabled, clans will have to pay an amount everyday to keep their clans. The value will be collected at `1:30am`. At `12am`, if the clan doesn't have enough money to pay it, a wan will be sent to the clan's BB. The amount can be fixed or based on the clan size.
+Etkinleştirilirse, klanlar klanlarını korumak için her gün bir miktar para ödemek zorunda kalacaklar. Değer, saat `01:30`'da toplanacaktır. Gece `12`'de klanın ödemeye yetecek kadar parası yoksa klanın Bülten Panosuna bir uyarı gönderilecek. Miktar sabitlenebilir veya klan boyutuna göre belirlenebilir.
 
-Ex. fee based on the clan size:
+Örn. klan boyutuna göre ücret:
 
 ```text
 upkeep base    = 20.0
@@ -16,14 +16,14 @@ clan size      = 10
 final upkeep   = 200.0
 ```
 
-## Configuring
+## Yapılandırma
 
-* `upkeep` - The base upkeep.
-* `upkeep-enabled` - Enable or disable the feature.
-* `multiply-upkeep-by-clan-size` - This works as explained above
-* `charge-upkeep-only-if-member-fee-enabled` - Enable upkeep if [member fee](https://github.com/RoinujNosde/SimpleClans/wiki/Member-Fee) is enabled.
+* `upkeep` - Temel bakım ücreti.
+* `upkeep-enabled` - Özelliği etkinleştirin veya devre dışı bırakın.
+* `multiply-upkeep-by-clan-size` - Klan boyutuna göre ücret alın
+* `charge-upkeep-only-if-member-fee-enabled` - [Üye ücreti](https://github.com/RoinujNosde/SimpleClans/wiki/Member-Fee) etkinse bakımı etkinleştirin.
 
-#### Exemple
+#### Örnek
 
 ```yaml
 economy:
