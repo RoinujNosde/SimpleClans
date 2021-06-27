@@ -1,16 +1,14 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
-import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -22,7 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -30,6 +27,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils.stripColors;
 
 /**
  * @author phaed
@@ -37,25 +35,6 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class Helper {
 
     private Helper() {
-    }
-
-    /**
-     * Dumps stacktrace to log
-     */
-    @Deprecated
-    public static void dumpStackTrace() {
-        for (StackTraceElement el : Thread.currentThread().getStackTrace()) {
-            SimpleClans.debug(el.toString());
-        }
-    }
-
-    /**
-     * @deprecated use {@link KDRFormat}
-     */
-    @Deprecated
-    public static String formatKDR(float kdr) {
-    	DecimalFormat formatter = new DecimalFormat("#.#");
-    	return formatter.format(kdr);
     }
 
     @NotNull
@@ -69,13 +48,11 @@ public class Helper {
     
     /**
      * Gets the Player locale
-     *
-     * @deprecated no usages, use {@link ClanPlayer#getLocale()}
+     * 
      * @param player the player
      * @return the locale
      */
     @Nullable
-    @Deprecated
     public static Locale getLocale(@NotNull Player player) {
         ClanPlayer clanPlayer = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
         if (clanPlayer != null) {
@@ -240,11 +217,9 @@ public class Helper {
     /**
      * Check for integer
      *
-     * @deprecated no usages
      * @param o
      * @return
      */
-    @Deprecated
     public static boolean isInteger(Object o) {
         return o instanceof java.lang.Integer;
     }
@@ -252,11 +227,9 @@ public class Helper {
     /**
      * Check for byte
      *
-     * @deprecated no usages
      * @param input
      * @return
      */
-    @Deprecated
     public static boolean isByte(String input) {
         try {
             Byte.parseByte(input);
@@ -269,12 +242,9 @@ public class Helper {
     /**
      * Check for short
      *
-     * @deprecated no usages
      * @param input
      * @return
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @Deprecated
     public static boolean isShort(String input) {
         try {
             Short.parseShort(input);
@@ -287,11 +257,9 @@ public class Helper {
     /**
      * Check for integer
      *
-     * @deprecated no usages
      * @param input
      * @return
      */
-    @Deprecated
     public static boolean isInteger(String input) {
         try {
             Integer.parseInt(input);
@@ -304,11 +272,9 @@ public class Helper {
     /**
      * Check for float
      *
-     * @deprecated no usages
      * @param input
      * @return
      */
-    @Deprecated
     public static boolean isFloat(String input) {
         try {
             Float.parseFloat(input);
@@ -321,11 +287,9 @@ public class Helper {
     /**
      * Check for string
      *
-     * @deprecated no usages
      * @param o
      * @return
      */
-    @Deprecated
     public static boolean isString(Object o) {
         return o instanceof java.lang.String;
     }
@@ -333,11 +297,9 @@ public class Helper {
     /**
      * Check for boolean
      *
-     * @deprecated no usages
      * @param o
      * @return
      */
-    @Deprecated
     public static boolean isBoolean(Object o) {
         return o instanceof java.lang.Boolean;
     }
@@ -345,12 +307,10 @@ public class Helper {
     /**
      * Remove a character from a string
      *
-     * @deprecated no usages
      * @param s
      * @param c
      * @return
      */
-    @Deprecated
     public static String removeChar(String s, char c) {
         String r = "";
 
@@ -366,12 +326,10 @@ public class Helper {
     /**
      * Remove first character from a string
      *
-     * @deprecated no usages
      * @param s
      * @param c
      * @return
      */
-    @Deprecated
     public static String removeFirstChar(String s, char c) {
         String r = "";
 
@@ -388,11 +346,9 @@ public class Helper {
     /**
      * Capitalize first word of sentence
      *
-     * @deprecated no usages
      * @param content
      * @return
      */
-    @Deprecated
     public static String capitalize(String content) {
         if (content.length() < 2) {
             return content;
@@ -405,13 +361,11 @@ public class Helper {
     /**
      * Return plural word if count is bigger than one
      *
-     * @deprecated no usages
      * @param count
      * @param word
      * @param ending
      * @return
      */
-    @Deprecated
     public static String plural(int count, String word, String ending) {
         return count == 1 ? word : word + ending;
     }
@@ -467,11 +421,9 @@ public class Helper {
     /**
      * Converts a player array to ArrayList<Player>
      *
-     * @deprecated no usages
      * @param values
      * @return
      */
-    @Deprecated
     public static List<Player> fromPlayerArray(Player... values) {
         List<Player> results = new ArrayList<>();
         Collections.addAll(results, values);
@@ -485,7 +437,7 @@ public class Helper {
      * @return
      */
     public static String[] toArray(List<String> list) {
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
     
     /**
@@ -505,11 +457,9 @@ public class Helper {
     /**
      * Removes first item from a string array
      *
-     * @deprecated no usages
      * @param args
      * @return
      */
-    @Deprecated
     public static String[] removeFirst(String[] args) {
         List<String> out = fromArray(args);
 
@@ -522,11 +472,9 @@ public class Helper {
     /**
      * Converts a string array to a space separated string
      *
-     * @deprecated no usages
      * @param args
      * @return
      */
-    @Deprecated
     public static String toMessage(String[] args) {
         StringBuilder out = new StringBuilder();
 
@@ -571,25 +519,7 @@ public class Helper {
         return stripTrailing(out, sep);
     }
 
-    /**
-     * @deprecated use {@link ChatUtils#parseColors(String)}
-     */
-    @Deprecated
-    public static String parseColors(String msg) {
-        return ChatUtils.parseColors(msg);
-    }
-
-    /**
-     * Removes color codes from strings
-     *
-     * @deprecated use {@link ChatUtils#stripColors(String)}
-     */
-    @Deprecated
-    public static String stripColors(String msg) {
-        return ChatUtils.stripColors(msg);
-    }
-
-    /**
+    /*
      * Retrieves the last color code
      *
      * @param msg
@@ -669,43 +599,6 @@ public class Helper {
     }
 
     /**
-     * Check whether a player is online
-     *
-     * @param playerName
-     * @return
-     */
-    @Deprecated
-    public static boolean isOnline(String playerName) {
-        Collection<Player> online = getOnlinePlayers();
-
-        for (Player o : online) {
-            if (o.getName().equalsIgnoreCase(playerName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Check whether a player is online
-     *
-     * @param playerUniqueId
-     * @return
-     */
-    public static boolean isOnline(UUID playerUniqueId) {
-        Collection<? extends Player> online = Bukkit.getOnlinePlayers();
-
-        for (Player o : online) {
-            if (o.getUniqueId().equals(playerUniqueId)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Remove offline players from a ClanPlayer array
      *
      * @param in
@@ -726,11 +619,9 @@ public class Helper {
     /**
      * Test if a url is valid
      *
-     * @deprecated no usages
      * @param strUrl
      * @return
      */
-    @Deprecated
     public static boolean testURL(String strUrl) {
         try {
             URL url = new URL(strUrl);
@@ -785,12 +676,10 @@ public class Helper {
      * Whether the two locations refer to the same location, ignoring pitch and
      * yaw
      *
-     * @deprecated no usages
      * @param loc
      * @param loc2
      * @return
      */
-    @Deprecated
     public static boolean isSameLocation(Location loc, Location loc2) {
         return loc.getX() == loc2.getX() && loc.getY() == loc2.getY() && loc.getZ() == loc2.getZ();
     }
@@ -812,36 +701,7 @@ public class Helper {
         return result;
     }
 
-    /**
-     * @deprecated use {@link VanishUtils#isVanished(CommandSender, Player)}
-     */
-    @Deprecated
-    @Contract("_, null -> false")
-    public static boolean isVanished(@Nullable CommandSender viewer, @Nullable Player player) {
-        if (isVanished(player)) {
-            return true;
-        }
-        if (viewer instanceof Player && player != null) {
-            return !((Player) viewer).canSee(player);
-        }
-
-        return false;
-    }
-
-    /**
-     * @deprecated use {@link VanishUtils#isVanished(Player)}
-     */
-    @Deprecated
-    @Contract("null -> false")
-    public static boolean isVanished(@Nullable Player player) {
-        if (player != null && player.hasMetadata("vanished") && !player.getMetadata("vanished").isEmpty()) {
-            return player.getMetadata("vanished").get(0).asBoolean();
-        }
-        return false;
-    }
-
     @SuppressWarnings("unchecked")
-    @Deprecated
 	public static Collection<Player> getOnlinePlayers() {
         try {
             Method method = Bukkit.class.getDeclaredMethod("getOnlinePlayers");
@@ -859,10 +719,91 @@ public class Helper {
         return new ArrayList<>();
     }
 
-    @Deprecated
-    @Nullable
-    public static Player getPlayer(String playerName) {
-    	return Bukkit.getPlayerExact(playerName);
+    /**
+     * Formats the ally chat
+     * 
+     * @param cp Sender
+     * @param msg The message
+     * @param placeholders The placeholders
+     * @return The formatted message
+     */
+    public static String formatAllyChat(ClanPlayer cp, String msg, Map<String, String> placeholders) {
+        SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
+
+        String leaderColor = sm.getAllyChatLeaderColor();
+        String memberColor = sm.getAllyChatMemberColor();
+        String trustedColor = sm.getClanChatTrustedColor();
+
+        String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
+        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getAllyChatRank()).replace("%rank%", rank) : "";
+
+        String message = replacePlaceholders(sm.getAllyChatFormat(), cp, leaderColor, trustedColor, memberColor, rankFormat, msg);
+        if (placeholders != null) {
+            for (Entry<String, String> e : placeholders.entrySet()) {
+                message = message.replace("%"+e.getKey()+"%", e.getValue());
+            }
+        }
+        return message;
+    }
+
+    private static String replacePlaceholders(String messageFormat,
+                                              ClanPlayer cp,
+                                              String leaderColor,
+                                              String trustedColor,
+                                              String memberColor,
+                                              String rankFormat,
+                                              String msg) {
+        return ChatUtils.parseColors(messageFormat)
+                .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
+                .replace("%nick-color%", (cp.isLeader() ? leaderColor : cp.isTrusted() ? trustedColor : memberColor))
+                .replace("%player%", cp.getName())
+                .replace("%rank%", rankFormat)
+                .replace("%message%", msg);
+    }
+
+    /**
+     * Formats the clan chat
+     * 
+     * @param cp Sender
+     * @param msg The message
+     * @param placeholders The placeholders
+     * @return The formatted message
+     */
+    public static String formatClanChat(ClanPlayer cp, String msg, Map<String, String> placeholders) {
+        SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
+
+        String leaderColor = sm.getClanChatLeaderColor();
+        String memberColor = sm.getClanChatMemberColor();
+        String trustedColor = sm.getClanChatTrustedColor();
+
+        String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
+        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getClanChatRank()).replace("%rank%", rank) : "";
+
+        String message = replacePlaceholders(sm.getClanChatFormat(), cp, leaderColor, trustedColor, memberColor, rankFormat, msg);
+        
+        if (placeholders != null) {
+            for (Entry<String, String> e : placeholders.entrySet()) {
+                message = message.replace("%"+e.getKey()+"%", e.getValue());
+            }
+        }
+        return message;
+    }
+
+    /**
+     * Formats the chat in a way that the Clan Tag is always there, so infractors can be easily identified
+     * 
+     * @param cp Sender
+     * @param msg The chat message
+     * @return The formatted message
+     */
+    public static String formatSpyClanChat(ClanPlayer cp, String msg) {
+        msg = stripColors(msg);
+        
+        if (msg.contains(stripColors(cp.getClan().getColorTag()))) {
+            return ChatColor.DARK_GRAY + msg;
+        } else {
+            return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + msg;
+        }
     }
 
     /**

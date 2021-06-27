@@ -235,7 +235,7 @@ public final class ClanManager {
      * Returns the collection of all online clan players, including the disabled ones
      */
     public List<ClanPlayer> getOnlineClanPlayers() {
-        return clanPlayers.values().stream().filter(cp -> Helper.isOnline(cp.getUniqueId())).collect(Collectors.toList());
+        return clanPlayers.values().stream().filter(cp -> Bukkit.getOfflinePlayer(cp.getUniqueId()).isOnline()).collect(Collectors.toList());
     }
 
     /**

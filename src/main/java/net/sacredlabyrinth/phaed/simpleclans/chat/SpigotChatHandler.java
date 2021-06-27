@@ -71,7 +71,7 @@ public class SpigotChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT || source == BUNGEE || source == SPY;
+        return source == SPIGOT || source == BUNGEE;
     }
 
     @Override
