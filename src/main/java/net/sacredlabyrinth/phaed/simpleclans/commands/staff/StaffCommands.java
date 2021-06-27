@@ -113,7 +113,7 @@ public class StaffCommands extends BaseCommand {
         storage.saveModified();
         plugin.reloadConfig();
         LanguageResource.clearCache();
-        settings.load();
+        settings.loadAndSave();
         storage.importFromDatabase();
         permissions.loadPermissions();
 
