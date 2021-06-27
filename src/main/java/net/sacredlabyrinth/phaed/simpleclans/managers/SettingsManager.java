@@ -221,7 +221,6 @@ public final class SettingsManager {
      * Load the configuration
      */
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public void loadAndSave() {
         if (configFile.exists()) {
             try {
