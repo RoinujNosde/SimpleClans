@@ -190,6 +190,7 @@ public class SimpleClans extends JavaPlugin {
         }
         getStorageManager().closeConnection();
         getPermissionsManager().savePermissions();
+        getSettingsManager().loadAndSave();
     }
 
     /**
