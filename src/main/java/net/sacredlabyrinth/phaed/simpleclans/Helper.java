@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -446,93 +445,6 @@ public class Helper {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;
-    }
-
-    /**
-     * Formats the ally chat
-     * 
-     * @param cp Sender
-     * @param msg The message
-     * @param placeholders The placeholders
-     * @return The formatted message
-     */
-    public static String formatAllyChat(ClanPlayer cp, String msg, Map<String, String> placeholders) {
-        SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
-
-        String leaderColor = sm.getAllyChatLeaderColor();
-        String memberColor = sm.getAllyChatMemberColor();
-        String trustedColor = sm.getClanChatTrustedColor();
-
-        String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
-        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getAllyChatRank()).replace("%rank%", rank) : "";
-
-        String message = replacePlaceholders(sm.getAllyChatFormat(), cp, leaderColor, trustedColor, memberColor, rankFormat, msg);
-        if (placeholders != null) {
-            for (Entry<String, String> e : placeholders.entrySet()) {
-                message = message.replace("%"+e.getKey()+"%", e.getValue());
-            }
-        }
-        return message;
-    }
-
-    private static String replacePlaceholders(String messageFormat,
-                                              ClanPlayer cp,
-                                              String leaderColor,
-                                              String trustedColor,
-                                              String memberColor,
-                                              String rankFormat,
-                                              String msg) {
-        return ChatUtils.parseColors(messageFormat)
-                .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
-                .replace("%nick-color%", (cp.isLeader() ? leaderColor : cp.isTrusted() ? trustedColor : memberColor))
-                .replace("%player%", cp.getName())
-                .replace("%rank%", rankFormat)
-                .replace("%message%", msg);
-    }
-
-    /**
-     * Formats the clan chat
-     * 
-     * @param cp Sender
-     * @param msg The message
-     * @param placeholders The placeholders
-     * @return The formatted message
-     */
-    public static String formatClanChat(ClanPlayer cp, String msg, Map<String, String> placeholders) {
-        SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
-
-        String leaderColor = sm.getClanChatLeaderColor();
-        String memberColor = sm.getClanChatMemberColor();
-        String trustedColor = sm.getClanChatTrustedColor();
-
-        String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
-        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getClanChatRank()).replace("%rank%", rank) : "";
-
-        String message = replacePlaceholders(sm.getClanChatFormat(), cp, leaderColor, trustedColor, memberColor, rankFormat, msg);
-        
-        if (placeholders != null) {
-            for (Entry<String, String> e : placeholders.entrySet()) {
-                message = message.replace("%"+e.getKey()+"%", e.getValue());
-            }
-        }
-        return message;
-    }
-
-    /**
-     * Formats the chat in a way that the Clan Tag is always there, so infractors can be easily identified
-     * 
-     * @param cp Sender
-     * @param msg The chat message
-     * @return The formatted message
-     */
-    public static String formatSpyClanChat(ClanPlayer cp, String msg) {
-        msg = stripColors(msg);
-        
-        if (msg.contains(stripColors(cp.getClan().getColorTag()))) {
-            return ChatColor.DARK_GRAY + msg;
-        } else {
-            return ChatColor.DARK_GRAY + "[" + cp.getTag() + "] " + msg;
-        }
     }
 
     /**
