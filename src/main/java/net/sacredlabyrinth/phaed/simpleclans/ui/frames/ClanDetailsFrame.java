@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -336,7 +337,7 @@ public class ClanDetailsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.clandetails.title",getViewer(), Helper.stripColors(clan.getColorTag()),
+		return lang("gui.clandetails.title",getViewer(), ChatUtils.stripColors(clan.getColorTag()),
 				clan.getName());
 	}
 

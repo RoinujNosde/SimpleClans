@@ -1280,9 +1280,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     @Placeholder("is_anyonline")
     public boolean isAnyOnline() {
         for (String member : members) {
-            if (Helper.isOnline(UUID.fromString(member))) {
-                return true;
-            }
+            return Bukkit.getOfflinePlayer(UUID.fromString(member)).isOnline();
         }
 
         return false;
@@ -1323,7 +1321,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<ClanPlayer> leaders = getLeaders();
 
         for (ClanPlayer leader : leaders) {
-            if (!Helper.isOnline(leader.getUniqueId())) {
+            if (!Bukkit.getOfflinePlayer(leader.getUniqueId()).isOnline()) {
                 return false;
             }
         }
@@ -1343,7 +1341,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 continue;
             }
 
-            if (!Helper.isOnline(leader.getName())) {
+            if (!Bukkit.getOfflinePlayer(leader.getName()).isOnline()) {
                 return false;
             }
         }
@@ -1362,7 +1360,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 continue;
             }
 
-            if (!Helper.isOnline(leader.getUniqueId())) {
+            if (!Bukkit.getOfflinePlayer(leader.getUniqueId()).isOnline()) {
                 return false;
             }
         }
