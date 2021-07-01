@@ -36,7 +36,6 @@ public class InventoryDrawer {
 
         OPENING.put(uuid, frame);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-
             Inventory inventory = prepareInventory(frame);
 
             if (!frame.equals(OPENING.get(uuid))) {

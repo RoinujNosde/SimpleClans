@@ -87,7 +87,7 @@ public class Components {
         if (cp.isTrusted()) {
             return lang("trusted", viewer);
         }
-        if (cp.getRankId() != null && !cp.getRankId().isEmpty()) {
+        if (!cp.getRankId().isEmpty()) {
             return lang("in.rank", viewer);
         }
         return lang("untrusted", viewer);
@@ -166,7 +166,7 @@ public class Components {
         }
         SCComponent c = new SCComponentImpl(lang("gui.previous.page.title", viewer), null,
                 XMaterial.STONE_BUTTON, slot);
-        c.setListener(ClickType.LEFT, listener);
+        setOneTimeUseListener(c, listener);
         return c;
     }
 
@@ -176,8 +176,17 @@ public class Components {
         }
         SCComponent c = new SCComponentImpl(lang("gui.next.page.title", viewer), null,
                 XMaterial.STONE_BUTTON, slot);
-        c.setListener(ClickType.LEFT, listener);
+        setOneTimeUseListener(c, listener);
         return c;
+    }
+
+    private static void setOneTimeUseListener(SCComponent c, @Nullable Runnable listener) {
+        c.setListener(ClickType.LEFT, () -> {
+            if (listener != null) {
+                listener.run();
+            }
+            c.setListener(ClickType.LEFT, null);
+        });
     }
 
     @SuppressWarnings("deprecation")

@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class ClanListFrame extends SCFrame {
-	private final SimpleClans plugin = SimpleClans.getInstance();
 	private final List<Clan> clans;
 	private final Paginator paginator;
 	private final RankingNumberResolver<Clan, BigDecimal> rankingResolver;
 
 	public ClanListFrame(SCFrame parent, Player viewer) {
 		super(parent, viewer);
+		SimpleClans plugin = SimpleClans.getInstance();
 		SettingsManager sm = plugin.getSettingsManager();
 		clans = plugin.getClanManager().getClans().stream()
 				.filter(clan -> clan.isVerified() || sm.isShowUnverifiedOnList()).collect(Collectors.toList());
