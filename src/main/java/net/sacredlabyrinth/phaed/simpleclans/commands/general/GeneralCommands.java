@@ -21,7 +21,6 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -91,8 +90,8 @@ public class GeneralCommands extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.anyone.lookup")
     @Description("{@@command.description.lookup.other}")
-    public void lookup(CommandSender sender, @Name("player") OfflinePlayer player) {
-        Lookup l = new Lookup(plugin, sender, player.getUniqueId());
+    public void lookup(CommandSender sender, @Name("player") ClanPlayerInput player) {
+        Lookup l = new Lookup(plugin, sender, player.getClanPlayer().getUniqueId());
         l.send();
     }
 
