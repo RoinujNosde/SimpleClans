@@ -29,125 +29,36 @@ public final class SettingsManager {
         > General Settings
         ================
          *
-         * Enables the GUI
          */
         ENABLE_GUI("settings.enable-gui"),
-        /*
-         * Disables broadcasts from plugin ("Clan Created", "Clan Disbanded", etc.)
-         */
         DISABLE_MESSAGES("settings.disable-messages"),
-        /*
-         * If true, tamable mobs will be shared with your clan members.
-         * It also disables any clan damage to them
-         */
         TAMABLE_MOBS_SHARING("settings.tameable-mobs-sharing"),
-        /*
-         * Fancy teleporting (placed glass block below)
-         */
         TELEPORT_BLOCKS("settings.teleport-blocks"),
-        /*
-         * Players will be teleported to their clan's home when they respawn
-         */
         TELEPORT_HOME_ON_SPAWN("settings.teleport-home-on-spawn"),
-        /*
-         * Drops defined items on teleporting to clan home
-         */
         DROP_ITEMS_ON_CLAN_HOME("settings.drop-items-on-clan-home"),
-        /*
-         * Keeps defined items on teleporting to clan home
-         */
         KEEP_ITEMS_ON_CLAN_HOME("settings.keep-items-on-clan-home"),
-        /*
-         * List of defined items (used with keep-item-on-clan-home and drop-items-on-clan-home)
-         */
         ITEM_LIST("settings.item-list"),
-        /*
-         * Shows debug info on console
-         */
         SHOW_DEBUG_INFO("settings.show-debug-info"),
-        /*
-         * Manages group of a clan player by auto.
-         * (For example, a leader would be added to sc_leader group, trusted player to sc_trusted, etc.)
-         */
         ENABLE_AUTO_GROUPS("settings.enable-auto-groups"),
-        /*
-         * Changes method of initiate tags
-         */
         CHAT_COMPATIBILITY_MODE("settings.chat-compatibility-mode"),
-        /*
-         * The percent of possible rivals per clan
-         */
         RIVAL_LIMIT_PERCENT("settings.rival-limit-percent"),
-        /*
-         * Uses the last color code in the end of prefix
-         */
         COLOR_CODE_FROM_PREFIX_FOR_NAME("settings.use-colorcode-from-prefix-for-name"),
-        /*
-         * Shows clan tags in chat
-         */
         DISPLAY_CHAT_TAGS("settings.display-chat-tags"),
-        /*
-         * The list of clans, which can't be rivaled
-         */
         UNRIVABLE_CLANS("settings.unrivable-clans"),
-        /*
-         * Shows or not unverified clans on /clan list
-         * (Doesn't affect on GUI)
-         */
         SHOW_UNVERIFIED_ON_LIST("settings.show-unverified-on-list"),
-        /*
-         * Disables SimpleClans at defined worlds
-         */
         BLACKLISTED_WORLDS("settings.blacklisted-worlds"),
-        /*
-         * List of banned players from using plugin
-         */
         BANNED_PLAYERS("settings.banned-players"),
-        /*
-         * List of tags, which wouldn't be used on clan creation
-         */
         DISALLOWED_TAGS("settings.disallowed-tags"),
-        /*
-         * Default language
-         */
         LANGUAGE("settings.language"),
-        /*
-         * Allows players to change their language
-         */
         LANGUAGE_SELECTOR("settings.user-language-selector"),
-        /*
-         * The list of tag colors, which wouldn't be used on clan creation
-         */
         DISALLOWED_TAG_COLORS("settings.disallowed-tag-colors"),
-        /*
-         * The name of your server
-         */
         SERVER_NAME("settings.server-name"),
-        /*
-         * Should new clans requires being verified?
-         */
         NEW_CLAN_VERIFICATION_REQUIRED("settings.new-clan-verification-required"),
-        /*
-         * Allows players to use regroup command
-         */
         ALLOW_REGROUP("settings.allow-regroup-command"),
-        /*
-         * Allows players to reset their KDR
-         */
         ALLOW_RESET_KDR("settings.allow-reset-kdr"),
-        /*
-         * The time in minutes, when player will can join after resigning to the same clan
-         */
         REJOIN_COOLDOWN("settings.rejoin-cooldown"),
-        /*
-         * Should rejoin cooldown be enabled?
-         */
         ENABLE_REJOIN_COOLDOWN("settings.rejoin-cooldown-enabled"),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag"),
-        /**
-         * DENSE: if players have the same KDR, they will have the same rank position. Ex.: 12234
-         * ORDINAL: Every player will have a different rank position. Ex.: 12345
-         */
         RANKING_TYPE("settings.ranking-type"),
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by"),
         LORE_LENGTH("settings.lore-length"),
@@ -156,140 +67,57 @@ public final class SettingsManager {
         > Tag Settings
         ================
          *
-         * Color used when the clan leader didn't set any colors
          */
         TAG_DEFAULT_COLOR("tag.default-color"),
-        /*
-         * Maximum length for tags
-         */
         TAG_MAX_LENGTH("tag.max-length"),
-        /*
-         * The bracket color
-         */
         TAG_BRACKET_COLOR("tag.bracket.color"),
-        /*
-         * This color is used when the player is a leader
-         */
         TAG_BRACKET_LEADER_COLOR("tag.bracket.leader-color"),
-        /*
-         * The left character
-         */
         TAG_BRACKET_LEFT("tag.bracket.left"),
-        /*
-         * The right character
-         */
         TAG_BRACKET_RIGHT("tag.bracket.right"),
-        /*
-         * Minimum length for tags
-         */
         TAG_MIN_LENGTH("tag.min-length"),
-        /*
-         * The separator color
-         */
         TAG_SEPARATOR_COLOR("tag.separator.color"),
-        /*
-         * This color is used when the player is a leader
-         */
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color"),
-        /*
-         * the separator character
-         */
         TAG_SEPARATOR_char("tag.separator.char"),
         /*
         ================
         > War and Protection Settings
         ================
          *
-         * Enables the war feature on the server
          */
         ENABLE_WAR("war-and-protection.war-enabled"),
-        /*
-         * Enables the land sharing feature on the server
-         */
         LAND_SHARING("war-and-protection.land-sharing"),
-        /*
-         * The list of land claim providers
-         */
         LAND_PROTECTION_PROVIDERS("war-and-protection.protection-providers"),
-        /*
-         * Used to set the priority of the overridden events
-         */
         WAR_LISTENERS_PRIORITY("war-and-protection.listeners.priority"),
-        /*
-         * The list of items that will be ignored by SimpleClans
-         */
         WAR_LISTENERS_IGNORED_LIST_PLACE("war-and-protection.listeners.ignored-list.PLACE"),
-        /*
-         * Allows a clan player to set the clan base only on claimed land
-         */
         SET_BASE_ONLY_IN_LAND("war-and-protection.set-base-only-in-land"),
-        /*
-         * The time of war expiration independently
-         * (in minutes)
-         */
         WAR_NORMAL_EXPIRATION_TIME("war-and-protection.war-normal-expiration-time"),
-        /*
-         * The time of war expiration if all members
-         * from one clan disconnects (in minutes)
-         */
         WAR_DISCONNECT_EXPIRATION_TIME("war-and-protection.war-disconnect-expiration-time"),
-        /*
-         * Allows a clan player to change the action of all the lands
-         * instead of the one on which it stands
-         */
         LAND_EDIT_ALL_LANDS("war-and-protection.edit-all-lands"),
-        /*
-         * Allows only clan leaders to create lands
-         */
         LAND_CREATION_ONLY_LEADERS("war-and-protection.land-creation.only-leaders"),
-        /*
-         * Allows to have only one land per clan
-         */
         LAND_CREATION_ONLY_ONE_PER_CLAN("war-and-protection.land-creation.only-one-per-clan"),
-        /*
-         * The list of permitted actions regarding clan lands during the war
-         */
         WAR_ACTIONS_CONTAINER("war-and-protection.war-actions.CONTAINER"),
         WAR_ACTIONS_INTERACT("war-and-protection.war-actions.INTERACT"),
         WAR_ACTIONS_BREAK("war-and-protection.war-actions.BREAK"),
         WAR_ACTIONS_PLACE("war-and-protection.war-actions.PLACE"),
         WAR_ACTIONS_DAMAGE("war-and-protection.war-actions.DAMAGE"),
         WAR_ACTIONS_INTERACT_ENTITY("war-and-protection.war-actions.INTERACT_ENTITY"),
-        /*
-         * If true, a war will require the approval from the clan leaders
-         */
         WAR_START_REQUEST_ENABLED("war-and-protection.war-start.request-enabled"),
-        /*
-         * If the difference between the online members of two clans
-         * is greater than the one set, the war will not start
-         */
         WAR_START_MEMBERS_ONLINE_MAX_DIFFERENCE("war-and-protection.war-start.members-online-max-difference"),
         /*
         ================
         > KDR Grinding Prevention Settings
         ================
          *
-         * By enabling this, you can set a limit on kills per victim
          */
         KDR_ENABLE_MAX_KILLS("kdr-grinding-prevention.enable-max-kills"),
-        /*
-         * The limit of kills per victim.
-         */
         KDR_MAX_KILLS_PER_VICTIM("kdr-grinding-prevention.max-kills-per-victim"),
-        /*
-         * Enables a delay between kills
-         */
         KDR_ENABLE_KILL_DELAY("kdr-grinding-prevention.enable-kill-delay"),
-        /*
-         * The delay in minutes between kills
-         */
         KDR_DELAY_BETWEEN_KILLS("kdr-grinding-prevention.delay-between-kills"),
         /*
         ================
         > Commands Settings
         ================
          *
-         * In this section you can edit the base commands of the plugin
          */
         COMMANDS_MORE("commands.more"),
         COMMANDS_ALLY("commands.ally"),
@@ -298,117 +126,39 @@ public final class SettingsManager {
         COMMANDS_DENY("commands.deny"),
         COMMANDS_GLOBAL("commands.global"),
         COMMANDS_CLAN_CHAT("commands.clan_chat"),
-        /*
-         * Enable if other plugins are interfering with the commands
-         */
         COMMANDS_FORCE_PRIORITY("commands.force-priority"),
         /*
         ================
         > Economy Settings
         ================
          *
-         * The price to create a clan
          */
         ECONOMY_CREATION_PRICE("economy.creation-price"),
-        /*
-         * Players must pay to create a clan
-         */
         ECONOMY_PURCHASE_CLAN_CREATE("economy.purchase-clan-create"),
-        /*
-         * The price to verify a clan
-         */
         ECONOMY_VERIFICATION_PRICE("economy.verification-price"),
-        /*
-         * Players must pay to verify their clans
-         */
         ECONOMY_PURCHASE_CLAN_VERIFY("economy.purchase-clan-verify"),
-        /*
-         * The price to invite a player to your clan
-         */
         ECONOMY_INVITE_PRICE("economy.invite-price"),
-        /*
-         * Players must pay to invite
-         */
         ECONOMY_PURCHASE_CLAN_INVITE("economy.purchase-clan-invite"),
-        /*
-         * The price to teleport to the clan's home
-         */
         ECONOMY_HOME_TELEPORT_PRICE("economy.home-teleport-price"),
-        /*
-         * Players must pay to teleport
-         */
         ECONOMY_PURCHASE_HOME_TELEPORT("economy.purchase-home-teleport"),
-        /*
-         * The price to set the clan's home
-         */
         ECONOMY_HOME_TELEPORT_SET_PRICE("economy.home-teleport-set-price"),
-        /*
-         * Players must pay to set the clan's home
-         */
         ECONOMY_PURCHASE_HOME_TELEPORT_SET("economy.purchase-home-teleport-set"),
-        /*
-         * The price for regrouping the clan members
-         */
         ECONOMY_REGROUP_PRICE("economy.home-regroup-price"),
-        /*
-         * Players (or the clan) must pay to regroup
-         */
         ECONOMY_PURCHASE_HOME_REGROUP("economy.purchase-home-regroup"),
-        /*
-         * if false, the price is multiplied by the amount of online members of the clan
-         */
         ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup"),
-        /*
-         * if enabled, the player issuing the command pays for the regroup,
-         * otherwise the clan pays it
-         */
         ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup"),
-        /*
-         * Enables a prize in money for the killer clan
-         */
         ECONOMY_MONEY_PER_KILL("economy.money-per-kill"),
-        /*
-         * This is multiplied by the attacker's KDR,
-         * the result is the money prize for the clan
-         */
         ECONOMY_MONEY_PER_KILL_KDR_MULTIPLAYER("economy.money-per-kill-kdr-multipier"),
-        /*
-         * The price to reset one's KDR
-         */
         ECONOMY_RESET_KDR_PRICE("economy.reset-kdr-price"),
         ECONOMY_PURCHASE_RESET_KDR("economy.purchase-reset-kdr"),
-        /*
-         * Players must pay to set the member fee
-         */
         ECONOMY_PURCHASE_MEMBER_FEE_SET("economy.purchase-member-fee-set"),
-        /*
-         * The price to set the member fee
-         */
         ECONOMY_MEMBER_FEE_SET_PRICE("economy.member-fee-set-price"),
-        /*
-         * If clans can charge a daily fee from their members
-         */
         ECONOMY_MEMBER_FEE_ENABLED("economy.member-fee-enabled"),
         ECONOMY_MEMBER_FEE_LAST_MINUTE_CHANGE_INTERVAL("economy.member-fee-last-minute-change-interval"),
-        /*
-         * The maximum amount clans can set for their member fee
-         */
         ECONOMY_MAX_MEMBER_FEE("economy.max-member-fee"),
-        /*
-         * the daily price for maintaining a clan (if not paid, the clan is disbanded)
-         */
         ECONOMY_UPKEEP("economy.upkeep"),
-        /*
-         * If clans must pay the upkeep
-         */
         ECONOMY_UPKEEP_ENABLED("economy.upkeep-enabled"),
-        /*
-         * If the upkeep price should be multiplied by the amount of members
-         */
         ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE("economy.multiply-upkeep-by-clan-size"),
-        /*
-         * If the upkeep should be charged only for clans that choose to enable the member fee
-         */
         ECONOMY_CHARGE_UPKEEP_ONLY_IF_MEMBER_FEE_ENABLED("economy.charge-upkeep-only-if-member-fee-enabled"),
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable"),
         /*
@@ -416,9 +166,6 @@ public final class SettingsManager {
         > Kill Weights Settings
         ================
          *
-         * Here you can set the weight of every kill type.
-         * The weight can be negative too.
-         * It's used to calculate the KDR like so: (Kill Count * Kill Wight) / Death Count = KDR
          */
         KILL_WEIGHTS_RIVAL("kill-weights.rival"),
         KILL_WEIGHTS_CIVILIAN("kill-weights.civilian"),
@@ -430,75 +177,27 @@ public final class SettingsManager {
         > Clan Settings
         ================
          *
-         * The amount of seconds players must wait before teleporting to their clan' home
          */
         CLAN_HOMEBASE_TELEPORT_WAIT_SECS("clan.homebase-teleport-wait-secs"),
-        /*
-         * If the clan's home can be set only once
-         */
         CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE("clan.homebase-can-be-set-only-once"),
-        /*
-         * The minimum amount of members a clan needs to add rivals
-         */
         CLAN_MIN_SIZE_TO_SET_RIVAL("clan.min-size-to-set-rival"),
-        /*
-         * The minimum amount of members a clan needs to add allies
-         */
         CLAN_MIN_SIZE_TO_SET_ALLY("clan.min-size-to-set-ally"),
-        /*
-         * The max length of the clan's name
-         */
         CLAN_MAX_LENGTH("clan.max-length"),
-        /*
-         * The minimum length of the clan's name
-         */
         CLAN_MIN_LENGTH("clan.min-length"),
-        /*
-         * The maximum length of the clan's description
-         */
         CLAN_MAX_DESCRIPTION_LENGTH("clan.max-description-length"),
-        /*
-         * The minimum length of the clan's description
-         */
         CLAN_MIN_DESCRIPTION_LENGTH("clan.min-description-length"),
-        /*
-         * The maximum amount of members a clan can have
-         */
         CLAN_MAX_MEMBERS("clan.max-members"),
-        /*
-         * If other leaders must confirm the promotion of members
-         */
         CLAN_CONFIRMATION_FOR_PROMOTE("clan.confirmation-for-promote"),
-        /*
-         * If members are set as trusted by default
-         */
         CLAN_TRUST_MEMBERS_BY_DEFAULT("clan.trust-members-by-default"),
-        /*
-         * If other leaders (except the one being demoted, of course)
-         * must confirm the demotion percentage-online-to-demote
-         */
         CLAN_CONFIRMATION_FOR_DEMOTE("clan.confirmation-for-demote"),
-        /*
-         * The percentage of online leaders to demote
-         */
         CLAN_PERCENTAGE_ONLINE_TO_DEMOTE("clan.percentage-online-to-demote"),
-        /*
-         * If the clan's friendly-fire is enabled by default
-         */
         CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default"),
-        /*
-         * The clan must have this amount of members to get verified (moderators can bypass this)
-         */
         CLAN_MIN_TO_VERIFY("clan.min-to-verify"),
         /*
         ================
         > Tasks Settings
         ================
          *
-         * This section allows you to set the time of collection for the two types of fee.
-         * The fees are described on the economy section.
-         * The collect-upkeep-warning is sent when the clan doesn't have enough money to pay for its upkeep.
-         * The time is in the 24-hour clock.
          */
         TASKS_COLLECT_UPKEEP_HOUR("tasks.collect-upkeep.hour"),
         TASKS_COLLECT_UPKEEP_MINUTE("tasks.collect-upkeep.minute"),
@@ -524,36 +223,14 @@ public final class SettingsManager {
         > Clan Chat Settings
         ================
          *
-         * Enables the clan chat
          */
         CLANCHAT_ENABLE("clanchat.enable"),
-        /*
-         * If true, the command to talk on the clan chat is the clan tag
-         */
         CLANCHAT_TAG_BASED_CLAN_CHAT("clanchat.tag-based-clan-chat"),
-        /*
-         * Color used for announcements
-         */
         CLANCHAT_ANNOUNCEMENT_COLOR("clanchat.announcement-color"),
-        /*
-         * The chat format
-         */
         CLANCHAT_FORMAT("clanchat.format"),
-        /*
-         * The member's rank format (used on the format)
-         */
         CLANCHAT_RANK("clanchat.rank"),
-        /*
-         * The color for leaders (%nick-color%)
-         */
         CLANCHAT_LEADER_COLOR("clanchat.leader-color"),
-        /*
-         * The color for trusted players (%nick-color%)
-         */
         CLANCHAT_TRUSTED_COLOR("clanchat.trusted-color"),
-        /*
-         * The color for non-leaders and non-trusted players (%nick-color%)
-         */
         CLAN_MEMBER_COLOR("clanchat.member-color"),
         /*
         ================
