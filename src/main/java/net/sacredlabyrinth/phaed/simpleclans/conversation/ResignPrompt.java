@@ -45,7 +45,7 @@ public class ResignPrompt extends StringPrompt {
                 return new MessagePromptImpl(AQUA + lang("resign.success", player));
             } else if (clan.isLeader(player) && clan.getLeaders().size() == 1) {
                 clan.disband(player, true, false);
-                return null;
+                return new MessagePromptImpl(RED + lang("clan.has.been.disbanded", player, clan.getName()));
             } else {
                 return new MessagePromptImpl(RED + lang("last.leader.cannot.resign.you.must.appoint.another.leader.or.disband.the.clan", player));
             }

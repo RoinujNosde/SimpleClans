@@ -6,11 +6,11 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResignPrompt;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
-import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -149,7 +149,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        if (clan.getSize() >= settings.getMaxMembers()) {
+        if (clan.getSize() >= settings.getMaxMembers() && settings.getMaxMembers() > 0) {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.members.reached.limit", sender));
             return;
         }
@@ -359,10 +359,6 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.resign}")
     @HelpSearchTags("leave")
     public void resign(@Conditions("clan_member") Player player) {
-        new ConversationFactory(plugin)
-                .withFirstPrompt(new ResignPrompt())
-                .withLocalEcho(true)
-                .withTimeout(10)
-                .buildConversation(player).begin();
+        new SCConversation(plugin, player, new ResignPrompt()).begin();
     }
 }

@@ -187,12 +187,12 @@ public class SimpleClans extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getServer().getScheduler().cancelTasks(this);
         if (getSettingsManager().isSavePeriodically()) {
             getStorageManager().saveModified();
         }
         getStorageManager().closeConnection();
         getPermissionsManager().savePermissions();
+        getSettingsManager().loadAndSave();
     }
 
     /**

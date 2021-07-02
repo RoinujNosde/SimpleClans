@@ -47,7 +47,7 @@ public class PlayerDeath implements Listener {
         ClanPlayer victimCp = plugin.getClanManager().getCreateClanPlayer(victim.getUniqueId());
         ClanPlayer attackerCp = plugin.getClanManager().getCreateClanPlayer(attacker.getUniqueId());
 
-        addKill(victimCp, attackerCp);
+        classifyKill(victimCp, attackerCp);
         giveMoneyReward(victimCp, attackerCp);
 
         // record death for victim
@@ -71,7 +71,7 @@ public class PlayerDeath implements Listener {
         war.increaseCasualties(victimClan);
     }
 
-    private void addKill(@NotNull ClanPlayer victim, @NotNull ClanPlayer attacker) {
+    private void classifyKill(@NotNull ClanPlayer victim, @NotNull ClanPlayer attacker) {
         Clan victimClan = victim.getClan();
         Clan attackerClan = attacker.getClan();
         if (victimClan == null || attackerClan == null || !victimClan.isVerified() || !attackerClan.isVerified()) {
@@ -156,6 +156,8 @@ public class PlayerDeath implements Listener {
                     if (kills < max) {
                         saveKill(kill, type);
                     }
+                } else {
+                    saveKill(kill, type);
                 }
             });
     		return;

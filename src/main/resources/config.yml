@@ -65,6 +65,8 @@ war-and-protection:
         ignored-list:
             PLACE:
                 - "PLAYER_HEAD"
+            BREAK:
+                - "EMERALD_BLOCK"
     set-base-only-in-land: false
     war-normal-expiration-time: 0
     war-disconnect-expiration-time: 0
@@ -125,7 +127,7 @@ economy:
     multiply-upkeep-by-clan-size: false
     charge-upkeep-only-if-member-fee-enabled: true
     bank-log:
-        enable: false
+        enable: true
 kill-weights:
     rival: 2.0
     civilian: 0.0
