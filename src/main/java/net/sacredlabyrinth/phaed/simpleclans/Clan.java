@@ -1703,19 +1703,14 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     public String getTagLabel(boolean isLeader) {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
-        String bracketColor = sm.get(TAG_BRACKET_COLOR);
-        String bracketLeaderColor = sm.get(TAG_BRACKET_LEADER_COLOR);
+        String bracketColor = isLeader ? sm.get(TAG_BRACKET_LEADER_COLOR) : sm.get(TAG_BRACKET_COLOR);
         String bracketDefaultColor = sm.get(TAG_DEFAULT_COLOR);
         String bracketLeft = sm.get(TAG_BRACKET_COLOR);
         String bracketRight = sm.get(TAG_BRACKET_COLOR);
-        String tagSeparatorLeaderColor = sm.get(TAG_SEPARATOR_COLOR);
-        String tagSeparatorColor = sm.get(TAG_SEPARATOR_LEADER_COLOR);
+        String tagSeparatorColor = isLeader ? sm.get(TAG_SEPARATOR_LEADER_COLOR) : sm.get(TAG_SEPARATOR_COLOR);
         char tagSeparator = sm.get(TAG_SEPARATOR_char);
 
-        String tagLabel = "%s" + bracketLeft + bracketDefaultColor + getColorTag() + "%s" + bracketRight + "%s" + tagSeparator;
-
-        return (isLeader) ? String.format(tagLabel, bracketLeaderColor, bracketLeaderColor, tagSeparatorLeaderColor) :
-                String.format(tagLabel, bracketColor, bracketColor, tagSeparatorColor);
+        return bracketColor + bracketLeft + bracketDefaultColor + getColorTag() + bracketColor + bracketRight + tagSeparatorColor + tagSeparator;
     }
 
     /**
