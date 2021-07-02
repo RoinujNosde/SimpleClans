@@ -549,7 +549,7 @@ kdr-grinding-prevention:
 * `issuer-pays-regroup` - if enabled, the player issuing the command pays for the regroup, otherwise the clan pays it
 * `money-per-kill` - enables a prize in money for the killer clan
 * `money-per-kill-kdr-multipier` - this is multiplied by the attacker's KDR, the result is the money prize for the clan
-* `purchase-reset-kdr` - if resetting the KDR is enabled
+* `purchase-reset-kdr` - If true, players will be able to reset their KDR
 * `reset-kdr-price` - the price to reset one's KDR
 * `purchase-member-fee-set` - players must pay to set the member fee
 * `member-fee-set-price` - the price to set the member fee
@@ -559,6 +559,7 @@ kdr-grinding-prevention:
 * `upkeep-enabled` - if clans must pay the upkeep
 * `multiply-upkeep-by-clan-size` - if the upkeep price should be multiplied by the amount of members
 * `charge-upkeep-only-if-member-fee-enabled` - if the upkeep should be charged only for clans that choose to enable the member fee
+* `bank-log.enable` - If true, all economy actions will be recorded in .CSV file  \(SimpleClans/logs/bank/\)
 
 ### Example
 
