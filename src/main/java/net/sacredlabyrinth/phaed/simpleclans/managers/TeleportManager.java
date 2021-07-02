@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public final class TeleportManager {
     private final SimpleClans plugin;
@@ -38,7 +39,7 @@ public final class TeleportManager {
      * @param clanName    the Clan name
      */
     public void addPlayer(Player player, Location destination, String clanName) {
-        int secs = SimpleClans.getInstance().getSettingsManager().getWaitSecs();
+        int secs = SimpleClans.getInstance().getSettingsManager().get(CLAN_HOMEBASE_TELEPORT_WAIT_SECS);
         waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName));
 
         if (secs > 0) {
@@ -52,7 +53,7 @@ public final class TeleportManager {
         int x = loc.getBlockX();
         int z = loc.getBlockZ();
 
-        if (plugin.getSettingsManager().isTeleportBlocks()) {
+        if (plugin.getSettingsManager().is(TELEPORT_BLOCKS)) {
             player.sendBlockChange(new Location(loc.getWorld(), x + 1, loc.getBlockY() - 1, z + 1),
                     Material.GLASS, (byte) 0);
             player.sendBlockChange(new Location(loc.getWorld(), x - 1, loc.getBlockY() - 1, z - 1),
@@ -100,10 +101,10 @@ public final class TeleportManager {
         if (plugin.getPermissionsManager().has(player, "simpleclans.mod.keep-items")) {
             return;
         }
-        List<Material> itemsList = plugin.getSettingsManager().getItemsList();
+        List<Material> itemsList = plugin.getSettingsManager().get(ITEM_LIST);
         PlayerInventory inv = player.getInventory();
-        boolean dropOnHome = plugin.getSettingsManager().isDropOnHome();
-        boolean keepOnHome = plugin.getSettingsManager().isKeepOnHome();
+        boolean dropOnHome = plugin.getSettingsManager().is(DROP_ITEMS_ON_CLAN_HOME);
+        boolean keepOnHome = plugin.getSettingsManager().is(KEEP_ITEMS_ON_CLAN_HOME);
         ItemStack[] contents = inv.getContents();
         for (ItemStack item : contents) {
             if (item == null) {

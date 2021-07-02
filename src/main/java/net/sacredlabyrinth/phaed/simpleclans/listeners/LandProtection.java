@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class LandProtection implements Listener {
 
@@ -43,7 +44,7 @@ public class LandProtection implements Listener {
         protectionManager = plugin.getProtectionManager();
         clanManager = plugin.getClanManager();
         settingsManager = plugin.getSettingsManager();
-        priority = settingsManager.getWarListenerPriority();
+        priority = settingsManager.get(WAR_LISTENERS_PRIORITY);
     }
 
     public void registerListeners() {
@@ -65,11 +66,11 @@ public class LandProtection implements Listener {
             Player player = provider.getPlayer(event);
             if (player == null) return;
             Clan clan = clanManager.getClanByPlayerUniqueId(player.getUniqueId());
-            if ((clan == null || !clan.isLeader(player)) && settingsManager.isOnlyLeadersCanCreateLands()) {
+            if ((clan == null || !clan.isLeader(player)) && settingsManager.is(LAND_CREATION_ONLY_LEADERS)) {
                 cancelWithMessage(player, event, "only.leaders.can.create.lands");
                 return;
             }
-            if (settingsManager.isOnlyOneLandPerClan()) {
+            if (settingsManager.is(LAND_CREATION_ONLY_ONE_PER_CLAN)) {
                 if (clan == null) {
                     cancelWithMessage(player, event, "only.clan.members.can.create.lands");
                     return;

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
 
 public final class ChatManager {
 
@@ -22,7 +23,7 @@ public final class ChatManager {
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         handlers.add(new SpigotChatHandler());
-        if (plugin.getSettingsManager().isDiscordChatEnabled()) {
+        if (plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
             handlers.add(new DiscordChatHandler());
             setupDiscord();
         }

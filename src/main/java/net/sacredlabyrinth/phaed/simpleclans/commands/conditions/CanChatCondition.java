@@ -9,6 +9,8 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ALLYCHAT_ENABLE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLANCHAT_ENABLE;
 
 public class CanChatCondition extends AbstractCommandCondition {
     public CanChatCondition(@NotNull SimpleClans plugin) {
@@ -21,11 +23,11 @@ public class CanChatCondition extends AbstractCommandCondition {
 
         switch (ClanPlayer.Channel.valueOf(type)) {
             case CLAN:
-                if (!settingsManager.getClanChatEnable()) {
+                if (!settingsManager.is(CLANCHAT_ENABLE)) {
                     throw new ConditionFailedException(lang("clan.chat.disabled", context.getIssuer()));
                 }
             case ALLY:
-                if (!settingsManager.isAllyChatEnable()) {
+                if (!settingsManager.is(ALLYCHAT_ENABLE)) {
                     throw new ConditionFailedException(lang("ally.chat.disabled", context.getIssuer()));
                 }
         }

@@ -33,6 +33,7 @@ import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.optionalLang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class SCCommandManager extends PaperCommandManager {
     private final SimpleClans plugin;
@@ -140,7 +141,7 @@ public class SCCommandManager extends PaperCommandManager {
     }
 
     private void registerCommands() {
-        boolean forceCommandPriority = plugin.getSettingsManager().isForceCommandPriority();
+        boolean forceCommandPriority = plugin.getSettingsManager().is(COMMANDS_FORCE_PRIORITY);
         Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands");
         Set<Class<? extends BaseCommand>> commands = reflections.getSubTypesOf(BaseCommand.class);
         plugin.getLogger().info(String.format("Registering %d base commands...", commands.size()));
@@ -162,12 +163,12 @@ public class SCCommandManager extends PaperCommandManager {
         SettingsManager sm = plugin.getSettingsManager();
         getCommandReplacements().addReplacements(
                 "basic_conditions", "not_blacklisted|not_banned",
-                "clan", sm.getCommandClan(),
-                "deny", sm.getCommandDeny() + "|deny",
-                "more", sm.getCommandMore(),
-                "ally_chat", sm.getCommandAlly(),
-                "accept", sm.getCommandAccept() + "|accept",
-                "clan_chat", sm.getCommandClanChat()
+                "clan", sm.get(COMMANDS_CLAN),
+                "deny", sm.get(COMMANDS_DENY) + "|deny",
+                "more", sm.get(COMMANDS_MORE),
+                "ally_chat", sm.get(COMMANDS_ALLY),
+                "accept", sm.get(COMMANDS_ACCEPT) + "|accept",
+                "clan_chat", sm.get(COMMANDS_CLAN_CHAT)
         );
 
         SUBCOMMANDS.forEach(s -> {

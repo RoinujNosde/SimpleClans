@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType.ORDINAL;
 import static org.bukkit.ChatColor.*;
 
@@ -52,7 +54,7 @@ public class ClanList extends Sendable {
                                                                                     @Nullable String order) {
         boolean ascending = order == null || lang("list.order.asc").equalsIgnoreCase(order);
         if (type == null) {
-            type = sm.getListDefaultOrderBy();
+            type = sm.get(LIST_DEFAULT_ORDER_BY);
         }
         if (type.equalsIgnoreCase(lang("list.type.size"))) {
             return new RankingNumberResolver<>(clans, Clan::getSize, order != null && ascending, ORDINAL);
@@ -67,21 +69,21 @@ public class ClanList extends Sendable {
             return new RankingNumberResolver<>(clans, Clan::getName, ascending, ORDINAL);
         }
         return new RankingNumberResolver<>(clans, clan -> KDRFormat.toBigDecimal(clan.getTotalKDR()),
-                order != null && ascending, sm.getRankingType());
+                order != null && ascending, sm.get(RANKING_TYPE));
     }
 
     @NotNull
     private List<Clan> getListableClans() {
         List<Clan> clans = plugin.getClanManager().getClans();
-        clans = clans.stream().filter(clan -> clan.isVerified() || sm.isShowUnverifiedOnList())
+        clans = clans.stream().filter(clan -> clan.isVerified() || sm.is(SHOW_UNVERIFIED_ON_LIST))
                 .collect(Collectors.toList());
         return clans;
     }
 
     private void sendHeader(List<Clan> clans) {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getServerName() + subColor + " " + lang("clans.lower", sender)
-                + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.get(SERVER_NAME) + subColor + " " + lang("clans.lower", sender)
+                + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("total.clans", sender) + " " + subColor + clans.size());
         ChatBlock.sendBlank(sender);
@@ -93,10 +95,10 @@ public class ClanList extends Sendable {
 
     @SuppressWarnings("deprecation")
     private void addLine(RankingNumberResolver<Clan, ? extends Comparable<?>> ranking, Clan clan) {
-        String tag = sm.getClanChatBracketColor() + sm.getClanChatTagBracketLeft()
-                + sm.getTagDefaultColor() + clan.getColorTag() + sm.getClanChatBracketColor()
-                + sm.getClanChatTagBracketRight();
-        String name = (clan.isVerified() ? sm.getPageClanNameColor() : GRAY) + clan.getName();
+        String tag = sm.get(CLANCHAT_MEMBER_COLOR) + sm.get(CLANCHAT_BRACKET_LEFT)
+                + sm.get(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.get(CLANCHAT_BRACKET_COLOR)
+                + sm.get(TAG_BRACKET_RIGHT);
+        String name = (clan.isVerified() ? sm.get(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
         String fullname = tag + " " + name;
         String size = WHITE + "" + clan.getSize();
         String kdr = clan.isVerified() ? YELLOW + "" + KDRFormat.format(clan.getTotalKDR()) : "";

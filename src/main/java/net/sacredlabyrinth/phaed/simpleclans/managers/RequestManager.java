@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUEST_FREQUENCY;
 
 /**
  * @author phaed
@@ -416,7 +417,7 @@ public final class RequestManager {
                     ask(req);
                     req.incrementAskCount();				
 			}
-		}}.runTaskTimerAsynchronously(plugin, 0, plugin.getSettingsManager().getRequestFrequencySecs() * 20L);
+		}}.runTaskTimerAsynchronously(plugin, 0, ((int) plugin.getSettingsManager().get(REQUEST_FREQUENCY)) * 20L);
     }
 
     /**

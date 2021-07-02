@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -48,7 +49,7 @@ public class LeaderCommands extends BaseCommand {
             ChatBlock.sendMessage(player, RED + lang("player.is.not.a.leader.of.your.clan", player));
             return;
         }
-        if (clan.getLeaders().size() > 2 && settings.isConfirmationForDemote()) {
+        if (clan.getLeaders().size() > 2 && settings.is(CLAN_CONFIRMATION_FOR_DEMOTE)) {
             requestManager.addDemoteRequest(cp, otherCp.getName(), clan);
             ChatBlock.sendMessage(player, AQUA + lang("demotion.vote.has.been.requested.from.all.leaders",
                     player));
@@ -80,7 +81,7 @@ public class LeaderCommands extends BaseCommand {
             ChatBlock.sendMessage(player, RED + lang("the.player.is.already.a.leader", player));
             return;
         }
-        if (settings.isConfirmationForPromote() && clan.getLeaders().size() > 1) {
+        if (settings.is(CLAN_CONFIRMATION_FOR_PROMOTE) && clan.getLeaders().size() > 1) {
             requestManager.addPromoteRequest(cp, otherPl.getName(), clan);
             ChatBlock.sendMessage(player, AQUA + lang("promotion.vote.has.been.requested.from.all.leaders",
                     player));
@@ -113,11 +114,11 @@ public class LeaderCommands extends BaseCommand {
             ChatBlock.sendMessageKey(player, "your.clan.already.verified");
             return;
         }
-        if (!settings.isePurchaseVerification()) {
+        if (!settings.is(ECONOMY_PURCHASE_CLAN_VERIFY)) {
             ChatBlock.sendMessageKey(player, "staff.member.verify.clan");
             return;
         }
-        int minToVerify = settings.getMinToVerify();
+        int minToVerify = settings.get(CLAN_MIN_TO_VERIFY);
         if (minToVerify > clan.getAllMembers().size()) {
             ChatBlock.sendMessage(player, lang("your.clan.must.have.members.to.verify", player, minToVerify));
             return;

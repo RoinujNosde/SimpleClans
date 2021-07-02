@@ -31,6 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+
 /**
  * @author Phaed
  */
@@ -64,7 +66,7 @@ public class SimpleClans extends JavaPlugin {
     }
 
     public static void debug(String msg) {
-        if (getInstance().getSettingsManager().isDebugging()) {
+        if (getInstance().getSettingsManager().is(DEBUG)) {
             logger.log(Level.INFO, msg);
         }
     }
@@ -89,7 +91,7 @@ public class SimpleClans extends JavaPlugin {
     public void onEnable() {
         instance = this;
         new LanguageMigration(this).migrate();
-        settingsManager = new SettingsManager();
+        settingsManager = new SettingsManager(this);
         languageResource = new LanguageResource();
         this.hasUUID = UUIDMigration.canReturnUUID();
 
@@ -116,8 +118,8 @@ public class SimpleClans extends JavaPlugin {
     }
 
     private void logStatus() {
-        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().getUseThreads());
-        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().getUseBungeeCord());
+        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS));
+        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_BUNGEECORD));
         getLogger().info("Help us translate SimpleClans to your language! " +
                 "Access https://crowdin.com/project/simpleclans/");
     }
@@ -151,43 +153,42 @@ public class SimpleClans extends JavaPlugin {
         ClanManager cm = getClanManager();
         String on = "enabled";
         String off = "disabled";
-
         metrics.addCustomChart(new Metrics.SingleLineChart("clans", () -> cm.getClans().size()));
         metrics.addCustomChart(new Metrics.SingleLineChart("clan_players", () -> cm.getAllClanPlayers().size()));
         metrics.addCustomChart(new Metrics.SimplePie("language", () -> sm.getLanguage().toString()));
         metrics.addCustomChart(new Metrics.SimplePie("machine_language", () -> Locale.getDefault().toString()));
-        metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.isLanguagePerPlayer() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.isUseMysql() ? "MySQL" : "SQLite"));
-        metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.isSavePeriodically() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.getSaveInterval())));
-        metrics.addCustomChart(new Metrics.SimplePie("upkeep", () -> sm.isClanUpkeep() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("member_fee", () -> sm.isMemberFee() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("rejoin_cooldown", () -> sm.isRejoinCooldown() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("clan_verification", () -> sm.isRequireVerification() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("money_per_kill", () -> sm.isMoneyPerKill() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("threads", () -> sm.getUseThreads() ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("bungeecord", () -> sm.getUseBungeeCord() ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.is(LANGUAGE_SELECTOR) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.is(MYSQL_ENABLE) ? "MySQL" : "SQLite"));
+        metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.is(PERFORMANCE_SAVE_PERIODICALLY) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.get(PERFORMANCE_SAVE_INTERVAL))));
+        metrics.addCustomChart(new Metrics.SimplePie("upkeep", () -> sm.is(ECONOMY_UPKEEP_ENABLED) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("member_fee", () -> sm.is(ECONOMY_MEMBER_FEE_ENABLED) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("rejoin_cooldown", () -> sm.is(ENABLE_REJOIN_COOLDOWN) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("clan_verification", () -> sm.is(REQUIRE_VERIFICATION) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("money_per_kill", () -> sm.is(ECONOMY_MONEY_PER_KILL) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("threads", () -> sm.is(PERFORMANCE_USE_THREADS) ? on : off));
+        metrics.addCustomChart(new Metrics.SimplePie("bungeecord", () -> sm.is(PERFORMANCE_USE_BUNGEECORD) ? on : off));
     }
 
     private void startTasks() {
-        if (getSettingsManager().isSavePeriodically()) {
+        if (getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             new SaveDataTask().start();
         }
-        if (getSettingsManager().isMemberFee()) {
+        if (getSettingsManager().is(ECONOMY_MEMBER_FEE_ENABLED)) {
             new CollectFeeTask().start();
         }
-        if (getSettingsManager().isClanUpkeep()) {
+        if (getSettingsManager().is(ECONOMY_UPKEEP_ENABLED)) {
             new CollectUpkeepTask().start();
             new UpkeepWarningTask().start();
         }
-        if (getSettingsManager().isCachePlayerHeads()) {
+        if (getSettingsManager().is(PERFORMANCE_HEAD_CACHING)) {
             new PlayerHeadCacheTask(this).start();
         }
     }
 
     @Override
     public void onDisable() {
-        if (getSettingsManager().isSavePeriodically()) {
+        if (getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             getStorageManager().saveModified();
         }
         getStorageManager().closeConnection();
@@ -264,7 +265,7 @@ public class SimpleClans extends JavaPlugin {
     @Nullable
     public static String optionalLang(@NotNull String key, @Nullable ClanPlayer clanPlayer, Object... arguments) {
         Locale locale = instance.getSettingsManager().getLanguage();
-        if (clanPlayer != null && instance.getSettingsManager().isLanguagePerPlayer()) {
+        if (clanPlayer != null && instance.getSettingsManager().is(LANGUAGE_SELECTOR)) {
             locale = clanPlayer.getLocale();
         }
 

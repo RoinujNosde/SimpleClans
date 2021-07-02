@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
  * @author phaed
@@ -432,10 +433,10 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
         SimpleClans plugin = SimpleClans.getInstance();
-        double kills = ((double) getRivalKills() * plugin.getSettingsManager().getKwRival()) +
-                ((double) getNeutralKills() * plugin.getSettingsManager().getKwNeutral()) +
-                ((double) getAllyKills() * plugin.getSettingsManager().getKwAlly()) +
-                ((double) getCivilianKills() * plugin.getSettingsManager().getKwCivilian());
+        double kills = ((double) getRivalKills() * ((double) plugin.getSettingsManager().get(KILL_WEIGHTS_RIVAL))) +
+                ((double) getNeutralKills() * ((double) plugin.getSettingsManager().get(KILL_WEIGHTS_NEUTRAL))) +
+                ((double) getAllyKills() * ((double) plugin.getSettingsManager().get(KILL_WEIGHTS_ALLY))) +
+                ((double) getCivilianKills() * ((double) plugin.getSettingsManager().get(KILL_WEIGHTS_CIVILIAN)));
         if (kills < 0) {
             return 0;
         }
@@ -626,7 +627,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setResignTimes(Map<String, Long> resignTimes) {
         if (resignTimes != null) {
-            final int cooldown = SimpleClans.getInstance().getSettingsManager().getRejoinCooldown();
+            final int cooldown = SimpleClans.getInstance().getSettingsManager().get(REJOIN_COOLDOWN);
             resignTimes.forEach((k, v) -> {
                 long timePassed = Instant.ofEpochMilli(v).until(Instant.now(), ChronoUnit.MINUTES);
                 if (timePassed < cooldown) {

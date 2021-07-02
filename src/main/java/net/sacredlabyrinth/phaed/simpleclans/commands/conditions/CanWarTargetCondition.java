@@ -7,6 +7,8 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.WAR_MAX_MEMBERS_DIFFERENCE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.WAR_START_REQUEST_ENABLED;
 
 public class CanWarTargetCondition extends AbstractParameterCondition<ClanInput> {
     public CanWarTargetCondition(@NotNull SimpleClans plugin) {
@@ -32,8 +34,8 @@ public class CanWarTargetCondition extends AbstractParameterCondition<ClanInput>
             throw new ConditionFailedException(lang("clans.already.at.war", issuer));
         }
 
-        boolean isWarRequestEnabled = settingsManager.isWarRequestEnabled();
-        int maxDifference = settingsManager.getMembersOnlineMaxDifference();
+        boolean isWarRequestEnabled = settingsManager.is(WAR_START_REQUEST_ENABLED);
+        int maxDifference = settingsManager.get(WAR_MAX_MEMBERS_DIFFERENCE);
 
         if (!isWarRequestEnabled && maxDifference >= 0) {
             int difference = Math.abs(issuerClan.getOnlineMembers().size() - targetClan.getOnlineMembers().size());

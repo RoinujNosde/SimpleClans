@@ -6,10 +6,10 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_MIN_SIZE_TO_SET_ALLY;
 import static org.bukkit.ChatColor.RED;
 
 @SuppressWarnings("unused")
@@ -21,9 +21,9 @@ public class MinimumToAllyCondition extends AbstractCommandCondition {
     @Override
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context) throws InvalidCommandArgument {
         Clan clan = Conditions.assertClanMember(clanManager, context.getIssuer());
-        if (clan.getSize() < settingsManager.getClanMinSizeToAlly()) {
+        if (clan.getSize() < ((int) settingsManager.get(CLAN_MIN_SIZE_TO_SET_ALLY))) {
             throw new ConditionFailedException(RED +
-                    lang("minimum.to.make.alliance", context.getIssuer(), settingsManager.getClanMinSizeToAlly()));
+                    lang("minimum.to.make.alliance", context.getIssuer(), settingsManager.get(CLAN_MIN_SIZE_TO_SET_ALLY)));
         }
     }
 

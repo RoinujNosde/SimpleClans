@@ -5,7 +5,6 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.PreCreateClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUIRE_VERIFICATION;
 
 public class CreateClanNamePrompt extends StringPrompt {
     public static final String NAME_KEY = "name";
@@ -69,7 +69,7 @@ public class CreateClanNamePrompt extends StringPrompt {
                     lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
 
-            if (plugin.getSettingsManager().isRequireVerification()) {
+            if (plugin.getSettingsManager().get(REQUIRE_VERIFICATION)) {
                 boolean verified = !plugin.getSettingsManager().isRequireVerification()
                         || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
 

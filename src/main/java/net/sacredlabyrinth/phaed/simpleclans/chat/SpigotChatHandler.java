@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.chat;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.ALLY;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class SpigotChatHandler implements ChatHandler {
 
@@ -29,7 +31,7 @@ public class SpigotChatHandler implements ChatHandler {
         List<ClanPlayer> receivers = new ArrayList<>();
         switch (message.getChannel()) {
             case ALLY:
-                if (!plugin.getSettingsManager().isAllyChatEnable()) {
+                if (!plugin.getSettingsManager().is(ALLYCHAT_ENABLE)) {
                     return;
                 }
 
@@ -37,7 +39,7 @@ public class SpigotChatHandler implements ChatHandler {
                 receivers.add(clanPlayer);
                 break;
             case CLAN:
-                if (!plugin.getSettingsManager().getClanChatEnable()) {
+                if (!plugin.getSettingsManager().is(CLANCHAT_ENABLE)) {
                     return;
                 }
 
@@ -82,19 +84,19 @@ public class SpigotChatHandler implements ChatHandler {
     public String formatMessage(SCMessage message, Map<String, String> placeholders) {
         SettingsManager sm = plugin.getSettingsManager();
 
-        String leaderColor = sm.getClanChatLeaderColor();
-        String memberColor = sm.getClanChatMemberColor();
-        String trustedColor = sm.getClanChatTrustedColor();
+        String leaderColor = Helper.toColor(sm.get(CLANCHAT_LEADER_COLOR));
+        String memberColor = Helper.toColor(sm.get(ALLYCHAT_MEMBER_COLOR));
+        String trustedColor = Helper.toColor(sm.get(CLANCHAT_LEADER_COLOR));
         String rank = message.getSender().getRankId().isEmpty() ? null : ChatUtils.parseColors(message.getSender().getRankDisplayName());
-        String rankFormat = rank != null ? ChatUtils.parseColors(sm.getClanChatRank()).replace("%rank%", rank) : "";
-        String formattedMessage = replacePlaceholders(sm.getClanChatFormat(), message.getSender(), leaderColor, trustedColor, memberColor, rankFormat, message.getContent());
+        String rankFormat = rank != null ? ChatUtils.parseColors(sm.get(CLANCHAT_RANK)).replace("%rank%", rank) : "";
+        String formattedMessage = replacePlaceholders(sm.get(CLANCHAT_FORMAT), message.getSender(), leaderColor, trustedColor, memberColor, rankFormat, message.getContent());
 
         if (message.getChannel() == ALLY) {
-            leaderColor = sm.getAllyChatLeaderColor();
-            memberColor = sm.getAllyChatMemberColor();
-            trustedColor = sm.getClanChatTrustedColor();
-            rankFormat = rank != null ? ChatUtils.parseColors(sm.getAllyChatFormat()).replace("%rank%", rank) : "";
-            formattedMessage = replacePlaceholders(sm.getAllyChatFormat(), message.getSender(), leaderColor, trustedColor, memberColor, rankFormat, message.getContent());
+            leaderColor = Helper.toColor(sm.get(ALLYCHAT_LEADER_COLOR));
+            memberColor = Helper.toColor(sm.get(ALLYCHAT_MEMBER_COLOR));
+            trustedColor = Helper.toColor(sm.get(ALLYCHAT_TRUSTED_COLOR));
+            rankFormat = rank != null ? ChatUtils.parseColors(sm.get(ALLYCHAT_FORMAT)).replace("%rank%", rank) : "";
+            formattedMessage = replacePlaceholders(sm.get(ALLYCHAT_FORMAT), message.getSender(), leaderColor, trustedColor, memberColor, rankFormat, message.getContent());
 
         }
 

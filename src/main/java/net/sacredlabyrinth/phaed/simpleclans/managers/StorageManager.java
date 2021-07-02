@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
  * @author phaed
@@ -77,8 +78,8 @@ public final class StorageManager {
      * Initiates the db
      */
     public void initiateDB() {
-        if (plugin.getSettingsManager().isUseMysql()) {
-            core = new MySQLCore(plugin.getSettingsManager().getHost(), plugin.getSettingsManager().getDatabase(), plugin.getSettingsManager().getPort(), plugin.getSettingsManager().getUsername(), plugin.getSettingsManager().getPassword());
+        if (plugin.getSettingsManager().is(MYSQL_ENABLE)) {
+            core = new MySQLCore(plugin.getSettingsManager().get(MYSQL_HOST), plugin.getSettingsManager().get(MYSQL_DATABASE), plugin.getSettingsManager().get(MYSQL_PORT), plugin.getSettingsManager().get(MYSQL_USERNAME), plugin.getSettingsManager().get(MYSQL_PASSWORD));
 
             if (core.checkConnection()) {
                 plugin.getLogger().info(lang("mysql.connection.successful"));
@@ -308,12 +309,12 @@ public final class StorageManager {
                 continue;
             }
             if (clan.isVerified()) {
-                int purgeClan = plugin.getSettingsManager().getPurgeClan();
+                int purgeClan = plugin.getSettingsManager().get(PURGE_INACTIVE_CLAN_DAYS);
                 if (clan.getInactiveDays() > purgeClan && purgeClan > 0) {
                     purge.add(clan);
                 }
             } else {
-                int purgeUnverified = plugin.getSettingsManager().getPurgeUnverified();
+                int purgeUnverified = plugin.getSettingsManager().get(PURGE_UNVERIFIED_CLAN_DAYS);
                 if (clan.getInactiveDays() > purgeUnverified && purgeUnverified > 0) {
                     purge.add(clan);
                 }
@@ -328,7 +329,7 @@ public final class StorageManager {
     }
 
     private void purgeClanPlayers(List<ClanPlayer> cps) {
-        int purgePlayers = plugin.getSettingsManager().getPurgePlayers();
+        int purgePlayers = plugin.getSettingsManager().get(PURGE_INACTIVE_PLAYER_DATA_DAYS);
         if (purgePlayers < 1) {
             return;
         }
@@ -769,7 +770,7 @@ public final class StorageManager {
         if (updateLastUsed) {
             clan.updateLastUsed();
         }
-        if (plugin.getSettingsManager().isSavePeriodically()) {
+        if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClans.add(clan);
             return;
         }
@@ -847,7 +848,7 @@ public final class StorageManager {
      */
     public void updateClanPlayer(ClanPlayer cp) {
         cp.updateLastSeen();
-        if (plugin.getSettingsManager().isSavePeriodically()) {
+        if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClanPlayers.add(cp);
             return;
         }
@@ -1115,7 +1116,7 @@ public final class StorageManager {
             core.execute("ALTER TABLE sc_players ADD COLUMN `ally_kills` int(11) DEFAULT NULL;");
         }
 
-        if (plugin.getSettingsManager().isUseMysql()) {
+        if (plugin.getSettingsManager().is(MYSQL_ENABLE)) {
             core.execute("ALTER TABLE sc_clans MODIFY color_tag VARCHAR(255);");
         }
 
@@ -1130,7 +1131,7 @@ public final class StorageManager {
             query = "ALTER TABLE sc_kills ADD victim_uuid VARCHAR( 255 ) DEFAULT NULL;";
             core.execute(query);
         }
-        boolean useMysql = plugin.getSettingsManager().isUseMysql();
+        boolean useMysql = plugin.getSettingsManager().is(MYSQL_ENABLE);
         if (!core.existsColumn("sc_players", "uuid")) {
             query = "ALTER TABLE sc_players ADD uuid VARCHAR( 255 ) DEFAULT NULL;";
             core.execute(query);

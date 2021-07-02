@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_SEPARATOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SERVER_NAME;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.DARK_GRAY;
 
@@ -38,9 +40,9 @@ public class Alliances extends Sendable {
 
     private void sendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getServerName() + subColor + " " +
+        ChatBlock.saySingle(sender, sm.get(SERVER_NAME) + subColor + " " +
                 lang("alliances", sender) + " " + headColor +
-                Helper.generatePageSeparator(sm.getPageSep()));
+                Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
 
         chatBlock.setAlignment("l", "l");
