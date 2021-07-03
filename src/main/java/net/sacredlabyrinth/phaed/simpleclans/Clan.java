@@ -934,18 +934,6 @@ public class Clan implements Serializable, Comparable<Clan> {
         return out;
     }
 
-    public Set<ClanPlayer> getOnlineAllyMembers() {
-        Set<ClanPlayer> out = new HashSet<>();
-
-        for (ClanPlayer allyMember : getAllAllyMembers()) {
-            if (allyMember.toPlayer() != null) {
-                out.add(allyMember);
-            }
-        }
-
-        return out;
-    }
-
     /**
      * Gets the clan's total KDR
      */
@@ -1698,7 +1686,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         String bracketLeft = sm.getColored(TAG_BRACKET_COLOR);
         String bracketRight = sm.getColored(TAG_BRACKET_COLOR);
         String tagSeparatorColor = isLeader ? sm.getColored(TAG_SEPARATOR_LEADER_COLOR) : sm.getColored(TAG_SEPARATOR_COLOR);
-        char tagSeparator = sm.get(TAG_SEPARATOR_char);
+        String tagSeparator = sm.get(TAG_SEPARATOR_char);
 
         return bracketColor + bracketLeft + bracketDefaultColor + getColorTag() + bracketColor + bracketRight + tagSeparatorColor + tagSeparator;
     }

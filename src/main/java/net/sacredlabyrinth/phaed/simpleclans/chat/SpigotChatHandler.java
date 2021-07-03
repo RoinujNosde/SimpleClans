@@ -35,7 +35,7 @@ public class SpigotChatHandler implements ChatHandler {
                     return;
                 }
 
-                receivers.addAll(clan.getOnlineAllyMembers().stream().filter(allymember -> !allymember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allymember -> !allymember.isMutedAlly()).collect(Collectors.toList()));
                 receivers.add(clanPlayer);
                 break;
             case CLAN:
@@ -122,5 +122,9 @@ public class SpigotChatHandler implements ChatHandler {
                 .replace("%player%", cp.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", msg);
+    }
+
+    private Set<ClanPlayer> getOnlineAllyMembers(Clan clan) {
+        return clan.getAllAllyMembers().stream().filter(clanPlayer -> clanPlayer.toPlayer() != null).collect(Collectors.toSet());
     }
 }
