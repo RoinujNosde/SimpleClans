@@ -163,12 +163,12 @@ public class SCCommandManager extends PaperCommandManager {
         SettingsManager sm = plugin.getSettingsManager();
         getCommandReplacements().addReplacements(
                 "basic_conditions", "not_blacklisted|not_banned",
-                "clan", sm.getString(COMMANDS_CLAN),
-                "deny", sm.getString(COMMANDS_DENY) + "|deny",
-                "more", sm.getString(COMMANDS_MORE),
-                "ally_chat", sm.getString(COMMANDS_ALLY),
-                "accept", sm.getString(COMMANDS_ACCEPT) + "|accept",
-                "clan_chat", sm.getString(COMMANDS_CLAN_CHAT)
+                "clan", sm.get(COMMANDS_CLAN),
+                "deny", sm.get(COMMANDS_DENY) + "|deny",
+                "more", sm.get(COMMANDS_MORE),
+                "ally_chat", sm.get(COMMANDS_ALLY),
+                "accept", sm.get(COMMANDS_ACCEPT) + "|accept",
+                "clan_chat", sm.get(COMMANDS_CLAN_CHAT)
         );
 
         SUBCOMMANDS.forEach(s -> {

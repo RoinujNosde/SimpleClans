@@ -5,9 +5,11 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -53,6 +55,17 @@ public class BankCommand extends BaseCommand {
             return;
         }
         amount = Math.abs(amount);
+        /*
+            TODO: Remove at SimpleClans 3.0
+         */
+        BankWithdrawEvent event = new BankWithdrawEvent(player, clan, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        /*
+         * ——————————————————————————————————
+         */
         switch (clan.withdraw(player, ClanBalanceUpdateEvent.Cause.COMMAND, amount)) {
             case SUCCESS:
                 if (permissions.playerGrantMoney(player, amount)) {
@@ -92,6 +105,19 @@ public class BankCommand extends BaseCommand {
             return;
         }
         amount = Math.abs(amount);
+
+        /*
+            TODO: Remove at SimpleClans 3.0
+         */
+        BankWithdrawEvent event = new BankWithdrawEvent(player, clan, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        /*
+        * ——————————————————————————————————
+        */
+
         if (!permissions.playerHasMoney(player, amount)) {
             player.sendMessage(AQUA + lang("not.sufficient.money", player));
             return;

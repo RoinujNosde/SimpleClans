@@ -125,6 +125,6 @@ public class SpigotChatHandler implements ChatHandler {
     }
 
     private Set<ClanPlayer> getOnlineAllyMembers(Clan clan) {
-        return clan.getAllAllyMembers().stream().filter(clanPlayer -> clanPlayer.toPlayer() != null).collect(Collectors.toSet());
+        return clan.getAllAllyMembers().stream().filter(allyPlayer -> allyPlayer.toPlayer() != null).collect(Collectors.toSet());
     }
 }
