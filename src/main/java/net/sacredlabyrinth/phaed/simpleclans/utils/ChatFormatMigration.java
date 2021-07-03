@@ -27,24 +27,24 @@ public class ChatFormatMigration {
         StringBuilder sb = new StringBuilder();
 
         sb.append('&');
-        sb.append(sm.getColor(CLANCHAT_BRACKET_COLOR));
+        sb.append(sm.getColored(CLANCHAT_BRACKET_COLOR));
         sb.append(sm.getString(CLANCHAT_BRACKET_LEFT));
         sb.append("%clan%");
         sb.append("&");
-        sb.append(sm.getColor(CLANCHAT_BRACKET_COLOR));
+        sb.append(sm.getColored(CLANCHAT_BRACKET_COLOR));
         sb.append(sm.getString(CLANCHAT_BRACKET_RIGHT));
         sb.append(" ");
         sb.append('&');
-        sb.append(sm.getColor(CLANCHAT_NAME_COLOR));
+        sb.append(sm.getColored(CLANCHAT_NAME_COLOR));
         sb.append(sm.getString(CLANCHAT_PLAYER_BRACKET_LEFT));
         sb.append("%nick-color%");
         sb.append("%player%");
         sb.append('&');
-        sb.append(sm.getColor(CLANCHAT_NAME_COLOR));
+        sb.append(sm.getColored(CLANCHAT_NAME_COLOR));
         sb.append(sm.getString(CLANCHAT_PLAYER_BRACKET_RIGHT));
         sb.append(" %rank%: ");
         sb.append('&');
-        sb.append(sm.getColor(CLANCHAT_MESSAGE_COLOR));
+        sb.append(sm.getColored(CLANCHAT_MESSAGE_COLOR));
         sb.append("%message%");
 
         c.set("clanchat.format", sb.toString());
@@ -68,27 +68,27 @@ public class ChatFormatMigration {
 
         StringBuilder sb = new StringBuilder();
         sb.append('&');
-        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getColored(ALLYCHAT_BRACKET_COLOR));
         sb.append(sm.getString(ALLYCHAT_BRACKET_lEFT));
         sb.append('&');
-        sb.append(sm.getColor(ALLYCHAT_TAG_COLOR));
+        sb.append(sm.getColored(ALLYCHAT_TAG_COLOR));
         sb.append(sm.getString(COMMANDS_ALLY));
         sb.append('&');
-        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getColored(ALLYCHAT_BRACKET_COLOR));
         sb.append(sm.getString(ALLYCHAT_BRACKET_RIGHT));
         sb.append(" ");
         sb.append("&4<%clan%&4> ");
         sb.append('&');
-        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getColored(ALLYCHAT_BRACKET_COLOR));
         sb.append(sm.getString(ALLYCHAT_PLAYER_BRACKET_LEFT));
         sb.append("%nick-color%");
         sb.append("%player%");
         sb.append('&');
-        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getColored(ALLYCHAT_BRACKET_COLOR));
         sb.append(sm.getString(ALLYCHAT_PLAYER_BRACKET_RIGHT));
         sb.append(" %rank%: ");
         sb.append('&');
-        sb.append(sm.getColor(ALLYCHAT_MESSAGE_COLOR));
+        sb.append(sm.getColored(ALLYCHAT_MESSAGE_COLOR));
         sb.append("%message%");
 
         c.set("allychat.format", sb.toString());

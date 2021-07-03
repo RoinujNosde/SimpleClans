@@ -105,7 +105,7 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getString(SERVER_NAME));
+		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getColored(SERVER_NAME));
 	}
 
 	@Override

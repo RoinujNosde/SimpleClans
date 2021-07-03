@@ -46,26 +46,26 @@ public class PlayerColorResolver extends PlaceholderResolver {
 
     private String getClanChatColor(ClanPlayer player) {
         if (player.isLeader()) {
-            return settings.getColor(CLANCHAT_LEADER_COLOR);
+            return settings.getColored(CLANCHAT_LEADER_COLOR);
         }
         if (player.isTrusted()) {
-            return settings.getColor(CLANCHAT_TRUSTED_COLOR);
+            return settings.getColored(CLANCHAT_TRUSTED_COLOR);
         }
         if (player.getClan() != null) {
-            return settings.getColor(CLANCHAT_MEMBER_COLOR);
+            return settings.getColored(CLANCHAT_MEMBER_COLOR);
         }
         return "";
     }
 
     private String getAllyChatColor(ClanPlayer player) {
         if (player.isLeader()) {
-            return settings.getColor(ALLYCHAT_LEADER_COLOR);
+            return settings.getColored(ALLYCHAT_LEADER_COLOR);
         }
         if (player.isTrusted()) {
-            return settings.getColor(ALLYCHAT_TRUSTED_COLOR);
+            return settings.getColored(ALLYCHAT_TRUSTED_COLOR);
         }
         if (player.getClan() != null) {
-            return settings.getColor(ALLYCHAT_MEMBER_COLOR);
+            return settings.getColored(ALLYCHAT_MEMBER_COLOR);
         }
         return "";
     }

@@ -37,7 +37,7 @@ public class ClanRoster extends Sendable {
         for (ClanPlayer cp : members) {
             Player p = cp.toPlayer();
 
-            String name = (cp.isTrusted() ? sm.getColor(PAGE_TRUSTED_COLOR) : Helper.toColor(sm.get(PAGE_UNTRUSTED_COLOR))) + cp.getName();
+            String name = (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) : Helper.toColor(sm.get(PAGE_UNTRUSTED_COLOR))) + cp.getName();
             String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
 
             chatBlock.addRow("  " + name, YELLOW + ChatUtils.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
@@ -50,7 +50,7 @@ public class ClanRoster extends Sendable {
         for (ClanPlayer cp : leaders) {
             Player p = cp.toPlayer();
 
-            String name = sm.getColor(PAGE_LEADER_COLOR) + cp.getName();
+            String name = sm.getColored(PAGE_LEADER_COLOR) + cp.getName();
             String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender)
                     : WHITE + cp.getLastSeenDaysString(sender);
 
@@ -60,12 +60,12 @@ public class ClanRoster extends Sendable {
 
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getColor(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+        ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
                 lang("roster", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
-        ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + " " + sm.getColor(PAGE_LEADER_COLOR) +
-                lang("leader", sender) + headColor + ", " + sm.getColor(PAGE_TRUSTED_COLOR) + lang("trusted", sender) +
-                headColor + ", " + sm.getColor(PAGE_UNTRUSTED_COLOR) + lang("untrusted", sender));
+        ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + " " + sm.getColored(PAGE_LEADER_COLOR) +
+                lang("leader", sender) + headColor + ", " + sm.getColored(PAGE_TRUSTED_COLOR) + lang("trusted", sender) +
+                headColor + ", " + sm.getColored(PAGE_UNTRUSTED_COLOR) + lang("untrusted", sender));
         ChatBlock.sendBlank(sender);
 
         chatBlock.setFlexibility(false, true, false, true);

@@ -39,8 +39,8 @@ public class Leaderboard extends Sendable {
         for (ClanPlayer cp : clanPlayers) {
             boolean online = cp.toPlayer() != null;
 
-            String name = (cp.isLeader() ? sm.getColor(PAGE_LEADER_COLOR) : (cp.isTrusted() ? sm.getColor(PAGE_TRUSTED_COLOR) :
-                    sm.getColor(PAGE_UNTRUSTED_COLOR))) + cp.getName();
+            String name = (cp.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) :
+                    sm.getColored(PAGE_UNTRUSTED_COLOR))) + cp.getName();
             String lastSeen = online ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
 
             String clanTag = WHITE + lang("free.agent", sender);

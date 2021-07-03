@@ -37,7 +37,7 @@ public class ClanStats extends Sendable {
     }
 
     private void configureAndSendHeader() {
-        ChatBlock.saySingle(sender, sm.getColor(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+        ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
                 lang("stats", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("kdr", sender) + " = " + subColor +
@@ -57,8 +57,8 @@ public class ClanStats extends Sendable {
 
     private void addRows(List<ClanPlayer> clanPlayers) {
         for (ClanPlayer cpm : clanPlayers) {
-            String name = (cpm.isLeader() ? sm.getColor(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getColor(PAGE_TRUSTED_COLOR) :
-                    sm.getColor(PAGE_UNTRUSTED_COLOR)) + cpm.getName());
+            String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) :
+                    sm.getColored(PAGE_UNTRUSTED_COLOR)) + cpm.getName());
             String rival = NumberFormat.getInstance().format(cpm.getRivalKills());
             String neutral = NumberFormat.getInstance().format(cpm.getNeutralKills());
             String civilian = NumberFormat.getInstance().format(cpm.getCivilianKills());

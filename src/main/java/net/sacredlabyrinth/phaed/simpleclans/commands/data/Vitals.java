@@ -39,7 +39,7 @@ public class Vitals extends Sendable {
 
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getColor(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+        ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
                 lang("vitals", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("weapons", sender) + ": " +
@@ -64,8 +64,8 @@ public class Vitals extends Sendable {
             Player p = cpm.toPlayer();
 
             if (p != null) {
-                String name = (cpm.isLeader() ? sm.getColor(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getString(PAGE_TRUSTED_COLOR)
-                        : sm.getColor(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
+                String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getString(PAGE_TRUSTED_COLOR)
+                        : sm.getColored(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
                 String health = cm.getHealthString(p.getHealth());
                 String hunger = cm.getHungerString(p.getFoodLevel());
                 String armor = cm.getArmorString(p.getInventory());

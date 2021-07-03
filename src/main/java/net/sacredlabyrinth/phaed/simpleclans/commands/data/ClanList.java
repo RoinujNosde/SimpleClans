@@ -81,7 +81,7 @@ public class ClanList extends Sendable {
 
     private void sendHeader(List<Clan> clans) {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.get(SERVER_NAME) + subColor + " " + lang("clans.lower", sender)
+        ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " + lang("clans.lower", sender)
                 + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("total.clans", sender) + " " + subColor + clans.size());
@@ -92,7 +92,6 @@ public class ClanList extends Sendable {
                 lang("kdr", sender), lang("members", sender));
     }
 
-    @SuppressWarnings("deprecation")
     private void addLine(RankingNumberResolver<Clan, ? extends Comparable<?>> ranking, Clan clan) {
         String tag = sm.getString(CLANCHAT_MEMBER_COLOR) + sm.getString(CLANCHAT_BRACKET_LEFT)
                 + sm.getString(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.getString(CLANCHAT_BRACKET_COLOR)

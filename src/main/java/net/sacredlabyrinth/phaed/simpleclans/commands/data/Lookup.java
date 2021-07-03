@@ -82,15 +82,15 @@ public class Lookup extends Sendable {
             return lang("free.agent", sender);
         }
         if (target.isLeader()) {
-            return sm.getColor(PAGE_LEADER_COLOR) + lang("leader", sender);
+            return sm.getColored(PAGE_LEADER_COLOR) + lang("leader", sender);
         }
         if (target.isTrusted()) {
-            return sm.getColor(PAGE_TRUSTED_COLOR) + lang("trusted", sender);
+            return sm.getColored(PAGE_TRUSTED_COLOR) + lang("trusted", sender);
         }
         if (!target.getRankId().isEmpty()) {
-            return sm.getColor(PAGE_TRUSTED_COLOR) + lang("in.rank", sender);
+            return sm.getColored(PAGE_TRUSTED_COLOR) + lang("in.rank", sender);
         }
-        return sm.getColor(PAGE_UNTRUSTED_COLOR) + lang("untrusted", sender);
+        return sm.getColored(PAGE_UNTRUSTED_COLOR) + lang("untrusted", sender);
     }
 
     @NotNull

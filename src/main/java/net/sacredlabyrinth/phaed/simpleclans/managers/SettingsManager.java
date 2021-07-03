@@ -60,7 +60,7 @@ public final class SettingsManager {
         return config.getString(field.path);
     }
 
-    public String getColor(ConfigField field) {
+    public String getColored(ConfigField field) {
         return Helper.toColor(config.getString(field.path));
     }
 
