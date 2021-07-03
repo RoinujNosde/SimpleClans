@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -57,11 +58,11 @@ public final class SettingsManager {
     }
 
     public String getString(ConfigField field) {
-        return config.getString(field.path);
+        return config.getString(field.path, "");
     }
 
     public String getColored(ConfigField field) {
-        return Helper.toColor(config.getString(field.path));
+        return ChatUtils.parseColors(getString(field));
     }
 
     public boolean is(ConfigField field) {

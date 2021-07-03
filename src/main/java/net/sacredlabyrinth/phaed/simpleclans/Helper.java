@@ -1,8 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -194,34 +192,12 @@ public class Helper {
     }
 
     /**
-     * Hex value to ChatColor
-     *
-     * @param hexValue
-     * @return
-     */
-    @NotNull
-    public static String toColor(@Nullable String hexValue) {
-        if (hexValue == null) {
-            return "";
-        }
-        if (hexValue.startsWith("&#")) {
-            return ChatUtils.parseColors(hexValue);
-        }
-
-        ChatColor color = ChatColor.getByChar(hexValue);
-        if (color == null) {
-            return "";
-        }
-        return color.toString();
-    }
-
-    /**
      * Converts string array to ArrayList<String>, remove empty strings
      *
      * @param values
      * @return
      */
-    public static List<String> fromArray(String... values) {
+    public static List<String> fromArrayToList(String... values) {
         List<String> results = new ArrayList<>();
         Collections.addAll(results, values);
         results.remove("");
@@ -234,7 +210,7 @@ public class Helper {
      * @param values
      * @return
      */
-    public static Set<String> fromArray2(String... values) {
+    public static Set<String> fromArrayToSet(String... values) {
         HashSet<String> results = new HashSet<>();
         Collections.addAll(results, values);
         results.remove("");
@@ -297,33 +273,6 @@ public class Helper {
         }
 
         return stripTrailing(out, sep);
-    }
-
-    /*
-     * Retrieves the last color code
-     *
-     * @param msg
-     * @return
-     */
-    public static String getLastColorCode(String msg) {
-        msg = msg.replaceAll(String.valueOf((char) 194), "").trim();
-
-        if (msg.length() < 2) {
-            return "";
-        }
-
-        String one = msg.substring(msg.length() - 2, msg.length() - 1);
-        String two = msg.substring(msg.length() - 1);
-
-        if (one.equals("\u00a7")) {
-            return one + two;
-        }
-
-        if (one.equals("&")) {
-            return Helper.toColor(two);
-        }
-
-        return "";
     }
 
     /**

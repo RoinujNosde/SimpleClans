@@ -37,7 +37,7 @@ public class ClanRoster extends Sendable {
         for (ClanPlayer cp : members) {
             Player p = cp.toPlayer();
 
-            String name = (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) : Helper.toColor(sm.get(PAGE_UNTRUSTED_COLOR))) + cp.getName();
+            String name = (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) : sm.getColored(PAGE_UNTRUSTED_COLOR)) + cp.getName();
             String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
 
             chatBlock.addRow("  " + name, YELLOW + ChatUtils.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);

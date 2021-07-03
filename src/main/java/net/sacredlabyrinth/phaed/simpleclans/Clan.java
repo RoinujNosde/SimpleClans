@@ -646,7 +646,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedBb the packedBb to set
      */
     public void setPackedBb(String packedBb) {
-        this.bb = Helper.fromArray(packedBb.split("[|]"));
+        this.bb = Helper.fromArrayToList(packedBb.split("[|]"));
     }
 
     /**
@@ -664,7 +664,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedAllies the packedAllies to set
      */
     public void setPackedAllies(String packedAllies) {
-        this.allies = Helper.fromArray(packedAllies.split("[|]"));
+        this.allies = Helper.fromArrayToList(packedAllies.split("[|]"));
     }
 
     /**
@@ -682,7 +682,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedRivals the packedRivals to set
      */
     public void setPackedRivals(String packedRivals) {
-        this.rivals = Helper.fromArray(packedRivals.split("[|]"));
+        this.rivals = Helper.fromArrayToList(packedRivals.split("[|]"));
     }
 
     /**
@@ -1372,7 +1372,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Announce message to a whole clan
      */
     public void clanAnnounce(String playerName, String msg) {
-        String message = SimpleClans.getInstance().getSettingsManager().get(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
+        String message = SimpleClans.getInstance().getSettingsManager().getColored(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
 
         for (ClanPlayer cp : getMembers()) {
             Player pl = cp.toPlayer();
@@ -1389,7 +1389,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Announce message to a all the leaders of a clan
      */
     public void leaderAnnounce(String msg) {
-        String message = SimpleClans.getInstance().getSettingsManager().get(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
+        String message = SimpleClans.getInstance().getSettingsManager().getColored(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
 
         List<ClanPlayer> leaders = getLeaders();
 
@@ -1408,8 +1408,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().get(BB_COLOR) + msg);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().get(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().get(BB_COLOR) + ChatUtils.parseColors(msg));
+            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1418,8 +1418,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().get(BB_COLOR) + msg, updateLastUsed);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().get(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().get(BB_COLOR) + ChatUtils.parseColors(msg));
+            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg, updateLastUsed);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1438,8 +1438,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void displayBb(Player player, int maxSize) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().get(BB_ACCENT_COLOR);
-            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().get(PAGE_HEADINGS_COLOR);
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
+            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getColored(PAGE_HEADINGS_COLOR);
             ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
 
             List<String> localBb;
@@ -1455,7 +1455,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
             for (String msg : localBb) {
                 if (!sendBbTime(player, msg)) {
-                    String bbColor = SimpleClans.getInstance().getSettingsManager().get(BB_COLOR);
+                    String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
                     ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
                 }
             }
@@ -1477,8 +1477,8 @@ public class Clan implements Serializable, Comparable<Clan> {
                 return false;
             }
             long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().get(BB_ACCENT_COLOR);
-            String bbColor = SimpleClans.getInstance().getSettingsManager().get(BB_COLOR);
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
+            String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
             msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
             TextComponent textComponent = new TextComponent(msg);
             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
@@ -1693,11 +1693,11 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     public String getTagLabel(boolean isLeader) {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
-        String bracketColor = isLeader ? sm.get(TAG_BRACKET_LEADER_COLOR) : sm.get(TAG_BRACKET_COLOR);
-        String bracketDefaultColor = sm.get(TAG_DEFAULT_COLOR);
-        String bracketLeft = sm.get(TAG_BRACKET_COLOR);
-        String bracketRight = sm.get(TAG_BRACKET_COLOR);
-        String tagSeparatorColor = isLeader ? sm.get(TAG_SEPARATOR_LEADER_COLOR) : sm.get(TAG_SEPARATOR_COLOR);
+        String bracketColor = isLeader ? sm.getColored(TAG_BRACKET_LEADER_COLOR) : sm.getColored(TAG_BRACKET_COLOR);
+        String bracketDefaultColor = sm.getColored(TAG_DEFAULT_COLOR);
+        String bracketLeft = sm.getColored(TAG_BRACKET_COLOR);
+        String bracketRight = sm.getColored(TAG_BRACKET_COLOR);
+        String tagSeparatorColor = isLeader ? sm.getColored(TAG_SEPARATOR_LEADER_COLOR) : sm.getColored(TAG_SEPARATOR_COLOR);
         char tagSeparator = sm.get(TAG_SEPARATOR_char);
 
         return bracketColor + bracketLeft + bracketDefaultColor + getColorTag() + bracketColor + bracketRight + tagSeparatorColor + tagSeparator;

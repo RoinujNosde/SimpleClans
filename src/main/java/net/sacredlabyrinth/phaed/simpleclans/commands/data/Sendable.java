@@ -26,8 +26,8 @@ public abstract class Sendable {
         sm = plugin.getSettingsManager();
         cm = plugin.getClanManager();
         this.sender = sender;
-        headColor = sm.get(PAGE_HEADINGS_COLOR);
-        subColor = sm.get(PAGE_SUBTITLE_COLOR);
+        headColor = sm.getColored(PAGE_HEADINGS_COLOR);
+        subColor = sm.getColored(PAGE_SUBTITLE_COLOR);
     }
 
     protected void sendBlock() {
@@ -37,8 +37,8 @@ public abstract class Sendable {
         if (more) {
             plugin.getStorageManager().addChatBlock(sender, chatBlock);
             ChatBlock.sendBlank(sender);
-            ChatBlock.sendMessage(sender, sm.get(PAGE_HEADINGS_COLOR) + lang("view.next.page", sender,
-                    sm.get(COMMANDS_MORE)));
+            ChatBlock.sendMessage(sender, sm.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", sender,
+                    sm.getString(COMMANDS_MORE)));
         }
         ChatBlock.sendBlank(sender);
     }

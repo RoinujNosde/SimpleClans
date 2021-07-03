@@ -64,7 +64,7 @@ public class Vitals extends Sendable {
             Player p = cpm.toPlayer();
 
             if (p != null) {
-                String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getString(PAGE_TRUSTED_COLOR)
+                String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR)
                         : sm.getColored(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
                 String health = cm.getHealthString(p.getHealth());
                 String hunger = cm.getHungerString(p.getFoodLevel());

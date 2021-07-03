@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
@@ -406,7 +407,7 @@ public final class ClanManager {
         if (plugin.getSettingsManager().is(DISPLAY_CHAT_TAGS)) {
             String prefix = plugin.getPermissionsManager().getPrefix(player);
             //String suffix = plugin.getPermissionsManager().getSuffix(player);
-            String lastColor = plugin.getSettingsManager().is(COLOR_CODE_FROM_PREFIX_FOR_NAME) ? Helper.getLastColorCode(prefix) : ChatColor.WHITE + "";
+            String lastColor = plugin.getSettingsManager().is(COLOR_CODE_FROM_PREFIX_FOR_NAME) ? ChatUtils.getLastColorCode(prefix) : ChatColor.WHITE + "";
             String fullName = player.getName();
 
             ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
@@ -598,7 +599,7 @@ public final class ClanManager {
      * Returns a formatted string detailing the players weapons
      */
     public String getWeaponString(PlayerInventory inv) {
-        String headColor = Helper.toColor(plugin.getSettingsManager().get(PAGE_HEADINGS_COLOR));
+        String headColor = plugin.getSettingsManager().getColored(PAGE_HEADINGS_COLOR);
 
         String out = "";
 

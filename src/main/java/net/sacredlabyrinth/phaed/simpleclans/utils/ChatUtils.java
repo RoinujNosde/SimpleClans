@@ -34,7 +34,17 @@ public class ChatUtils {
     private ChatUtils() {
     }
 
-    public static String parseColors(@NotNull String text) {
+    public static String parseColors(@Nullable String text) {
+        if (text == null) {
+            return "";
+        }
+
+        // Return chat color from hex
+        if (text.length() == 1) {
+            ChatColor color = ChatColor.getByChar(text.charAt(0));
+            return color != null ? color.toString() : "";
+        }
+
         // Special thanks to the Spigot community!
         // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
         if (supportsHexColors) {
@@ -58,6 +68,25 @@ public class ChatUtils {
             text = matcher.appendTail(buffer).toString();
         }
         return oldStripColors(text);
+    }
+
+    public static String getLastColorCode(String msg) {
+        if (msg.length() < 2) {
+            return "";
+        }
+
+        String one = msg.substring(msg.length() - 2, msg.length() - 1);
+        String two = msg.substring(msg.length() - 1);
+
+        if (one.equals("\u00a7")) {
+            return one + two;
+        }
+
+        if (one.equals("&")) {
+            return parseColors(two);
+        }
+
+        return "";
     }
 
     private static String oldStripColors(String text) {

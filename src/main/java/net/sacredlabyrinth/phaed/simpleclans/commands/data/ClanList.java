@@ -93,10 +93,10 @@ public class ClanList extends Sendable {
     }
 
     private void addLine(RankingNumberResolver<Clan, ? extends Comparable<?>> ranking, Clan clan) {
-        String tag = sm.getString(CLANCHAT_MEMBER_COLOR) + sm.getString(CLANCHAT_BRACKET_LEFT)
-                + sm.getString(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.getString(CLANCHAT_BRACKET_COLOR)
-                + sm.getString(TAG_BRACKET_RIGHT);
-        String name = (clan.isVerified() ? sm.get(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
+        String tag = sm.getColored(CLANCHAT_BRACKET_COLOR) + sm.getString(CLANCHAT_BRACKET_LEFT)
+                + sm.getColored(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.getColored(CLANCHAT_BRACKET_COLOR)
+                + sm.getString(CLANCHAT_BRACKET_RIGHT);
+        String name = (clan.isVerified() ? sm.getColored(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
         String fullname = tag + " " + name;
         String size = WHITE + "" + clan.getSize();
         String kdr = clan.isVerified() ? YELLOW + "" + KDRFormat.format(clan.getTotalKDR()) : "";

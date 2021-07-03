@@ -545,7 +545,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param PackedPastClans the PackedPastClans to set
      */
     public void setPackedPastClans(String PackedPastClans) {
-        this.pastClans = Helper.fromArray2(PackedPastClans.split("[|]"));
+        this.pastClans = Helper.fromArrayToSet(PackedPastClans.split("[|]"));
     }
 
     /**
