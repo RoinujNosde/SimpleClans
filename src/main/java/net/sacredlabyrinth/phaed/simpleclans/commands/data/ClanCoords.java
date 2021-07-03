@@ -33,8 +33,8 @@ public class ClanCoords extends Sendable {
             Player p = cpm.toPlayer();
 
             if (p != null) {
-                String name = (cpm.isLeader() ? sm.get(PAGE_LEADER_COLOR) : (cpm.isTrusted() ?
-                        sm.get(PAGE_TRUSTED_COLOR) : sm.get(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
+                String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ?
+                        sm.getColored(PAGE_TRUSTED_COLOR) : sm.getColored(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
                 Location loc = p.getLocation();
                 int distance = (int) Math.ceil(loc.toVector().distance(player.getLocation().toVector()));
                 String coords = loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ();
@@ -58,7 +58,7 @@ public class ClanCoords extends Sendable {
         chatBlock.setAlignment("l", "c", "c", "c");
 
         ChatBlock.sendBlank(player);
-        ChatBlock.saySingle(player, sm.get(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+        ChatBlock.saySingle(player, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
                 lang("coords", player) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(player);
 
