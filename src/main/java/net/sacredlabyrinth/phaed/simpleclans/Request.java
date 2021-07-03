@@ -180,6 +180,6 @@ public final class Request {
     }
 
     public boolean reachedRequestLimit() {
-        return askCount > ((int) SimpleClans.getInstance().getSettingsManager().get(REQUEST_MAX));
+        return askCount > SimpleClans.getInstance().getSettingsManager().getInt(REQUEST_MAX);
     }
 }

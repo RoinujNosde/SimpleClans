@@ -22,7 +22,7 @@ public class MinimumToRivalCondition extends AbstractCommandCondition {
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context) throws InvalidCommandArgument {
         BukkitCommandIssuer issuer = context.getIssuer();
         Clan clan = Conditions.assertClanMember(clanManager, issuer);
-        if (clan.getSize() < ((int) settingsManager.get(CLAN_MIN_SIZE_TO_SET_RIVAL))) {
+        if (clan.getSize() < settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_RIVAL)) {
             throw new ConditionFailedException(RED + lang("min.players.rivalries", issuer,
                     settingsManager.get(CLAN_MIN_SIZE_TO_SET_RIVAL)));
         }

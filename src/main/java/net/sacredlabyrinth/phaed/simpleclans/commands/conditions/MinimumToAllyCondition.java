@@ -21,7 +21,7 @@ public class MinimumToAllyCondition extends AbstractCommandCondition {
     @Override
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context) throws InvalidCommandArgument {
         Clan clan = Conditions.assertClanMember(clanManager, context.getIssuer());
-        if (clan.getSize() < ((int) settingsManager.get(CLAN_MIN_SIZE_TO_SET_ALLY))) {
+        if (clan.getSize() < settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_ALLY)) {
             throw new ConditionFailedException(RED +
                     lang("minimum.to.make.alliance", context.getIssuer(), settingsManager.get(CLAN_MIN_SIZE_TO_SET_ALLY)));
         }

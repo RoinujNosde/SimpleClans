@@ -150,7 +150,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        if (clan.getSize() >= ((int) settings.get(CLAN_MAX_MEMBERS)) && ((int) settings.get(CLAN_MAX_MEMBERS)) > 0) {
+        if (clan.getSize() >= settings.getInt(CLAN_MAX_MEMBERS) && settings.getInt(CLAN_MAX_MEMBERS) > 0) {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.members.reached.limit", sender));
             return;
         }
@@ -219,12 +219,12 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=DESCRIPTION")
     @Description("{@@command.description.description}")
     public void setDescription(Player player, Clan clan, @Name("description") String description) {
-        if (description.length() < ((int) settings.get(CLAN_MIN_DESCRIPTION_LENGTH))) {
+        if (description.length() < settings.getInt(CLAN_MIN_DESCRIPTION_LENGTH)) {
             ChatBlock.sendMessage(player, RED + lang("your.clan.description.must.be.longer.than",
                     player, settings.get(CLAN_MIN_DESCRIPTION_LENGTH)));
             return;
         }
-        if (description.length() > ((int) settings.get(CLAN_MAX_DESCRIPTION_LENGTH))) {
+        if (description.length() > settings.getInt(CLAN_MAX_DESCRIPTION_LENGTH)) {
             ChatBlock.sendMessage(player, RED + lang("your.clan.description.cannot.be.longer.than",
                     player, settings.get(CLAN_MAX_DESCRIPTION_LENGTH)));
             return;

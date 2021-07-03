@@ -10,7 +10,6 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -491,7 +490,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Adds a bulletin board message without saving it to the database
      */
     public void addBbWithoutSaving(String msg) {
-        while (bb.size() > ((int) SimpleClans.getInstance().getSettingsManager().get(BB_SIZE))) {
+        while (bb.size() > SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE)) {
             bb.remove(0);
         }
 
@@ -814,16 +813,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the fee payers
      */
     public Set<ClanPlayer> getFeePayers() {
-        Set<ClanPlayer> feePayers = new HashSet<>();
-
-        getNonLeaders().forEach(cp -> {
-            OfflinePlayer op = Bukkit.getOfflinePlayer(cp.getUniqueId());
-            if (!SimpleClans.getInstance().getPermissionsManager().has(null, op, "simpleclans.member.bypass-fee")) {
-                feePayers.add(cp);
-            }
-        });
-
-        return feePayers;
+        return getNonLeaders().stream().filter(cp -> SimpleClans.getInstance().getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.bypass-fee")).collect(Collectors.toSet());
     }
 
     /**

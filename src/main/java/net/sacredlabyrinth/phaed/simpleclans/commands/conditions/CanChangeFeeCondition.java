@@ -27,7 +27,7 @@ public class CanChangeFeeCondition extends AbstractCommandCondition {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime collectTime = getCollectTime();
         long interval = now.until(collectTime, MINUTES);
-        if (interval <= ((int) settingsManager.get(ECONOMY_MEMBER_FEE_LAST_MINUTE_CHANGE_INTERVAL)) * HOUR_IN_MINUTES) {
+        if (interval <= settingsManager.getInt(ECONOMY_MEMBER_FEE_LAST_MINUTE_CHANGE_INTERVAL) * HOUR_IN_MINUTES) {
             BukkitCommandIssuer issuer = context.getIssuer();
             String error = lang("cannot.change.member.fee.now", issuer);
             if (interval <= 60) {

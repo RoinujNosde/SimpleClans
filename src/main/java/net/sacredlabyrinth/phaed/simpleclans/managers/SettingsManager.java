@@ -7,15 +7,126 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.LANGUAGE;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERMISSIONS_AUTO_GROUP_GROUPNAME;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
  * @author phaed
  */
 public final class SettingsManager {
+
+    private final SimpleClans plugin;
+
+    private final FileConfiguration config;
+    private final File configFile;
+
+    public SettingsManager(SimpleClans plugin) {
+        this.plugin = plugin;
+        this.config = plugin.getConfig();
+        config.options().copyDefaults(true);
+        configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
+        loadAndSave();
+        warnAboutAutoGroupGroupName();
+    }
+
+    public <T> void set(ConfigField field, T value) {
+        config.set(field.path, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(ConfigField field) {
+        return (T) config.get(field.path);
+    }
+
+    public int getInt(ConfigField field) {
+        return config.getInt(field.path);
+    }
+
+    public double getDouble(ConfigField field) {
+        return config.getDouble(field.path);
+    }
+
+    public List<String> getStringList(ConfigField field) {
+        return config.getStringList(field.path);
+    }
+
+    public boolean is(ConfigField field) {
+        return config.getBoolean(field.path);
+    }
+
+
+    /**
+     * Load the configuration
+     */
+    public void loadAndSave() {
+        if (configFile.exists()) {
+            try {
+                config.load(configFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        save();
+    }
+
+    public void save() {
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void warnAboutAutoGroupGroupName() {
+        Plugin luckPerms = Bukkit.getServer().getPluginManager().getPlugin("LuckPerms");
+        if (luckPerms != null && is(PERMISSIONS_AUTO_GROUP_GROUPNAME)) {
+            plugin.getLogger().warning("LuckPerms was found and the setting auto-group-groupname is enabled.");
+            plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
+                    " that matches their clan tag.");
+        }
+    }
+
+    public Locale getLanguage() {
+        String language = get(LANGUAGE);
+        String[] split = language.split("_");
+
+        if (split.length == 2) {
+            return new Locale(split[0], split[1]);
+        }
+
+        return new Locale(language);
+    }
+
+    /**
+     * Check whether a clan is unrivable
+     *
+     * @param tag the tag
+     * @return whether the clan is unrivable
+     */
+    public boolean isUnrivable(String tag) {
+        return getStringList(UNRIVABLE_CLANS).contains(tag);
+    }
+
+    /**
+     * Add a player to the banned list
+     *
+     * @param playerUniqueId the player's name
+     */
+    public void addBanned(UUID playerUniqueId) {
+        if (getStringList(BANNED_PLAYERS).contains(playerUniqueId.toString())) {
+            return;
+        }
+
+        set(BANNED_PLAYERS, getStringList(BANNED_PLAYERS).add(playerUniqueId.toString()));
+    }
+
+    public FileConfiguration getConfig() {
+        return config;
+    }
 
     public enum ConfigField {
         /*
@@ -313,80 +424,4 @@ public final class SettingsManager {
             this.path = path;
         }
     }
-
-    private final SimpleClans plugin;
-
-    private final FileConfiguration config;
-    private final File configFile;
-
-    public <T> void set(ConfigField field, T value) {
-        config.set(field.path, value);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T get(ConfigField field) {
-        return (T) config.get(field.path);
-    }
-
-    public boolean is(ConfigField field) {
-        return config.getBoolean(field.path);
-    }
-
-    public SettingsManager(SimpleClans plugin) {
-        this.plugin = plugin;
-        this.config = plugin.getConfig();
-        config.options().copyDefaults(true);
-        configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
-        loadAndSave();
-        warnAboutAutoGroupGroupName();
-    }
-
-    /**
-     * Load the configuration
-     */
-
-    public void loadAndSave() {
-        if (configFile.exists()) {
-            try {
-                config.load(configFile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        save();
-    }
-
-    public void save() {
-        try {
-            config.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void warnAboutAutoGroupGroupName() {
-        Plugin luckPerms = Bukkit.getServer().getPluginManager().getPlugin("LuckPerms");
-        if (luckPerms != null && is(PERMISSIONS_AUTO_GROUP_GROUPNAME)) {
-            plugin.getLogger().warning("LuckPerms was found and the setting auto-group-groupname is enabled.");
-            plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
-                    " that matches their clan tag.");
-        }
-    }
-
-    public Locale getLanguage() {
-        String language = get(LANGUAGE);
-        String[] split = language.split("_");
-
-        if (split.length == 2) {
-            return new Locale(split[0], split[1]);
-        }
-
-        return new Locale(language);
-    }
-
-    public FileConfiguration getConfig() {
-        return config;
-    }
-
 }
