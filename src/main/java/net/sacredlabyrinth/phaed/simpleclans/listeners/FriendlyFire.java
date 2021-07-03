@@ -4,7 +4,6 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,8 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BLACKLISTED_WORLDS;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SAFE_CIVILIANS;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class FriendlyFire implements Listener {
 
@@ -64,7 +62,7 @@ public class FriendlyFire implements Listener {
             return;
         }
 
-        if (vcp.isFriendlyFire() || victimClan.isFriendlyFire() || plugin.getSettingsManager().isGlobalff()) {
+        if (vcp.isFriendlyFire() || victimClan.isFriendlyFire() || plugin.getSettingsManager().is(GLOBAL_FRIENDLY_FIRE)) {
             return;
         }
 

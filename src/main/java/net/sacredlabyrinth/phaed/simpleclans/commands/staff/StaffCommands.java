@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.GLOBAL_FRIENDLY_FIRE;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -194,10 +195,10 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.globalff")
     @Description("{@@command.description.globalff.allow}")
     public void allowGlobalFf(CommandSender sender) {
-        if (settings.isGlobalff()) {
+        if (settings.is(GLOBAL_FRIENDLY_FIRE)) {
             ChatBlock.sendMessage(sender, AQUA + lang("global.friendly.fire.is.already.being.allowed", sender));
         } else {
-            settings.setGlobalff(true);
+            settings.set(GLOBAL_FRIENDLY_FIRE, true);
             ChatBlock.sendMessage(sender, AQUA + lang("global.friendly.fire.is.set.to.allowed", sender));
         }
     }
@@ -206,11 +207,11 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.globalff")
     @Description("{@@command.description.globalff.auto}")
     public void autoGlobalFf(CommandSender sender) {
-        if (!settings.isGlobalff()) {
+        if (!settings.is(GLOBAL_FRIENDLY_FIRE)) {
             ChatBlock.sendMessage(sender, AQUA +
                     lang("global.friendy.fire.is.already.being.managed.by.each.clan", sender));
         } else {
-            settings.setGlobalff(false);
+            settings.set(GLOBAL_FRIENDLY_FIRE, false);
             ChatBlock.sendMessage(sender, AQUA + lang("global.friendy.fire.is.now.managed.by.each.clan",
                     sender));
         }

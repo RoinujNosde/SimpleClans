@@ -27,6 +27,7 @@ settings:
     rival-limit-percent: 50
     use-colorcode-from-prefix-for-name: true
     display-chat-tags: true
+    global-friendly-fire: false
     unrivable-clans:
     - admin
     - staff

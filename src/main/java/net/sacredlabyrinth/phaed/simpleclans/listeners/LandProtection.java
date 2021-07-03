@@ -44,7 +44,7 @@ public class LandProtection implements Listener {
         protectionManager = plugin.getProtectionManager();
         clanManager = plugin.getClanManager();
         settingsManager = plugin.getSettingsManager();
-        priority = settingsManager.get(WAR_LISTENERS_PRIORITY);
+        priority = EventPriority.valueOf(settingsManager.getString(WAR_LISTENERS_PRIORITY));
     }
 
     public void registerListeners() {

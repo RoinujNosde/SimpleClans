@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.GLOBAL_FRIENDLY_FIRE;
 import static net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.ClanListFrame.Type;
 
 public class StaffFrame extends SCFrame {
@@ -79,7 +80,7 @@ public class StaffFrame extends SCFrame {
 
     private void addGlobalFf() {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
-        boolean globalffAllowed = sm.isGlobalff();
+        boolean globalffAllowed = sm.is(GLOBAL_FRIENDLY_FIRE);
         String status = globalffAllowed ? lang("allowed", getViewer()) : lang("auto", getViewer());
         SCComponent globalFf = new SCComponentImpl.Builder(XMaterial.DIAMOND_SWORD).withSlot(12)
                 .withDisplayName(lang("gui.staff.global.ff.title", getViewer()))

@@ -160,7 +160,7 @@ public class SimpleClans extends JavaPlugin {
         metrics.addCustomChart(new Metrics.SimplePie("language_chooser", () -> sm.is(LANGUAGE_SELECTOR) ? on : off));
         metrics.addCustomChart(new Metrics.SimplePie("database", () -> sm.is(MYSQL_ENABLE) ? "MySQL" : "SQLite"));
         metrics.addCustomChart(new Metrics.SimplePie("save_periodically", () -> sm.is(PERFORMANCE_SAVE_PERIODICALLY) ? on : off));
-        metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> String.valueOf(sm.get(PERFORMANCE_SAVE_INTERVAL))));
+        metrics.addCustomChart(new Metrics.SimplePie("save_interval", () -> sm.getString(PERFORMANCE_SAVE_INTERVAL)));
         metrics.addCustomChart(new Metrics.SimplePie("upkeep", () -> sm.is(ECONOMY_UPKEEP_ENABLED) ? on : off));
         metrics.addCustomChart(new Metrics.SimplePie("member_fee", () -> sm.is(ECONOMY_MEMBER_FEE_ENABLED) ? on : off));
         metrics.addCustomChart(new Metrics.SimplePie("rejoin_cooldown", () -> sm.is(ENABLE_REJOIN_COOLDOWN) ? on : off));

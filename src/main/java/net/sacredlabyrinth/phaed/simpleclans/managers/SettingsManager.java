@@ -25,9 +25,6 @@ public final class SettingsManager {
     private final FileConfiguration config;
     private final File configFile;
 
-    // Probably will produce NullPointerException
-    private final List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
-
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
@@ -114,6 +111,50 @@ public final class SettingsManager {
     }
 
     /**
+     * Check whether a word is disallowed
+     *
+     * @param word the world
+     * @return whether its a disallowed word
+     */
+    public boolean isDisallowedWord(String word) {
+        for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
+            return disallowedTag.equals(word);
+        }
+
+        return word.equalsIgnoreCase(getString(COMMANDS_CLAN)) || word.equalsIgnoreCase(getString(COMMANDS_MORE)) ||
+                word.equalsIgnoreCase(getString(COMMANDS_DENY)) || word.equalsIgnoreCase(getString(COMMANDS_ACCEPT));
+    }
+
+    /**
+     * Check whether a string has a disallowed color
+     *
+     * @param str the string
+     * @return whether the string contains the color code
+     */
+    public boolean hasDisallowedColor(String str) {
+        for (String disallowedTag : getStringList(DISALLOWED_TAG_COLORS)) {
+            if (str.contains("&" + disallowedTag)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return a comma delimited string with all disallowed colors
+     */
+    public String getDisallowedColorString() {
+        String out = "";
+
+        for (Object c : getStringList(DISALLOWED_TAG_COLORS)) {
+            out += c + ", ";
+        }
+
+        return Helper.stripTrailing(out, ", ");
+    }
+
+    /**
      * Check whether a clan is unrivable
      *
      * @param tag the tag
@@ -129,6 +170,7 @@ public final class SettingsManager {
      * @param playerUniqueId the player's name
      */
     public void addBanned(UUID playerUniqueId) {
+        List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
         if (bannedPlayers.contains(playerUniqueId.toString())) {
             return;
         }
@@ -153,6 +195,7 @@ public final class SettingsManager {
      * @param playerUniqueId the player's name
      */
     public void removeBanned(UUID playerUniqueId) {
+        List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
         bannedPlayers.remove(playerUniqueId.toString());
         set(BANNED_PLAYERS, bannedPlayers);
     }
@@ -190,6 +233,7 @@ public final class SettingsManager {
         RIVAL_LIMIT_PERCENT("settings.rival-limit-percent"),
         COLOR_CODE_FROM_PREFIX_FOR_NAME("settings.use-colorcode-from-prefix-for-name"),
         DISPLAY_CHAT_TAGS("settings.display-chat-tags"),
+        GLOBAL_FRIENDLY_FIRE("settings.global-friendly-fire"),
         UNRIVABLE_CLANS("settings.unrivable-clans"),
         SHOW_UNVERIFIED_ON_LIST("settings.show-unverified-on-list"),
         BLACKLISTED_WORLDS("settings.blacklisted-worlds"),
