@@ -14,6 +14,8 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.jetbrains.annotations.NotNull;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TAMABLE_MOBS_SHARING;
+
 public class TamableMobsSharing implements Listener {
 
     private final SimpleClans plugin;
@@ -24,7 +26,7 @@ public class TamableMobsSharing implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (plugin.getSettingsManager().isTamableMobsSharing()) {
+        if (plugin.getSettingsManager().is(TAMABLE_MOBS_SHARING)) {
             if (event.getEntity() instanceof Wolf && event.getDamager() instanceof Player) {
                 ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(event.getDamager().getUniqueId());
                 if (cp == null || cp.getClan() == null) {
@@ -42,7 +44,7 @@ public class TamableMobsSharing implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityTarget(EntityTargetLivingEntityEvent event) {
-        if (plugin.getSettingsManager().isTamableMobsSharing()) {
+        if (plugin.getSettingsManager().is(TAMABLE_MOBS_SHARING)) {
             if (event.getEntity() instanceof Tameable && event.getTarget() instanceof Player) {
                 ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(event.getTarget().getUniqueId());
                 if (cp == null || cp.getClan() == null) {
@@ -63,7 +65,7 @@ public class TamableMobsSharing implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
-        if (plugin.getSettingsManager().isTamableMobsSharing() && event.getRightClicked() instanceof Tameable) {
+        if (plugin.getSettingsManager().is(TAMABLE_MOBS_SHARING) && event.getRightClicked() instanceof Tameable) {
             Player player = event.getPlayer();
             ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
             if (cp == null || cp.getClan() == null) {

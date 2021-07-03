@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DEBUG;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_BANK_LOG_ENABLED;
+
 /**
  * Logs all bank actions to one csv file per day.
  * @since 2.15.3
@@ -23,7 +26,7 @@ public class CSVBankLogger implements BankLogger {
     public CSVBankLogger(SimpleClans plugin) {
         this.plugin = plugin;
 
-        if (!plugin.getSettingsManager().isBankLogEnabled()) {
+        if (!plugin.getSettingsManager().is(ECONOMY_BANK_LOG_ENABLED)) {
             return;
         }
 
@@ -33,7 +36,7 @@ public class CSVBankLogger implements BankLogger {
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");
             logger.addHandler(fh);
-            if (!plugin.getSettingsManager().isDebugging()) {
+            if (!plugin.getSettingsManager().is(DEBUG)) {
                 logger.setUseParentHandlers(false);
             }
         } catch (IOException e) {
@@ -43,7 +46,7 @@ public class CSVBankLogger implements BankLogger {
 
     @Override
     public void log(BankLog log) {
-        if (!plugin.getSettingsManager().isBankLogEnabled()) {
+        if (!plugin.getSettingsManager().is(ECONOMY_BANK_LOG_ENABLED)) {
             return;
         }
 

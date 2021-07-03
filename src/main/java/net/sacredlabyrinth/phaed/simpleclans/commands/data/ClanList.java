@@ -4,7 +4,6 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.command.CommandSender;
@@ -95,9 +94,9 @@ public class ClanList extends Sendable {
 
     @SuppressWarnings("deprecation")
     private void addLine(RankingNumberResolver<Clan, ? extends Comparable<?>> ranking, Clan clan) {
-        String tag = sm.get(CLANCHAT_MEMBER_COLOR) + sm.get(CLANCHAT_BRACKET_LEFT)
-                + sm.get(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.get(CLANCHAT_BRACKET_COLOR)
-                + sm.get(TAG_BRACKET_RIGHT);
+        String tag = sm.getString(CLANCHAT_MEMBER_COLOR) + sm.getString(CLANCHAT_BRACKET_LEFT)
+                + sm.getString(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.getString(CLANCHAT_BRACKET_COLOR)
+                + sm.getString(TAG_BRACKET_RIGHT);
         String name = (clan.isVerified() ? sm.get(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
         String fullname = tag + " " + name;
         String size = WHITE + "" + clan.getSize();

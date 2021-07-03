@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.RANKING_TYPE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SHOW_UNVERIFIED_ON_LIST;
 
 public class ClanListFrame extends SCFrame {
 	private final List<Clan> clans;
@@ -32,12 +34,12 @@ public class ClanListFrame extends SCFrame {
 		SimpleClans plugin = SimpleClans.getInstance();
 		SettingsManager sm = plugin.getSettingsManager();
 		clans = plugin.getClanManager().getClans().stream()
-				.filter(clan -> clan.isVerified() || sm.isShowUnverifiedOnList()).collect(Collectors.toList());
+				.filter(clan -> clan.isVerified() || sm.is(SHOW_UNVERIFIED_ON_LIST)).collect(Collectors.toList());
 		paginator = new Paginator(getSize() - 9, clans);
 		plugin.getClanManager().sortClansByKDR(clans);
 
 		rankingResolver = new RankingNumberResolver<>(clans, c -> KDRFormat.toBigDecimal(c.getTotalKDR()), false,
-				sm.getRankingType());
+				sm.get(RANKING_TYPE));
 	}
 
 	@Override

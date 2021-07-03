@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class InventoryDrawer {
     private static final SimpleClans plugin = SimpleClans.getInstance();
@@ -60,7 +61,7 @@ public class InventoryDrawer {
         long start = System.currentTimeMillis();
         setComponents(inventory, frame);
 
-        if (plugin.getSettingsManager().isDebugging()) {
+        if (plugin.getSettingsManager().is(DEBUG)) {
             plugin.getLogger().log(Level.INFO,
                     String.format("It took %s millisecond(s) to load the frame %s for %s",
                             System.currentTimeMillis() - start, frame.getTitle(), frame.getViewer().getName()));
@@ -111,7 +112,7 @@ public class InventoryDrawer {
                     if (line.isEmpty()) {
                         continue;
                     }
-                    WordWrapper wrapper = new WordWrapper(line, plugin.getSettingsManager().getLoreLength());
+                    WordWrapper wrapper = new WordWrapper(line, plugin.getSettingsManager().getInt(LORE_LENGTH));
                     newLore.addAll(Arrays.asList(wrapper.wrap()));
                 }
                 itemMeta.setLore(newLore);
@@ -123,8 +124,8 @@ public class InventoryDrawer {
     private static void runHelpCommand(@NotNull Player player) {
         Bukkit.getScheduler().runTask(plugin, () -> plugin.getServer().getConsoleSender().sendMessage(lang("gui.not.supported")));
         SettingsManager settingsManager = plugin.getSettingsManager();
-        settingsManager.setEnableGUI(false);
-        String commandClan = settingsManager.getCommandClan();
+        settingsManager.set(ENABLE_GUI, false);
+        String commandClan = settingsManager.get(COMMANDS_CLAN);
         player.performCommand(commandClan);
     }
 

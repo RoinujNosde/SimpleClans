@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
  * @author phaed
@@ -35,7 +36,7 @@ public class PlayerDeath implements Listener {
     public void onEntityDeath(PlayerDeathEvent event) {
         SimpleClans.debug("A player died");
         Player victim = event.getEntity();
-        if (plugin.getSettingsManager().isBlacklistedWorld(victim.getLocation().getWorld())
+        if (plugin.getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(victim.getLocation().getWorld().getName())
                 || victim.hasMetadata("NPC")) {
             SimpleClans.debug("Blacklisted world");
             return;
@@ -86,7 +87,7 @@ public class PlayerDeath implements Listener {
     }
 
     private void giveMoneyReward(@NotNull ClanPlayer victim, @NotNull ClanPlayer attacker) {
-        if (!plugin.getSettingsManager().isMoneyPerKill()) {
+        if (!plugin.getSettingsManager().is(ECONOMY_MONEY_PER_KILL)) {
             return;
         }
         Clan attackerClan = attacker.getClan();
@@ -115,7 +116,7 @@ public class PlayerDeath implements Listener {
             return true;
         }
 
-        if (SimpleClans.getInstance().getSettingsManager().isDenySameIPKills()) {
+        if (SimpleClans.getInstance().getSettingsManager().is(KILL_WEIGHTS_DENY_SAME_IP_KILLS)) {
             InetSocketAddress attackerAddress = attacker.getAddress();
             InetSocketAddress victimAddress = victim.getAddress();
             if (attackerAddress != null && victimAddress != null) {
@@ -144,13 +145,13 @@ public class PlayerDeath implements Listener {
             return;
         }
         final Kill kill = new Kill(attacker, victim, LocalDateTime.now());
-        if (plugin.getSettingsManager().isDelayBetweenKills() && plugin.getClanManager().isKillBeforeDelay(kill)) {
+        if (plugin.getSettingsManager().is(KDR_ENABLE_KILL_DELAY) && plugin.getClanManager().isKillBeforeDelay(kill)) {
             return;
         }
 
-        if (plugin.getSettingsManager().isMaxKillsPerVictim()) {
+        if (plugin.getSettingsManager().is(KDR_ENABLE_MAX_KILLS)) {
             plugin.getStorageManager().getKillsPerPlayer(attacker.getName(), data -> {
-                final int max = plugin.getSettingsManager().getMaxKillsPerVictim();
+                final int max = plugin.getSettingsManager().get(KDR_MAX_KILLS_PER_VICTIM);
                 Integer kills = data.get(kill.getVictim().getName());
                 if (kills != null) {
                     if (kills < max) {
@@ -175,7 +176,7 @@ public class PlayerDeath implements Listener {
 
     private double calculateReward(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim) {
         double reward;
-        double multiplier = plugin.getSettingsManager().getKDRMultipliesPerKill();
+        double multiplier = plugin.getSettingsManager().get(ECONOMY_MONEY_PER_KILL_KDR_MULTIPLIER);
         double kdr = attacker.getKDR() * multiplier;
         Clan attackerClan = attacker.getClan();
         Clan victimClan = victim.getClan();

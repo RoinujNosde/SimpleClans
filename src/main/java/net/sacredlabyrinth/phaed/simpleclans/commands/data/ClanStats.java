@@ -9,6 +9,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 public class ClanStats extends Sendable {
@@ -36,15 +37,15 @@ public class ClanStats extends Sendable {
     }
 
     private void configureAndSendHeader() {
-        ChatBlock.saySingle(sender, sm.getPageClanNameColor() + clan.getName() + subColor + " " +
-                lang("stats", sender) + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.getColor(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+                lang("stats", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("kdr", sender) + " = " + subColor +
                 lang("kill.death.ratio", sender));
         ChatBlock.sendMessage(sender, headColor + lang("weights", sender) + " = " + lang("rival", sender)
-                + ": " + subColor + sm.getKwRival() + headColor + " " + lang("neutral", sender) + ": " + subColor +
-                sm.getKwNeutral() + headColor + " " + lang("civilian", sender) + ": " + subColor +
-                sm.getKwCivilian());
+                + ": " + subColor + sm.get(KILL_WEIGHTS_RIVAL) + headColor + " " + lang("neutral", sender) + ": " + subColor +
+                sm.get(KILL_WEIGHTS_NEUTRAL) + headColor + " " + lang("civilian", sender) + ": " + subColor +
+                sm.get(KILL_WEIGHTS_CIVILIAN));
         ChatBlock.sendBlank(sender);
 
         chatBlock.setFlexibility(true, false, false, false, false, false, false);
@@ -56,8 +57,8 @@ public class ClanStats extends Sendable {
 
     private void addRows(List<ClanPlayer> clanPlayers) {
         for (ClanPlayer cpm : clanPlayers) {
-            String name = (cpm.isLeader() ? sm.getPageLeaderColor() : (cpm.isTrusted() ? sm.getPageTrustedColor() :
-                    sm.getPageUnTrustedColor())) + cpm.getName();
+            String name = (cpm.isLeader() ? sm.getColor(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getColor(PAGE_TRUSTED_COLOR) :
+                    sm.getColor(PAGE_UNTRUSTED_COLOR)) + cpm.getName());
             String rival = NumberFormat.getInstance().format(cpm.getRivalKills());
             String neutral = NumberFormat.getInstance().format(cpm.getNeutralKills());
             String civilian = NumberFormat.getInstance().format(cpm.getCivilianKills());

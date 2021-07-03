@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.RANKING_TYPE;
 
 public class LeaderboardFrame extends SCFrame {
 
@@ -35,7 +36,7 @@ public class LeaderboardFrame extends SCFrame {
 		clanPlayers = plugin.getClanManager().getAllClanPlayers();
 
 		rankingResolver = new RankingNumberResolver<>(clanPlayers, c -> KDRFormat.toBigDecimal(c.getKDR()), false,
-				plugin.getSettingsManager().getRankingType());
+				plugin.getSettingsManager().get(RANKING_TYPE));
 		paginator = new Paginator(getSize() - 9, this.clanPlayers);
 	}
 

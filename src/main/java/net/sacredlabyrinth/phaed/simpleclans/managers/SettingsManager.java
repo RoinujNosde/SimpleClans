@@ -1,9 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +24,9 @@ public final class SettingsManager {
 
     private final FileConfiguration config;
     private final File configFile;
+
+    // Probably will produce NullPointerException
+    private final List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -53,10 +58,17 @@ public final class SettingsManager {
         return config.getStringList(field.path);
     }
 
+    public String getString(ConfigField field) {
+        return config.getString(field.path);
+    }
+
+    public String getColor(ConfigField field) {
+        return Helper.toColor(config.getString(field.path));
+    }
+
     public boolean is(ConfigField field) {
         return config.getBoolean(field.path);
     }
-
 
     /**
      * Load the configuration
@@ -117,11 +129,40 @@ public final class SettingsManager {
      * @param playerUniqueId the player's name
      */
     public void addBanned(UUID playerUniqueId) {
-        if (getStringList(BANNED_PLAYERS).contains(playerUniqueId.toString())) {
+        if (bannedPlayers.contains(playerUniqueId.toString())) {
             return;
         }
 
-        set(BANNED_PLAYERS, getStringList(BANNED_PLAYERS).add(playerUniqueId.toString()));
+        bannedPlayers.add(playerUniqueId.toString());
+        set(BANNED_PLAYERS, bannedPlayers);
+    }
+
+    /**
+     * Check whether a player is banned
+     *
+     * @param playerUniqueId the player's name
+     * @return whether player is banned
+     */
+    public boolean isBanned(UUID playerUniqueId) {
+        return getStringList(BANNED_PLAYERS).contains(playerUniqueId.toString());
+    }
+
+    /**
+     * Remove a player from the banned list
+     *
+     * @param playerUniqueId the player's name
+     */
+    public void removeBanned(UUID playerUniqueId) {
+        bannedPlayers.remove(playerUniqueId.toString());
+        set(BANNED_PLAYERS, bannedPlayers);
+    }
+
+    public boolean isActionAllowedInWar(@NotNull ProtectionManager.Action action) {
+        return is(ConfigField.valueOf("WAR_ACTIONS_" + action.name()));
+    }
+
+    public List<String> getIgnoredList(@NotNull ProtectionManager.Action action) {
+        return getStringList(ConfigField.valueOf("WAR_LISTENERS_IGNORED_LIST_" + action.name()));
     }
 
     public FileConfiguration getConfig() {
@@ -167,6 +208,7 @@ public final class SettingsManager {
         RANKING_TYPE("settings.ranking-type"),
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by"),
         LORE_LENGTH("settings.lore-length"),
+        PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war"),
         /*
         ================
         > Tag Settings
@@ -194,6 +236,7 @@ public final class SettingsManager {
         LAND_PROTECTION_PROVIDERS("war-and-protection.protection-providers"),
         WAR_LISTENERS_PRIORITY("war-and-protection.listeners.priority"),
         WAR_LISTENERS_IGNORED_LIST_PLACE("war-and-protection.listeners.ignored-list.PLACE"),
+        WAR_LISTENERS_IGNORED_LIST_BREAK("war-and-protection.listeners.ignored-list.BREAK"),
         LAND_SET_BASE_ONLY_IN_LAND("war-and-protection.set-base-only-in-land"),
         WAR_NORMAL_EXPIRATION_TIME("war-and-protection.war-normal-expiration-time"),
         WAR_DISCONNECT_EXPIRATION_TIME("war-and-protection.war-disconnect-expiration-time"),
@@ -253,7 +296,7 @@ public final class SettingsManager {
         ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup"),
         ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup"),
         ECONOMY_MONEY_PER_KILL("economy.money-per-kill"),
-        ECONOMY_MONEY_PER_KILL_KDR_MULTIPLAYER("economy.money-per-kill-kdr-multipier"),
+        ECONOMY_MONEY_PER_KILL_KDR_MULTIPLIER("economy.money-per-kill-kdr-multipier"),
         ECONOMY_RESET_KDR_PRICE("economy.reset-kdr-price"),
         ECONOMY_PURCHASE_RESET_KDR("economy.purchase-reset-kdr"),
         ECONOMY_PURCHASE_MEMBER_FEE_SET("economy.purchase-member-fee-set"),
@@ -341,6 +384,10 @@ public final class SettingsManager {
         CLANCHAT_BRACKET_COLOR("clanchat.tag-bracket.color"),
         CLANCHAT_BRACKET_LEFT("clanchat.tag-bracket.left"),
         CLANCHAT_BRACKET_RIGHT("clanchat.tag-bracket.right"),
+        CLANCHAT_NAME_COLOR("clanchat.name-color"),
+        CLANCHAT_PLAYER_BRACKET_LEFT("clanchat.player-bracket.left"),
+        CLANCHAT_PLAYER_BRACKET_RIGHT("clanchat.player-bracket.right"),
+        CLANCHAT_MESSAGE_COLOR("clanchat.message-color"),
         /*
         ================
         > Request Settings
@@ -370,6 +417,13 @@ public final class SettingsManager {
         ALLYCHAT_LEADER_COLOR("allychat.leader-color"),
         ALLYCHAT_TRUSTED_COLOR("allychat.trusted-color"),
         ALLYCHAT_MEMBER_COLOR("allychat.member-color"),
+        ALLYCHAT_BRACKET_COLOR("allychat.tag-bracket.color"),
+        ALLYCHAT_BRACKET_lEFT("allychat.tag-bracket.left"),
+        ALLYCHAT_BRACKET_RIGHT("allychat.tag-bracket.right"),
+        ALLYCHAT_PLAYER_BRACKET_LEFT("allychat.player-bracket.left"),
+        ALLYCHAT_PLAYER_BRACKET_RIGHT("allychat.player-bracket.right"),
+        ALLYCHAT_MESSAGE_COLOR("allychat.message-color"),
+        ALLYCHAT_TAG_COLOR("allychat.tag-color"),
         /*
         ================
         > Discord Chat Settings
@@ -416,7 +470,9 @@ public final class SettingsManager {
         PERFORMANCE_SAVE_INTERVAL("performance.save-interval"),
         PERFORMANCE_USE_THREADS("performance.use-threads"),
         PERFORMANCE_USE_BUNGEECORD("performance.use-bungeecord"),
-        PERFORMANCE_HEAD_CACHING("performance.cache-player-heads");
+        PERFORMANCE_HEAD_CACHING("performance.cache-player-heads"),
+
+        SAFE_CIVILIANS("safe-civilians");
 
         private final String path;
 

@@ -235,7 +235,7 @@ public class ProtectionManager {
     }
 
     private void registerProviders() {
-        for (String className : settingsManager.get(LAND_PROTECTION_PROVIDERS)) {
+        for (String className : settingsManager.getStringList(LAND_PROTECTION_PROVIDERS)) {
             Object instance = null;
             try {
                 Class<?> clazz = getProviderClass(className);

@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class ClanDetailsFrame extends SCFrame {
 	private final Clan clan;
@@ -93,15 +94,15 @@ public class ClanDetailsFrame extends SCFrame {
 		String allyStatus = allyEnabled ? joined : notJoined;
 
 		SettingsManager sm = plugin.getSettingsManager();
-		String chatCommand = sm.isTagBasedClanChat() ? clan.getTag() : sm.getCommandClanChat();
+		String chatCommand = sm.is(CLANCHAT_TAG_BASED_CLAN_CHAT) ? clan.getTag() : sm.get(COMMANDS_CLAN_CHAT);
 		String joinArg = lang("join", getViewer());
 		String leaveArg = lang("leave", getViewer());
 		return new SCComponentImpl(lang("gui.clandetails.chat.title", getViewer()),
 				Arrays.asList(
 						lang("gui.clandetails.chat.clan.chat.lore", getViewer(), chatCommand),
 						lang("gui.clandetails.chat.clan.join.leave.lore", getViewer(), chatCommand, joinArg, leaveArg),
-						lang("gui.clandetails.chat.ally.chat.lore", getViewer(), sm.getCommandAlly()),
-						lang("gui.clandetails.chat.ally.join.leave.lore", getViewer(), sm.getCommandAlly(), joinArg, leaveArg),
+						lang("gui.clandetails.chat.ally.chat.lore", getViewer(), sm.getString(COMMANDS_ALLY)),
+						lang("gui.clandetails.chat.ally.join.leave.lore", getViewer(), sm.getString(COMMANDS_ALLY), joinArg, leaveArg),
 						lang("gui.clandetails.chat.clan.status.lore", getViewer(), clanStatus),
 						lang("gui.clandetails.chat.ally.status.lore", getViewer(), allyStatus),
 						lang("gui.clandetails.chat.clan.toggle.lore", getViewer()),
@@ -152,8 +153,8 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addVerify() {
 		boolean verified = clan.isVerified();
-		boolean purchaseVerification = plugin.getSettingsManager().isRequireVerification()
-				&& plugin.getSettingsManager().isePurchaseVerification();
+		boolean purchaseVerification = plugin.getSettingsManager().is(REQUIRE_VERIFICATION)
+				&& plugin.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_VERIFY);
 
 		XMaterial material = verified ? XMaterial.REDSTONE_TORCH : XMaterial.LEVER;
 		String title = verified ? lang("gui.clandetails.verified.title", getViewer())
@@ -161,7 +162,7 @@ public class ClanDetailsFrame extends SCFrame {
 		List<String> lore = verified ? null : new ArrayList<>();
 		if (!verified) {
 			if (purchaseVerification) {
-				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().getVerificationPrice()));
+				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().get(ECONOMY_VERIFICATION_PRICE)));
 			}
 			lore.add(lang("gui.clandetails.not.verified.lore", getViewer()));
 		}
@@ -234,9 +235,9 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addRegroup() {
 		double price = 0;
-		if (plugin.getSettingsManager().isePurchaseHomeRegroup()) {
-			price = plugin.getSettingsManager().getHomeRegroupPrice();
-			if (!plugin.getSettingsManager().iseUniqueTaxOnRegroup()) {
+		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_HOME_REGROUP)) {
+			price = plugin.getSettingsManager().get(ECONOMY_REGROUP_PRICE);
+			if (!plugin.getSettingsManager().is(ECONOMY_UNIQUE_TAX_ON_REGROUP)) {
 				price = price * VanishUtils.getNonVanished(getViewer(), clan).size();
 			}
 		}
@@ -261,8 +262,8 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addHome() {
 		SettingsManager sm = plugin.getSettingsManager();
-		double homePrice = sm.isePurchaseHomeTeleport() ? sm.getHomeTeleportPrice() : 0;
-		double setPrice = sm.isePurchaseHomeTeleportSet() ? sm.getHomeTeleportPriceSet() : 0;
+		double homePrice = sm.is(ECONOMY_PURCHASE_HOME_TELEPORT) ? sm.get(ECONOMY_HOME_TELEPORT_PRICE) : 0;
+		double setPrice = sm.is(ECONOMY_PURCHASE_HOME_TELEPORT_SET) ? sm.get(ECONOMY_HOME_TELEPORT_SET_PRICE) : 0;
 
 		List<String> lore = new ArrayList<>();
 		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), homePrice));

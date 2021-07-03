@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BLACKLISTED_WORLDS;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SAFE_CIVILIANS;
 
 public class FriendlyFire implements Listener {
 
@@ -29,7 +33,7 @@ public class FriendlyFire implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player) ||
-                plugin.getSettingsManager().isBlacklistedWorld(event.getEntity().getWorld())) {
+                plugin.getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(event.getEntity().getWorld().getName())) {
             return;
         }
         Player victim = (Player) event.getEntity();
@@ -53,7 +57,7 @@ public class FriendlyFire implements Listener {
                          @Nullable Clan victimClan,
                          @Nullable Clan attackerClan) {
         if (vcp == null || victimClan == null || attackerClan == null) {
-            if (plugin.getSettingsManager().getSafeCivilians()) {
+            if (plugin.getSettingsManager().is(SAFE_CIVILIANS)) {
                 ChatBlock.sendMessageKey(attacker, "cannot.attack.civilians");
                 event.setCancelled(true);
             }

@@ -882,8 +882,8 @@ public final class ClanManager {
      */
     public void sortClansBySize(List<Clan> clans) {
         clans.sort((c1, c2) -> {
-            Integer o1 = c1.getAllMembers().size();
-            Integer o2 = c2.getAllMembers().size();
+            Integer o1 = c1.getMembers().size();
+            Integer o2 = c2.getMembers().size();
 
             return o2.compareTo(o1);
         });

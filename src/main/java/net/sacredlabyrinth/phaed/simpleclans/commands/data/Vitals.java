@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 public class Vitals extends Sendable {
@@ -38,8 +39,8 @@ public class Vitals extends Sendable {
 
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getPageClanNameColor() + clan.getName() + subColor + " " +
-                lang("vitals", sender) + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.getColor(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+                lang("vitals", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("weapons", sender) + ": " +
                 lang("0.s.sword.1.2.b.bow.3.4.a.arrow", sender, WHITE, DARK_GRAY, WHITE, DARK_GRAY, WHITE));
@@ -63,8 +64,8 @@ public class Vitals extends Sendable {
             Player p = cpm.toPlayer();
 
             if (p != null) {
-                String name = (cpm.isLeader() ? sm.getPageLeaderColor() : (cpm.isTrusted() ? sm.getPageTrustedColor()
-                        : sm.getPageUnTrustedColor())) + cpm.getName();
+                String name = (cpm.isLeader() ? sm.getColor(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getString(PAGE_TRUSTED_COLOR)
+                        : sm.getColor(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
                 String health = cm.getHealthString(p.getHealth());
                 String hunger = cm.getHungerString(p.getFoodLevel());
                 String armor = cm.getArmorString(p.getInventory());

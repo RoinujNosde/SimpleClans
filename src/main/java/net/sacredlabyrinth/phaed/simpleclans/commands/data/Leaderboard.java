@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 public class Leaderboard extends Sendable {
@@ -24,7 +25,7 @@ public class Leaderboard extends Sendable {
         super(plugin, sender);
         clanPlayers = cm.getAllClanPlayers();
         rankingResolver = new RankingNumberResolver<>(clanPlayers,
-                c -> KDRFormat.toBigDecimal(c.getKDR()), false, sm.getRankingType());
+                c -> KDRFormat.toBigDecimal(c.getKDR()), false, sm.get(RANKING_TYPE));
     }
 
     @Override
@@ -38,8 +39,8 @@ public class Leaderboard extends Sendable {
         for (ClanPlayer cp : clanPlayers) {
             boolean online = cp.toPlayer() != null;
 
-            String name = (cp.isLeader() ? sm.getPageLeaderColor() : (cp.isTrusted() ? sm.getPageTrustedColor() :
-                    sm.getPageUnTrustedColor())) + cp.getName();
+            String name = (cp.isLeader() ? sm.getColor(PAGE_LEADER_COLOR) : (cp.isTrusted() ? sm.getColor(PAGE_TRUSTED_COLOR) :
+                    sm.getColor(PAGE_UNTRUSTED_COLOR))) + cp.getName();
             String lastSeen = online ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
 
             String clanTag = WHITE + lang("free.agent", sender);
@@ -55,8 +56,8 @@ public class Leaderboard extends Sendable {
 
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getServerName() + subColor + " " + lang("leaderboard.command", sender)
-                + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.get(SERVER_NAME) + subColor + " " + lang("leaderboard.command", sender)
+                + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("total.clan.players.0", sender, subColor +
                 clanPlayers.size()));

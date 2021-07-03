@@ -4,6 +4,8 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+
 /**
  *
  * @author RoinujNosde
@@ -25,24 +27,24 @@ public class ChatFormatMigration {
         StringBuilder sb = new StringBuilder();
 
         sb.append('&');
-        sb.append(sm.getClanChatBracketColor());
-        sb.append(sm.getClanChatTagBracketLeft());
+        sb.append(sm.getColor(CLANCHAT_BRACKET_COLOR));
+        sb.append(sm.getString(CLANCHAT_BRACKET_LEFT));
         sb.append("%clan%");
         sb.append("&");
-        sb.append(sm.getClanChatBracketColor());
-        sb.append(sm.getClanChatTagBracketRight());
+        sb.append(sm.getColor(CLANCHAT_BRACKET_COLOR));
+        sb.append(sm.getString(CLANCHAT_BRACKET_RIGHT));
         sb.append(" ");
         sb.append('&');
-        sb.append(sm.getClanChatNameColor());
-        sb.append(sm.getClanChatPlayerBracketLeft());
+        sb.append(sm.getColor(CLANCHAT_NAME_COLOR));
+        sb.append(sm.getString(CLANCHAT_PLAYER_BRACKET_LEFT));
         sb.append("%nick-color%");
         sb.append("%player%");
         sb.append('&');
-        sb.append(sm.getClanChatNameColor());
-        sb.append(sm.getClanChatPlayerBracketRight());
+        sb.append(sm.getColor(CLANCHAT_NAME_COLOR));
+        sb.append(sm.getString(CLANCHAT_PLAYER_BRACKET_RIGHT));
         sb.append(" %rank%: ");
         sb.append('&');
-        sb.append(sm.getClanChatMessageColor());
+        sb.append(sm.getColor(CLANCHAT_MESSAGE_COLOR));
         sb.append("%message%");
 
         c.set("clanchat.format", sb.toString());
@@ -66,27 +68,27 @@ public class ChatFormatMigration {
 
         StringBuilder sb = new StringBuilder();
         sb.append('&');
-        sb.append(sm.getAllyChatBracketColor());
-        sb.append(sm.getAllyChatTagBracketLeft());
+        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getString(ALLYCHAT_BRACKET_lEFT));
         sb.append('&');
-        sb.append(sm.getAllyChatTagColor());
-        sb.append(sm.getCommandAlly());
+        sb.append(sm.getColor(ALLYCHAT_TAG_COLOR));
+        sb.append(sm.getString(COMMANDS_ALLY));
         sb.append('&');
-        sb.append(sm.getAllyChatBracketColor());
-        sb.append(sm.getAllyChatTagBracketRight());
+        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getString(ALLYCHAT_BRACKET_RIGHT));
         sb.append(" ");
         sb.append("&4<%clan%&4> ");
         sb.append('&');
-        sb.append(sm.getAllyChatBracketColor());
-        sb.append(sm.getAllyChatPlayerBracketLeft());
+        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getString(ALLYCHAT_PLAYER_BRACKET_LEFT));
         sb.append("%nick-color%");
         sb.append("%player%");
         sb.append('&');
-        sb.append(sm.getAllyChatBracketColor());
-        sb.append(sm.getAllyChatPlayerBracketRight());
+        sb.append(sm.getColor(ALLYCHAT_BRACKET_COLOR));
+        sb.append(sm.getString(ALLYCHAT_PLAYER_BRACKET_RIGHT));
         sb.append(" %rank%: ");
         sb.append('&');
-        sb.append(sm.getAllyChatMessageColor());
+        sb.append(sm.getColor(ALLYCHAT_MESSAGE_COLOR));
         sb.append("%message%");
 
         c.set("allychat.format", sb.toString());

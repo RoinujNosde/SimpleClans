@@ -6,7 +6,6 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.PreCreateClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -16,7 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUIRE_VERIFICATION;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 public class CreateClanNamePrompt extends StringPrompt {
     public static final String NAME_KEY = "name";
@@ -65,16 +66,16 @@ public class CreateClanNamePrompt extends StringPrompt {
             plugin.getClanManager().createClan(player, tag, name);
 
             Clan clan = plugin.getClanManager().getClan(tag);
-            clan.addBb(player.getName(), ChatColor.AQUA +
+            clan.addBb(player.getName(), AQUA +
                     lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
 
             if (plugin.getSettingsManager().get(REQUIRE_VERIFICATION)) {
-                boolean verified = !plugin.getSettingsManager().isRequireVerification()
+                boolean verified = !plugin.getSettingsManager().is(REQUIRE_VERIFICATION)
                         || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
 
                 if (!verified) {
-                    ChatBlock.sendMessage(player, ChatColor.AQUA +
+                    ChatBlock.sendMessage(player, AQUA +
                             lang("get.your.clan.verified.to.access.advanced.features", player));
                 }
             }
@@ -85,19 +86,19 @@ public class CreateClanNamePrompt extends StringPrompt {
     private Prompt validateName(@NotNull SimpleClans plugin, @NotNull Player player, @NotNull String input) {
         boolean bypass = plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass");
         if (!bypass) {
-            if (ChatUtils.stripColors(input).length() > plugin.getSettingsManager().getClanMaxLength()) {
-                return new MessagePromptImpl(ChatColor.RED +
+            if (ChatUtils.stripColors(input).length() > plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)) {
+                return new MessagePromptImpl(RED +
                         lang("your.clan.name.cannot.be.longer.than.characters", player,
-                                plugin.getSettingsManager().getClanMaxLength()), this);
+                                plugin.getSettingsManager().get(CLAN_MAX_LENGTH)), this);
             }
-            if (ChatUtils.stripColors(input).length() <= plugin.getSettingsManager().getClanMinLength()) {
-                return new MessagePromptImpl(ChatColor.RED +
+            if (ChatUtils.stripColors(input).length() <= plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)) {
+                return new MessagePromptImpl(RED +
                         lang("your.clan.name.must.be.longer.than.characters", player,
-                                plugin.getSettingsManager().getClanMinLength()), this);
+                                plugin.getSettingsManager().get(CLAN_MIN_LENGTH)), this);
             }
         }
         if (input.contains("&")) {
-            return new MessagePromptImpl(ChatColor.RED +
+            return new MessagePromptImpl(RED +
                     lang("your.clan.name.cannot.contain.color.codes", player), this);
         }
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
  * @author phaed
@@ -41,12 +42,12 @@ public class SCPlayerListener implements Listener {
         String[] split = event.getMessage().substring(1).split(" ");
         String command = split[0];
 
-        if (settingsManager.isTagBasedClanChat()) {
+        if (settingsManager.is(CLANCHAT_TAG_BASED_CLAN_CHAT)) {
             Clan clan = plugin.getClanManager().getClan(command);
             if (clan == null || !clan.isMember(event.getPlayer())) {
                 return;
             }
-            String replaced = event.getMessage().replaceFirst(command, settingsManager.getCommandClanChat());
+            String replaced = event.getMessage().replaceFirst(command, settingsManager.get(COMMANDS_CLAN_CHAT));
             event.setMessage(replaced);
         }
     }
@@ -55,7 +56,7 @@ public class SCPlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
-        if (cp == null || settingsManager.isBlacklistedWorld(player.getLocation().getWorld())) {
+        if (cp == null || settingsManager.getStringList(BLACKLISTED_WORLDS).contains(player.getLocation().getWorld().getName())) {
             return;
         }
 
@@ -75,14 +76,14 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (settingsManager.isBlacklistedWorld(player.getWorld())) {
+        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(player.getWorld().getName())) {
             return;
         }
 
         ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
         String tagLabel = cp != null && cp.isTagEnabled() ? cp.getTagLabel() : null;
 
-        if (settingsManager.isCompatMode() && settingsManager.isChatTags()) {
+        if (settingsManager.is(CHAT_COMPATIBILITY_MODE) && settingsManager.is(DISPLAY_CHAT_TAGS)) {
             if (tagLabel != null) {
                 if (player.getDisplayName().contains("{clan}")) {
                     player.setDisplayName(player.getDisplayName().replace("{clan}", tagLabel));
@@ -105,12 +106,12 @@ public class SCPlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        if (SimpleClans.getInstance().getSettingsManager().isBlacklistedWorld(player.getLocation().getWorld())) {
+        if (SimpleClans.getInstance().getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(player.getLocation().getWorld().getName())) {
             return;
         }
 
         ClanPlayer cp;
-        if (SimpleClans.getInstance().getSettingsManager().getUseBungeeCord()) {
+        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_BUNGEECORD)) {
             cp = SimpleClans.getInstance().getClanManager().getClanPlayerJoinEvent(player);
         } else {
             cp = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
@@ -127,8 +128,8 @@ public class SCPlayerListener implements Listener {
 
         SimpleClans.getInstance().getPermissionsManager().addPlayerPermissions(cp);
 
-        if (settingsManager.isBbShowOnLogin() && cp.isBbEnabled() && cp.getClan() != null) {
-            cp.getClan().displayBb(player, settingsManager.getBbLoginSize());
+        if (settingsManager.is(BB_SHOW_ON_LOGIN) && cp.isBbEnabled() && cp.getClan() != null) {
+            cp.getClan().displayBb(player, settingsManager.get(BB_LOGIN_SIZE));
         }
 
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
@@ -137,7 +138,7 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!settingsManager.isTeleportOnSpawn() || settingsManager.isBlacklistedWorld(player.getWorld())) {
+        if (!settingsManager.is(TELEPORT_HOME_ON_SPAWN) || settingsManager.getStringList(BLACKLISTED_WORLDS).contains(player.getWorld().getName())) {
             return;
         }
 
@@ -158,11 +159,11 @@ public class SCPlayerListener implements Listener {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (clan.getOnlineMembers().isEmpty()) {
                     plugin.getProtectionManager().setWarExpirationTime(cp.getClan(),
-                            settingsManager.getWarDisconnectExpirationTime());
+                            settingsManager.get(WAR_DISCONNECT_EXPIRATION_TIME));
                 }
             });
         }
-        if (settingsManager.isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
+        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(event.getPlayer().getLocation().getWorld().getName())) {
             return;
         }
 
@@ -174,7 +175,7 @@ public class SCPlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        if (settingsManager.isBlacklistedWorld(event.getPlayer().getLocation().getWorld())) {
+        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(event.getPlayer().getLocation().getWorld().getName())) {
             return;
         }
 

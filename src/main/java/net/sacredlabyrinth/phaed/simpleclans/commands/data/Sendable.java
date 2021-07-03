@@ -32,7 +32,7 @@ public abstract class Sendable {
 
     protected void sendBlock() {
         SettingsManager sm = plugin.getSettingsManager();
-        boolean more = chatBlock.sendBlock(sender, sm.get(PAGE_SIZE));
+        boolean more = chatBlock.sendBlock(sender, sm.getInt(PAGE_SIZE));
 
         if (more) {
             plugin.getStorageManager().addChatBlock(sender, chatBlock);

@@ -2,12 +2,14 @@ package net.sacredlabyrinth.phaed.simpleclans.utils;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class TagValidator {
 
@@ -30,7 +32,7 @@ public class TagValidator {
     @Nullable
     public String getErrorMessage() {
         String cleanTag = ChatUtils.stripColors(this.tag);
-        if (tag.length() > 255 && plugin.getSettingsManager().isUseMysql()) {
+        if (tag.length() > 255 && plugin.getSettingsManager().is(MYSQL_ENABLE)) {
             return lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255);
         }
 
@@ -41,15 +43,15 @@ public class TagValidator {
             if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
                 error =  ChatColor.RED + lang("your.tag.cannot.contain.color.codes", player);
             }
-            if (cleanTag.length() < plugin.getSettingsManager().getTagMinLength()) {
+            if (cleanTag.length() < plugin.getSettingsManager().getInt(TAG_MIN_LENGTH)) {
                 error = ChatColor.RED +
                         lang("your.clan.tag.must.be.longer.than.characters", player,
-                                plugin.getSettingsManager().getTagMinLength());
+                                plugin.getSettingsManager().get(TAG_MIN_LENGTH));
             }
-            if (cleanTag.length() > plugin.getSettingsManager().getTagMaxLength()) {
+            if (cleanTag.length() > plugin.getSettingsManager().getInt(TAG_MAX_LENGTH)) {
                 error = ChatColor.RED +
                         lang("your.clan.tag.cannot.be.longer.than.characters", player,
-                                plugin.getSettingsManager().getTagMaxLength());
+                                plugin.getSettingsManager().get(TAG_MAX_LENGTH));
             }
             if (plugin.getSettingsManager().hasDisallowedColor(tag)) {
                 error = ChatColor.RED +
@@ -65,7 +67,7 @@ public class TagValidator {
     private void checkAlphabet() {
         String cleanTag = Helper.cleanTag(tag);
         String alphabetError = ChatColor.RED + lang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes", player);
-        if (plugin.getSettingsManager().isAcceptOtherAlphabetsLettersOnTag()) {
+        if (plugin.getSettingsManager().is(ACCEPT_OTHER_ALPHABETS_LETTERS)) {
             for (char c : cleanTag.toCharArray()) {
                 if (!Character.isLetterOrDigit(c)) {
                     error = alphabetError;

@@ -11,6 +11,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BLACKLISTED_WORLDS;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PVP_ONLY_WHILE_IN_WAR;
+
 public class PvPOnlyInWar implements Listener {
 
     private final SimpleClans plugin;
@@ -22,7 +25,7 @@ public class PvPOnlyInWar implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player) ||
-                plugin.getSettingsManager().isBlacklistedWorld(event.getEntity().getWorld())) {
+                plugin.getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(event.getEntity().getWorld().getName())) {
             return;
         }
         Player victim = (Player) event.getEntity();
@@ -35,7 +38,7 @@ public class PvPOnlyInWar implements Listener {
         Clan attackerClan = plugin.getClanManager().getClanByPlayerUniqueId(attacker.getUniqueId());
         Clan victimClan = plugin.getClanManager().getClanByPlayerUniqueId(victim.getUniqueId());
 
-        if (plugin.getSettingsManager().isPvpOnlyWhileInWar()) {
+        if (plugin.getSettingsManager().is(PVP_ONLY_WHILE_IN_WAR)) {
             process(event, attacker, victim, attackerClan, victimClan);
         }
     }
