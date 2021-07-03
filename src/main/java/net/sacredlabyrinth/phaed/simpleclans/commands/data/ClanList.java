@@ -68,7 +68,7 @@ public class ClanList extends Sendable {
             return new RankingNumberResolver<>(clans, Clan::getName, ascending, ORDINAL);
         }
         return new RankingNumberResolver<>(clans, clan -> KDRFormat.toBigDecimal(clan.getTotalKDR()),
-                order != null && ascending, sm.get(RANKING_TYPE));
+                order != null && ascending, sm.getRankingType());
     }
 
     @NotNull

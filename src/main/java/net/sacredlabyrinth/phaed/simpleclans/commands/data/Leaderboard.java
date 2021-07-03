@@ -25,7 +25,7 @@ public class Leaderboard extends Sendable {
         super(plugin, sender);
         clanPlayers = cm.getAllClanPlayers();
         rankingResolver = new RankingNumberResolver<>(clanPlayers,
-                c -> KDRFormat.toBigDecimal(c.getKDR()), false, sm.get(RANKING_TYPE));
+                c -> KDRFormat.toBigDecimal(c.getKDR()), false, sm.getRankingType());
     }
 
     @Override

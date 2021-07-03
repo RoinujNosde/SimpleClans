@@ -90,7 +90,7 @@ public class MainFrame extends SCFrame {
 		List<String> resetKrLore;
 		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR)) {
 			resetKrLore = Arrays.asList(
-					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().get(ECONOMY_RESET_KDR_PRICE)),
+					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().getString(ECONOMY_RESET_KDR_PRICE)),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
 			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
@@ -105,7 +105,7 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().get(SERVER_NAME));
+		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getString(SERVER_NAME));
 	}
 
 	@Override

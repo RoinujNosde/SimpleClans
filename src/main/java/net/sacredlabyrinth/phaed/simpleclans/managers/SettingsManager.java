@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 
 /**
  * @author phaed
@@ -206,6 +207,15 @@ public final class SettingsManager {
 
     public List<String> getIgnoredList(@NotNull ProtectionManager.Action action) {
         return getStringList(ConfigField.valueOf("WAR_LISTENERS_IGNORED_LIST_" + action.name()));
+    }
+
+    @NotNull
+    public RankingType getRankingType() {
+        try {
+            return RankingType.valueOf(getString(RANKING_TYPE));
+        } catch (IllegalArgumentException ex) {
+            return RankingType.DENSE;
+        }
     }
 
     public FileConfiguration getConfig() {

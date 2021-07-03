@@ -142,7 +142,7 @@ public class ProtectionManager {
         requestClan.addWarringClan(requester, targetClan);
         targetClan.addWarringClan(requester, requestClan);
 
-        wars.put(war, scheduleTask(war, settingsManager.get(WAR_NORMAL_EXPIRATION_TIME)));
+        wars.put(war, scheduleTask(war, settingsManager.getInt(WAR_NORMAL_EXPIRATION_TIME)));
         return true;
     }
 
