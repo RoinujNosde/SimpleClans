@@ -1,14 +1,19 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.chat.*;
+import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
+import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
@@ -22,12 +27,7 @@ public final class ChatManager {
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
-        handlers.add(new SpigotChatHandler());
-        if (plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
-            handlers.add(new DiscordChatHandler());
-            setupDiscord();
-        }
-        handlers.add(new SpyChatHandler());
+        registerHandlers();
     }
 
     public void setupDiscord() {
@@ -39,10 +39,27 @@ public final class ChatManager {
             return;
         }
 
-        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message);
+        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, PlaceholderAPI.setPlaceholders(clanPlayer.toPlayer(), message));
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {
                 ch.sendMessage(scMessage);
+            }
+        }
+    }
+
+    private void registerHandlers() {
+        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.chat");
+        Set<Class<? extends ChatHandler>> chatHandlers = reflections.getSubTypesOf(ChatHandler.class);
+        plugin.getLogger().info(String.format("Registering %d chat handlers...", chatHandlers.size()));
+
+        for (Class<? extends ChatHandler> handler : chatHandlers) {
+            try {
+                if (plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
+                    continue;
+                }
+                handlers.add(handler.getConstructor().newInstance());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to register {0} handler: " + ex.getMessage(), handler.getSimpleName());
             }
         }
     }

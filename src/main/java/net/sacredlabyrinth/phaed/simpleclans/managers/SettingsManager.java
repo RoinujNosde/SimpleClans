@@ -147,13 +147,7 @@ public final class SettingsManager {
      * @return a comma delimited string with all disallowed colors
      */
     public String getDisallowedColorString() {
-        String out = "";
-
-        for (Object c : getStringList(DISALLOWED_TAG_COLORS)) {
-            out += c + ", ";
-        }
-
-        return Helper.stripTrailing(out, ", ");
+        return Helper.stripTrailing(String.join(", ", getStringList(DISALLOWED_TAG_COLORS)), ", ");
     }
 
     /**
