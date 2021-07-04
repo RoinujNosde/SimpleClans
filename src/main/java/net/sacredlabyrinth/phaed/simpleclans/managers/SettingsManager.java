@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -147,7 +146,7 @@ public final class SettingsManager {
      * @return a comma delimited string with all disallowed colors
      */
     public String getDisallowedColorString() {
-        return Helper.stripTrailing(String.join(", ", getStringList(DISALLOWED_TAG_COLORS)), ", ");
+        return String.join(", ", getStringList(DISALLOWED_TAG_COLORS));
     }
 
     /**

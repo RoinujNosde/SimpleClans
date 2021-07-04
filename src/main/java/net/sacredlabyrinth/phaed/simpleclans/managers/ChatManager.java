@@ -50,7 +50,7 @@ public final class ChatManager {
     private void registerHandlers() {
         Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.chat");
         Set<Class<? extends ChatHandler>> chatHandlers = reflections.getSubTypesOf(ChatHandler.class);
-        plugin.getLogger().info(String.format("Registering %d chat handlers...", chatHandlers.size()));
+        plugin.getLogger().log(Level.INFO, "Registering {0} chat handlers...", chatHandlers.size());
 
         for (Class<? extends ChatHandler> handler : chatHandlers) {
             try {
