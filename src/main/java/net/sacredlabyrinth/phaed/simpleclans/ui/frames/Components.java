@@ -120,7 +120,7 @@ public class Components {
             double price = pl.getSettingsManager().isePurchaseCreation() ? pl.getSettingsManager().getCreationPrice() : 0;
             lore = new ArrayList<>();
             if (price != 0) {
-                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), price));
+                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), String.valueOf(price)));
             }
             lore.add(lang("gui.clandetails.free.agent.create.clan.lore", frame.getViewer()));
         }

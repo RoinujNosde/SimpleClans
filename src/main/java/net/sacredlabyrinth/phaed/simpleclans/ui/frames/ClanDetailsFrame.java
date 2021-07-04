@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -120,7 +121,7 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addFee() {
 		String status = clan.isMemberFeeEnabled() ? lang("fee.enabled", getViewer()) : lang("fee.disabled", getViewer());
 		SCComponent fee = new SCComponentImpl(lang("gui.clandetails.fee.title", getViewer()),
-				Arrays.asList(lang("gui.clandetails.fee.value.lore", getViewer(), clan.getMemberFee()),
+				Arrays.asList(lang("gui.clandetails.fee.value.lore", getViewer(), String.valueOf(clan.getMemberFee())),
 						lang("gui.clandetails.fee.status.lore", getViewer(), status),
 						lang("gui.clandetails.fee.toggle.lore", getViewer())),
 				XMaterial.GOLD_NUGGET, 41);
@@ -160,7 +161,7 @@ public class ClanDetailsFrame extends SCFrame {
 		List<String> lore = verified ? null : new ArrayList<>();
 		if (!verified) {
 			if (purchaseVerification) {
-				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().getVerificationPrice()));
+				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), String.valueOf(plugin.getSettingsManager().getVerificationPrice())));
 			}
 			lore.add(lang("gui.clandetails.not.verified.lore", getViewer()));
 		}
@@ -176,7 +177,7 @@ public class ClanDetailsFrame extends SCFrame {
 		String withdrawStatus = clan.isAllowWithdraw() ? lang("allowed",getViewer()) : lang("blocked",getViewer());
 		String depositStatus = clan.isAllowDeposit() ? lang("allowed", getViewer()) : lang("blocked", getViewer());
 		SCComponent bank = new SCComponentImpl(lang("gui.clandetails.bank.title", getViewer()),
-				Arrays.asList(lang("gui.clandetails.bank.balance.lore", getViewer(), clan.getBalance()),
+				Arrays.asList(lang("gui.clandetails.bank.balance.lore", getViewer(), String.valueOf(clan.getBalance())),
 						lang("gui.clandetails.bank.withdraw.status.lore", getViewer(), withdrawStatus),
 						lang("gui.clandetails.bank.deposit.status.lore", getViewer(), depositStatus),
 						lang("gui.clandetails.bank.withdraw.toggle.lore", getViewer()),
@@ -241,7 +242,7 @@ public class ClanDetailsFrame extends SCFrame {
 		}
 
 		List<String> lore = new ArrayList<>();
-		if (price != 0) lore.add(lang("gui.clandetails.regroup.lore.price", getViewer(), price));
+		if (price != 0) lore.add(lang("gui.clandetails.regroup.lore.price", getViewer(), String.valueOf(price)));
 		lore.add(lang("gui.clandetails.regroup.lore.home", getViewer()));
 		lore.add(lang("gui.clandetails.regroup.lore.me", getViewer()));
 
@@ -264,9 +265,9 @@ public class ClanDetailsFrame extends SCFrame {
 		double setPrice = sm.isePurchaseHomeTeleportSet() ? sm.getHomeTeleportPriceSet() : 0;
 
 		List<String> lore = new ArrayList<>();
-		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), homePrice));
+		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), String.valueOf(homePrice)));
 		lore.add(lang("gui.clandetails.home.lore.teleport", getViewer()));
-		if (setPrice != 0) lore.add(lang("gui.clandetails.home.lore.set.price", getViewer(), setPrice));
+		if (setPrice != 0) lore.add(lang("gui.clandetails.home.lore.set.price", getViewer(), String.valueOf(setPrice)));
 		lore.add(lang("gui.clandetails.home.lore.set", getViewer()));
 		lore.add(lang("gui.clandetails.home.lore.clear", getViewer()));
 
@@ -336,7 +337,7 @@ public class ClanDetailsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.clandetails.title",getViewer(), Helper.stripColors(clan.getColorTag()),
+		return lang("gui.clandetails.title",getViewer(), ChatUtils.stripColors(clan.getColorTag()),
 				clan.getName());
 	}
 

@@ -52,7 +52,7 @@ public class InviteFrame extends SCFrame {
 	private SCComponent createPlayerComponent(@NotNull Player player, int slot) {
 		double price = plugin.getSettingsManager().isePurchaseInvite() ? plugin.getSettingsManager().getInvitePrice() : 0;
 		List<String> lore = new ArrayList<>();
-		if (price != 0) lore.add(lang("gui.invite.player.price.lore", getViewer(), price));
+		if (price != 0) lore.add(lang("gui.invite.player.price.lore", getViewer(), String.valueOf(price)));
 		lore.add(lang("gui.invite.player.lore", getViewer()));
 
 		SCComponent c = new SCComponentImpl(

@@ -89,7 +89,7 @@ public class MainFrame extends SCFrame {
 		List<String> resetKrLore;
 		if (plugin.getSettingsManager().isePurchaseResetKdr()) {
 			resetKrLore = Arrays.asList(
-					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().geteResetKdr()),
+					lang("gui.main.reset.kdr.lore.price", getViewer(), String.valueOf(plugin.getSettingsManager().geteResetKdr())),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
 			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
