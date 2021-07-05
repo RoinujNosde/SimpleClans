@@ -41,15 +41,15 @@ public final class SettingsManager {
 
     @SuppressWarnings("unchecked")
     public <T> T get(ConfigField field) {
-        return (T) config.get(field.path);
+        return (T) config.get(field.path, field.defaultValue);
     }
 
     public int getInt(ConfigField field) {
-        return config.getInt(field.path);
+        return config.getInt(field.path, (Integer) field.defaultValue);
     }
 
     public double getDouble(ConfigField field) {
-        return config.getDouble(field.path);
+        return config.getDouble(field.path, (Double) field.defaultValue);
     }
 
     public List<String> getStringList(ConfigField field) {
@@ -57,24 +57,23 @@ public final class SettingsManager {
     }
 
     public String getString(ConfigField field) {
-        return config.getString(field.path, "");
+        return config.getString(field.path, String.valueOf(field.defaultValue));
     }
 
     public String getColored(ConfigField field) {
         return ChatUtils.parseColors(getString(field));
     }
 
-    // TODO: 05.07.2021 Finish writing logic for this methods
-    public int getMinute() {
-        return 0;
+    public int getMinutes(ConfigField field) {
+        return getInt(field) * 20 * 60;
     }
 
-    public int getSeconds() {
-        return 0;
+    public int getSeconds(ConfigField field) {
+        return getInt(field) * 20;
     }
 
     public boolean is(ConfigField field) {
-        return config.getBoolean(field.path);
+        return config.getBoolean(field.path, (Boolean) field.defaultValue);
     }
 
     /**
@@ -128,7 +127,7 @@ public final class SettingsManager {
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
-            return disallowedTag.equals(word);
+            return disallowedTag.equalsIgnoreCase(word);
         }
 
         return word.equalsIgnoreCase(getString(COMMANDS_CLAN)) || word.equalsIgnoreCase(getString(COMMANDS_MORE)) ||
@@ -165,7 +164,7 @@ public final class SettingsManager {
      * @return whether the clan is unrivable
      */
     public boolean isUnrivable(String tag) {
-        return getStringList(UNRIVABLE_CLANS).contains(tag);
+        return getStringList(UNRIVABLE_CLANS).contains(tag.toLowerCase());
     }
 
     /**
@@ -225,7 +224,6 @@ public final class SettingsManager {
         return config;
     }
 
-    // TODO: 05.07.2021 Add default value?
     public enum ConfigField {
         /*
         ================
@@ -233,309 +231,316 @@ public final class SettingsManager {
         ================
          *
          */
-        ENABLE_GUI("settings.enable-gui"),
-        DISABLE_MESSAGES("settings.disable-messages"),
-        TAMABLE_MOBS_SHARING("settings.tameable-mobs-sharing"),
-        TELEPORT_BLOCKS("settings.teleport-blocks"),
-        TELEPORT_HOME_ON_SPAWN("settings.teleport-home-on-spawn"),
-        DROP_ITEMS_ON_CLAN_HOME("settings.drop-items-on-clan-home"),
-        KEEP_ITEMS_ON_CLAN_HOME("settings.keep-items-on-clan-home"),
+        ENABLE_GUI("settings.enable-gui", true),
+        DISABLE_MESSAGES("settings.disable-messages", false),
+        TAMABLE_MOBS_SHARING("settings.tameable-mobs-sharing", false),
+        TELEPORT_BLOCKS("settings.teleport-blocks", false),
+        TELEPORT_HOME_ON_SPAWN("settings.teleport-home-on-spawn", false),
+        DROP_ITEMS_ON_CLAN_HOME("settings.drop-items-on-clan-home", false),
+        KEEP_ITEMS_ON_CLAN_HOME("settings.keep-items-on-clan-home", false),
         ITEM_LIST("settings.item-list"),
-        DEBUG("settings.show-debug-info"),
-        ENABLE_AUTO_GROUPS("settings.enable-auto-groups"),
-        CHAT_COMPATIBILITY_MODE("settings.chat-compatibility-mode"),
-        RIVAL_LIMIT_PERCENT("settings.rival-limit-percent"),
-        COLOR_CODE_FROM_PREFIX_FOR_NAME("settings.use-colorcode-from-prefix-for-name"),
-        DISPLAY_CHAT_TAGS("settings.display-chat-tags"),
-        GLOBAL_FRIENDLY_FIRE("settings.global-friendly-fire"),
+        DEBUG("settings.show-debug-info", false),
+        ENABLE_AUTO_GROUPS("settings.enable-auto-groups", false),
+        CHAT_COMPATIBILITY_MODE("settings.chat-compatibility-mode", true),
+        RIVAL_LIMIT_PERCENT("settings.rival-limit-percent", 50),
+        COLOR_CODE_FROM_PREFIX_FOR_NAME("settings.use-colorcode-from-prefix-for-name", true),
+        DISPLAY_CHAT_TAGS("settings.display-chat-tags", true),
+        GLOBAL_FRIENDLY_FIRE("settings.global-friendly-fire", false),
         UNRIVABLE_CLANS("settings.unrivable-clans"),
-        SHOW_UNVERIFIED_ON_LIST("settings.show-unverified-on-list"),
+        SHOW_UNVERIFIED_ON_LIST("settings.show-unverified-on-list", false),
         BLACKLISTED_WORLDS("settings.blacklisted-worlds"),
         BANNED_PLAYERS("settings.banned-players"),
         DISALLOWED_TAGS("settings.disallowed-tags"),
-        LANGUAGE("settings.language"),
-        LANGUAGE_SELECTOR("settings.user-language-selector"),
+        LANGUAGE("settings.language", "en"),
+        LANGUAGE_SELECTOR("settings.user-language-selector", true),
         DISALLOWED_TAG_COLORS("settings.disallowed-tag-colors"),
-        SERVER_NAME("settings.server-name"),
-        REQUIRE_VERIFICATION("settings.new-clan-verification-required"),
-        ALLOW_REGROUP("settings.allow-regroup-command"),
-        ALLOW_RESET_KDR("settings.allow-reset-kdr"),
-        REJOIN_COOLDOWN("settings.rejoin-cooldown"),
-        ENABLE_REJOIN_COOLDOWN("settings.rejoin-cooldown-enabled"),
-        ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag"),
-        RANKING_TYPE("settings.ranking-type"),
-        LIST_DEFAULT_ORDER_BY("settings.list-default-order-by"),
-        LORE_LENGTH("settings.lore-length"),
-        PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war"),
+        SERVER_NAME("settings.server-name", "&4SimpleClans"),
+        REQUIRE_VERIFICATION("settings.new-clan-verification-required", true),
+        ALLOW_REGROUP("settings.allow-regroup-command", true),
+        ALLOW_RESET_KDR("settings.allow-reset-kdr", false),
+        REJOIN_COOLDOWN("settings.rejoin-cooldown", 60),
+        ENABLE_REJOIN_COOLDOWN("settings.rejoin-cooldown-enabled", false),
+        ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
+        RANKING_TYPE("settings.ranking-type", "DENSE"),
+        LIST_DEFAULT_ORDER_BY("settings.list-default-order-by", "kdr"),
+        LORE_LENGTH("settings.lore-length", 36),
+        PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
         /*
         ================
         > Tag Settings
         ================
          *
          */
-        TAG_DEFAULT_COLOR("tag.default-color"),
-        TAG_MAX_LENGTH("tag.max-length"),
-        TAG_BRACKET_COLOR("tag.bracket.color"),
-        TAG_BRACKET_LEADER_COLOR("tag.bracket.leader-color"),
-        TAG_BRACKET_LEFT("tag.bracket.left"),
-        TAG_BRACKET_RIGHT("tag.bracket.right"),
-        TAG_MIN_LENGTH("tag.min-length"),
-        TAG_SEPARATOR_COLOR("tag.separator.color"),
-        TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color"),
-        TAG_SEPARATOR_char("tag.separator.char"),
+        TAG_DEFAULT_COLOR("tag.default-color", "8"),
+        TAG_MAX_LENGTH("tag.max-length", 5),
+        TAG_BRACKET_COLOR("tag.bracket.color", "8"),
+        TAG_BRACKET_LEADER_COLOR("tag.bracket.leader-color", "4"),
+        TAG_BRACKET_LEFT("tag.bracket.left", ""),
+        TAG_BRACKET_RIGHT("tag.bracket.right", ""),
+        TAG_MIN_LENGTH("tag.min-length", 2),
+        TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
+        TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
+        TAG_SEPARATOR_char("tag.separator.char", " ."),
         /*
         ================
         > War and Protection Settings
         ================
          *
          */
-        ENABLE_WAR("war-and-protection.war-enabled"),
-        LAND_SHARING("war-and-protection.land-sharing"),
+        ENABLE_WAR("war-and-protection.war-enabled", false),
+        LAND_SHARING("war-and-protection.land-sharing", true),
         LAND_PROTECTION_PROVIDERS("war-and-protection.protection-providers"),
-        WAR_LISTENERS_PRIORITY("war-and-protection.listeners.priority"),
+        WAR_LISTENERS_PRIORITY("war-and-protection.listeners.priority", "HIGHEST"),
         WAR_LISTENERS_IGNORED_LIST_PLACE("war-and-protection.listeners.ignored-list.PLACE"),
         WAR_LISTENERS_IGNORED_LIST_BREAK("war-and-protection.listeners.ignored-list.BREAK"),
-        LAND_SET_BASE_ONLY_IN_LAND("war-and-protection.set-base-only-in-land"),
-        WAR_NORMAL_EXPIRATION_TIME("war-and-protection.war-normal-expiration-time"),
-        WAR_DISCONNECT_EXPIRATION_TIME("war-and-protection.war-disconnect-expiration-time"),
-        LAND_EDIT_ALL_LANDS("war-and-protection.edit-all-lands"),
-        LAND_CREATION_ONLY_LEADERS("war-and-protection.land-creation.only-leaders"),
-        LAND_CREATION_ONLY_ONE_PER_CLAN("war-and-protection.land-creation.only-one-per-clan"),
-        WAR_ACTIONS_CONTAINER("war-and-protection.war-actions.CONTAINER"),
-        WAR_ACTIONS_INTERACT("war-and-protection.war-actions.INTERACT"),
-        WAR_ACTIONS_BREAK("war-and-protection.war-actions.BREAK"),
-        WAR_ACTIONS_PLACE("war-and-protection.war-actions.PLACE"),
-        WAR_ACTIONS_DAMAGE("war-and-protection.war-actions.DAMAGE"),
-        WAR_ACTIONS_INTERACT_ENTITY("war-and-protection.war-actions.INTERACT_ENTITY"),
-        WAR_START_REQUEST_ENABLED("war-and-protection.war-start.request-enabled"),
-        WAR_MAX_MEMBERS_DIFFERENCE("war-and-protection.war-start.members-online-max-difference"),
+        LAND_SET_BASE_ONLY_IN_LAND("war-and-protection.set-base-only-in-land", false),
+        WAR_NORMAL_EXPIRATION_TIME("war-and-protection.war-normal-expiration-time", 0),
+        WAR_DISCONNECT_EXPIRATION_TIME("war-and-protection.war-disconnect-expiration-time", 0),
+        LAND_EDIT_ALL_LANDS("war-and-protection.edit-all-lands", false),
+        LAND_CREATION_ONLY_LEADERS("war-and-protection.land-creation.only-leaders", false),
+        LAND_CREATION_ONLY_ONE_PER_CLAN("war-and-protection.land-creation.only-one-per-clan", false),
+        WAR_ACTIONS_CONTAINER("war-and-protection.war-actions.CONTAINER", true),
+        WAR_ACTIONS_INTERACT("war-and-protection.war-actions.INTERACT", true),
+        WAR_ACTIONS_BREAK("war-and-protection.war-actions.BREAK", true),
+        WAR_ACTIONS_PLACE("war-and-protection.war-actions.PLACE", true),
+        WAR_ACTIONS_DAMAGE("war-and-protection.war-actions.DAMAGE", true),
+        WAR_ACTIONS_INTERACT_ENTITY("war-and-protection.war-actions.INTERACT_ENTITY", true),
+        WAR_START_REQUEST_ENABLED("war-and-protection.war-start.request-enabled", true),
+        WAR_MAX_MEMBERS_DIFFERENCE("war-and-protection.war-start.members-online-max-difference", 5),
         /*
         ================
         > KDR Grinding Prevention Settings
         ================
          *
          */
-        KDR_ENABLE_MAX_KILLS("kdr-grinding-prevention.enable-max-kills"),
-        KDR_MAX_KILLS_PER_VICTIM("kdr-grinding-prevention.max-kills-per-victim"),
-        KDR_ENABLE_KILL_DELAY("kdr-grinding-prevention.enable-kill-delay"),
-        KDR_DELAY_BETWEEN_KILLS("kdr-grinding-prevention.delay-between-kills"),
+        KDR_ENABLE_MAX_KILLS("kdr-grinding-prevention.enable-max-kills", false),
+        KDR_MAX_KILLS_PER_VICTIM("kdr-grinding-prevention.max-kills-per-victim", 10),
+        KDR_ENABLE_KILL_DELAY("kdr-grinding-prevention.enable-kill-delay", false),
+        KDR_DELAY_BETWEEN_KILLS("kdr-grinding-prevention.delay-between-kills", 5),
         /*
         ================
         > Commands Settings
         ================
          *
          */
-        COMMANDS_MORE("commands.more"),
-        COMMANDS_ALLY("commands.ally"),
-        COMMANDS_CLAN("commands.clan"),
-        COMMANDS_ACCEPT("commands.accept"),
-        COMMANDS_DENY("commands.deny"),
-        COMMANDS_GLOBAL("commands.global"),
-        COMMANDS_CLAN_CHAT("commands.clan_chat"),
-        COMMANDS_FORCE_PRIORITY("commands.force-priority"),
+        COMMANDS_MORE("commands.more", "more"),
+        COMMANDS_ALLY("commands.ally", "ally"),
+        COMMANDS_CLAN("commands.clan", "clan"),
+        COMMANDS_ACCEPT("commands.accept", "accept"),
+        COMMANDS_DENY("commands.deny", "deny"),
+        COMMANDS_GLOBAL("commands.global", "global"),
+        COMMANDS_CLAN_CHAT("commands.clan_chat", "."),
+        COMMANDS_FORCE_PRIORITY("commands.force-priority", true),
         /*
         ================
         > Economy Settings
         ================
          *
          */
-        ECONOMY_CREATION_PRICE("economy.creation-price"),
-        ECONOMY_PURCHASE_CLAN_CREATE("economy.purchase-clan-create"),
-        ECONOMY_VERIFICATION_PRICE("economy.verification-price"),
-        ECONOMY_PURCHASE_CLAN_VERIFY("economy.purchase-clan-verify"),
-        ECONOMY_INVITE_PRICE("economy.invite-price"),
-        ECONOMY_PURCHASE_CLAN_INVITE("economy.purchase-clan-invite"),
-        ECONOMY_HOME_TELEPORT_PRICE("economy.home-teleport-price"),
-        ECONOMY_PURCHASE_HOME_TELEPORT("economy.purchase-home-teleport"),
-        ECONOMY_HOME_TELEPORT_SET_PRICE("economy.home-teleport-set-price"),
-        ECONOMY_PURCHASE_HOME_TELEPORT_SET("economy.purchase-home-teleport-set"),
-        ECONOMY_REGROUP_PRICE("economy.home-regroup-price"),
-        ECONOMY_PURCHASE_HOME_REGROUP("economy.purchase-home-regroup"),
-        ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup"),
-        ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup"),
-        ECONOMY_MONEY_PER_KILL("economy.money-per-kill"),
-        ECONOMY_MONEY_PER_KILL_KDR_MULTIPLIER("economy.money-per-kill-kdr-multipier"),
-        ECONOMY_RESET_KDR_PRICE("economy.reset-kdr-price"),
-        ECONOMY_PURCHASE_RESET_KDR("economy.purchase-reset-kdr"),
-        ECONOMY_PURCHASE_MEMBER_FEE_SET("economy.purchase-member-fee-set"),
-        ECONOMY_MEMBER_FEE_SET_PRICE("economy.member-fee-set-price"),
-        ECONOMY_MEMBER_FEE_ENABLED("economy.member-fee-enabled"),
-        ECONOMY_MEMBER_FEE_LAST_MINUTE_CHANGE_INTERVAL("economy.member-fee-last-minute-change-interval"),
-        ECONOMY_MAX_MEMBER_FEE("economy.max-member-fee"),
-        ECONOMY_UPKEEP("economy.upkeep"),
-        ECONOMY_UPKEEP_ENABLED("economy.upkeep-enabled"),
-        ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE("economy.multiply-upkeep-by-clan-size"),
-        ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled"),
-        ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable"),
+        ECONOMY_CREATION_PRICE("economy.creation-price", 100.0),
+        ECONOMY_PURCHASE_CLAN_CREATE("economy.purchase-clan-create", false),
+        ECONOMY_VERIFICATION_PRICE("economy.verification-price", 1000.0),
+        ECONOMY_PURCHASE_CLAN_VERIFY("economy.purchase-clan-verify", false),
+        ECONOMY_INVITE_PRICE("economy.invite-price", 20),
+        ECONOMY_PURCHASE_CLAN_INVITE("economy.purchase-clan-invite", false),
+        ECONOMY_HOME_TELEPORT_PRICE("economy.home-teleport-price", 5.0),
+        ECONOMY_PURCHASE_HOME_TELEPORT("economy.purchase-home-teleport", false),
+        ECONOMY_HOME_TELEPORT_SET_PRICE("economy.home-teleport-set-price", 5.0),
+        ECONOMY_PURCHASE_HOME_TELEPORT_SET("economy.purchase-home-teleport-set", false),
+        ECONOMY_REGROUP_PRICE("economy.home-regroup-price", 5.0),
+        ECONOMY_PURCHASE_HOME_REGROUP("economy.purchase-home-regroup", false),
+        ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup", true),
+        ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup", true),
+        ECONOMY_MONEY_PER_KILL("economy.money-per-kill", false),
+        ECONOMY_MONEY_PER_KILL_KDR_MULTIPLIER("economy.money-per-kill-kdr-multipier", 10),
+        ECONOMY_RESET_KDR_PRICE("economy.reset-kdr-price", 10000.0),
+        ECONOMY_PURCHASE_RESET_KDR("economy.purchase-reset-kdr", true),
+        ECONOMY_PURCHASE_MEMBER_FEE_SET("economy.purchase-member-fee-set", false),
+        ECONOMY_MEMBER_FEE_SET_PRICE("economy.member-fee-set-price", 1000.0),
+        ECONOMY_MEMBER_FEE_ENABLED("economy.member-fee-enabled", false),
+        ECONOMY_MEMBER_FEE_LAST_MINUTE_CHANGE_INTERVAL("economy.member-fee-last-minute-change-interval", 8),
+        ECONOMY_MAX_MEMBER_FEE("economy.max-member-fee", 200.0),
+        ECONOMY_UPKEEP("economy.upkeep", false),
+        ECONOMY_UPKEEP_ENABLED("economy.upkeep-enabled", false),
+        ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE("economy.multiply-upkeep-by-clan-size", false),
+        ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled", true),
+        ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
         /*
         ================
         > Kill Weights Settings
         ================
          *
          */
-        KILL_WEIGHTS_RIVAL("kill-weights.rival"),
-        KILL_WEIGHTS_CIVILIAN("kill-weights.civilian"),
-        KILL_WEIGHTS_NEUTRAL("kill-weights.neutral"),
-        KILL_WEIGHTS_ALLY("kill-weights.ally"),
-        KILL_WEIGHTS_DENY_SAME_IP_KILLS("kill-weights.deny-same-ip-kills"),
+        KILL_WEIGHTS_RIVAL("kill-weights.rival", 2.0),
+        KILL_WEIGHTS_CIVILIAN("kill-weights.civilian", 0.0),
+        KILL_WEIGHTS_NEUTRAL("kill-weights.neutral", 1.0),
+        KILL_WEIGHTS_ALLY("kill-weights.ally", -1.0),
+        KILL_WEIGHTS_DENY_SAME_IP_KILLS("kill-weights.deny-same-ip-kills", false),
         /*
         ================
         > Clan Settings
         ================
          *
          */
-        CLAN_TELEPORT_DELAY("clan.homebase-teleport-wait-secs"),
-        CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE("clan.homebase-can-be-set-only-once"),
-        CLAN_MIN_SIZE_TO_SET_RIVAL("clan.min-size-to-set-rival"),
-        CLAN_MIN_SIZE_TO_SET_ALLY("clan.min-size-to-set-ally"),
-        CLAN_MAX_LENGTH("clan.max-length"),
-        CLAN_MIN_LENGTH("clan.min-length"),
-        CLAN_MAX_DESCRIPTION_LENGTH("clan.max-description-length"),
-        CLAN_MIN_DESCRIPTION_LENGTH("clan.min-description-length"),
-        CLAN_MAX_MEMBERS("clan.max-members"),
-        CLAN_MAX_ALLIANCES("clan.max-alliances"),
-        CLAN_CONFIRMATION_FOR_PROMOTE("clan.confirmation-for-promote"),
-        CLAN_TRUST_MEMBERS_BY_DEFAULT("clan.trust-members-by-default"),
-        CLAN_CONFIRMATION_FOR_DEMOTE("clan.confirmation-for-demote"),
-        CLAN_PERCENTAGE_ONLINE_TO_DEMOTE("clan.percentage-online-to-demote"),
-        CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default"),
-        CLAN_MIN_TO_VERIFY("clan.min-to-verify"),
+        CLAN_TELEPORT_DELAY("clan.homebase-teleport-wait-secs", 10),
+        CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE("clan.homebase-can-be-set-only-once", true),
+        CLAN_MIN_SIZE_TO_SET_RIVAL("clan.min-size-to-set-rival", 3),
+        CLAN_MIN_SIZE_TO_SET_ALLY("clan.min-size-to-set-ally", 3),
+        CLAN_MAX_LENGTH("clan.max-length", 25),
+        CLAN_MIN_LENGTH("clan.min-length", 2),
+        CLAN_MAX_DESCRIPTION_LENGTH("clan.max-description-length", 120),
+        CLAN_MIN_DESCRIPTION_LENGTH("clan.min-description-length", 10),
+        CLAN_MAX_MEMBERS("clan.max-members", 25),
+        CLAN_MAX_ALLIANCES("clan.max-alliances", -1),
+        CLAN_CONFIRMATION_FOR_PROMOTE("clan.confirmation-for-promote", false),
+        CLAN_TRUST_MEMBERS_BY_DEFAULT("clan.trust-members-by-default", false),
+        CLAN_CONFIRMATION_FOR_DEMOTE("clan.confirmation-for-demote", false),
+        CLAN_PERCENTAGE_ONLINE_TO_DEMOTE("clan.percentage-online-to-demote", 100.0),
+        CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default", false),
+        CLAN_MIN_TO_VERIFY("clan.min-to-verify", 1),
         /*
         ================
         > Tasks Settings
         ================
          *
          */
-        TASKS_COLLECT_UPKEEP_HOUR("tasks.collect-upkeep.hour"),
-        TASKS_COLLECT_UPKEEP_MINUTE("tasks.collect-upkeep.minute"),
-        TASKS_COLLECT_UPKEEP_WARNING_HOUR("tasks.collect-upkeep-warning.hour"),
-        TASKS_COLLECT_UPKEEP_WARNING_MINUTE("tasks.collect-upkeep-warning.minute"),
-        TASKS_COLLECT_FEE_HOUR("tasks.collect-fee.hour"),
-        TASKS_COLLECT_FEE_MINUTE("tasks.collect-fee.minute"),
+        TASKS_COLLECT_UPKEEP_HOUR("tasks.collect-upkeep.hour", 1),
+        TASKS_COLLECT_UPKEEP_MINUTE("tasks.collect-upkeep.minute", 30),
+        TASKS_COLLECT_UPKEEP_WARNING_HOUR("tasks.collect-upkeep-warning.hour", 12),
+        TASKS_COLLECT_UPKEEP_WARNING_MINUTE("tasks.collect-upkeep-warning.minute", 0),
+        TASKS_COLLECT_FEE_HOUR("tasks.collect-fee.hour", 1),
+        TASKS_COLLECT_FEE_MINUTE("tasks.collect-fee.minute", 0),
         /*
         ================
         > Page Settings
         ================
          */
-        PAGE_LEADER_COLOR("page.leader-color"),
-        PAGE_UNTRUSTED_COLOR("page.untrusted-color"),
-        PAGE_TRUSTED_COLOR("page.trusted-color"),
-        PAGE_CLAN_NAME_COLOR("page.clan-name-color"),
-        PAGE_SUBTITLE_COLOR("page.subtitle-color"),
-        PAGE_HEADINGS_COLOR("page.headings-color"),
-        PAGE_SEPARATOR("page.separator"),
-        PAGE_SIZE("page.size"),
+        PAGE_LEADER_COLOR("page.leader-color", "4"),
+        PAGE_UNTRUSTED_COLOR("page.untrusted-color", "8"),
+        PAGE_TRUSTED_COLOR("page.trusted-color", "f"),
+        PAGE_CLAN_NAME_COLOR("page.clan-name-color", "b"),
+        PAGE_SUBTITLE_COLOR("page.subtitle-color", "7"),
+        PAGE_HEADINGS_COLOR("page.headings-color", "8"),
+        PAGE_SEPARATOR("page.separator", "-"),
+        PAGE_SIZE("page.size", 100),
         /*
         ================
         > Clan Chat Settings
         ================
          *
          */
-        CLANCHAT_ENABLE("clanchat.enable"),
-        CLANCHAT_TAG_BASED("clanchat.tag-based-clan-chat"),
-        CLANCHAT_ANNOUNCEMENT_COLOR("clanchat.announcement-color"),
-        CLANCHAT_FORMAT("clanchat.format"),
-        CLANCHAT_RANK("clanchat.rank"),
-        CLANCHAT_LEADER_COLOR("clanchat.leader-color"),
-        CLANCHAT_TRUSTED_COLOR("clanchat.trusted-color"),
-        CLANCHAT_MEMBER_COLOR("clanchat.member-color"),
-        CLANCHAT_BRACKET_COLOR("clanchat.tag-bracket.color"),
-        CLANCHAT_BRACKET_LEFT("clanchat.tag-bracket.left"),
-        CLANCHAT_BRACKET_RIGHT("clanchat.tag-bracket.right"),
-        CLANCHAT_NAME_COLOR("clanchat.name-color"),
-        CLANCHAT_PLAYER_BRACKET_LEFT("clanchat.player-bracket.left"),
-        CLANCHAT_PLAYER_BRACKET_RIGHT("clanchat.player-bracket.right"),
-        CLANCHAT_MESSAGE_COLOR("clanchat.message-color"),
+        CLANCHAT_ENABLE("clanchat.enable", true),
+        CLANCHAT_TAG_BASED("clanchat.tag-based-clan-chat", false),
+        CLANCHAT_ANNOUNCEMENT_COLOR("clanchat.announcement-color", "e"),
+        CLANCHAT_FORMAT("clanchat.format", "&b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
+        CLANCHAT_RANK("clanchat.rank", "&f[%rank%&f]"),
+        CLANCHAT_LEADER_COLOR("clanchat.leader-color", "4"),
+        CLANCHAT_TRUSTED_COLOR("clanchat.trusted-color", "f"),
+        CLANCHAT_MEMBER_COLOR("clanchat.member-color", "7"),
+        CLANCHAT_BRACKET_COLOR("clanchat.tag-bracket.color", ""),
+        CLANCHAT_BRACKET_LEFT("clanchat.tag-bracket.left", ""),
+        CLANCHAT_BRACKET_RIGHT("clanchat.tag-bracket.right", ""),
+        CLANCHAT_NAME_COLOR("clanchat.name-color", ""),
+        CLANCHAT_PLAYER_BRACKET_LEFT("clanchat.player-bracket.left", ""),
+        CLANCHAT_PLAYER_BRACKET_RIGHT("clanchat.player-bracket.right", ""),
+        CLANCHAT_MESSAGE_COLOR("clanchat.message-color", ""),
         /*
         ================
         > Request Settings
         ================
          *
          */
-        REQUEST_MESSAGE_COLOR("request.message-color"),
-        REQUEST_FREQUENCY("request.ask-frequency-secs"),
-        REQUEST_MAX("request.max-asks-per-request"),
+        REQUEST_MESSAGE_COLOR("request.message-color", "b"),
+        REQUEST_FREQUENCY("request.ask-frequency-secs", 60),
+        REQUEST_MAX("request.max-asks-per-request", 1440),
         /*
         ================
         > BB Settings
         ================
          */
-        BB_COLOR("clanchat.member-color"),
-        BB_ACCENT_COLOR("clanchat.member-color"),
-        BB_SHOW_ON_LOGIN("clanchat.member-color"),
-        BB_SIZE("clanchat.member-color"),
-        BB_LOGIN_SIZE("clanchat.member-color"),
+        BB_COLOR("clanchat.color", "e"),
+        BB_ACCENT_COLOR("clanchat.accent-color", "8"),
+        BB_SHOW_ON_LOGIN("clanchat.show-on-login", true),
+        BB_SIZE("clanchat.size", 6),
+        BB_LOGIN_SIZE("clanchat.login-size", 6),
         /*
         ================
         > Ally Chat Settings
         ================
          */
-        ALLYCHAT_ENABLE("allychat.enable"),
-        ALLYCHAT_FORMAT("allychat.format"),
-        ALLYCHAT_LEADER_COLOR("allychat.leader-color"),
-        ALLYCHAT_TRUSTED_COLOR("allychat.trusted-color"),
-        ALLYCHAT_MEMBER_COLOR("allychat.member-color"),
-        ALLYCHAT_BRACKET_COLOR("allychat.tag-bracket.color"),
-        ALLYCHAT_BRACKET_lEFT("allychat.tag-bracket.left"),
-        ALLYCHAT_BRACKET_RIGHT("allychat.tag-bracket.right"),
-        ALLYCHAT_PLAYER_BRACKET_LEFT("allychat.player-bracket.left"),
-        ALLYCHAT_PLAYER_BRACKET_RIGHT("allychat.player-bracket.right"),
-        ALLYCHAT_MESSAGE_COLOR("allychat.message-color"),
-        ALLYCHAT_TAG_COLOR("allychat.tag-color"),
+        ALLYCHAT_ENABLE("allychat.enable", true),
+        ALLYCHAT_FORMAT("allychat.format", "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"),
+        ALLYCHAT_LEADER_COLOR("allychat.leader-color", "4"),
+        ALLYCHAT_TRUSTED_COLOR("allychat.trusted-color", "f"),
+        ALLYCHAT_MEMBER_COLOR("allychat.member-color", "7"),
+        ALLYCHAT_BRACKET_COLOR("allychat.tag-bracket.color", ""),
+        ALLYCHAT_BRACKET_lEFT("allychat.tag-bracket.left", ""),
+        ALLYCHAT_BRACKET_RIGHT("allychat.tag-bracket.right", ""),
+        ALLYCHAT_PLAYER_BRACKET_LEFT("allychat.player-bracket.left", ""),
+        ALLYCHAT_PLAYER_BRACKET_RIGHT("allychat.player-bracket.right", ""),
+        ALLYCHAT_MESSAGE_COLOR("allychat.message-color", ""),
+        ALLYCHAT_TAG_COLOR("allychat.tag-color", ""),
         /*
         ================
         > Discord Chat Settings
         ================
          */
-        DISCORDCHAT_ENABLE("discordchat.enable"),
-        DISCORDCHAT_FORMAT("discordchat.format"),
-        DISCORDCHAT_RANK("discordchat.rank"),
-        DISCORDCHAT_VOICE_CHANNEL_FORMAT("discordchat.voice.channel-format"),
-        DISCORDCHAT_VOICE_CATEGORY_FORMAT("discordchat.voice.category-format"),
-        DISCORDCHAT_TEXT_CHANNEL_FORMAT("discordchat.text.channel-format"),
-        DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-foramt"),
+        DISCORDCHAT_ENABLE("discordchat.enable", false),
+        DISCORDCHAT_FORMAT("discordchat.format", "<%player%> %rank%: %message%"),
+        DISCORDCHAT_RANK("discordchat.rank", "[%rank%]"),
+        DISCORDCHAT_VOICE_CHANNEL_FORMAT("discordchat.voice.channel-format", "%clan%"),
+        DISCORDCHAT_VOICE_CATEGORY_FORMAT("discordchat.voice.category-format", "SC - VoiceChannels"),
+        DISCORDCHAT_TEXT_CHANNEL_FORMAT("discordchat.text.channel-format", "%clan%"),
+        DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-foramt", "SC - TextChannels"),
         /*
         ================
         > Purge Settings
         ================
          */
-        PURGE_INACTIVE_PLAYER_DAYS("purge.inactive-player-data-days"),
-        PURGE_INACTIVE_CLAN_DAYS("purge.inactive-clan-days"),
-        PURGE_UNVERIFIED_CLAN_DAYS("purge.unverified-clan-days"),
+        PURGE_INACTIVE_PLAYER_DAYS("purge.inactive-player-data-days", 30),
+        PURGE_INACTIVE_CLAN_DAYS("purge.inactive-clan-days", 7),
+        PURGE_UNVERIFIED_CLAN_DAYS("purge.unverified-clan-days", 2),
         /*
         ================
         > MySQL Settings
         ================
          */
-        MYSQL_USERNAME("mysql.username"),
-        MYSQL_HOST("mysql.host"),
-        MYSQL_PORT("mysql.port"),
-        MYSQL_ENABLE("mysql.enable"),
-        MYSQL_PASSWORD("mysql.password"),
-        MYSQL_DATABASE("mysql.database"),
+        MYSQL_USERNAME("mysql.username", ""),
+        MYSQL_HOST("mysql.host", "localhost"),
+        MYSQL_PORT("mysql.port", "3306"),
+        MYSQL_ENABLE("mysql.enable", false),
+        MYSQL_PASSWORD("mysql.password", ""),
+        MYSQL_DATABASE("mysql.database", ""),
         /*
         ================
         > Permissions Settings
         ================
          */
-        PERMISSIONS_AUTO_GROUP_GROUPNAME("permissions.auto-group-groupname"),
+        PERMISSIONS_AUTO_GROUP_GROUPNAME("permissions.auto-group-groupname", false),
         /*
         ================
         > Performance Settings
         ================
          */
-        PERFORMANCE_SAVE_PERIODICALLY("performance.save-periodically"),
-        PERFORMANCE_SAVE_INTERVAL("performance.save-interval"),
-        PERFORMANCE_USE_THREADS("performance.use-threads"),
-        PERFORMANCE_USE_BUNGEECORD("performance.use-bungeecord"),
-        PERFORMANCE_HEAD_CACHING("performance.cache-player-heads"),
+        PERFORMANCE_SAVE_PERIODICALLY("performance.save-periodically", true),
+        PERFORMANCE_SAVE_INTERVAL("performance.save-interval", 10),
+        PERFORMANCE_USE_THREADS("performance.use-threads", true),
+        PERFORMANCE_USE_BUNGEECORD("performance.use-bungeecord", false),
+        PERFORMANCE_HEAD_CACHING("performance.cache-player-heads", false),
 
-        SAFE_CIVILIANS("safe-civilians");
+        SAFE_CIVILIANS("safe-civilians", false);
 
         private final String path;
+        private final Object defaultValue;
+
+        ConfigField(String path, Object defaultValue) {
+            this.path = path;
+            this.defaultValue = defaultValue;
+        }
 
         ConfigField(String path) {
             this.path = path;
+            this.defaultValue = null;
         }
     }
 }

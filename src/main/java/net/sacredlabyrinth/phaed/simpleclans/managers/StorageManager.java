@@ -78,8 +78,9 @@ public final class StorageManager {
      * Initiates the db
      */
     public void initiateDB() {
-        if (plugin.getSettingsManager().is(MYSQL_ENABLE)) {
-            core = new MySQLCore(plugin.getSettingsManager().get(MYSQL_HOST), plugin.getSettingsManager().get(MYSQL_DATABASE), plugin.getSettingsManager().get(MYSQL_PORT), plugin.getSettingsManager().get(MYSQL_USERNAME), plugin.getSettingsManager().get(MYSQL_PASSWORD));
+        SettingsManager settings = plugin.getSettingsManager();
+        if (settings.is(MYSQL_ENABLE)) {
+            core = new MySQLCore(settings.get(MYSQL_HOST), settings.get(MYSQL_DATABASE), settings.get(MYSQL_PORT), settings.get(MYSQL_USERNAME), settings.get(MYSQL_PASSWORD));
 
             if (core.checkConnection()) {
                 plugin.getLogger().info(lang("mysql.connection.successful"));
@@ -152,7 +153,7 @@ public final class StorageManager {
                     core.execute(query);
                 }
             } else {
-                SimpleClans.getInstance().getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + lang("mysql.connection.failed"));
+                plugin.getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + lang("mysql.connection.failed"));
             }
         } else {
             core = new SQLiteCore(plugin.getDataFolder().getPath());
@@ -229,7 +230,7 @@ public final class StorageManager {
                     core.execute(query);
                 }
             } else {
-                SimpleClans.getInstance().getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + lang("sqlite.connection.failed"));
+                plugin.getServer().getConsoleSender().sendMessage("[SimpleClans] " + ChatColor.RED + lang("sqlite.connection.failed"));
             }
         }
     }
@@ -561,7 +562,7 @@ public final class StorageManager {
                         cp.setLocale(locale);
 
                         if (!tag.isEmpty()) {
-                            Clan clan = SimpleClans.getInstance().getClanManager().getClan(tag);
+                            Clan clan = plugin.getClanManager().getClan(tag);
 
                             if (clan != null) {
                                 cp.setClan(clan);
@@ -644,7 +645,7 @@ public final class StorageManager {
 
                         if (!tag.isEmpty()) {
                             Clan clanDB = retrieveOneClan(tag);
-                            Clan clan = SimpleClans.getInstance().getClanManager().getClan(tag);
+                            Clan clan = plugin.getClanManager().getClan(tag);
 
                             if (clan != null && clanDB != null) {
                                 Clan clanReSync = SimpleClans.getInstance().getClanManager().getClan(tag);
@@ -664,8 +665,8 @@ public final class StorageManager {
                             } else {
                                 plugin.getClanManager().importClan(clanDB);
                                 clanDB.validateWarring();
-                                Clan newclan = SimpleClans.getInstance().getClanManager().getClan(clanDB.getTag());
-                                cp.setClan(newclan);
+                                Clan newClan = plugin.getClanManager().getClan(clanDB.getTag());
+                                cp.setClan(newClan);
                             }
                         }
 

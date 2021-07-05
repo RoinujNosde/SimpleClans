@@ -1,8 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
@@ -19,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -58,14 +57,15 @@ public class PlayerListFrame extends SCFrame {
 	}
 
 	private void loadPlayers() {
-		SimpleClans plugin = SimpleClans.getInstance();
-		ClanManager clanManager = plugin.getClanManager();
 		if (onlineOnly) {
 			players = new ArrayList<>(Bukkit.getOnlinePlayers());
 		} else {
-			List<Player> onlinePlayers = clanManager.getOnlineClanPlayers().stream().
-					map(ClanPlayer::toPlayer).collect(Collectors.toList());
-			players.addAll(onlinePlayers);
+			List<OfflinePlayer> allClanPlayers = Stream.concat(SimpleClans.getInstance().getClanManager().
+							getAllClanPlayers().stream().map(cp -> Bukkit.getOfflinePlayer(cp.getUniqueId())),
+							Bukkit.getOnlinePlayers().stream())
+							.distinct()
+							.collect(Collectors.toList());
+			players.addAll(allClanPlayers);
 		}
 		players = players.stream().filter(p -> p.getName() != null).collect(Collectors.toList());
 		players.sort(Comparator.comparing(OfflinePlayer::getName));

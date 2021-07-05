@@ -20,7 +20,7 @@ public class TeleportState {
         this.destination = destination;
         this.playerLocation = player.getLocation();
         this.clanName = clanName;
-        this.counter = SimpleClans.getInstance().getSettingsManager().get(CLAN_TELEPORT_DELAY);
+        this.counter = SimpleClans.getInstance().getSettingsManager().getSeconds(CLAN_TELEPORT_DELAY);
         this.playerUniqueId = player.getUniqueId();
     }
 

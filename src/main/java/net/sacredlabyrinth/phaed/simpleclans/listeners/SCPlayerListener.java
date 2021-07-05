@@ -159,7 +159,7 @@ public class SCPlayerListener implements Listener {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (clan.getOnlineMembers().isEmpty()) {
                     plugin.getProtectionManager().setWarExpirationTime(cp.getClan(),
-                            settingsManager.get(WAR_DISCONNECT_EXPIRATION_TIME));
+                            settingsManager.getMinutes(WAR_DISCONNECT_EXPIRATION_TIME));
                 }
             });
         }

@@ -70,7 +70,7 @@ public class CreateClanNamePrompt extends StringPrompt {
                     lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
 
-            if (plugin.getSettingsManager().get(REQUIRE_VERIFICATION)) {
+            if (plugin.getSettingsManager().is(REQUIRE_VERIFICATION)) {
                 boolean verified = !plugin.getSettingsManager().is(REQUIRE_VERIFICATION)
                         || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
 
