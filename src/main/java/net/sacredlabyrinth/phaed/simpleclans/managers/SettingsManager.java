@@ -64,6 +64,15 @@ public final class SettingsManager {
         return ChatUtils.parseColors(getString(field));
     }
 
+    // TODO: 05.07.2021 Finish writing logic for this methods
+    public int getMinute() {
+        return 0;
+    }
+
+    public int getSeconds() {
+        return 0;
+    }
+
     public boolean is(ConfigField field) {
         return config.getBoolean(field.path);
     }
@@ -216,6 +225,7 @@ public final class SettingsManager {
         return config;
     }
 
+    // TODO: 05.07.2021 Add default value?
     public enum ConfigField {
         /*
         ================
@@ -374,7 +384,7 @@ public final class SettingsManager {
         ================
          *
          */
-        CLAN_HOMEBASE_TELEPORT_WAIT_SECS("clan.homebase-teleport-wait-secs"),
+        CLAN_TELEPORT_DELAY("clan.homebase-teleport-wait-secs"),
         CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE("clan.homebase-can-be-set-only-once"),
         CLAN_MIN_SIZE_TO_SET_RIVAL("clan.min-size-to-set-rival"),
         CLAN_MIN_SIZE_TO_SET_ALLY("clan.min-size-to-set-ally"),
@@ -422,7 +432,7 @@ public final class SettingsManager {
          *
          */
         CLANCHAT_ENABLE("clanchat.enable"),
-        CLANCHAT_TAG_BASED_CLAN_CHAT("clanchat.tag-based-clan-chat"),
+        CLANCHAT_TAG_BASED("clanchat.tag-based-clan-chat"),
         CLANCHAT_ANNOUNCEMENT_COLOR("clanchat.announcement-color"),
         CLANCHAT_FORMAT("clanchat.format"),
         CLANCHAT_RANK("clanchat.rank"),
@@ -489,7 +499,7 @@ public final class SettingsManager {
         > Purge Settings
         ================
          */
-        PURGE_INACTIVE_PLAYER_DATA_DAYS("purge.inactive-player-data-days"),
+        PURGE_INACTIVE_PLAYER_DAYS("purge.inactive-player-data-days"),
         PURGE_INACTIVE_CLAN_DAYS("purge.inactive-clan-days"),
         PURGE_UNVERIFIED_CLAN_DAYS("purge.unverified-clan-days"),
         /*

@@ -39,7 +39,7 @@ public final class TeleportManager {
      * @param clanName    the Clan name
      */
     public void addPlayer(Player player, Location destination, String clanName) {
-        int secs = SimpleClans.getInstance().getSettingsManager().get(CLAN_HOMEBASE_TELEPORT_WAIT_SECS);
+        int secs = SimpleClans.getInstance().getSettingsManager().get(CLAN_TELEPORT_DELAY);
         waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName));
 
         if (secs > 0) {

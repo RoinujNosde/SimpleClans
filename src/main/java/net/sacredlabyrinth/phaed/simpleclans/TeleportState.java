@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_HOMEBASE_TELEPORT_WAIT_SECS;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_TELEPORT_DELAY;
 
 public class TeleportState {
     private final UUID playerUniqueId;
@@ -20,7 +20,7 @@ public class TeleportState {
         this.destination = destination;
         this.playerLocation = player.getLocation();
         this.clanName = clanName;
-        this.counter = SimpleClans.getInstance().getSettingsManager().get(CLAN_HOMEBASE_TELEPORT_WAIT_SECS);
+        this.counter = SimpleClans.getInstance().getSettingsManager().get(CLAN_TELEPORT_DELAY);
         this.playerUniqueId = player.getUniqueId();
     }
 

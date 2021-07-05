@@ -329,7 +329,7 @@ public final class StorageManager {
     }
 
     private void purgeClanPlayers(List<ClanPlayer> cps) {
-        int purgePlayers = plugin.getSettingsManager().get(PURGE_INACTIVE_PLAYER_DATA_DAYS);
+        int purgePlayers = plugin.getSettingsManager().get(PURGE_INACTIVE_PLAYER_DAYS);
         if (purgePlayers < 1) {
             return;
         }

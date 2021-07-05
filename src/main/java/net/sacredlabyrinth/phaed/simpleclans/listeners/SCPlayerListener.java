@@ -42,7 +42,7 @@ public class SCPlayerListener implements Listener {
         String[] split = event.getMessage().substring(1).split(" ");
         String command = split[0];
 
-        if (settingsManager.is(CLANCHAT_TAG_BASED_CLAN_CHAT)) {
+        if (settingsManager.is(CLANCHAT_TAG_BASED)) {
             Clan clan = plugin.getClanManager().getClan(command);
             if (clan == null || !clan.isMember(event.getPlayer())) {
                 return;

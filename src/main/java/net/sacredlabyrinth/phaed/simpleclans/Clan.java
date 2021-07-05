@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLog;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -813,7 +814,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the fee payers
      */
     public Set<ClanPlayer> getFeePayers() {
-        return getNonLeaders().stream().filter(cp -> SimpleClans.getInstance().getPermissionsManager().has(cp.toPlayer(), "simpleclans.member.bypass-fee")).collect(Collectors.toSet());
+        PermissionsManager permissions = SimpleClans.getInstance().getPermissionsManager();
+        return getNonLeaders().stream().filter(cp -> !permissions.has(cp.toPlayer(), "simpleclans.member.bypass-fee")).collect(Collectors.toSet());
     }
 
     /**
@@ -1259,11 +1261,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("is_anyonline")
     public boolean isAnyOnline() {
-        for (String member : members) {
-            return Bukkit.getOfflinePlayer(UUID.fromString(member)).isOnline();
-        }
-
-        return false;
+        return members.stream().anyMatch(member -> Bukkit.getOfflinePlayer(UUID.fromString(member)).isOnline());
     }
 
     /**
@@ -1683,8 +1681,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
         String bracketColor = isLeader ? sm.getColored(TAG_BRACKET_LEADER_COLOR) : sm.getColored(TAG_BRACKET_COLOR);
         String bracketDefaultColor = sm.getColored(TAG_DEFAULT_COLOR);
-        String bracketLeft = sm.getColored(TAG_BRACKET_COLOR);
-        String bracketRight = sm.getColored(TAG_BRACKET_COLOR);
+        String bracketLeft = sm.getColored(TAG_BRACKET_LEFT);
+        String bracketRight = sm.getColored(TAG_BRACKET_RIGHT);
         String tagSeparatorColor = isLeader ? sm.getColored(TAG_SEPARATOR_LEADER_COLOR) : sm.getColored(TAG_SEPARATOR_COLOR);
         String tagSeparator = sm.get(TAG_SEPARATOR_char);
 

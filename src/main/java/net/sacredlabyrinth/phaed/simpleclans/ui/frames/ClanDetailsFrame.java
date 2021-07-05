@@ -94,7 +94,7 @@ public class ClanDetailsFrame extends SCFrame {
 		String allyStatus = allyEnabled ? joined : notJoined;
 
 		SettingsManager sm = plugin.getSettingsManager();
-		String chatCommand = sm.is(CLANCHAT_TAG_BASED_CLAN_CHAT) ? clan.getTag() : sm.get(COMMANDS_CLAN_CHAT);
+		String chatCommand = sm.is(CLANCHAT_TAG_BASED) ? clan.getTag() : sm.get(COMMANDS_CLAN_CHAT);
 		String joinArg = lang("join", getViewer());
 		String leaveArg = lang("leave", getViewer());
 		return new SCComponentImpl(lang("gui.clandetails.chat.title", getViewer()),

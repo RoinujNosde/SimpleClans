@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -432,11 +433,11 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
-        SimpleClans plugin = SimpleClans.getInstance();
-        double kills = ((double) getRivalKills() * plugin.getSettingsManager().getDouble(KILL_WEIGHTS_RIVAL)) +
-                ((double) getNeutralKills() * plugin.getSettingsManager().getDouble(KILL_WEIGHTS_NEUTRAL)) +
-                ((double) getAllyKills() * plugin.getSettingsManager().getDouble(KILL_WEIGHTS_ALLY)) +
-                ((double) getCivilianKills() * plugin.getSettingsManager().getDouble(KILL_WEIGHTS_CIVILIAN));
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+        double kills = getRivalKills() * settings.getDouble(KILL_WEIGHTS_RIVAL) +
+                getNeutralKills() * settings.getDouble(KILL_WEIGHTS_NEUTRAL) +
+                getAllyKills() * settings.getDouble(KILL_WEIGHTS_ALLY) +
+                getCivilianKills() * settings.getDouble(KILL_WEIGHTS_CIVILIAN);
         if (kills < 0) {
             return 0;
         }
