@@ -41,7 +41,7 @@ description: null
 | `simpleclans.member.ally` | Может использовать союзный чат |
 | `simpleclans.member.chat` | Может использовать чат клана |
 | `simpleclans.member.bank` | Может использовать банк клана |
-| `simpleclans.member.bb-add` | Can add to his clan's bulletin board \(?\) |
+| `simpleclans.member.bb-add` | Может добавлять сообщения на доску объявлений |
 | `simpleclans.member.bb-toggle` | Может переключать отображение доски объявлений его клана |
 | `simpleclans.member.bb` | Может видеть доску объявлений его клана |
 | `simpleclans.member.can-join` | Может присоединяться к кланам |
