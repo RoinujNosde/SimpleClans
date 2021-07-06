@@ -1,61 +1,160 @@
 ---
-description: null
+description: >-
+  Эта страница поможет вам разобраться в том, как установить и использовать
+  SimpleClans API в своих плагинах.
 ---
 
-# Пример использования SimpleClans API
+# SimpleClans API
+
+## Шаг 1. Добавьте SimpleClans API в свой плагин
+
+Сделать это можно двумя способами: через Maven или локально.  
+Мы настоятельно **рекомендуем** делать это через Maven.
+
+### Maven
+
+Добавьте следующие строки в `pom.xml`:
+
+```markup
+<repositories>
+    <repository>
+        <id>codemc-repo</id>
+        <url>https://repo.codemc.org/repository/maven-public</url>
+    </repository>
+</repositories>
+```
+
+```markup
+<dependencies>
+    <dependency>
+        <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
+        <artifactId>SimpleClans</artifactId>
+        <version>2.15.2</version> 
+        <!-- Вы можете узнать последнюю доступную версию в заметке ниже -->
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+
+{% hint style="info" %}
+**Заметка**  
+Последнюю версию можно узнать тут: [ссылка](https://github.com/RoinujNosde/SimpleClans/releases)
+{% endhint %}
+
+### Локально
+
+В указаном примере мы будем использовать IntelliJ IDEA, но последующие действия также работают и в других IDE.
+
+1. Откройте структуру вашего проекта \(`F4`\)
+2. Выберите пункт Libraries, кликните на крестик, в появившемся окошке выбираем "New Project Library -&gt; Java" и добавляем SimpleClans.
+
+![](../.gitbook/assets/izobrazhenie%20%282%29.png)
+
+Возвращаемся к структуре проекта, дальше заходим в Project Settings -&gt; Modules, ставим режим компиляции "Provided".
+
+![](../.gitbook/assets/izobrazhenie%20%283%29.png)
+
+* [x] Поздравляю, вы поставили SimpleClans API в свой проект. 😃
+
+## Шаг 2. Используйте SimpleClans API
+
+#### Что вам нужно знать?
+
+* **ClanPlayer –** это класс, представляющий из себя объект игрока. В этом классе содержится информация об игроке, его клане и др.
+* **Clan –** это класс, презентующий объект клана. В нём имеется методы для получения игроков клана, тега клана, союзников, лидеров и др.
+* **ClanManager –** это класс, позволяющий получить **Clan** и **ClanPlayer.**
+
+#### Пример использования SimpleClans
 
 Вы можете использовать плагин SimpleClans вот так:
 
+{% tabs %}
+{% tab title="MyPlugin.class" %}
 ```java
-private SimpleClans sc;
-
-public void onEnable()
-{
-    Plugin plug = getServer().getPluginManager().getPlugin("SimpleClans");
-
-    if (plug != null)
-    {
-        sc = ((SimpleClans) plug);
+public class MyPlugin extends JavaPlugin {
+    private static SimpleClans sc;
+     
+    @Override   
+    public void onEnable() {
+      Plugin plug = getServer().getPluginManager().getPlugin("SimpleClans");
+      
+      if (plug != null) {
+          sc = (SimpleClans) plug;
+      }
+    }
+    
+    public static getSimpleClans() {
+        return sc;
     }
 }
 ```
+{% endtab %}
 
+{% tab title="Example.class" %}
 ```java
-public void doClanStuff(Player player)
-{
-    // get a player's clan
+public class Example {
 
-    if (sc != null)
-    {
+    public void doClanStuff(Player player) {
+        // Получение клана игрока
         ClanPlayer cp = sc.getClanManager().getClanPlayer(player.getUniqueId());
-
-        if (cp != null)
-        {
+            
+        if (cp != null) {
             Clan clan = cp.getClan();
+        } else {
+            // Игрок не является участником какого-либо клана
         }
-        else
-        {
-            // player is not in a clan
-        }
-    }
-
-    // get a clan from a clan tag
-
-    if (sc != null)
-    {
+    
+        // Получение клана из клан тега
         Clan clan = sc.getClanManager().getClan("staff");
-
-        if (clan != null)
-        {
-            // clan exists
+    
+        if (clan != null) {
+            // Клан существует
         }
     }
 }
 ```
+{% endtab %}
+{% endtabs %}
 
-Каждый игрок имеет объект **ClanPlayer**, который хранит в себе информацию о нём, включая информацию о его клане, и может быть использован для исполнения различных операций на игроке.
+В случае, если вы не хотите указывать проверку на наличие плагина, вы всегда можете указать зависимость в `plugin.yml`:
 
-Объект **Clan** хранит в себе всю информацию о клане и и может быть использован для исполнения различных операций на клане.
+{% tabs %}
+{% tab title="plugin.yml" %}
+```yaml
+depend:
+    - SimpleClans
+```
+{% endtab %}
 
-**ClanManager** хранит в себе всю информацию об объектах Clan и ClanPlayer и содержит методы, которые позволяют получить их.
+{% tab title="Example.class" %}
+```java
+public class Example {
+
+    public void doClanStuff(Player player)
+    {
+        SimpleClans sc = SimpleClans.getInstance();
+        
+        // Получение клана игрока
+        ClanPlayer cp = sc.getClanManager().getClanPlayer(player.getUniqueId());
+        if (cp != null) {
+            Clan clan = cp.getClan();
+        } else {
+            // Игрок не является участником какого-либо клана
+        }
+    
+        // Получение клана из клан тега
+        Clan clan = sc.getClanManager().getClan("staff");
+        if (clan != null) {
+             // Клан существует
+        }
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+**Заметка**  
+_Javadoc_ в настоящее время не реализован, вы можете ускорить его выход, отметив [тут](https://github.com/RoinujNosde/SimpleClans/discussions/210).
+{% endhint %}
 

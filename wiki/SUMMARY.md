@@ -22,7 +22,7 @@
 ## Другое <a id="other"></a>
 
 * [Известные проблемы](other/known-issues.md)
-* [Пример использования SimpleClans API](other/simpleclans-api.md)
+* [SimpleClans API](other/simpleclans-api.md)
 * [Поддержка PlaceholderAPI](other/placeholderapi-support.md)
 * [GriefPrevention, WorldGuard и другие](other/land-claims.md)
 
