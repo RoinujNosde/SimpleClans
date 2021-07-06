@@ -95,8 +95,10 @@ public class MyPlugin extends JavaPlugin {
 public class Example {
 
     public void doClanStuff(Player player) {
+        UUID playerUuid = player.getUniqueId();
+        
         // Получение клана игрока
-        ClanPlayer cp = sc.getClanManager().getClanPlayer(player.getUniqueId());
+        ClanPlayer cp = MyPlugin.getSimpleClans().getClanManager().getClanPlayer(playerUuid);
             
         if (cp != null) {
             Clan clan = cp.getClan();
@@ -105,7 +107,7 @@ public class Example {
         }
     
         // Получение клана из клан тега
-        Clan clan = sc.getClanManager().getClan("staff");
+        Clan clan = MyPlugin.getSimpleClans().getClanManager().getClan("staff");
     
         if (clan != null) {
             // Клан существует
