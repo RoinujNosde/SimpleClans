@@ -106,33 +106,33 @@ public class SCPlayerListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        if (SimpleClans.getInstance().getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(player.getLocation().getWorld().getName())) {
+        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(player.getLocation().getWorld().getName())) {
             return;
         }
 
         ClanPlayer cp;
-        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_BUNGEECORD)) {
-            cp = SimpleClans.getInstance().getClanManager().getClanPlayerJoinEvent(player);
+        if (settingsManager.is(PERFORMANCE_USE_BUNGEECORD)) {
+            cp = plugin.getClanManager().getClanPlayerJoinEvent(player);
         } else {
-            cp = SimpleClans.getInstance().getClanManager().getAnyClanPlayer(player.getUniqueId());
+            cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
         }
 
-        SimpleClans.getInstance().getStorageManager().updatePlayerNameAsync(player);
-        SimpleClans.getInstance().getClanManager().updateLastSeen(player);
-        SimpleClans.getInstance().getClanManager().updateDisplayName(player);
+        plugin.getStorageManager().updatePlayerNameAsync(player);
+        plugin.getClanManager().updateLastSeen(player);
+        plugin.getClanManager().updateDisplayName(player);
 
         if (cp == null) {
             return;
         }
         cp.setName(player.getName());
 
-        SimpleClans.getInstance().getPermissionsManager().addPlayerPermissions(cp);
+        plugin.getPermissionsManager().addPlayerPermissions(cp);
 
         if (settingsManager.is(BB_SHOW_ON_LOGIN) && cp.isBbEnabled() && cp.getClan() != null) {
             cp.getClan().displayBb(player, settingsManager.getInt(BB_LOGIN_SIZE));
         }
 
-        SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
+        plugin.getPermissionsManager().addClanPermissions(cp);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -168,7 +168,7 @@ public class SCPlayerListener implements Listener {
         }
 
 
-        SimpleClans.getInstance().getPermissionsManager().removeClanPlayerPermissions(cp);
+        plugin.getPermissionsManager().removeClanPlayerPermissions(cp);
         plugin.getClanManager().updateLastSeen(event.getPlayer());
         plugin.getRequestManager().endPendingRequest(event.getPlayer().getName());
     }

@@ -34,17 +34,7 @@ public class ChatUtils {
     private ChatUtils() {
     }
 
-    public static String parseColors(@Nullable String text) {
-        if (text == null) {
-            return "";
-        }
-
-        // Return chat color from hex
-        if (text.length() == 1) {
-            ChatColor color = ChatColor.getByChar(text.charAt(0));
-            return color != null ? color.toString() : "";
-        }
-
+    public static String parseColors(@NotNull String text) {
         // Special thanks to the Spigot community!
         // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
         if (supportsHexColors) {

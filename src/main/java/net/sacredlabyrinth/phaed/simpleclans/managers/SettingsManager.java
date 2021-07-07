@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import net.md_5.bungee.api.ChatColor;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -61,7 +62,14 @@ public final class SettingsManager {
     }
 
     public String getColored(ConfigField field) {
-        return ChatUtils.parseColors(getString(field));
+        String configValue = getString(field);
+
+        if (configValue.length() == 1 || !configValue.startsWith("&#")) {
+            ChatColor color = ChatColor.getByChar(configValue.charAt(0));
+            return color != null ? color.toString() : "";
+        }
+
+        return ChatUtils.parseColors(configValue);
     }
 
     public int getMinutes(ConfigField field) {
@@ -437,13 +445,13 @@ public final class SettingsManager {
         CLANCHAT_LEADER_COLOR("clanchat.leader-color", "4"),
         CLANCHAT_TRUSTED_COLOR("clanchat.trusted-color", "f"),
         CLANCHAT_MEMBER_COLOR("clanchat.member-color", "7"),
-        CLANCHAT_BRACKET_COLOR("clanchat.tag-bracket.color", ""),
+        CLANCHAT_BRACKET_COLOR("clanchat.tag-bracket.color", "e"),
         CLANCHAT_BRACKET_LEFT("clanchat.tag-bracket.left", ""),
         CLANCHAT_BRACKET_RIGHT("clanchat.tag-bracket.right", ""),
-        CLANCHAT_NAME_COLOR("clanchat.name-color", ""),
+        CLANCHAT_NAME_COLOR("clanchat.name-color", "e"),
         CLANCHAT_PLAYER_BRACKET_LEFT("clanchat.player-bracket.left", ""),
         CLANCHAT_PLAYER_BRACKET_RIGHT("clanchat.player-bracket.right", ""),
-        CLANCHAT_MESSAGE_COLOR("clanchat.message-color", ""),
+        CLANCHAT_MESSAGE_COLOR("clanchat.message-color", "b"),
         /*
         ================
         > Request Settings
@@ -473,12 +481,12 @@ public final class SettingsManager {
         ALLYCHAT_LEADER_COLOR("allychat.leader-color", "4"),
         ALLYCHAT_TRUSTED_COLOR("allychat.trusted-color", "f"),
         ALLYCHAT_MEMBER_COLOR("allychat.member-color", "7"),
-        ALLYCHAT_BRACKET_COLOR("allychat.tag-bracket.color", ""),
+        ALLYCHAT_BRACKET_COLOR("allychat.tag-bracket.color", "8"),
         ALLYCHAT_BRACKET_lEFT("allychat.tag-bracket.left", ""),
         ALLYCHAT_BRACKET_RIGHT("allychat.tag-bracket.right", ""),
         ALLYCHAT_PLAYER_BRACKET_LEFT("allychat.player-bracket.left", ""),
         ALLYCHAT_PLAYER_BRACKET_RIGHT("allychat.player-bracket.right", ""),
-        ALLYCHAT_MESSAGE_COLOR("allychat.message-color", ""),
+        ALLYCHAT_MESSAGE_COLOR("allychat.message-color", "3"),
         ALLYCHAT_TAG_COLOR("allychat.tag-color", ""),
         /*
         ================

@@ -15,13 +15,23 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_BANK_LOG_ENABLED;
 
 /**
- * Logs all bank actions to one csv file per day.
- * @since 2.15.3
+ * Logs all bank actions to one CSV file per day.
+ *
+ * It accepts {@link BankLog} as a record
+ * and uses the format from {@link CSVFormatter}
+ *
+ * Typical usage:
+ * <code>
+ *     CSVBankLogger bankLogger = new CSVBankLogger(plugin);
+ *     bankLogger.log(new BankLog(sender, clan, economyResponse, operation, cause, amount));
+ * </code>
  */
 public class CSVBankLogger implements BankLogger {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final SimpleClans plugin;
+
+    final int FILE_SIZE = (int) (100 * Math.pow(10, 6));
 
     public CSVBankLogger(SimpleClans plugin) {
         this.plugin = plugin;
@@ -31,7 +41,7 @@ public class CSVBankLogger implements BankLogger {
         }
 
         try {
-            FileHandler fh = new FileHandler(getFilePath(), (int) (100 * Math.pow(10, 6)), 1, true);
+            FileHandler fh = new FileHandler(getFilePath(), FILE_SIZE, 1, true);
             fh.setFormatter(new CSVFormatter());
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");
