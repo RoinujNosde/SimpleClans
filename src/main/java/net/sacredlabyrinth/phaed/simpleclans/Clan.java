@@ -1076,9 +1076,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     public boolean reachedRivalLimit() {
         int rivalCount = rivals.size();
         int clanCount = SimpleClans.getInstance().getClanManager().getRivableClanCount() - 1;
-        int rivalPercent = SimpleClans.getInstance().getSettingsManager().get(RIVAL_LIMIT_PERCENT);
+        double rivalPercent = SimpleClans.getInstance().getSettingsManager().getPercent(RIVAL_LIMIT_PERCENT);
 
-        double limit = ((double) clanCount) * (((double) rivalPercent) / ((double) 100));
+        double limit = ((double) clanCount) * (rivalPercent / ((double) 100));
 
         return rivalCount > limit;
     }
@@ -1274,7 +1274,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<ClanPlayer> online = getOnlineLeaders();
         online.remove(cp);
 
-        double minimum = SimpleClans.getInstance().getSettingsManager().get(CLAN_PERCENTAGE_ONLINE_TO_DEMOTE);
+        double minimum = SimpleClans.getInstance().getSettingsManager().getPercent(CLAN_PERCENTAGE_ONLINE_TO_DEMOTE);
         // all leaders minus the one being demoted
         double totalLeaders = getLeaders().size() - 1;
         double onlineLeaders = online.size();

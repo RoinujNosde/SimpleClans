@@ -628,7 +628,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setResignTimes(Map<String, Long> resignTimes) {
         if (resignTimes != null) {
-            final int cooldown = SimpleClans.getInstance().getSettingsManager().get(REJOIN_COOLDOWN);
+            final int cooldown = SimpleClans.getInstance().getSettingsManager().getSeconds(REJOIN_COOLDOWN);
             resignTimes.forEach((k, v) -> {
                 long timePassed = Instant.ofEpochMilli(v).until(Instant.now(), ChronoUnit.MINUTES);
                 if (timePassed < cooldown) {

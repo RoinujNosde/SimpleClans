@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import net.md_5.bungee.api.ChatColor;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -62,22 +61,23 @@ public final class SettingsManager {
     }
 
     public String getColored(ConfigField field) {
-        String configValue = getString(field);
-
-        if (configValue.length() == 1 || !configValue.startsWith("&#")) {
-            ChatColor color = ChatColor.getByChar(configValue.charAt(0));
-            return color != null ? color.toString() : "";
-        }
-
-        return ChatUtils.parseColors(configValue);
+        String value = getString(field);
+        return (value.length() == 1) ? ChatUtils.getColorByChar(value.charAt(0)) : ChatUtils.parseColors(value);
     }
 
     public int getMinutes(ConfigField field) {
-        return getInt(field) * 20 * 60;
+        int value = getInt(field);
+        return (value >= 1) ? value * 20 * 60 : (int) field.defaultValue * 20 * 60;
     }
 
     public int getSeconds(ConfigField field) {
-        return getInt(field) * 20;
+        int value = getInt(field);
+        return (value >= 1) ? value * 20 : (int) field.defaultValue * 20;
+    }
+
+    public double getPercent(ConfigField field) {
+        double value = getDouble(field);
+        return (getDouble(field) >= 0 || getDouble(field) <= 100) ? value : (double) field.defaultValue;
     }
 
     public boolean is(ConfigField field) {
