@@ -57,6 +57,7 @@ war-and-protection:
     protection-providers:
         - WorldGuardProvider
         - WorldGuard6Provider
+        - PlotSquared6Provider
         - PlotSquared5Provider
         - PlotSquared3Provider
         - GriefPreventionProvider

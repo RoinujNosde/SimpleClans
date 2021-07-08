@@ -249,19 +249,41 @@
     </dependency>
     <dependency>
       <groupId>com.plotsquared</groupId>
-      <artifactId>PlotSquared-Core</artifactId>
-      <version>5.13.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.plotsquared</groupId>
       <artifactId>PlotSquared-Bukkit</artifactId>
-      <version>5.13.3</version>
+      <version>6.0.6-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
           <artifactId>PlotSquared-Core</artifactId>
           <groupId>*</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>paper-api</artifactId>
+          <groupId>io.papermc.paper</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>squirrelid</artifactId>
+          <groupId>com.sk89q</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ServerLib</artifactId>
+          <groupId>org.incendo.serverlib</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>Arkitektonika-Client</artifactId>
+          <groupId>com.intellectualsites.arkitektonika</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>HTTP4J</artifactId>
+          <groupId>com.intellectualsites.http</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>Paster</artifactId>
+          <groupId>com.intellectualsites.paster</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adventure-platform-bukkit</artifactId>
+          <groupId>net.kyori</groupId>
         </exclusion>
       </exclusions>
     </dependency>

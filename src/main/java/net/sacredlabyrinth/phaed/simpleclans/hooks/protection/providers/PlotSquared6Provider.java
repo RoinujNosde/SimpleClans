@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers;
 import com.plotsquared.bukkit.util.BukkitUtil;
 import com.plotsquared.core.PlotSquared;
 import com.plotsquared.core.plot.Plot;
+import com.plotsquared.core.plot.PlotArea;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
 import org.bukkit.Location;
@@ -13,35 +14,22 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class PlotSquared5Provider implements ProtectionProvider {
+public class PlotSquared6Provider implements ProtectionProvider {
 
-    private Method getPlot;
-    private Method getPlots;
-    private Method getPlotsUUID;
-
-    @SuppressWarnings("JavaReflectionMemberAccess")
     @Override
     public void setup() {
-        try {
-            getPlot = BukkitUtil.class.getMethod("getPlot", Location.class);
-            getPlots = PlotSquared.class.getMethod("getPlots", String.class);
-            getPlotsUUID = PlotSquared.class.getMethod("getPlots", String.class, UUID.class);
-        } catch (NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
-        }
+
     }
 
     @Override
     public @NotNull Set<Land> getLandsAt(@NotNull Location location) {
-        Plot plot = getPlot(location);
+        Plot plot = BukkitUtil.adapt(location).getPlot();
         if (plot != null) {
             return Collections.singleton(getLand(plot));
         }
@@ -50,7 +38,10 @@ public class PlotSquared5Provider implements ProtectionProvider {
 
     @Override
     public @NotNull Set<Land> getLandsOf(@NotNull OfflinePlayer player, @NotNull World world) {
-        Set<Plot> plots = getPlots(world.getName(), player.getUniqueId());
+        Set<Plot> plots = new HashSet<>();
+        for (PlotArea plotArea : PlotSquared.get().getPlotAreaManager().getPlotAreasSet(world.getName())) {
+            plots.addAll(plotArea.getPlots(player.getUniqueId()));
+        }
         return plots.stream().map(this::getLand).collect(Collectors.toSet());
     }
 
@@ -62,10 +53,13 @@ public class PlotSquared5Provider implements ProtectionProvider {
     @Override
     public void deleteLand(@NotNull String id, @NotNull World world) {
         id = id.replace(getIdPrefix(), "");
-        for (Plot plot : getPlots(world.getName())) {
-            if (plot.getId().toString().equals(id)) {
-                plot.unclaim();
-                break;
+        Set<Plot> plots = new HashSet<>();
+        for (PlotArea plotArea : PlotSquared.get().getPlotAreaManager().getPlotAreasSet(world.getName())) {
+            for (Plot plot : plotArea.getPlots()) {
+                if (plot.getId().toString().equals(id)) {
+                    plot.unclaim();
+                    return;
+                }
             }
         }
     }
@@ -88,31 +82,5 @@ public class PlotSquared5Provider implements ProtectionProvider {
     @NotNull
     private Land getLand(@NotNull Plot plot) {
         return new Land(getIdPrefix() + plot.getId(), plot.getOwners());
-    }
-
-    private @Nullable Plot getPlot(Location location) {
-        try {
-            return (Plot) getPlot.invoke(null, location);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            return null;
-        }
-    }
-
-    private Set<Plot> getPlots(String world, UUID owner) {
-        try {
-            //noinspection unchecked
-            return (Set<Plot>) getPlotsUUID.invoke(PlotSquared.get(), world, owner);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            return Collections.emptySet();
-        }
-    }
-
-    private Set<Plot> getPlots(String world) {
-        try {
-            //noinspection unchecked
-            return (Set<Plot>) getPlots.invoke(PlotSquared.get(), world);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            return Collections.emptySet();
-        }
     }
 }
