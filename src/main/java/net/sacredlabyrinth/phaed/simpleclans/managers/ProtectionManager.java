@@ -253,7 +253,7 @@ public class ProtectionManager {
         }
     }
 
-    private void registerProvider(ProtectionProvider provider) {
+    public void registerProvider(@NotNull ProtectionProvider provider) {
         String requiredPlugin = provider.getRequiredPluginName();
         String providerName = provider.getClass().getSimpleName();
         if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
