@@ -188,15 +188,21 @@
         </dependency>
         <dependency>
             <groupId>com.plotsquared</groupId>
+            <artifactId>PlotSquared-Core</artifactId>
+            <version>5.13.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.plotsquared</groupId>
             <artifactId>PlotSquared-Bukkit</artifactId>
-            <version>6.0.6-SNAPSHOT</version>
+            <version>5.13.3</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>PlotSquared-Core</artifactId>
                     <groupId>*</groupId>
+                    <artifactId>PlotSquared-Core</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.plotsquared</groupId>
