@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
+
 @SuppressWarnings("unused")
 public class GriefPreventionProvider implements ProtectionProvider {
 
@@ -38,6 +40,8 @@ public class GriefPreventionProvider implements ProtectionProvider {
         if (claim == null) {
             return null;
         }
+        debug(String.format("id %s name %s uuid %s", claim.getID(), claim.getOwnerName(), claim.getOwnerID()));
+
         return new Land(getIdPrefix() + claim.getID().toString(), Collections.singleton(claim.getOwnerID()));
     }
 

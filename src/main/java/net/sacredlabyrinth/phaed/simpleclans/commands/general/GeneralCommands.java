@@ -13,16 +13,15 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.RequestCanceller;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -74,8 +73,8 @@ public class GeneralCommands extends BaseCommand {
         HashMap<Object, Object> initialData = new HashMap<>();
         initialData.put(TAG_KEY, tag);
         initialData.put(NAME_KEY, name);
-        Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(new CreateClanTagPrompt())
-                .withLocalEcho(true).withTimeout(60).withInitialSessionData(initialData).buildConversation(player);
+        SCConversation conversation = new SCConversation(plugin, player, new CreateClanTagPrompt(), initialData);
+        conversation.addConversationCanceller(new RequestCanceller(player, RED + lang("clan.create.request.cancelled", player)));
         conversation.begin();
     }
 
@@ -91,8 +90,8 @@ public class GeneralCommands extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.anyone.lookup")
     @Description("{@@command.description.lookup.other}")
-    public void lookup(CommandSender sender, @Name("player") OfflinePlayer player) {
-        Lookup l = new Lookup(plugin, sender, player.getUniqueId());
+    public void lookup(CommandSender sender, @Name("player") ClanPlayerInput player) {
+        Lookup l = new Lookup(plugin, sender, player.getClanPlayer().getUniqueId());
         l.send();
     }
 

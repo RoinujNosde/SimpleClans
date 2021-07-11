@@ -88,6 +88,10 @@
                             <pattern>org.reflections</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.reflections</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>javassist</pattern>
+                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.javassist</shadedPattern>
+                        </relocation>
                     </relocations>
                     <artifactSet>
                         <excludes>

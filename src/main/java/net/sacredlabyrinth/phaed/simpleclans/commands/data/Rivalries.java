@@ -29,7 +29,7 @@ public class Rivalries extends Sendable {
                 continue;
             }
 
-            chatBlock.addRow("  " + AQUA + clan.getName(), clan.getRivalString(DARK_GRAY + ", "));
+            chatBlock.addRow("  " + AQUA + clan.getName(), clan.getRivalString(DARK_GRAY + ", ", sender));
         }
 
         sendBlock();

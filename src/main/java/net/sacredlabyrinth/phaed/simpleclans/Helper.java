@@ -19,8 +19,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -31,7 +29,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * @author phaed
@@ -563,9 +562,8 @@ public class Helper {
     }
 
     /*
-     * Retrieves the last color code @param msg @return
-     */
-    /**
+     * Retrieves the last color code
+     *
      * @param msg
      * @return
      */
@@ -840,17 +838,19 @@ public class Helper {
      * @param cp Sender
      * @param msg The message
      * @param placeholders The placeholders
-     * @return The formated message
+     * @return The formatted message
      */
     public static String formatAllyChat(ClanPlayer cp, String msg, Map<String, String> placeholders) {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
 
         String leaderColor = sm.getAllyChatLeaderColor();
         String memberColor = sm.getAllyChatMemberColor();
+        String trustedColor = sm.getClanChatTrustedColor();
+
         String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
         String rankFormat = rank != null ? ChatUtils.parseColors(sm.getAllyChatRank()).replace("%rank%", rank) : "";
 
-        String message = replacePlaceholders(sm.getAllyChatFormat(), cp, leaderColor, memberColor, rankFormat, msg);
+        String message = replacePlaceholders(sm.getAllyChatFormat(), cp, leaderColor, trustedColor, memberColor, rankFormat, msg);
         if (placeholders != null) {
             for (Entry<String, String> e : placeholders.entrySet()) {
                 message = message.replace("%"+e.getKey()+"%", e.getValue());
@@ -862,12 +862,13 @@ public class Helper {
     private static String replacePlaceholders(String messageFormat,
                                               ClanPlayer cp,
                                               String leaderColor,
+                                              String trustedColor,
                                               String memberColor,
                                               String rankFormat,
                                               String msg) {
         return ChatUtils.parseColors(messageFormat)
                 .replace("%clan%", Objects.requireNonNull(cp.getClan()).getColorTag())
-                .replace("%nick-color%", (cp.isLeader() ? leaderColor : memberColor))
+                .replace("%nick-color%", (cp.isLeader() ? leaderColor : cp.isTrusted() ? trustedColor : memberColor))
                 .replace("%player%", cp.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", msg);
@@ -879,17 +880,19 @@ public class Helper {
      * @param cp Sender
      * @param msg The message
      * @param placeholders The placeholders
-     * @return The formated message
+     * @return The formatted message
      */
     public static String formatClanChat(ClanPlayer cp, String msg, Map<String, String> placeholders) {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
 
         String leaderColor = sm.getClanChatLeaderColor();
         String memberColor = sm.getClanChatMemberColor();
+        String trustedColor = sm.getClanChatTrustedColor();
+
         String rank = cp.getRankId().isEmpty() ? null : ChatUtils.parseColors(cp.getRankDisplayName());
         String rankFormat = rank != null ? ChatUtils.parseColors(sm.getClanChatRank()).replace("%rank%", rank) : "";
 
-        String message = replacePlaceholders(sm.getClanChatFormat(), cp, leaderColor, memberColor, rankFormat, msg);
+        String message = replacePlaceholders(sm.getClanChatFormat(), cp, leaderColor, trustedColor, memberColor, rankFormat, msg);
         
         if (placeholders != null) {
             for (Entry<String, String> e : placeholders.entrySet()) {

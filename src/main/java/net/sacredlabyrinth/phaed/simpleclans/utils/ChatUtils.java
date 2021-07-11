@@ -19,7 +19,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class ChatUtils {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
-    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#(\\w{5}[0-9A-Fa-f])");
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
     private static boolean supportsHexColors;
 
     static {

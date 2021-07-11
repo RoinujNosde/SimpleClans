@@ -17,7 +17,7 @@ public class SaveDataTask extends BukkitRunnable {
      * Starts the repetitive task
      */
 	public void start() {
-		long interval = plugin.getSettingsManager().getSaveInterval() * 20;
+		long interval = plugin.getSettingsManager().getSaveInterval() * 20L;
 		runTaskTimerAsynchronously(plugin, interval, interval);
 	}
 

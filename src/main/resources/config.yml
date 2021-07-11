@@ -22,7 +22,6 @@ settings:
     keep-items-on-clan-home: false
     item-list: []
     show-debug-info: false
-    mchat-integration: true
     enable-auto-groups: false
     chat-compatibility-mode: true
     rival-limit-percent: 50
@@ -66,6 +65,8 @@ war-and-protection:
         ignored-list:
             PLACE:
                 - "PLAYER_HEAD"
+            BREAK:
+                - "EMERALD_BLOCK"
     set-base-only-in-land: false
     war-normal-expiration-time: 0
     war-disconnect-expiration-time: 0
@@ -125,6 +126,8 @@ economy:
     upkeep-enabled: false
     multiply-upkeep-by-clan-size: false
     charge-upkeep-only-if-member-fee-enabled: true
+    bank-log:
+        enable: true
 kill-weights:
     rival: 2.0
     civilian: 0.0

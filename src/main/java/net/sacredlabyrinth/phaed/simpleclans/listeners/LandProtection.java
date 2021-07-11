@@ -99,7 +99,11 @@ public class LandProtection implements Listener {
                 return;
             }
             BlockBreakEvent blockBreakEvent = (BlockBreakEvent) event;
-            if (protectionManager.can(BREAK, blockBreakEvent.getBlock().getLocation(), blockBreakEvent.getPlayer())) {
+            Block block = blockBreakEvent.getBlock();
+            if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
+                return;
+            }
+            if (protectionManager.can(BREAK, block.getLocation(), blockBreakEvent.getPlayer())) {
                 blockBreakEvent.setCancelled(false);
             }
         }, plugin, false);
@@ -188,7 +192,11 @@ public class LandProtection implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent event) {
-        if (protectionManager.can(BREAK, event.getBlock().getLocation(), event.getPlayer())) {
+        Block block = event.getBlock();
+        if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
+            return;
+        }
+        if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
             event.setCancelled(true);
         }
     }

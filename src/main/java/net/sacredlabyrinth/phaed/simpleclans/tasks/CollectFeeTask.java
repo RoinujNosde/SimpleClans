@@ -1,19 +1,15 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
-import java.text.MessageFormat;
-
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import java.text.MessageFormat;
+
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 /**
  *
@@ -36,7 +32,7 @@ public class CollectFeeTask extends BukkitRunnable {
     	int minute = sm.getTasksCollectFeeMinute();
         long delay = Helper.getDelayTo(hour, minute);
         
-        this.runTaskTimerAsynchronously(SimpleClans.getInstance(), delay * 20, 86400 * 20);
+        this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);
     }
     
     /**
