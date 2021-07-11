@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
     <artifactId>SimpleClans</artifactId>
-    <version>2.15.2</version>
+    <version>2.15.3</version>
     <name>SimpleClans</name>
-    <url>http://dev.bukkit.org/server-mods/simpleclans/</url>
+    <url>https://www.spigotmc.org/resources/simpleclans.71242/</url>
 
     <build>
         <finalName>${project.name}</finalName>
