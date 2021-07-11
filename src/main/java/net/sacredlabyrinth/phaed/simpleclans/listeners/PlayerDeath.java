@@ -176,7 +176,7 @@ public class PlayerDeath implements Listener {
 
     private double calculateReward(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim) {
         double reward;
-        double multiplier = plugin.getSettingsManager().get(ECONOMY_MONEY_PER_KILL_KDR_MULTIPLIER);
+        double multiplier = plugin.getSettingsManager().getDouble(ECONOMY_MONEY_PER_KILL_KDR_MULTIPLIER);
         double kdr = attacker.getKDR() * multiplier;
         Clan attackerClan = attacker.getClan();
         Clan victimClan = victim.getClan();

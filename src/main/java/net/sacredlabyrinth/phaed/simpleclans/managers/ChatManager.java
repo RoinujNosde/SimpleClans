@@ -1,24 +1,25 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public final class ChatManager {
 
@@ -35,11 +36,33 @@ public final class ChatManager {
     }
 
     public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
-        if (message.isEmpty()) {
-            return;
+        Clan clan = Objects.requireNonNull(clanPlayer.getClan(), "Clan cannot be null");
+        List<ClanPlayer> receivers = new ArrayList<>();
+
+        switch (channel) {
+            case ALLY:
+                if (!plugin.getSettingsManager().is(ALLYCHAT_ENABLE)) {
+                    return;
+                }
+
+                receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allymember -> !allymember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(clan.getOnlineMembers().stream().filter(allymember -> !allymember.isMutedAlly()).collect(Collectors.toList()));
+                break;
+            case CLAN:
+                if (!plugin.getSettingsManager().is(CLANCHAT_ENABLE)) {
+                    return;
+                }
+
+                receivers.addAll(clan.getOnlineMembers().stream().filter(member -> !member.isMuted()).collect(Collectors.toList()));
         }
 
-        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, PlaceholderAPI.setPlaceholders(clanPlayer.toPlayer(), message));
+        SCMessage scMessage;
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            scMessage = new SCMessage(source, channel, clanPlayer, PlaceholderAPI.setPlaceholders(clanPlayer.toPlayer(), message), receivers);
+        } else {
+            scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
+        }
+
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {
                 ch.sendMessage(scMessage);
@@ -47,8 +70,40 @@ public final class ChatManager {
         }
     }
 
+    public String parseChatFormat(String format, SCMessage message) {
+        return parseChatFormat(format, message, new HashMap<>());
+    }
+
+    public String parseChatFormat(String format, SCMessage message, Map<String, String> placeholders) {
+        SettingsManager sm = plugin.getSettingsManager();
+        ClanPlayer sender = message.getSender();
+        Channel channel = message.getChannel();
+
+        String leaderColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_LEADER_COLOR"));
+        String memberColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_MEMBER_COLOR"));
+        String trustedColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_TRUSTED_COLOR"));
+
+        String rank = sender.getRankId().isEmpty() ? null : ChatUtils.parseColors(sender.getRankDisplayName());
+        String rankFormat = (rank != null) ?
+                sm.getColored(ConfigField.valueOf(channel + "_RANK")).replace("%rank%", rank) : "";
+
+        if (placeholders != null) {
+            for (Map.Entry<String, String> e : placeholders.entrySet()) {
+                format = format.replace("%" + e.getKey() + "%", e.getValue());
+            }
+        }
+
+        return ChatUtils.parseColors(format)
+                .replace("%clan%", Objects.requireNonNull(sender.getClan()).getColorTag())
+                .replace("%nick-color%", (sender.isLeader() ?
+                        leaderColor : sender.isTrusted() ? trustedColor : memberColor))
+                .replace("%player%", sender.getName())
+                .replace("%rank%", rankFormat)
+                .replace("%message%", message.getContent());
+    }
+
     private void registerHandlers() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.chat");
+        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.chat.handlers");
         Set<Class<? extends ChatHandler>> chatHandlers = reflections.getSubTypesOf(ChatHandler.class);
         plugin.getLogger().log(Level.INFO, "Registering {0} chat handlers...", chatHandlers.size());
 
@@ -64,18 +119,7 @@ public final class ChatManager {
         }
     }
 
-    /*
-        1. Gets all online players (clan players)
-        2. If online player contains permission and not muted
-        3. Subtracts this online players from the receivers to avoid repetition
-        4. Sends message
-     */
-    private void sendToAllSeeing(String message, List<ClanPlayer> receivers) {
-        List<ClanPlayer> onlinePlayers = plugin.getClanManager().getOnlineClanPlayers().stream()
-                .filter(player -> plugin.getPermissionsManager().has(player.toPlayer(), "simpleclans.admin.all-seeing-eye"))
-                .filter(player -> !player.isMuted())
-                .collect(Collectors.toList());
-        onlinePlayers.removeAll(receivers);
-        onlinePlayers.forEach(receiver -> ChatBlock.sendMessage(receiver, message));
+    private List<ClanPlayer> getOnlineAllyMembers(Clan clan) {
+        return clan.getAllAllyMembers().stream().filter(allyPlayer -> allyPlayer.toPlayer() != null).collect(Collectors.toList());
     }
 }

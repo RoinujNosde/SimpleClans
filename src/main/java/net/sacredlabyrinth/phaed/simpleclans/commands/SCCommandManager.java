@@ -209,7 +209,6 @@ public class SCCommandManager extends PaperCommandManager {
             };
             //this.locales.loadLanguages();
         }
-
         return this.locales;
     }
 

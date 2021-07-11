@@ -49,7 +49,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
         	if (settingsManager.is(ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE) && !clan.isMemberFeeEnabled()) {
         		return;
         	}
-            double upkeep = settingsManager.get(ECONOMY_UPKEEP);
+            double upkeep = settingsManager.getDouble(ECONOMY_UPKEEP);
             if (settingsManager.is(ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE)) {
                 upkeep = upkeep * clan.getSize();
             }

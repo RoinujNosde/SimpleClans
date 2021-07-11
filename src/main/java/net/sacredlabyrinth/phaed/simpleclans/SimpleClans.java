@@ -344,6 +344,7 @@ public class SimpleClans extends JavaPlugin {
         return this.hasUUID;
     }
 
+    @Deprecated
     public void setUUID(boolean trueOrFalse) {
         this.hasUUID = trueOrFalse;
     }

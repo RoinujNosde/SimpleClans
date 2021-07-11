@@ -8,6 +8,4 @@ public interface ChatHandler {
     void sendMessage(SCMessage message);
 
     boolean canHandle(SCMessage.Source source);
-
-    String formatMessage(SCMessage message);
 }

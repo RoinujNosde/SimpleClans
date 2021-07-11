@@ -31,7 +31,8 @@ public class CSVBankLogger implements BankLogger {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final SimpleClans plugin;
 
-    final int FILE_SIZE = (int) (100 * Math.pow(10, 6));
+    static final int FILE_SIZE = (int) (100 * Math.pow(10, 6));
+    static final int FILE_COUNT = 1;
 
     public CSVBankLogger(SimpleClans plugin) {
         this.plugin = plugin;
@@ -41,7 +42,7 @@ public class CSVBankLogger implements BankLogger {
         }
 
         try {
-            FileHandler fh = new FileHandler(getFilePath(), FILE_SIZE, 1, true);
+            FileHandler fh = new FileHandler(getFilePath(), FILE_SIZE, FILE_COUNT, true);
             fh.setFormatter(new CSVFormatter());
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");

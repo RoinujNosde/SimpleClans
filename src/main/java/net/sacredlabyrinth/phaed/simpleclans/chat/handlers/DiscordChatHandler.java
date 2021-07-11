@@ -1,4 +1,7 @@
-package net.sacredlabyrinth.phaed.simpleclans.chat;
+package net.sacredlabyrinth.phaed.simpleclans.chat.handlers;
+
+import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
+import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 
 public class DiscordChatHandler implements ChatHandler {
 
@@ -10,10 +13,5 @@ public class DiscordChatHandler implements ChatHandler {
     @Override
     public boolean canHandle(SCMessage.Source source) {
         return false;
-    }
-
-    @Override
-    public String formatMessage(SCMessage message) {
-        return null;
     }
 }

@@ -441,6 +441,7 @@ public final class SettingsManager {
         CLANCHAT_TAG_BASED("clanchat.tag-based-clan-chat", false),
         CLANCHAT_ANNOUNCEMENT_COLOR("clanchat.announcement-color", "e"),
         CLANCHAT_FORMAT("clanchat.format", "&b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
+        CLANCHAT_SPYFORMAT("clanchat.spy-format", "&8[Spy] [&bC&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
         CLANCHAT_RANK("clanchat.rank", "&f[%rank%&f]"),
         CLANCHAT_LEADER_COLOR("clanchat.leader-color", "4"),
         CLANCHAT_TRUSTED_COLOR("clanchat.trusted-color", "f"),
@@ -478,6 +479,8 @@ public final class SettingsManager {
          */
         ALLYCHAT_ENABLE("allychat.enable", true),
         ALLYCHAT_FORMAT("allychat.format", "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"),
+        ALLYCHAT_SPYFORMAT("allychat.spy-format", "&8[Spy] [&cA&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
+        ALLYCHAT_RANK("allychat.rank", "&f[%rank%&f]"),
         ALLYCHAT_LEADER_COLOR("allychat.leader-color", "4"),
         ALLYCHAT_TRUSTED_COLOR("allychat.trusted-color", "f"),
         ALLYCHAT_MEMBER_COLOR("allychat.member-color", "7"),

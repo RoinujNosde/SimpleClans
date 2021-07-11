@@ -937,7 +937,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_MEMBER_FEE_SET_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_MEMBER_FEE_SET_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
@@ -960,7 +960,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_CREATION_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_CREATION_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
@@ -983,7 +983,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_INVITE_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_INVITE_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
@@ -1006,7 +1006,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_HOME_TELEPORT_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_HOME_TELEPORT_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
@@ -1029,7 +1029,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_HOME_TELEPORT_SET_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_HOME_TELEPORT_SET_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
@@ -1052,7 +1052,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_RESET_KDR_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_RESET_KDR_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
@@ -1072,13 +1072,16 @@ public final class ClanManager {
      */
     public boolean purchaseHomeRegroup(Player player) {
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(player);
+        if (cp == null) {
+            return false;
+        }
 
         if (!plugin.getSettingsManager().is(ECONOMY_PURCHASE_HOME_REGROUP)) {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_REGROUP_PRICE);
-        Clan clan = Objects.requireNonNull(cp.getClan());
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_REGROUP_PRICE);
+        Clan clan = Objects.requireNonNull(cp.getClan(), "Clan cannot be null");
         if (!plugin.getSettingsManager().is(ECONOMY_UNIQUE_TAX_ON_REGROUP)) {
             price = price * VanishUtils.getNonVanished(player, clan).size();
         }
@@ -1119,7 +1122,7 @@ public final class ClanManager {
             return true;
         }
 
-        double price = plugin.getSettingsManager().get(ECONOMY_VERIFICATION_PRICE);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_VERIFICATION_PRICE);
 
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {

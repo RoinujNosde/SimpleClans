@@ -48,7 +48,7 @@ public class UpkeepWarningTask extends BukkitRunnable {
         		return;
         	}
             final double balance = clan.getBalance();
-            double upkeep = sm.get(ECONOMY_UPKEEP);
+            double upkeep = sm.getDouble(ECONOMY_UPKEEP);
             if (sm.is(ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE)) {
                 upkeep = upkeep * clan.getSize();
             }

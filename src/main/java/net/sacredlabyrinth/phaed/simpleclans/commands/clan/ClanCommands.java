@@ -181,7 +181,7 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.fee.set}")
     public void setFee(Player player, Clan clan, @Name("fee") double fee) {
         fee = Math.abs(fee);
-        double maxFee = settings.get(ECONOMY_MAX_MEMBER_FEE);
+        double maxFee = settings.getDouble(ECONOMY_MAX_MEMBER_FEE);
         if (fee > maxFee) {
             ChatBlock.sendMessage(player, RED
                     + lang("max.fee.allowed.is.0", player, maxFee));

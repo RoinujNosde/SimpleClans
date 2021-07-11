@@ -162,7 +162,7 @@ public class ClanDetailsFrame extends SCFrame {
 		List<String> lore = verified ? null : new ArrayList<>();
 		if (!verified) {
 			if (purchaseVerification) {
-				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().get(ECONOMY_VERIFICATION_PRICE)));
+				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().getDouble(ECONOMY_VERIFICATION_PRICE)));
 			}
 			lore.add(lang("gui.clandetails.not.verified.lore", getViewer()));
 		}
@@ -236,7 +236,7 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addRegroup() {
 		double price = 0;
 		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_HOME_REGROUP)) {
-			price = plugin.getSettingsManager().get(ECONOMY_REGROUP_PRICE);
+			price = plugin.getSettingsManager().getDouble(ECONOMY_REGROUP_PRICE);
 			if (!plugin.getSettingsManager().is(ECONOMY_UNIQUE_TAX_ON_REGROUP)) {
 				price = price * VanishUtils.getNonVanished(getViewer(), clan).size();
 			}
@@ -262,8 +262,8 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addHome() {
 		SettingsManager sm = plugin.getSettingsManager();
-		double homePrice = sm.is(ECONOMY_PURCHASE_HOME_TELEPORT) ? sm.get(ECONOMY_HOME_TELEPORT_PRICE) : 0;
-		double setPrice = sm.is(ECONOMY_PURCHASE_HOME_TELEPORT_SET) ? sm.get(ECONOMY_HOME_TELEPORT_SET_PRICE) : 0;
+		double homePrice = sm.is(ECONOMY_PURCHASE_HOME_TELEPORT) ? sm.getDouble(ECONOMY_HOME_TELEPORT_PRICE) : 0;
+		double setPrice = sm.is(ECONOMY_PURCHASE_HOME_TELEPORT_SET) ? sm.getDouble(ECONOMY_HOME_TELEPORT_SET_PRICE) : 0;
 
 		List<String> lore = new ArrayList<>();
 		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), homePrice));

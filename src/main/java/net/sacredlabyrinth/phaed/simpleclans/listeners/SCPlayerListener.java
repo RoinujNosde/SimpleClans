@@ -82,7 +82,6 @@ public class SCPlayerListener implements Listener {
 
         ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
         String tagLabel = cp != null && cp.isTagEnabled() ? cp.getTagLabel() : null;
-
         if (settingsManager.is(CHAT_COMPATIBILITY_MODE) && settingsManager.is(DISPLAY_CHAT_TAGS)) {
             if (tagLabel != null) {
                 if (player.getDisplayName().contains("{clan}")) {

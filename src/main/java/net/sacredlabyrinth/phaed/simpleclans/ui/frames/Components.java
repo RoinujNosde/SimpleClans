@@ -118,7 +118,7 @@ public class Components {
                     lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), Helper.formatMaxInactiveDays(clan.getMaxInactiveDays())));
         } else {
             name = lang("gui.clandetails.free.agent.title", viewer);
-            double price = pl.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_CREATE) ? pl.getSettingsManager().get(ECONOMY_CREATION_PRICE) : 0;
+            double price = pl.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_CREATE) ? pl.getSettingsManager().getDouble(ECONOMY_CREATION_PRICE) : 0;
             lore = new ArrayList<>();
             if (price != 0) {
                 lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), price));
