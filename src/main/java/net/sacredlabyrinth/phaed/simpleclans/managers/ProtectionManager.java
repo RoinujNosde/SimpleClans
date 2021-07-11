@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class ProtectionManager {
@@ -79,7 +80,9 @@ public class ProtectionManager {
     }
 
     public boolean isOwner(@NotNull OfflinePlayer player, @NotNull Location location) {
+        debug(String.format("isOwner: player %s %s -> %s", player.getName(), player.getUniqueId(), location));
         for (Land land : getLandsAt(location)) {
+            debug(String.format("land -> id %s - owners %s", land.getId(), land.getOwners()));
             if (land.getOwners().contains(player.getUniqueId())) {
                 return true;
             }
@@ -250,7 +253,7 @@ public class ProtectionManager {
         }
     }
 
-    private void registerProvider(ProtectionProvider provider) {
+    public void registerProvider(@NotNull ProtectionProvider provider) {
         String requiredPlugin = provider.getRequiredPluginName();
         String providerName = provider.getClass().getSimpleName();
         if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {

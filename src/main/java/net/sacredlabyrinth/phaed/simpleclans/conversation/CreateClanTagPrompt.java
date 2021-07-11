@@ -18,10 +18,11 @@ public class CreateClanTagPrompt extends StringPrompt {
 
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
+        Player forWhom = (Player) context.getForWhom();
         if (context.getSessionData(TAG_KEY) != null) {
             return "";
         }
-        return lang("insert.clan.tag", (Player) context.getForWhom());
+        return lang("insert.clan.tag", forWhom, lang("cancel", forWhom));
     }
 
     @Override
@@ -39,7 +40,6 @@ public class CreateClanTagPrompt extends StringPrompt {
 
         Prompt errorPrompt = validateTag(plugin, player, input);
         if (errorPrompt != null) return errorPrompt;
-
         context.setSessionData(TAG_KEY, input);
         return new CreateClanNamePrompt();
     }

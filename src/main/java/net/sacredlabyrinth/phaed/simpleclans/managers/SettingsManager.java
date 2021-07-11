@@ -3,10 +3,12 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -31,7 +33,6 @@ public final class SettingsManager {
     private boolean keepOnHome;
     private boolean debugging;
     private final SimpleClans plugin;
-    private boolean mChatIntegration;
     private boolean pvpOnlywhileInWar;
     private boolean useColorCodeFromPrefix;
     private boolean confirmationForPromote;
@@ -168,7 +169,7 @@ public final class SettingsManager {
     private String username;
     private String password;
     private boolean safeCivilians;
-    private final File main;
+    private final File configFile;
     private final FileConfiguration config;
     private boolean compatMode;
     private boolean homebaseSetOnce;
@@ -210,8 +211,9 @@ public final class SettingsManager {
     public SettingsManager() {
         plugin = SimpleClans.getInstance();
         config = plugin.getConfig();
-        main = new File(plugin.getDataFolder() + File.separator + "config.yml");
-        load();
+        config.options().copyDefaults(true);
+        configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
+        loadAndSave();
         warnAboutAutoGroupGroupName();
     }
 
@@ -219,19 +221,13 @@ public final class SettingsManager {
      * Load the configuration
      */
 
-    @SuppressWarnings({"CallToPrintStackTrace", "UseSpecificCatch"})
-    public void load() {
-        boolean exists = (main).exists();
-
-        if (exists) {
+    public void loadAndSave() {
+        if (configFile.exists()) {
             try {
-                getConfig().options().copyDefaults(true);
-                getConfig().load(main);
-            } catch (Exception e) {
-                e.printStackTrace();
+                config.load(configFile);
+            } catch (IOException | InvalidConfigurationException ex) {
+                plugin.getLogger().severe("Error while trying to load plugin's configuration: " + ex.getMessage());
             }
-        } else {
-            getConfig().options().copyDefaults(true);
         }
 
         enableGUI = getConfig().getBoolean("settings.enable-gui");
@@ -248,7 +244,6 @@ public final class SettingsManager {
             }
         }
         debugging = getConfig().getBoolean("settings.show-debug-info");
-        mChatIntegration = getConfig().getBoolean("settings.mchat-integration");
         pvpOnlywhileInWar = getConfig().getBoolean("settings.pvp-only-while-at-war");
         enableAutoGroups = getConfig().getBoolean("settings.enable-auto-groups");
         useColorCodeFromPrefix = getConfig().getBoolean("settings.use-colorcode-from-prefix-for-name");
@@ -430,12 +425,11 @@ public final class SettingsManager {
         save();
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public void save() {
         try {
-            getConfig().save(main);
-        } catch (IOException e) {
-            e.printStackTrace();
+            config.save(configFile);
+        } catch (IOException ex) {
+            plugin.getLogger().severe("Error while trying to save plugin's configuration: " + ex.getMessage());
         }
     }
 
@@ -446,6 +440,10 @@ public final class SettingsManager {
             plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
                     " that matches their clan tag.");
         }
+    }
+
+    public boolean isBankLogEnabled() {
+        return getConfig().getBoolean("economy.bank-log.enable", false);
     }
 
     public boolean isWarRequestEnabled() {
@@ -996,7 +994,7 @@ public final class SettingsManager {
      * @return the serverName
      */
     public String getServerName() {
-        return Helper.parseColors(serverName);
+        return ChatUtils.parseColors(serverName);
     }
 
     /**
@@ -1028,9 +1026,9 @@ public final class SettingsManager {
     }
 
     /**
-     * @return the requestFreqencySecs
+     * @return the requestFrequencySecs
      */
-    public int getRequestFreqencySecs() {
+    public int getRequestFrequencySecs() {
         return requestFreqencySecs;
     }
 
@@ -1641,10 +1639,6 @@ public final class SettingsManager {
 
     public boolean isPvpOnlywhileInWar() {
         return pvpOnlywhileInWar;
-    }
-
-    public boolean ismChatIntegration() {
-        return mChatIntegration;
     }
 
     public boolean isDebugging() {

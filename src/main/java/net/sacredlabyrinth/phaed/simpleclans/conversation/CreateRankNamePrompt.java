@@ -5,7 +5,6 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateRankEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PreCreateRankEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -14,11 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 public class CreateRankNamePrompt extends StringPrompt {
     @Override
     public @NotNull String getPromptText(@NotNull ConversationContext context) {
-        return lang("insert.rank.name", (Player) context.getForWhom());
+        Player forWhom = (Player) context.getForWhom();
+        return lang("insert.rank.name", forWhom, lang("cancel", forWhom));
     }
 
     @Override
@@ -33,17 +35,18 @@ public class CreateRankNamePrompt extends StringPrompt {
         PreCreateRankEvent event = new PreCreateRankEvent(player, clan, rank);
         Bukkit.getServer().getPluginManager().callEvent(event);
         rank = event.getRankName();
-        
+
         if (event.isCancelled()) {
             return null;
         }
+
         if (clan.hasRank(rank)) {
-            return new MessagePromptImpl(ChatColor.RED + lang("rank.already.exists", player), this);
+            return new MessagePromptImpl(RED + lang("rank.already.exists", player), this);
         }
-        
+
         clan.createRank(rank);
         Bukkit.getServer().getPluginManager().callEvent(new CreateRankEvent(player, clan, clan.getRank(rank)));
         plugin.getStorageManager().updateClan(clan, true);
-        return new MessagePromptImpl(ChatColor.AQUA + lang("rank.created", player));
+        return new MessagePromptImpl(AQUA + lang("rank.created", player));
     }
 }

@@ -35,7 +35,7 @@ public class PlotSquared5Provider implements ProtectionProvider {
 
     @NotNull
     private Land getLand(@NotNull Plot plot) {
-        return new Land(getIdPrefix() + plot.getId().toString(), plot.getOwners());
+        return new Land(getIdPrefix() + plot.getId(), plot.getOwners());
     }
 
     @Override

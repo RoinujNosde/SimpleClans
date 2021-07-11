@@ -7,6 +7,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import org.bukkit.command.CommandSender;
 
 import static net.md_5.bungee.api.ChatColor.RED;
@@ -70,7 +71,7 @@ public class BankCommand extends BaseCommand {
         Clan clan = clanInput.getClan();
         amount = Math.abs(amount);
 
-        EconomyResponse response = clan.setBalance(sender, ClanBalanceUpdateEvent.Cause.COMMAND, amount);
+        EconomyResponse response = clan.setBalance(sender, ClanBalanceUpdateEvent.Cause.COMMAND, BankLogger.Operation.SET, amount);
         if (response == EconomyResponse.SUCCESS) {
             ChatBlock.sendMessage(sender, AQUA + lang("clan.admin.set", sender, clan.getName(), amount));
             clan.addBb(sender.getName(), AQUA + lang("bb.clan.set", sender, amount));

@@ -87,7 +87,7 @@ public class Components {
         if (cp.isTrusted()) {
             return lang("trusted", viewer);
         }
-        if (cp.getRankId() != null && !cp.getRankId().isEmpty()) {
+        if (!cp.getRankId().isEmpty()) {
             return lang("in.rank", viewer);
         }
         return lang("untrusted", viewer);
@@ -111,8 +111,8 @@ public class Components {
                     lang("gui.clandetails.clan.lore.deaths", viewer, clan.getTotalDeaths()),
                     lang("gui.clandetails.clan.lore.fee", viewer, clan.isMemberFeeEnabled()
                             ? lang("fee.enabled", viewer) : lang("fee.disabled", viewer), clan.getMemberFee()),
-                    lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer))),
-                    lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer))),
+                    lang("gui.clandetails.clan.lore.allies", viewer, clan.getAllies().isEmpty() ? lang("none", viewer) : clan.getAllyString(lang("gui.clandetails.clan.lore.allies.separator", viewer), viewer)),
+                    lang("gui.clandetails.clan.lore.rivals", viewer, clan.getRivals().isEmpty() ? lang("none", viewer) : clan.getRivalString(lang("gui.clandetails.clan.lore.rivals.separator", viewer), viewer)),
                     lang("gui.clandetails.clan.lore.founded", viewer, clan.getFoundedString()),
                     lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), Helper.formatMaxInactiveDays(clan.getMaxInactiveDays())));
         } else {
@@ -166,7 +166,7 @@ public class Components {
         }
         SCComponent c = new SCComponentImpl(lang("gui.previous.page.title", viewer), null,
                 XMaterial.STONE_BUTTON, slot);
-        c.setListener(ClickType.LEFT, listener);
+        setOneTimeUseListener(c, listener);
         return c;
     }
 
@@ -176,8 +176,17 @@ public class Components {
         }
         SCComponent c = new SCComponentImpl(lang("gui.next.page.title", viewer), null,
                 XMaterial.STONE_BUTTON, slot);
-        c.setListener(ClickType.LEFT, listener);
+        setOneTimeUseListener(c, listener);
         return c;
+    }
+
+    private static void setOneTimeUseListener(SCComponent c, @Nullable Runnable listener) {
+        c.setListener(ClickType.LEFT, () -> {
+            if (listener != null) {
+                listener.run();
+            }
+            c.setListener(ClickType.LEFT, null);
+        });
     }
 
     @SuppressWarnings("deprecation")

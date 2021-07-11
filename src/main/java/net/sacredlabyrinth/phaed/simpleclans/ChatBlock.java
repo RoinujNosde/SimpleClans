@@ -27,10 +27,12 @@ public class ChatBlock {
     private boolean cropRight = true;
     private boolean padRight = true;
 
+    @Deprecated
     public void setCropRight(boolean cropRight) {
         this.cropRight = cropRight;
     }
 
+    @Deprecated
     public void setPadRight(boolean padRight) {
         this.padRight = padRight;
     }
@@ -45,6 +47,7 @@ public class ChatBlock {
         }
     }
 
+    @Deprecated
     public void setColumnSizes(String prefix, double... columnPercentages) {
         int ll = LINE_LENGTH;
 
@@ -57,6 +60,7 @@ public class ChatBlock {
         }
     }
 
+    @Deprecated
     public boolean hasContent() {
         return !rows.isEmpty();
     }
@@ -65,22 +69,27 @@ public class ChatBlock {
         rows.add(contents);
     }
 
+
     public int size() {
         return rows.size();
     }
 
+    @Deprecated
     public boolean isEmpty() {
         return rows.isEmpty();
     }
 
+    @Deprecated
     public void clear() {
         rows.clear();
     }
 
+    @Deprecated
     public boolean sendBlock(CommandSender player) {
         return sendBlock(player, null, 0);
     }
 
+    @Deprecated
     public boolean sendBlock(CommandSender player, String prefix) {
         return sendBlock(player, prefix, 0);
     }
@@ -269,6 +278,7 @@ public class ChatBlock {
         return (int) maxWidth;
     }
 
+    @Deprecated
     public static String centerInLine(String msg) {
         return centerInLineOf(msg, LINE_LENGTH);
     }
@@ -551,10 +561,12 @@ public class ChatBlock {
         player.sendMessage(ChatUtils.parseColors(msg));
     }
 
+    // ClanCommands#setbanner, LandCommands#Allow/BlockCommand/verify, StaffCommands#kick, etc
     public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
         sendMessage(receiver, lang(key, receiver, args));
     }
 
+    @Deprecated
     public void startColor(String color) {
         this.color = color;
     }
@@ -573,10 +585,12 @@ public class ChatBlock {
     /**
      * Colors each line
      */
+    @Deprecated
     public static String[] say(String message) {
         return colorize(wordWrap(message));
     }
 
+    @Deprecated
     public static String[] getColorizedMessage(String msg) {
         return colorize(wordWrap(msg));
     }
@@ -589,10 +603,10 @@ public class ChatBlock {
         }
     }
 
+    @Deprecated
     public static @Nullable String colorize(String message) {
         return colorizeBase(new String[]{message})[0];
     }
-
 
     private static @Nullable String[] colorizeBase(String[] message) {
         if (message != null && message[0] != null && !message[0].isEmpty()) {
