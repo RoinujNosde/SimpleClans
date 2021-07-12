@@ -526,7 +526,7 @@ public final class SettingsManager {
          */
         MYSQL_USERNAME("mysql.username", ""),
         MYSQL_HOST("mysql.host", "localhost"),
-        MYSQL_PORT("mysql.port", "3306"),
+        MYSQL_PORT("mysql.port", 3306),
         MYSQL_ENABLE("mysql.enable", false),
         MYSQL_PASSWORD("mysql.password", ""),
         MYSQL_DATABASE("mysql.database", ""),
