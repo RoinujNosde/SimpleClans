@@ -89,12 +89,12 @@ public class CreateClanNamePrompt extends StringPrompt {
             if (ChatUtils.stripColors(input).length() > plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)) {
                 return new MessagePromptImpl(RED +
                         lang("your.clan.name.cannot.be.longer.than.characters", player,
-                                plugin.getSettingsManager().get(CLAN_MAX_LENGTH)), this);
+                                plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)), this);
             }
             if (ChatUtils.stripColors(input).length() <= plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)) {
                 return new MessagePromptImpl(RED +
                         lang("your.clan.name.must.be.longer.than.characters", player,
-                                plugin.getSettingsManager().get(CLAN_MIN_LENGTH)), this);
+                                plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)), this);
             }
         }
         if (input.contains("&")) {

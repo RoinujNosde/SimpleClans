@@ -57,7 +57,7 @@ public class Leaderboard extends Sendable {
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
         ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " + lang("leaderboard.command", sender)
-                + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("total.clan.players.0", sender, subColor +
                 clanPlayers.size()));

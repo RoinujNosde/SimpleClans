@@ -67,7 +67,7 @@ public class MostKilled extends Sendable {
                 lang("killcount", player), headColor + lang("attacker", player));
 
         ChatBlock.saySingle(player, sm.getColored(SERVER_NAME) + subColor + " " + lang("mostkilled",
-                player) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                player) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(player);
     }
 }

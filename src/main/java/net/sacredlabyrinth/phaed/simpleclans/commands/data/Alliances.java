@@ -42,7 +42,7 @@ public class Alliances extends Sendable {
         ChatBlock.sendBlank(sender);
         ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " +
                 lang("alliances", sender) + " " + headColor +
-                Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
 
         chatBlock.setAlignment("l", "l");

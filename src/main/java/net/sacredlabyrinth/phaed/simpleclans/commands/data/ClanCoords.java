@@ -59,7 +59,7 @@ public class ClanCoords extends Sendable {
 
         ChatBlock.sendBlank(player);
         ChatBlock.saySingle(player, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
-                lang("coords", player) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                lang("coords", player) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(player);
 
         chatBlock.addRow("  " + headColor + lang("name", player), lang("distance", player),

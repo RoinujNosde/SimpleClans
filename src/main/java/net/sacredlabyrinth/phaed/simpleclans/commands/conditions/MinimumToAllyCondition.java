@@ -23,7 +23,7 @@ public class MinimumToAllyCondition extends AbstractCommandCondition {
         Clan clan = Conditions.assertClanMember(clanManager, context.getIssuer());
         if (clan.getSize() < settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_ALLY)) {
             throw new ConditionFailedException(RED +
-                    lang("minimum.to.make.alliance", context.getIssuer(), settingsManager.get(CLAN_MIN_SIZE_TO_SET_ALLY)));
+                    lang("minimum.to.make.alliance", context.getIssuer(), settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_ALLY)));
         }
     }
 

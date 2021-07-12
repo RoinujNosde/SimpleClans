@@ -342,8 +342,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             return -1;
         }
 
-        int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().get(PURGE_INACTIVE_CLAN_DAYS);
-        int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().get(PURGE_UNVERIFIED_CLAN_DAYS);
+        int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getInt(PURGE_INACTIVE_CLAN_DAYS);
+        int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getInt(PURGE_UNVERIFIED_CLAN_DAYS);
 
         return this.isVerified() ? verifiedClanInactiveDays : unverifiedClanInactiveDays;
     }
@@ -1431,7 +1431,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             List<String> localBb;
             if (maxSize == -1) {
                 localBb = bb;
-                maxSize = SimpleClans.getInstance().getSettingsManager().get(BB_SIZE);
+                maxSize = SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE);
             } else {
                 localBb = new ArrayList<>(bb);
             }
@@ -1684,7 +1684,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         String bracketLeft = sm.getColored(TAG_BRACKET_LEFT);
         String bracketRight = sm.getColored(TAG_BRACKET_RIGHT);
         String tagSeparatorColor = isLeader ? sm.getColored(TAG_SEPARATOR_LEADER_COLOR) : sm.getColored(TAG_SEPARATOR_COLOR);
-        String tagSeparator = sm.get(TAG_SEPARATOR_char);
+        String tagSeparator = sm.getString(TAG_SEPARATOR_char);
 
         return bracketColor + bracketLeft + bracketDefaultColor + getColorTag() + bracketColor + bracketRight + tagSeparatorColor + tagSeparator;
     }

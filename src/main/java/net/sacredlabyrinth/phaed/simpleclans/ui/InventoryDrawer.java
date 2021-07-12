@@ -125,7 +125,7 @@ public class InventoryDrawer {
         Bukkit.getScheduler().runTask(plugin, () -> plugin.getServer().getConsoleSender().sendMessage(lang("gui.not.supported")));
         SettingsManager settingsManager = plugin.getSettingsManager();
         settingsManager.set(ENABLE_GUI, false);
-        String commandClan = settingsManager.get(COMMANDS_CLAN);
+        String commandClan = settingsManager.getString(COMMANDS_CLAN);
         player.performCommand(commandClan);
     }
 

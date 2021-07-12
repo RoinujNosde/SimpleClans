@@ -61,7 +61,7 @@ public class ClanRoster extends Sendable {
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
         ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
-                lang("roster", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                lang("roster", sender) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + " " + sm.getColored(PAGE_LEADER_COLOR) +
                 lang("leader", sender) + headColor + ", " + sm.getColored(PAGE_TRUSTED_COLOR) + lang("trusted", sender) +

@@ -30,8 +30,8 @@ public class CollectFeeTask extends BukkitRunnable {
     public void start() {
     	SettingsManager sm = plugin.getSettingsManager();
     	
-    	int hour = sm.get(TASKS_COLLECT_FEE_HOUR);
-    	int minute = sm.get(TASKS_COLLECT_FEE_MINUTE);
+    	int hour = sm.getInt(TASKS_COLLECT_FEE_HOUR);
+    	int minute = sm.getInt(TASKS_COLLECT_FEE_MINUTE);
         long delay = Helper.getDelayTo(hour, minute);
         
         this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);

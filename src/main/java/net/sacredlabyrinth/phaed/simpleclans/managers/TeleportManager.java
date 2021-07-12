@@ -102,7 +102,7 @@ public final class TeleportManager {
         if (plugin.getPermissionsManager().has(player, "simpleclans.mod.keep-items")) {
             return;
         }
-        List<Material> itemsList = plugin.getSettingsManager().get(ITEM_LIST);
+        List<Material> itemsList = plugin.getSettingsManager().getItemList();
         PlayerInventory inv = player.getInventory();
         boolean dropOnHome = plugin.getSettingsManager().is(DROP_ITEMS_ON_CLAN_HOME);
         boolean keepOnHome = plugin.getSettingsManager().is(KEEP_ITEMS_ON_CLAN_HOME);

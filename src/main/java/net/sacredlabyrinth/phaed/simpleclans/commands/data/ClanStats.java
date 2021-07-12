@@ -38,14 +38,14 @@ public class ClanStats extends Sendable {
 
     private void configureAndSendHeader() {
         ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
-                lang("stats", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                lang("stats", sender) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("kdr", sender) + " = " + subColor +
                 lang("kill.death.ratio", sender));
         ChatBlock.sendMessage(sender, headColor + lang("weights", sender) + " = " + lang("rival", sender)
-                + ": " + subColor + sm.get(KILL_WEIGHTS_RIVAL) + headColor + " " + lang("neutral", sender) + ": " + subColor +
-                sm.get(KILL_WEIGHTS_NEUTRAL) + headColor + " " + lang("civilian", sender) + ": " + subColor +
-                sm.get(KILL_WEIGHTS_CIVILIAN));
+                + ": " + subColor + sm.getDouble(KILL_WEIGHTS_RIVAL) + headColor + " " + lang("neutral", sender) + ": " + subColor +
+                sm.getDouble(KILL_WEIGHTS_NEUTRAL) + headColor + " " + lang("civilian", sender) + ": " + subColor +
+                sm.getDouble(KILL_WEIGHTS_CIVILIAN));
         ChatBlock.sendBlank(sender);
 
         chatBlock.setFlexibility(true, false, false, false, false, false, false);

@@ -41,8 +41,8 @@ public class CanChangeFeeCondition extends AbstractCommandCondition {
 
     private LocalDateTime getCollectTime() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime collectTime = now.withHour(settingsManager.get(TASKS_COLLECT_FEE_HOUR))
-                .withMinute(settingsManager.get(TASKS_COLLECT_FEE_MINUTE));
+        LocalDateTime collectTime = now.withHour(settingsManager.getInt(TASKS_COLLECT_FEE_HOUR))
+                .withMinute(settingsManager.getInt(TASKS_COLLECT_FEE_MINUTE));
         if (collectTime.isBefore(now)) {
             collectTime = collectTime.plusDays(1);
         }

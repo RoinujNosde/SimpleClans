@@ -24,7 +24,7 @@ public class MinimumToRivalCondition extends AbstractCommandCondition {
         Clan clan = Conditions.assertClanMember(clanManager, issuer);
         if (clan.getSize() < settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_RIVAL)) {
             throw new ConditionFailedException(RED + lang("min.players.rivalries", issuer,
-                    settingsManager.get(CLAN_MIN_SIZE_TO_SET_RIVAL)));
+                    settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_RIVAL)));
         }
     }
 

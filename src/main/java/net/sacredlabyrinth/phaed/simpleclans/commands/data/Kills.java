@@ -57,7 +57,7 @@ public class Kills extends Sendable {
         chatBlock.addRow("  " + headColor + lang("victim", player), lang("killcount", player));
         ChatBlock.saySingle(player, sm.getColored(PAGE_CLAN_NAME_COLOR) + polled + subColor
                 + " " + lang("kills", player) + " " + headColor +
-                Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(player);
     }
 }

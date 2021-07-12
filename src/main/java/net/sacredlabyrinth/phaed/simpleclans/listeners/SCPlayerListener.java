@@ -47,7 +47,7 @@ public class SCPlayerListener implements Listener {
             if (clan == null || !clan.isMember(event.getPlayer())) {
                 return;
             }
-            String replaced = event.getMessage().replaceFirst(command, settingsManager.get(COMMANDS_CLAN_CHAT));
+            String replaced = event.getMessage().replaceFirst(command, settingsManager.getString(COMMANDS_CLAN_CHAT));
             event.setMessage(replaced);
         }
     }

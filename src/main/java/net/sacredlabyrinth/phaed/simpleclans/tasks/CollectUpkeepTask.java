@@ -30,8 +30,8 @@ public class CollectUpkeepTask extends BukkitRunnable {
      * Starts the repetitive task
      */
     public void start() {
-    	int hour = settingsManager.get(TASKS_COLLECT_UPKEEP_HOUR);
-    	int minute = settingsManager.get(TASKS_COLLECT_UPKEEP_MINUTE);
+    	int hour = settingsManager.getInt(TASKS_COLLECT_UPKEEP_HOUR);
+    	int minute = settingsManager.getInt(TASKS_COLLECT_UPKEEP_MINUTE);
         long delay = Helper.getDelayTo(hour, minute);
 
         this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);

@@ -53,7 +53,7 @@ public class ClanList extends Sendable {
                                                                                     @Nullable String order) {
         boolean ascending = order == null || lang("list.order.asc").equalsIgnoreCase(order);
         if (type == null) {
-            type = sm.get(LIST_DEFAULT_ORDER_BY);
+            type = sm.getString(LIST_DEFAULT_ORDER_BY);
         }
         if (type.equalsIgnoreCase(lang("list.type.size"))) {
             return new RankingNumberResolver<>(clans, Clan::getSize, order != null && ascending, ORDINAL);
@@ -82,7 +82,7 @@ public class ClanList extends Sendable {
     private void sendHeader(List<Clan> clans) {
         ChatBlock.sendBlank(sender);
         ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " + lang("clans.lower", sender)
-                + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("total.clans", sender) + " " + subColor + clans.size());
         ChatBlock.sendBlank(sender);

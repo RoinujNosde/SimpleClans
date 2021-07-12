@@ -80,7 +80,7 @@ public final class StorageManager {
     public void initiateDB() {
         SettingsManager settings = plugin.getSettingsManager();
         if (settings.is(MYSQL_ENABLE)) {
-            core = new MySQLCore(settings.get(MYSQL_HOST), settings.get(MYSQL_DATABASE), settings.get(MYSQL_PORT), settings.get(MYSQL_USERNAME), settings.get(MYSQL_PASSWORD));
+            core = new MySQLCore(settings.getString(MYSQL_HOST), settings.getString(MYSQL_DATABASE), settings.getInt(MYSQL_PORT), settings.getString(MYSQL_USERNAME), settings.getString(MYSQL_PASSWORD));
 
             if (core.checkConnection()) {
                 plugin.getLogger().info(lang("mysql.connection.successful"));
@@ -310,12 +310,12 @@ public final class StorageManager {
                 continue;
             }
             if (clan.isVerified()) {
-                int purgeClan = plugin.getSettingsManager().get(PURGE_INACTIVE_CLAN_DAYS);
+                int purgeClan = plugin.getSettingsManager().getInt(PURGE_INACTIVE_CLAN_DAYS);
                 if (clan.getInactiveDays() > purgeClan && purgeClan > 0) {
                     purge.add(clan);
                 }
             } else {
-                int purgeUnverified = plugin.getSettingsManager().get(PURGE_UNVERIFIED_CLAN_DAYS);
+                int purgeUnverified = plugin.getSettingsManager().getInt(PURGE_UNVERIFIED_CLAN_DAYS);
                 if (clan.getInactiveDays() > purgeUnverified && purgeUnverified > 0) {
                     purge.add(clan);
                 }
@@ -330,7 +330,7 @@ public final class StorageManager {
     }
 
     private void purgeClanPlayers(List<ClanPlayer> cps) {
-        int purgePlayers = plugin.getSettingsManager().get(PURGE_INACTIVE_PLAYER_DAYS);
+        int purgePlayers = plugin.getSettingsManager().getInt(PURGE_INACTIVE_PLAYER_DAYS);
         if (purgePlayers < 1) {
             return;
         }

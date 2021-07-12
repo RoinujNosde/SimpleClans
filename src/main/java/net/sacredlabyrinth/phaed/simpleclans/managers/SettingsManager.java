@@ -1,17 +1,17 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
@@ -37,11 +37,6 @@ public final class SettingsManager {
 
     public <T> void set(ConfigField field, T value) {
         config.set(field.path, value);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T get(ConfigField field) {
-        return (T) config.get(field.path, field.defaultValue);
     }
 
     public int getInt(ConfigField field) {
@@ -117,7 +112,7 @@ public final class SettingsManager {
     }
 
     public Locale getLanguage() {
-        String language = get(LANGUAGE);
+        String language = getString(LANGUAGE);
         String[] split = language.split("_");
 
         if (split.length == 2) {
@@ -125,6 +120,19 @@ public final class SettingsManager {
         }
 
         return new Locale(language);
+    }
+
+    public List<Material> getItemList() {
+        List<Material> itemsList = new ArrayList<>();
+        for (String material : getStringList(ITEM_LIST)) {
+            Optional<XMaterial> x = XMaterial.matchXMaterial(material);
+            if (x.isPresent()) {
+                itemsList.add(x.get().parseMaterial());
+            } else {
+                plugin.getLogger().warning("Error with Material: " + material);
+            }
+        }
+        return itemsList;
     }
 
     /**

@@ -40,7 +40,7 @@ public class Rivalries extends Sendable {
     private void sendHeader() {
         ChatBlock.sendBlank(sender);
         ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " +
-                lang("rivalries", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                lang("rivalries", sender) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + DARK_RED + " [" +
                 lang("war", sender) + "]");

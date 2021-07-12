@@ -221,12 +221,12 @@ public class ClanCommands extends BaseCommand {
     public void setDescription(Player player, Clan clan, @Name("description") String description) {
         if (description.length() < settings.getInt(CLAN_MIN_DESCRIPTION_LENGTH)) {
             ChatBlock.sendMessage(player, RED + lang("your.clan.description.must.be.longer.than",
-                    player, settings.get(CLAN_MIN_DESCRIPTION_LENGTH)));
+                    player, settings.getInt(CLAN_MIN_DESCRIPTION_LENGTH)));
             return;
         }
         if (description.length() > settings.getInt(CLAN_MAX_DESCRIPTION_LENGTH)) {
             ChatBlock.sendMessage(player, RED + lang("your.clan.description.cannot.be.longer.than",
-                    player, settings.get(CLAN_MAX_DESCRIPTION_LENGTH)));
+                    player, settings.getInt(CLAN_MAX_DESCRIPTION_LENGTH)));
             return;
         }
         clan.setDescription(description);
@@ -293,7 +293,7 @@ public class ClanCommands extends BaseCommand {
             ChatBlock.sendMessage(player, RED + lang("your.clans.are.already.allies", player));
             return;
         }
-        int maxAlliances = settings.get(CLAN_MAX_ALLIANCES);
+        int maxAlliances = settings.getInt(CLAN_MAX_ALLIANCES);
         if (maxAlliances != -1) {
             if (issuerClan.getAllies().size() >= maxAlliances) {
                 ChatBlock.sendMessage(player, lang("your.clan.reached.max.alliances", player));

@@ -61,7 +61,7 @@ public class Components {
                         lang("gui.playerdetails.player.lore.past.clans", viewer, cp.getPastClansString(
                                 lang("gui.playerdetails.player.lore.past.clans.separator", viewer))),
                         lang("gui.playerdetails.player.lore.inactive", viewer, cp.getInactiveDays(),
-                                pl.getSettingsManager().get(PURGE_INACTIVE_PLAYER_DAYS))),
+                                pl.getSettingsManager().getInt(PURGE_INACTIVE_PLAYER_DAYS))),
                 XMaterial.PLAYER_HEAD, slot);
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
         setOwningPlayer(c.getItem(), offlinePlayer);

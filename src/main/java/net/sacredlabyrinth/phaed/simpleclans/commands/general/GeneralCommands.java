@@ -205,7 +205,7 @@ public class GeneralCommands extends BaseCommand {
         if (chatBlock.size() > 0) {
             ChatBlock.sendBlank(player);
             ChatBlock.sendMessage(player, settings.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", player,
-                    settings.get(COMMANDS_MORE)));
+                    settings.getString(COMMANDS_MORE)));
         }
         ChatBlock.sendBlank(player);
     }

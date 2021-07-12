@@ -40,7 +40,7 @@ public class Vitals extends Sendable {
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
         ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
-                lang("vitals", sender) + " " + headColor + Helper.generatePageSeparator(sm.get(PAGE_SEPARATOR)));
+                lang("vitals", sender) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("weapons", sender) + ": " +
                 lang("0.s.sword.1.2.b.bow.3.4.a.arrow", sender, WHITE, DARK_GRAY, WHITE, DARK_GRAY, WHITE));

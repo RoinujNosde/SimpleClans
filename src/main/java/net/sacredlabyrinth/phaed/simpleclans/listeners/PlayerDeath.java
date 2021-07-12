@@ -151,7 +151,7 @@ public class PlayerDeath implements Listener {
 
         if (plugin.getSettingsManager().is(KDR_ENABLE_MAX_KILLS)) {
             plugin.getStorageManager().getKillsPerPlayer(attacker.getName(), data -> {
-                final int max = plugin.getSettingsManager().get(KDR_MAX_KILLS_PER_VICTIM);
+                final int max = plugin.getSettingsManager().getInt(KDR_MAX_KILLS_PER_VICTIM);
                 Integer kills = data.get(kill.getVictim().getName());
                 if (kills != null) {
                     if (kills < max) {

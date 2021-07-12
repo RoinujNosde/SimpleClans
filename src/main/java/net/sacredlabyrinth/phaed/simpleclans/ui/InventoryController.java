@@ -174,7 +174,7 @@ public class InventoryController implements Listener {
 	 */
 	public static void runSubcommand(@NotNull Player player, @NotNull String subcommand, boolean update, String... args) {
 		SimpleClans plugin = SimpleClans.getInstance();
-		String baseCommand = plugin.getSettingsManager().get(COMMANDS_CLAN);
+		String baseCommand = plugin.getSettingsManager().getString(COMMANDS_CLAN);
 		String finalCommand = String.format("%s %s ", baseCommand, subcommand) + String.join(" ", args);
 		new BukkitRunnable() {
 			

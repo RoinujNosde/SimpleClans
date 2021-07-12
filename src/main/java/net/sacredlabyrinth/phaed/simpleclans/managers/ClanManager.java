@@ -74,7 +74,7 @@ public final class ClanManager {
             }
 
             //cleaning
-            final int delay = plugin.getSettingsManager().get(KDR_DELAY_BETWEEN_KILLS);
+            final int delay = plugin.getSettingsManager().getInt(KDR_DELAY_BETWEEN_KILLS);
             long timePassed = oldKill.getTime().until(LocalDateTime.now(), ChronoUnit.MINUTES);
             if (timePassed >= delay) {
                 iterator.remove();
@@ -99,7 +99,7 @@ public final class ClanManager {
         for (Kill oldKill : list) {
             if (oldKill.getVictim().equals(kill.getVictim())) {
 
-                final int delay = plugin.getSettingsManager().get(KDR_DELAY_BETWEEN_KILLS);
+                final int delay = plugin.getSettingsManager().getInt(KDR_DELAY_BETWEEN_KILLS);
                 long timePassed = oldKill.getTime().until(kill.getTime(), ChronoUnit.MINUTES);
                 if (timePassed < delay) {
                     return true;
@@ -920,7 +920,7 @@ public final class ClanManager {
             Long resign = cp.getResignTime(clan.getTag());
             if (resign != null) {
                 long timePassed = Instant.ofEpochMilli(resign).until(Instant.now(), ChronoUnit.MINUTES);
-                int cooldown = settings.get(REJOIN_COOLDOWN);
+                int cooldown = settings.getInt(REJOIN_COOLDOWN);
                 if (timePassed < cooldown) {
                     return cooldown - timePassed;
                 }
