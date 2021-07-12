@@ -45,12 +45,12 @@ public class TagValidator {
             if (cleanTag.length() < plugin.getSettingsManager().getInt(TAG_MIN_LENGTH)) {
                 error = RED +
                         lang("your.clan.tag.must.be.longer.than.characters", player,
-                                plugin.getSettingsManager().get(TAG_MIN_LENGTH));
+                                plugin.getSettingsManager().getInt(TAG_MIN_LENGTH));
             }
             if (cleanTag.length() > plugin.getSettingsManager().getInt(TAG_MAX_LENGTH)) {
                 error = RED +
                         lang("your.clan.tag.cannot.be.longer.than.characters", player,
-                                plugin.getSettingsManager().get(TAG_MAX_LENGTH));
+                                plugin.getSettingsManager().getInt(TAG_MAX_LENGTH));
             }
             if (plugin.getSettingsManager().hasDisallowedColor(tag)) {
                 error = RED +
