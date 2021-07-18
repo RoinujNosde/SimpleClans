@@ -60,8 +60,8 @@ public final class ChatManager {
 
         List<String> clanTags = plugin.getClanManager().getClans().stream().
                 filter(Clan::isVerified).
+                filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
                 map(Clan::getTag).
-                filter(clanTag -> !getDiscordPlayersId(clanTag).isEmpty()).
                 collect(Collectors.toList());
 
         List<String> channels = Stream.concat(
