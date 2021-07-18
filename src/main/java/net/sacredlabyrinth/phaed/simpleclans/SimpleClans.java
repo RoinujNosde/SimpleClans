@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import github.scarsz.discordsrv.DiscordSRV;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
@@ -16,6 +17,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -106,6 +108,9 @@ public class SimpleClans extends JavaPlugin {
         registerEvents();
         permissionsManager.loadPermissions();
         chatManager = new ChatManager(this);
+        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null) {
+            DiscordSRV.api.subscribe(chatManager);
+        }
         commandManager = new SCCommandManager(this);
 
         bankLogger = new CSVBankLogger(this);

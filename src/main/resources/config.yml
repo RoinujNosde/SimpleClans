@@ -204,11 +204,11 @@ discordchat:
     format: "<%player%> %rank%: %message%"
     rank: "[%rank%]"
     voice:
-        channel-format: "%clan%"
         category-format: "SC - VoiceChannels"
+        category-id: 0
     text:
-        channel-format: "%clan%"
         category-format: "SC - TextChannels"
+        category-id: 0
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7

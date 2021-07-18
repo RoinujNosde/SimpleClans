@@ -507,10 +507,10 @@ public final class SettingsManager {
         DISCORDCHAT_ENABLE("discordchat.enable", false),
         DISCORDCHAT_FORMAT("discordchat.format", "<%player%> %rank%: %message%"),
         DISCORDCHAT_RANK("discordchat.rank", "[%rank%]"),
-        DISCORDCHAT_VOICE_CHANNEL_FORMAT("discordchat.voice.channel-format", "%clan%"),
         DISCORDCHAT_VOICE_CATEGORY_FORMAT("discordchat.voice.category-format", "SC - VoiceChannels"),
-        DISCORDCHAT_TEXT_CHANNEL_FORMAT("discordchat.text.channel-format", "%clan%"),
-        DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-foramt", "SC - TextChannels"),
+        DISCORDCHAT_VOICE_CATEGORY_ID("discordchat.voice.category-id"),
+        DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-format", "SC - TextChannels"),
+        DISCORDCHAT_TEXT_CATEGORY_ID("discordchat.text.category-id"),
         /*
         ================
         > Purge Settings
