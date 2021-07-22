@@ -7,6 +7,7 @@ import co.aikar.commands.PaperCommandManager;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.completions.AbstractAsyncCompletion;
 import net.sacredlabyrinth.phaed.simpleclans.commands.completions.AbstractCompletion;
@@ -23,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -66,8 +66,9 @@ public class SCCommandManager extends PaperCommandManager {
     }
 
     private void registerCompletions() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.completions");
-        Set<Class<? extends AbstractCompletion>> completions = reflections.getSubTypesOf(AbstractCompletion.class);
+        Set<Class<? extends AbstractCompletion>> completions =
+                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands.completions",
+                        AbstractCompletion.class);
         plugin.getLogger().info(String.format("Registering %d command completions...", completions.size()));
         for (Class<? extends AbstractCompletion> c : completions) {
             if (Modifier.isAbstract(c.getModifiers())) {
@@ -93,8 +94,9 @@ public class SCCommandManager extends PaperCommandManager {
 
     @SuppressWarnings("unchecked")
     private void registerConditions() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.conditions");
-        Set<Class<? extends AbstractCondition>> conditions = reflections.getSubTypesOf(AbstractCondition.class);
+        Set<Class<? extends AbstractCondition>> conditions =
+                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands.conditions",
+                        AbstractCondition.class);
         plugin.getLogger().info(String.format("Registering %d command conditions...", conditions.size()));
         for (Class<? extends AbstractCondition> c : conditions) {
             if (Modifier.isAbstract(c.getModifiers())) {
@@ -119,8 +121,9 @@ public class SCCommandManager extends PaperCommandManager {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void registerContexts() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.contexts");
-        Set<Class<? extends AbstractContextResolver>> resolvers = reflections.getSubTypesOf(AbstractContextResolver.class);
+        Set<Class<? extends AbstractContextResolver>> resolvers =
+                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands.contexts",
+                        AbstractContextResolver.class);
         plugin.getLogger().info(String.format("Registering %d command contexts...", resolvers.size()));
         for (Class<? extends AbstractContextResolver> cr : resolvers) {
             if (Modifier.isAbstract(cr.getModifiers())) {
@@ -142,8 +145,7 @@ public class SCCommandManager extends PaperCommandManager {
 
     private void registerCommands() {
         boolean forceCommandPriority = plugin.getSettingsManager().is(COMMANDS_FORCE_PRIORITY);
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands");
-        Set<Class<? extends BaseCommand>> commands = reflections.getSubTypesOf(BaseCommand.class);
+        Set<Class<? extends BaseCommand>> commands = Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands", BaseCommand.class);
         plugin.getLogger().info(String.format("Registering %d base commands...", commands.size()));
         for (Class<? extends BaseCommand> c : commands) {
             //ACF already registers nested classes

@@ -12,11 +12,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils.stripColors;
@@ -24,6 +31,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils.stripColors;
 /**
  * @author phaed
  */
+
 public class Helper {
 
     private Helper() {
@@ -37,7 +45,7 @@ public class Helper {
         }
         return Locale.forLanguageTag(languageTag);
     }
-    
+
     public static @Nullable JSONObject parseJson(String json) {
         if (json != null && !json.isEmpty()) {
             try {
@@ -48,15 +56,52 @@ public class Helper {
         }
         return null;
     }
-    
+
+    public static Set<Class<?>> getClasses(String packageName) {
+        Set<Class<?>> classes = new LinkedHashSet<>();
+        String packagePath = packageName.replace(".", "/");
+
+        try {
+            URI uri = SimpleClans.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+            FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri.toString()), Collections.emptyMap());
+
+            Files.walk(fileSystem.getPath(packagePath)).forEach(p -> {
+                String name = p.getFileName() == null ? "" : p.getFileName().toString();
+                if (!name.contains("$") && name.endsWith(".class")) {
+                    try {
+                        String classPath = p.toString().replace("/", ".").split(".class")[0];
+                        Class<?> clazz = Class.forName(classPath);
+                        classes.add(clazz);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            fileSystem.close();
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return classes;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Set<Class<? extends T>> getClassesBySubType(String packageName, Class<?> type) {
+        return getClasses(packageName).stream().
+                filter(type::isAssignableFrom).
+                map(aClass -> ((Class<? extends T>) aClass)).
+                collect(Collectors.toSet());
+    }
+
     /**
      * Parses a list of ranks from the specified JSONObject
-     * 
+     *
      * @param jo the JSON Object
      * @return a list of ranks or null if the JSON String is null/empty
      */
-	public static @Nullable List<Rank> ranksFromJson(@Nullable JSONObject jo) {
-    	if (jo != null && !jo.isEmpty()) {
+    public static @Nullable List<Rank> ranksFromJson(@Nullable JSONObject jo) {
+        if (jo != null && !jo.isEmpty()) {
             Object ranks = jo.get("ranks");
             if (ranks != null) {
                 JSONArray array = (JSONArray) ranks;
@@ -76,7 +121,7 @@ public class Helper {
                 return rankList;
             }
         }
-    	return null;
+        return null;
     }
 
     /**
@@ -86,83 +131,83 @@ public class Helper {
      * @return the default rank or null if not found and/or it does not exist
      */
     public static @Nullable String defaultRankFromJson(@Nullable JSONObject jo) {
-	    if (jo != null && !jo.isEmpty()) {
+        if (jo != null && !jo.isEmpty()) {
             if (!jo.containsKey("defaultRank")) {
                 return null;
             } else {
                 return (String) jo.get("defaultRank");
             }
         }
-	    return null;
+        return null;
     }
-    
+
     /**
      * Converts a list of ranks and the default rank to a JSON String
-     * 
-     * @param ranks the ranks
+     *
+     * @param ranks       the ranks
      * @param defaultRank the default rank
      * @return a JSON String
      */
     @SuppressWarnings("unchecked")
-	public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
-    	if (ranks == null)
-    		ranks = new ArrayList<>();
-    	
-    	JSONArray array = new JSONArray();
-    	for (Rank rank : ranks) {
-    		JSONObject o = new JSONObject();
-    		o.put("name", rank.getName());
-    		o.put("displayName", rank.getDisplayName());
-    		JSONArray permArray = new JSONArray();
+    public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
+        if (ranks == null)
+            ranks = new ArrayList<>();
+
+        JSONArray array = new JSONArray();
+        for (Rank rank : ranks) {
+            JSONObject o = new JSONObject();
+            o.put("name", rank.getName());
+            o.put("displayName", rank.getDisplayName());
+            JSONArray permArray = new JSONArray();
             permArray.addAll(rank.getPermissions());
-    		o.put("permissions", permArray);
-    		array.add(o);
-    	}
-    	
-    	JSONObject object = new JSONObject();
-    	object.put("ranks", array);
-    	object.put("defaultRank", defaultRank);
-    	return object.toJSONString();
+            o.put("permissions", permArray);
+            array.add(o);
+        }
+
+        JSONObject object = new JSONObject();
+        object.put("ranks", array);
+        object.put("defaultRank", defaultRank);
+        return object.toJSONString();
     }
-    
+
     /**
      * Converts a resign times map to a JSON String
-     * 
+     *
      * @param resignTimes
      * @return a JSON String
      */
     public static String resignTimesToJson(Map<String, Long> resignTimes) {
-    	return JSONObject.toJSONString(resignTimes);
+        return JSONObject.toJSONString(resignTimes);
     }
-    
+
     /**
      * Converts a JSON String to a resign times map
-     * 
+     *
      * @param json JSON String
      * @return a map
      */
     @SuppressWarnings("unchecked")
-	public static Map<String, Long> resignTimesFromJson(String json) {
-    	if (json != null) {
-	    	try {
-				return (Map<String, Long>) new JSONParser().parse(json);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}	
-    	}
-    	return null;
+    public static Map<String, Long> resignTimesFromJson(String json) {
+        if (json != null) {
+            try {
+                return (Map<String, Long>) new JSONParser().parse(json);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
-    
+
     /**
      * Returns the delay in seconds to the specified hour and minute.
-     * 
-     * @param hour hour
+     *
+     * @param hour   hour
      * @param minute minute
      * @return the delay in seconds
      */
     public static long getDelayTo(int hour, int minute) {
-    	if (hour < 0 || hour > 23) hour = 1;
-    	if (minute < 0 || minute > 59) minute = 0;
+        if (hour < 0 || hour > 23) hour = 1;
+        if (minute < 0 || minute > 59) minute = 0;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime d = LocalDateTime.of(now.toLocalDate(), LocalTime.of(hour, minute));
         long delay;
@@ -226,19 +271,19 @@ public class Helper {
     public static String[] toArray(List<String> list) {
         return list.toArray(new String[0]);
     }
-    
+
     /**
      * Converts the Permission values array to a String array
-     * 
+     *
      * @return
      */
     public static String[] fromPermissionArray() {
-    	RankPermission[] permissions = RankPermission.values();
-    	String[] sa = new String[permissions.length];
-    	for (int i = 0; i < permissions.length; i++) {
-    		sa[i] = permissions[i].toString();
-    	}
-    	return sa;
+        RankPermission[] permissions = RankPermission.values();
+        String[] sa = new String[permissions.length];
+        for (int i = 0; i < permissions.length; i++) {
+            sa[i] = permissions[i].toString();
+        }
+        return sa;
     }
 
     /**

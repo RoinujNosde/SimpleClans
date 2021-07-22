@@ -84,14 +84,6 @@
                             <pattern>com.cryptomorin.xseries</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.xseries</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>org.reflections</pattern>
-                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.reflections</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>javassist</pattern>
-                            <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.javassist</shadedPattern>
-                        </relocation>
                     </relocations>
                     <artifactSet>
                         <excludes>
@@ -162,11 +154,6 @@
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
             <version>7.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.12</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
