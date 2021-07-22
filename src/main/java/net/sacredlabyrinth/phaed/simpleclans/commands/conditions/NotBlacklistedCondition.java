@@ -9,6 +9,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BLACKLISTED_WORLDS;
+
 @SuppressWarnings("unused")
 public class NotBlacklistedCondition extends AbstractCommandCondition {
 
@@ -22,7 +24,7 @@ public class NotBlacklistedCondition extends AbstractCommandCondition {
         if (player != null) {
             World world = player.getLocation().getWorld();
             if (world != null) {
-                if (settingsManager.isBlacklistedWorld(world.getName())) {
+                if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(world.getName())) {
                     throw new ConditionFailedException();
                 }
             }

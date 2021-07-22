@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_SEPARATOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SERVER_NAME;
 import static org.bukkit.ChatColor.*;
 
 public class MostKilled extends Sendable {
@@ -64,8 +66,8 @@ public class MostKilled extends Sendable {
         chatBlock.addRow("  " + headColor + lang("victim", player), headColor +
                 lang("killcount", player), headColor + lang("attacker", player));
 
-        ChatBlock.saySingle(player, sm.getServerName() + subColor + " " + lang("mostkilled",
-                player) + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(player, sm.getColored(SERVER_NAME) + subColor + " " + lang("mostkilled",
+                player) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(player);
     }
 }

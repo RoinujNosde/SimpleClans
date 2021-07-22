@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_MEMBER_FEE_ENABLED;
 
 public class MemberFeeEnabledCondition extends AbstractCommandCondition {
     public MemberFeeEnabledCondition(@NotNull SimpleClans plugin) {
@@ -17,7 +18,7 @@ public class MemberFeeEnabledCondition extends AbstractCommandCondition {
 
     @Override
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context) throws InvalidCommandArgument {
-        if (!settingsManager.isMemberFee()) {
+        if (!settingsManager.is(ECONOMY_MEMBER_FEE_ENABLED)) {
             throw new ConditionFailedException(ChatColor.RED + lang("disabled.command",
                     context.getIssuer().getIssuer()));
         }

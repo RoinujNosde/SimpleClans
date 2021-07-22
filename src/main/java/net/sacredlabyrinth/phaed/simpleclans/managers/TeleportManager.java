@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,6 +19,9 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 public final class TeleportManager {
     private final SimpleClans plugin;
@@ -38,11 +40,11 @@ public final class TeleportManager {
      * @param clanName    the Clan name
      */
     public void addPlayer(Player player, Location destination, String clanName) {
-        int secs = SimpleClans.getInstance().getSettingsManager().getWaitSecs();
+        int secs = SimpleClans.getInstance().getSettingsManager().getInt(CLAN_TELEPORT_DELAY);
         waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName));
 
         if (secs > 0) {
-            ChatBlock.sendMessage(player, ChatColor.AQUA
+            ChatBlock.sendMessage(player, AQUA
                     + MessageFormat.format(lang("waiting.for.teleport.stand.still.for.0.seconds", player), secs));
         }
     }
@@ -52,7 +54,7 @@ public final class TeleportManager {
         int x = loc.getBlockX();
         int z = loc.getBlockZ();
 
-        if (plugin.getSettingsManager().isTeleportBlocks()) {
+        if (plugin.getSettingsManager().is(TELEPORT_BLOCKS)) {
             player.sendBlockChange(new Location(loc.getWorld(), x + 1, loc.getBlockY() - 1, z + 1),
                     Material.GLASS, (byte) 0);
             player.sendBlockChange(new Location(loc.getWorld(), x - 1, loc.getBlockY() - 1, z - 1),
@@ -100,10 +102,10 @@ public final class TeleportManager {
         if (plugin.getPermissionsManager().has(player, "simpleclans.mod.keep-items")) {
             return;
         }
-        List<Material> itemsList = plugin.getSettingsManager().getItemsList();
+        List<Material> itemsList = plugin.getSettingsManager().getItemList();
         PlayerInventory inv = player.getInventory();
-        boolean dropOnHome = plugin.getSettingsManager().isDropOnHome();
-        boolean keepOnHome = plugin.getSettingsManager().isKeepOnHome();
+        boolean dropOnHome = plugin.getSettingsManager().is(DROP_ITEMS_ON_CLAN_HOME);
+        boolean keepOnHome = plugin.getSettingsManager().is(KEEP_ITEMS_ON_CLAN_HOME);
         ItemStack[] contents = inv.getContents();
         for (ItemStack item : contents) {
             if (item == null) {
@@ -129,7 +131,7 @@ public final class TeleportManager {
                 state.setProcessing(true);
 
                 if (!Helper.isSameBlock(player.getLocation(), state.getLocation())) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + lang("you.moved.teleport.cancelled", player));
+                    ChatBlock.sendMessage(player, RED + lang("you.moved.teleport.cancelled", player));
                     iter.remove();
                     continue;
                 }
@@ -137,7 +139,7 @@ public final class TeleportManager {
                     teleport(state);
                     iter.remove();
                 } else {
-                    ChatBlock.sendMessage(player, ChatColor.AQUA + "" + state.getCounter());
+                    ChatBlock.sendMessage(player, AQUA + "" + state.getCounter());
                 }
 
                 state.setProcessing(false);
@@ -160,7 +162,7 @@ public final class TeleportManager {
     public void teleportToHome(@NotNull Player player, @NotNull Location destination, @NotNull String clanName) {
         PaperLib.teleportAsync(player, destination, PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
             if (result) {
-                ChatBlock.sendMessage(player, ChatColor.AQUA + lang("now.at.homebase", player, clanName));
+                ChatBlock.sendMessage(player, AQUA + lang("now.at.homebase", player, clanName));
             } else {
                 plugin.getLogger().log(Level.WARNING, "An error occurred while teleporting a player");
             }

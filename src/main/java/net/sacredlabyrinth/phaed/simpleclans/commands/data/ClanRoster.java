@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 public class ClanRoster extends Sendable {
@@ -35,10 +37,10 @@ public class ClanRoster extends Sendable {
         for (ClanPlayer cp : members) {
             Player p = cp.toPlayer();
 
-            String name = (cp.isTrusted() ? sm.getPageTrustedColor() : sm.getPageUnTrustedColor()) + cp.getName();
+            String name = (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) : sm.getColored(PAGE_UNTRUSTED_COLOR)) + cp.getName();
             String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
 
-            chatBlock.addRow("  " + name, YELLOW + Helper.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
+            chatBlock.addRow("  " + name, YELLOW + ChatUtils.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
         }
     }
 
@@ -48,22 +50,22 @@ public class ClanRoster extends Sendable {
         for (ClanPlayer cp : leaders) {
             Player p = cp.toPlayer();
 
-            String name = sm.getPageLeaderColor() + cp.getName();
+            String name = sm.getColored(PAGE_LEADER_COLOR) + cp.getName();
             String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender)
                     : WHITE + cp.getLastSeenDaysString(sender);
 
-            chatBlock.addRow("  " + name, YELLOW + Helper.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
+            chatBlock.addRow("  " + name, YELLOW + ChatUtils.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
         }
     }
 
     private void configureAndSendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getPageClanNameColor() + clan.getName() + subColor + " " +
-                lang("roster", sender) + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.getColored(PAGE_CLAN_NAME_COLOR) + clan.getName() + subColor + " " +
+                lang("roster", sender) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
-        ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + " " + sm.getPageLeaderColor() +
-                lang("leader", sender) + headColor + ", " + sm.getPageTrustedColor() + lang("trusted", sender) +
-                headColor + ", " + sm.getPageUnTrustedColor() + lang("untrusted", sender));
+        ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + " " + sm.getColored(PAGE_LEADER_COLOR) +
+                lang("leader", sender) + headColor + ", " + sm.getColored(PAGE_TRUSTED_COLOR) + lang("trusted", sender) +
+                headColor + ", " + sm.getColored(PAGE_UNTRUSTED_COLOR) + lang("untrusted", sender));
         ChatBlock.sendBlank(sender);
 
         chatBlock.setFlexibility(false, true, false, true);

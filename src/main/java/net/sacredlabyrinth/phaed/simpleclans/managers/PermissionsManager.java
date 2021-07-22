@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
 
 /**
  * @author phaed
@@ -113,7 +114,7 @@ public final class PermissionsManager {
                 for (String perm : getPermissions(clan)) {
                     permAttaches.get(player).setPermission(perm, true);
                 }
-                if (plugin.getSettingsManager().isAutoGroupGroupName()) {
+                if (plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
                     permAttaches.get(player).setPermission("group." + clan.getTag(), true);
                 }
                 player.recalculatePermissions();
@@ -387,7 +388,7 @@ public final class PermissionsManager {
      *
      */
     public void addClanPermissions(ClanPlayer cp) {
-        if (!plugin.getSettingsManager().isEnableAutoGroups()) {
+        if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
             return;
         }
 
@@ -433,7 +434,7 @@ public final class PermissionsManager {
      *
      */
     public void removeClanPermissions(ClanPlayer cp) {
-        if (!plugin.getSettingsManager().isEnableAutoGroups()) {
+        if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
             return;
         }
 

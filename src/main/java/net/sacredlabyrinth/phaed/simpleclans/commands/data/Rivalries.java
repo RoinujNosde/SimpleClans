@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_SEPARATOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SERVER_NAME;
 import static org.bukkit.ChatColor.*;
 
 public class Rivalries extends Sendable {
@@ -37,8 +39,8 @@ public class Rivalries extends Sendable {
 
     private void sendHeader() {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getServerName() + subColor + " " +
-                lang("rivalries", sender) + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " +
+                lang("rivalries", sender) + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("legend", sender) + DARK_RED + " [" +
                 lang("war", sender) + "]");

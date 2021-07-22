@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
@@ -35,7 +36,7 @@ public class HomeCommands extends BaseCommand {
     @Conditions("rank:name=REGROUP_ME")
     @Description("{@@command.description.regroup.me}")
     public void regroupMe(Player player, ClanPlayer cp, Clan clan) {
-        if (!settings.getAllowReGroupCommand()) {
+        if (!settings.is(ALLOW_REGROUP)) {
             ChatBlock.sendMessage(player, RED + lang("insufficient.permissions", player));
             return;
         }
@@ -59,7 +60,7 @@ public class HomeCommands extends BaseCommand {
     @Conditions("rank:name=REGROUP_HOME")
     @Description("{@@command.description.regroup.home}")
     public void regroupHome(Player player, ClanPlayer cp, Clan clan) {
-        if (!settings.getAllowReGroupCommand()) {
+        if (!settings.is(ALLOW_REGROUP)) {
             ChatBlock.sendMessage(player, RED + lang("insufficient.permissions", player));
             return;
         }
@@ -94,7 +95,7 @@ public class HomeCommands extends BaseCommand {
     @Conditions("rank:name=HOME_SET")
     @Description("{@@command.description.home.clear}")
     public void clear(Player player, Clan clan) {
-        if (settings.isHomebaseSetOnce() && clan.getHomeLocation() != null &&
+        if (settings.is(CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE) && clan.getHomeLocation() != null &&
                 !permissions.has(player, "simpleclans.mod.home")) {
             ChatBlock.sendMessage(player, RED + lang("home.base.only.once", player));
             return;
@@ -109,12 +110,12 @@ public class HomeCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.home-set")
     @Description("{@@command.description.home.set}")
     public void set(Player player, ClanPlayer cp, Clan clan) {
-        if (settings.isHomebaseSetOnce() && clan.getHomeLocation() != null &&
+        if (settings.is(CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE) && clan.getHomeLocation() != null &&
                 !permissions.has(player, "simpleclans.mod.home")) {
             ChatBlock.sendMessage(player, RED + lang("home.base.only.once", player));
             return;
         }
-        if (settings.isSetBaseOnlyInLand()) {
+        if (settings.is(LAND_SET_BASE_ONLY_IN_LAND)) {
             if (!protection.isOwner(player, player.getLocation())) {
                 ChatBlock.sendMessageKey(player, "you.can.only.set.base.in.your.land");
                 return;

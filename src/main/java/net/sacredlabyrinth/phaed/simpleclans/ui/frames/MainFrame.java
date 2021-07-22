@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class MainFrame extends SCFrame {
 
@@ -70,7 +71,7 @@ public class MainFrame extends SCFrame {
 	}
 
 	private void addLanguageSelector() {
-		if (plugin.getSettingsManager().isLanguagePerPlayer()) {
+		if (plugin.getSettingsManager().is(LANGUAGE_SELECTOR)) {
 			SCComponent language = new SCComponentImpl.Builder(XMaterial.MAP)
 					.withDisplayName(lang("gui.main.languageselector.title", getViewer()))
 					.withSlot(7).withLore(Arrays.asList(lang("gui.main.languageselector.lore.left.click", getViewer())
@@ -87,9 +88,9 @@ public class MainFrame extends SCFrame {
 
 	public void addResetKdr() {
 		List<String> resetKrLore;
-		if (plugin.getSettingsManager().isePurchaseResetKdr()) {
+		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR)) {
 			resetKrLore = Arrays.asList(
-					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().geteResetKdr()),
+					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().getString(ECONOMY_RESET_KDR_PRICE)),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
 			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
@@ -104,7 +105,7 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getServerName());
+		return lang("gui.main.title", getViewer(), plugin.getSettingsManager().getColored(SERVER_NAME));
 	}
 
 	@Override

@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_CLAN_NAME_COLOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_SEPARATOR;
 
 public class Kills extends Sendable {
 
@@ -53,9 +55,9 @@ public class Kills extends Sendable {
         chatBlock.setFlexibility(true, false);
         chatBlock.setAlignment("l", "c");
         chatBlock.addRow("  " + headColor + lang("victim", player), lang("killcount", player));
-        ChatBlock.saySingle(player, sm.getPageClanNameColor() + polled + subColor
+        ChatBlock.saySingle(player, sm.getColored(PAGE_CLAN_NAME_COLOR) + polled + subColor
                 + " " + lang("kills", player) + " " + headColor +
-                Helper.generatePageSeparator(sm.getPageSep()));
+                Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(player);
     }
 }

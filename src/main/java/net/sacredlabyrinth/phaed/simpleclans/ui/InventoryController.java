@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.COMMANDS_CLAN;
 
 /**
  * 
@@ -173,7 +174,7 @@ public class InventoryController implements Listener {
 	 */
 	public static void runSubcommand(@NotNull Player player, @NotNull String subcommand, boolean update, String... args) {
 		SimpleClans plugin = SimpleClans.getInstance();
-		String baseCommand = plugin.getSettingsManager().getCommandClan();
+		String baseCommand = plugin.getSettingsManager().getString(COMMANDS_CLAN);
 		String finalCommand = String.format("%s %s ", baseCommand, subcommand) + String.join(" ", args);
 		new BukkitRunnable() {
 			

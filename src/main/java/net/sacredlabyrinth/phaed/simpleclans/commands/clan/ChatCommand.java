@@ -2,29 +2,67 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
-import org.bukkit.entity.Player;
+import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
+
+import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
+import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 
 @CommandAlias("%clan_chat")
-@Conditions("%basic_conditions|clan_member")
+@Conditions("%basic_conditions|clan_member|can_chat:type=CLAN")
 @CommandPermission("simpleclans.member.chat")
 @Description("{@@command.description.chat}")
 public class ChatCommand extends BaseCommand {
 
     @Dependency
-    private ClanManager clanManager;
+    private ChatManager chatManager;
     @Dependency
     private SettingsManager settingsManager;
+    @Dependency
+    private StorageManager storageManager;
 
     @Default
     @HelpSearchTags("chat")
-    @CommandCompletion("@chat_subcommands")
-    public void sendMessage(Player player, ClanPlayer cp, @Name("message") String message) {
-        if (!settingsManager.getClanChatEnable()) {
+    public void sendMessage(ClanPlayer cp, @Name("message") String message) {
+        chatManager.processChat(SPIGOT, CLAN, cp, message);
+    }
+
+    @Subcommand("%join")
+    public void join(ClanPlayer clanPlayer) {
+        if (clanPlayer.getChannel() == CLAN) {
+            ChatBlock.sendMessage(clanPlayer, lang("already.joined.clan.chat"));
             return;
         }
-        clanManager.processClanChat(player, cp.getTag(), message);
+
+        clanPlayer.setChannel(CLAN);
+        storageManager.updateClanPlayer(clanPlayer);
+        ChatBlock.sendMessage(clanPlayer, lang("joined.clan.chat"));
+    }
+
+    @Subcommand("%leave")
+    public void leave(ClanPlayer clanPlayer) {
+        if (clanPlayer.getChannel() == CLAN) {
+            clanPlayer.setChannel(NONE);
+            storageManager.updateClanPlayer(clanPlayer);
+            ChatBlock.sendMessage(clanPlayer, lang("left.clan.chat", clanPlayer));
+        } else {
+            ChatBlock.sendMessage(clanPlayer, lang("chat.didnt.join", clanPlayer));
+        }
+    }
+
+    @Subcommand("%mute")
+    public void mute(ClanPlayer clanPlayer) {
+        if (!clanPlayer.isMuted()) {
+            clanPlayer.mute(CLAN, true);
+            ChatBlock.sendMessage(clanPlayer, lang("muted.clan.chat", clanPlayer));
+        } else {
+            clanPlayer.mute(CLAN, false);
+            ChatBlock.sendMessage(clanPlayer, lang("unmuted.clan.chat", clanPlayer));
+        }
     }
 }
