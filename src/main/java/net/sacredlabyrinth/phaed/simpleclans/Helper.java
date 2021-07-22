@@ -18,11 +18,14 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -57,30 +60,42 @@ public class Helper {
         return null;
     }
 
-    public static Set<Class<?>> getClasses(String packageName) {
-        Set<Class<?>> classes = new LinkedHashSet<>();
-        String packagePath = packageName.replace(".", "/");
-
+    public static Set<Path> getFilesPath(String path, Predicate<? super Path> filter) {
+        Set<Path> files = new LinkedHashSet<>();
+        String packagePath = path.replace(".", "/");
         try {
             URI uri = SimpleClans.class.getProtectionDomain().getCodeSource().getLocation().toURI();
             FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri.toString()), Collections.emptyMap());
-
-            Files.walk(fileSystem.getPath(packagePath)).forEach(p -> {
-                String name = p.getFileName() == null ? "" : p.getFileName().toString();
-                if (!name.contains("$") && name.endsWith(".class")) {
-                    try {
-                        String classPath = p.toString().replace("/", ".").split(".class")[0];
-                        Class<?> clazz = Class.forName(classPath);
-                        classes.add(clazz);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
+            files = Files.walk(fileSystem.getPath(packagePath)).
+                    filter(Objects::nonNull).
+                    filter(filter).
+                    collect(Collectors.toSet());
             fileSystem.close();
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
+        } catch (URISyntaxException | IOException ex) {
+            SimpleClans.getInstance().getLogger().
+                    log(Level.WARNING, "An error occurred while trying to load files: " + ex.getMessage(), ex);
+        }
+
+        return files;
+    }
+
+    public static Set<Class<?>> getClasses(String packageName) {
+        Set<Class<?>> classes = new LinkedHashSet<>();
+
+        Predicate<? super Path> filter = entry -> {
+            String path = entry.getFileName().toString();
+            return !path.contains("$") && path.endsWith(".class");
+        };
+
+        for (Path filesPath : getFilesPath(packageName, filter)) {
+            String fileName = filesPath.toString().replace("/", ".").split(".class")[0];
+
+            try {
+                Class<?> clazz = Class.forName(fileName);
+                classes.add(clazz);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         return classes;

@@ -1,17 +1,18 @@
 package net.sacredlabyrinth.phaed.simpleclans.language;
 
-import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.logging.Level;
-
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * 
@@ -119,26 +120,24 @@ public class LanguageResource {
 		return availableLocales;
 	}
 
-	private static void loadAvailableLocales() {
-		ArrayList<Locale> locales = new ArrayList<>();
-		try {
-			URI uri = LanguageResource.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-			FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri.toString()), Collections.emptyMap());
-			Files.walk(fileSystem.getPath("/")).forEach(p -> {
-				String name = p.getFileName() == null ? "" : p.getFileName().toString();
-				if (name.startsWith("messages") && name.endsWith(".properties")) {
-					Locale locale = getLocaleByFileName(name);
-					locales.add(locale);
-					loadTranslationStatus(locale, name);
-				}
-			});
-			fileSystem.close();
-		} catch (URISyntaxException | IOException e) {
-			SimpleClans.getInstance().getLogger().log(Level.WARNING, "An error occurred while getting the available languages", e);
-		}
-		locales.sort(Comparator.comparing(Locale::toLanguageTag));
-		availableLocales = locales;
-	}
+    private static void loadAvailableLocales() {
+        ArrayList<Locale> locales = new ArrayList<>();
+
+        Predicate<Path> filter = entry -> {
+            String path = (entry.getFileName() != null) ? entry.getFileName().toString() : "";
+            return path.startsWith("messages") && path.endsWith(".properties");
+        };
+
+        for (Path filePath : Helper.getFilesPath("/", filter)) {
+            String fileName = filePath.getFileName().toString();
+            Locale locale = getLocaleByFileName(fileName);
+            locales.add(locale);
+            loadTranslationStatus(locale, fileName);
+        }
+
+        locales.sort(Comparator.comparing(Locale::toLanguageTag));
+        availableLocales = locales;
+    }
 
 	private static @NotNull Locale getLocaleByFileName(@NotNull String name) {
 		Locale locale;
