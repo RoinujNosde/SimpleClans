@@ -168,7 +168,7 @@ public class SimpleClansExpansion extends PlaceholderExpansion {
 
     private void registerResolvers() {
         Set<Class<? extends PlaceholderResolver>> resolvers =
-                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers",
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers",
                         PlaceholderResolver.class);
         plugin.getLogger().info(String.format("Registering %d placeholder resolvers...", resolvers.size()));
         for (Class<? extends PlaceholderResolver> r : resolvers) {

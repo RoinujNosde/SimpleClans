@@ -60,7 +60,7 @@ public class Helper {
         return null;
     }
 
-    public static Set<Path> getFilesPath(String path, Predicate<? super Path> filter) {
+    public static Set<Path> getPathsIn(String path, Predicate<? super Path> filter) {
         Set<Path> files = new LinkedHashSet<>();
         String packagePath = path.replace(".", "/");
         try {
@@ -87,7 +87,7 @@ public class Helper {
             return !path.contains("$") && path.endsWith(".class");
         };
 
-        for (Path filesPath : getFilesPath(packageName, filter)) {
+        for (Path filesPath : getPathsIn(packageName, filter)) {
             String fileName = filesPath.toString().replace("/", ".").split(".class")[0];
 
             try {
@@ -102,7 +102,7 @@ public class Helper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Set<Class<? extends T>> getClassesBySubType(String packageName, Class<?> type) {
+    public static <T> Set<Class<? extends T>> getSubTypesOf(String packageName, Class<?> type) {
         return getClasses(packageName).stream().
                 filter(type::isAssignableFrom).
                 map(aClass -> ((Class<? extends T>) aClass)).

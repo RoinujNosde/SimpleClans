@@ -67,7 +67,7 @@ public class SCCommandManager extends PaperCommandManager {
 
     private void registerCompletions() {
         Set<Class<? extends AbstractCompletion>> completions =
-                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands.completions",
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands.completions",
                         AbstractCompletion.class);
         plugin.getLogger().info(String.format("Registering %d command completions...", completions.size()));
         for (Class<? extends AbstractCompletion> c : completions) {
@@ -95,7 +95,7 @@ public class SCCommandManager extends PaperCommandManager {
     @SuppressWarnings("unchecked")
     private void registerConditions() {
         Set<Class<? extends AbstractCondition>> conditions =
-                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands.conditions",
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands.conditions",
                         AbstractCondition.class);
         plugin.getLogger().info(String.format("Registering %d command conditions...", conditions.size()));
         for (Class<? extends AbstractCondition> c : conditions) {
@@ -122,7 +122,7 @@ public class SCCommandManager extends PaperCommandManager {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void registerContexts() {
         Set<Class<? extends AbstractContextResolver>> resolvers =
-                Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands.contexts",
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands.contexts",
                         AbstractContextResolver.class);
         plugin.getLogger().info(String.format("Registering %d command contexts...", resolvers.size()));
         for (Class<? extends AbstractContextResolver> cr : resolvers) {
@@ -145,7 +145,7 @@ public class SCCommandManager extends PaperCommandManager {
 
     private void registerCommands() {
         boolean forceCommandPriority = plugin.getSettingsManager().is(COMMANDS_FORCE_PRIORITY);
-        Set<Class<? extends BaseCommand>> commands = Helper.getClassesBySubType("net.sacredlabyrinth.phaed.simpleclans.commands", BaseCommand.class);
+        Set<Class<? extends BaseCommand>> commands = Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands", BaseCommand.class);
         plugin.getLogger().info(String.format("Registering %d base commands...", commands.size()));
         for (Class<? extends BaseCommand> c : commands) {
             //ACF already registers nested classes

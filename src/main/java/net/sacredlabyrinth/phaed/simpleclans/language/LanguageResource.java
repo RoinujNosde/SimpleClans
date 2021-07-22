@@ -128,7 +128,7 @@ public class LanguageResource {
             return path.startsWith("messages") && path.endsWith(".properties");
         };
 
-        for (Path filePath : Helper.getFilesPath("/", filter)) {
+        for (Path filePath : Helper.getPathsIn("/", filter)) {
             String fileName = filePath.getFileName().toString();
             Locale locale = getLocaleByFileName(fileName);
             locales.add(locale);
