@@ -7,25 +7,26 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Category;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildChannel;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
-import org.reflections.Reflections;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
@@ -39,8 +40,10 @@ public final class ChatManager {
     private final Set<ChatHandler> handlers = new HashSet<>();
 
     private Guild guild;
-    private Category textCategory;
-    private Category voiceCategory;
+
+    private List<String> textCategories;
+
+    private static final int MAX_CHANNELS_PER_CATEGORY = 50;
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -50,13 +53,9 @@ public final class ChatManager {
 
     @Subscribe
     public void setupDiscord(DiscordReadyEvent event) {
-        if (!(settingsManager.is(DISCORDCHAT_ENABLE) || DiscordSRV.isReady)) {
-            return;
-        }
-
         guild = DiscordSRV.getPlugin().getMainGuild();
-        textCategory = getCategory(DISCORDCHAT_TEXT_CATEGORY_ID, DISCORDCHAT_TEXT_CATEGORY_FORMAT);
-        voiceCategory = getCategory(DISCORDCHAT_VOICE_CATEGORY_ID, DISCORDCHAT_VOICE_CATEGORY_FORMAT);
+        textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
+                filter(this::categoryExists).collect(Collectors.toList());
 
         List<String> clanTags = plugin.getClanManager().getClans().stream().
                 filter(Clan::isVerified).
@@ -64,51 +63,81 @@ public final class ChatManager {
                 map(Clan::getTag).
                 collect(Collectors.toList());
 
-        List<String> channels = Stream.concat(
-                textCategory.getTextChannels().stream(),
-                voiceCategory.getVoiceChannels().stream())
-                .map(GuildChannel::getName)
-                .distinct().collect(Collectors.toList());
+        List<String> channels = guild.getTextChannels().stream().
+                map(GuildChannel::getName).
+                distinct().
+                collect(Collectors.toList());
 
         clanTags.removeAll(channels);
 
-        for (String clanTag : clanTags) {
-            createChannels(clanTag);
+        if (textCategories.isEmpty()) {
+            createCategory();
+        }
+
+        for (String textCategory : textCategories) {
+            Category category = getCategory(textCategory);
+            for (String clanTag : clanTags) {
+                createChannel(category, clanTag);
+            }
         }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void createChannels(String clanTag) {
-        List<ChannelAction<? extends GuildChannel>> actions = Arrays.asList(
-                textCategory.createTextChannel(clanTag), voiceCategory.createVoiceChannel(clanTag));
+    public void createChannel(@NotNull Category category, @NotNull String clanTag) {
+        ChannelAction<TextChannel> action = category.createTextChannel(clanTag);
 
-        for (ChannelAction<? extends GuildChannel> action : actions) {
-            for (Long discordId : getDiscordPlayersId(clanTag)) {
-                action.addMemberPermissionOverride(discordId,
-                        Collections.singletonList(Permission.VIEW_CHANNEL),
-                        Collections.emptyList());
-            }
-            action.queue();
+        if (category.getTextChannels().size() == MAX_CHANNELS_PER_CATEGORY) {
+            action = Objects.requireNonNull(createCategory()).createTextChannel(clanTag);
         }
+
+        for (Long discordId : getDiscordPlayersId(clanTag)) {
+            action.addMemberPermissionOverride(discordId,
+                    Collections.singletonList(Permission.VIEW_CHANNEL),
+                    Collections.emptyList());
+        }
+        action.queue();
     }
 
-    private Category getCategory(ConfigField categoryId, ConfigField categoryName) {
-        Category categoryById = guild.getCategoryById(settingsManager.getString(categoryId));
-        if (categoryById == null) {
-            try {
-                Category category = guild.createCategory(settingsManager.getString(categoryName)).
-                        addRolePermissionOverride(guild.getPublicRole().getIdLong(),
-                                Collections.emptyList(),
-                                Collections.singletonList(Permission.VIEW_CHANNEL)).submit().get();
-                settingsManager.set(categoryId, category.getId());
-                settingsManager.save();
-                return category;
-            } catch (InterruptedException | ExecutionException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to create {0} category: " +
-                        ex.getMessage(), settingsManager.getString(categoryName));
-            }
+    public Category getCategory(String categoryId) {
+        Category category = guild.getCategoryById(categoryId);
+        if (category != null && category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY) {
+            return category;
         }
-        return categoryById;
+
+        return createCategory();
+    }
+
+    public boolean categoryExists(String categoryId) {
+        return guild.getCategoryById(categoryId) != null;
+    }
+
+    @Nullable
+    public Category createCategory() {
+        String categoryNumeric = String.valueOf(textCategories.size() == 0 ? "" : textCategories.size());
+        String categoryName = settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT).concat(" ").concat(categoryNumeric);
+
+        Category category = null;
+        try {
+            category = guild.createCategory(categoryName).
+                    addRolePermissionOverride(
+                            guild.getPublicRole().getIdLong(),
+                            Collections.emptyList(),
+                            Collections.singletonList(Permission.VIEW_CHANNEL)).
+                    submit().get();
+
+            textCategories.add(category.getId());
+            settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
+            settingsManager.save();
+        } catch (InterruptedException | ExecutionException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error while trying to create {0} category: " +
+                    ex.getMessage(), categoryName);
+        }
+
+        return category;
+    }
+
+    public List<String> getTextCategories() {
+        return textCategories;
     }
 
     public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
@@ -194,14 +223,6 @@ public final class ChatManager {
     @NotNull
     public Guild getGuild() {
         return guild;
-    }
-
-    public Category getTextCategory() {
-        return textCategory;
-    }
-
-    public Category getVoiceCategory() {
-        return voiceCategory;
     }
 
     private void registerHandlers() {

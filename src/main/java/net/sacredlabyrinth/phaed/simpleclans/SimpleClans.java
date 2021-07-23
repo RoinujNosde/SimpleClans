@@ -108,7 +108,7 @@ public class SimpleClans extends JavaPlugin {
         registerEvents();
         permissionsManager.loadPermissions();
         chatManager = new ChatManager(this);
-        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null) {
+        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null || settingsManager.is(DISCORDCHAT_ENABLE)) {
             DiscordSRV.api.subscribe(chatManager);
         }
         commandManager = new SCCommandManager(this);

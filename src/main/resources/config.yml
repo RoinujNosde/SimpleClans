@@ -203,12 +203,9 @@ discordchat:
     enable: false
     format: "<%player%> %rank%: %message%"
     rank: "[%rank%]"
-    voice:
-        category-format: "SC - VoiceChannels"
-        category-id: 0
     text:
         category-format: "SC - TextChannels"
-        category-id: 0
+        category-ids: []
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7
