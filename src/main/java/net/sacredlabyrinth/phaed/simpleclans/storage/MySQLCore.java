@@ -111,8 +111,7 @@ public class MySQLCore implements DBCore {
     @Override
     public void insert(String query) {
         if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
-            Thread th = new Thread(new ThreadUpdateSQL(getConnection(), query, "INSERT"));
-            th.start();
+            executeAsync(query, "INSERT");
         } else {
             try {
                 getConnection().createStatement().executeUpdate(query);
@@ -133,8 +132,7 @@ public class MySQLCore implements DBCore {
     @Override
     public void update(String query) {
         if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
-            Thread th = new Thread(new ThreadUpdateSQL(getConnection(), query, "UPDATE"));
-            th.start();
+            executeAsync(query, "UPDATE");
         } else {
             try {
                 getConnection().createStatement().executeUpdate(query);
@@ -155,8 +153,7 @@ public class MySQLCore implements DBCore {
     @Override
     public void delete(String query) {
         if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
-            Thread th = new Thread(new ThreadUpdateSQL(getConnection(), query, "DELETE"));
-            th.start();
+            executeAsync(query, "DELETE");
         } else {
             try {
                 getConnection().createStatement().executeUpdate(query);

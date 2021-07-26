@@ -225,25 +225,4 @@ public class SQLiteCore implements DBCore {
             return false;
         }
     }
-    
-    private void executeAsync(String query, String sqlType) {
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-		        try {
-		        	if (connection != null && !connection.isClosed()) {
-		        		connection.createStatement().executeUpdate(query);
-		        	}
-		        }
-		        catch (SQLException ex) {
-		            if (!ex.toString().contains("not return ResultSet"))
-		            {
-		                log.severe("[Thread] Error at SQL " + sqlType + " Query: " + ex);
-		                log.severe("[Thread] Query: " + query);
-		            }
-		        }				
-			}
-		}.runTaskAsynchronously(SimpleClans.getInstance());
-
-    }
 }
