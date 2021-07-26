@@ -304,7 +304,7 @@ public class StaffCommands extends BaseCommand {
     public void demote(CommandSender sender, @Conditions("clan_member") @Name("leader") ClanPlayerInput other) {
         ClanPlayer otherCp = other.getClanPlayer();
         Clan clan = Objects.requireNonNull(otherCp.getClan());
-        if (clan.getLeaders().size() == 1) {
+        if (clan.getLeaders().size() == 1 && !clan.isPermanent()) {
             ChatBlock.sendMessage(sender, RED + lang("you.cannot.demote.the.last.leader", sender));
             return;
         }
