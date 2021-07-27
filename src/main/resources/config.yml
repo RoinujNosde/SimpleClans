@@ -206,6 +206,8 @@ discordchat:
     text:
         category-format: "SC - TextChannels"
         category-ids: []
+        whitelist: []
+        clans-limit: 100
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7

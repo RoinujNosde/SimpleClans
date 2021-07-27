@@ -33,6 +33,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
+@SuppressWarnings({"ResultOfMethodCallIgnored", "UnusedReturnValue"})
 public final class ChatManager {
 
     private final SimpleClans plugin;
@@ -40,7 +41,6 @@ public final class ChatManager {
     private final Set<ChatHandler> handlers = new HashSet<>();
 
     private Guild guild;
-
     private List<String> textCategories;
 
     private static final int MAX_CHANNELS_PER_CATEGORY = 50;
@@ -54,40 +54,34 @@ public final class ChatManager {
     @Subscribe
     public void setupDiscord(DiscordReadyEvent event) {
         guild = DiscordSRV.getPlugin().getMainGuild();
+        List<String> clanTags = getClanTags();
         textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
                 filter(this::categoryExists).collect(Collectors.toList());
 
-        List<String> clanTags = plugin.getClanManager().getClans().stream().
-                filter(Clan::isVerified).
-                filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
-                map(Clan::getTag).
-                collect(Collectors.toList());
-
-        List<String> channels = guild.getTextChannels().stream().
-                map(GuildChannel::getName).
-                distinct().
-                collect(Collectors.toList());
-
-        clanTags.removeAll(channels);
-
-        if (textCategories.isEmpty()) {
+        int categoriesToCreate = ((int) Math.ceil((double) clanTags.size() / MAX_CHANNELS_PER_CATEGORY)) - textCategories.size();
+        for (int i = 0; i < categoriesToCreate; i++) {
             createCategory();
         }
 
         for (String textCategory : textCategories) {
-            Category category = getCategory(textCategory);
-            for (String clanTag : clanTags) {
-                createChannel(category, clanTag);
+            Category category = Objects.requireNonNull(guild.getCategoryById(textCategory),
+                    "Category " + textCategory + " can't be created!");
+            Iterator<String> tagIter = clanTags.iterator();
+            while (tagIter.hasNext()) {
+                if (createChannel(category, tagIter.next())) {
+                    tagIter.remove();
+                } else {
+                    break;
+                }
             }
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void createChannel(@NotNull Category category, @NotNull String clanTag) {
+    public boolean createChannel(@NotNull Category category, @NotNull String clanTag) {
         ChannelAction<TextChannel> action = category.createTextChannel(clanTag);
 
-        if (category.getTextChannels().size() == MAX_CHANNELS_PER_CATEGORY) {
-            action = Objects.requireNonNull(createCategory()).createTextChannel(clanTag);
+        if (category.getTextChannels().size() >= MAX_CHANNELS_PER_CATEGORY) {
+            return false;
         }
 
         for (Long discordId : getDiscordPlayersId(clanTag)) {
@@ -95,16 +89,8 @@ public final class ChatManager {
                     Collections.singletonList(Permission.VIEW_CHANNEL),
                     Collections.emptyList());
         }
-        action.queue();
-    }
-
-    public Category getCategory(String categoryId) {
-        Category category = guild.getCategoryById(categoryId);
-        if (category != null && category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY) {
-            return category;
-        }
-
-        return createCategory();
+        action.complete();
+        return true;
     }
 
     public boolean categoryExists(String categoryId) {
@@ -134,10 +120,6 @@ public final class ChatManager {
         }
 
         return category;
-    }
-
-    public List<String> getTextCategories() {
-        return textCategories;
     }
 
     public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
@@ -226,7 +208,8 @@ public final class ChatManager {
     }
 
     private void registerHandlers() {
-        Set<Class<? extends ChatHandler>> chatHandlers = Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.chat.handlers", ChatHandler.class);
+        Set<Class<? extends ChatHandler>> chatHandlers =
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.chat.handlers", ChatHandler.class);
         plugin.getLogger().log(Level.INFO, "Registering {0} chat handlers...", chatHandlers.size());
 
         for (Class<? extends ChatHandler> handler : chatHandlers) {
@@ -244,5 +227,25 @@ public final class ChatManager {
 
     private List<ClanPlayer> getOnlineAllyMembers(Clan clan) {
         return clan.getAllAllyMembers().stream().filter(allyPlayer -> allyPlayer.toPlayer() != null).collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<String> getClanTags() {
+        List<String> whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
+
+        List<String> clanTags = plugin.getClanManager().getClans().stream().
+                filter(Clan::isVerified).
+                filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
+                map(Clan::getTag).
+                filter(clanTag -> whitelist.isEmpty() || whitelist.contains(clanTag)).
+                limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
+                collect(Collectors.toList());
+
+        List<String> channels = guild.getTextChannels().stream().
+                map(GuildChannel::getName).
+                collect(Collectors.toList());
+
+        clanTags.removeAll(channels);
+        return clanTags;
     }
 }

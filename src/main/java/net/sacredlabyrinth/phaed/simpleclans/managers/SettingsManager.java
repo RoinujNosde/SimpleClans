@@ -509,6 +509,8 @@ public final class SettingsManager {
         DISCORDCHAT_RANK("discordchat.rank", "[%rank%]"),
         DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-format", "SC - TextChannels"),
         DISCORDCHAT_TEXT_CATEGORY_IDS("discordchat.text.category-ids"),
+        DISCORDCHAT_TEXT_WHITELIST("discordchat.text.whitelist"),
+        DISCORDCHAT_TEXT_LIMIT("discordchat.text.clans-limit", 100),
         /*
         ================
         > Purge Settings
