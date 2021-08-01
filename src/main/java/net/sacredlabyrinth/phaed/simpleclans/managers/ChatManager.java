@@ -54,29 +54,50 @@ public final class ChatManager {
     @Subscribe
     public void setupDiscord(DiscordReadyEvent event) {
         guild = DiscordSRV.getPlugin().getMainGuild();
-        List<String> clanTags = getClanTags();
         textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
                 filter(this::categoryExists).collect(Collectors.toList());
 
-        int categoriesToCreate = ((int) Math.ceil((double) clanTags.size() / MAX_CHANNELS_PER_CATEGORY)) - textCategories.size();
-        for (int i = 0; i < categoriesToCreate; i++) {
-            createCategory();
-        }
-
-        for (String textCategory : textCategories) {
-            Category category = Objects.requireNonNull(guild.getCategoryById(textCategory),
-                    "Category " + textCategory + " can't be created!");
-            Iterator<String> tagIter = clanTags.iterator();
-            while (tagIter.hasNext()) {
-                if (createChannel(category, tagIter.next())) {
-                    tagIter.remove();
-                } else {
-                    break;
-                }
+        Iterator<String> tagIter = getClanTags().iterator();
+        while (tagIter.hasNext()) {
+            if (createChannel(tagIter.next())) {
+                tagIter.remove();
+            } else {
+                break;
             }
         }
     }
 
+    public List<Category> getCategories() {
+        return textCategories.stream().
+                filter(this::categoryExists).
+                map(category -> guild.getCategoryById(category)).
+                collect(Collectors.toList());
+    }
+
+    /**
+     * Creates a new {@link Channel} in available categories,
+     * otherwise create one
+     * <p>
+     * Note: Makes a new category ({@link ChatManager#createCategory()}) if no one available.
+     * </p>
+     *
+     * @param clanTag The clan tag
+     */
+    public boolean createChannel(@NotNull String clanTag) {
+        Category availableCategory = getCategories().stream().
+                filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY).
+                findAny().orElseGet(this::createCategory);
+
+        return availableCategory != null && createChannel(availableCategory, clanTag);
+    }
+
+    /**
+     * Creates a new {@link Channel} in defined {@link Category}
+     *
+     * @param category The category, where channel will be created
+     * @param clanTag  The clan tag
+     * @return true, if channel was created. False, if category reached the limit.
+     */
     public boolean createChannel(@NotNull Category category, @NotNull String clanTag) {
         ChannelAction<TextChannel> action = category.createTextChannel(clanTag);
 
@@ -93,10 +114,18 @@ public final class ChatManager {
         return true;
     }
 
+    /**
+     * Checks if category can be obtained from id.
+     */
     public boolean categoryExists(String categoryId) {
         return guild.getCategoryById(categoryId) != null;
     }
 
+    /**
+     * Creates a new {@link Category} with numbering
+     *
+     * @return Category
+     */
     @Nullable
     public Category createCategory() {
         String categoryNumeric = String.valueOf(textCategories.size() == 0 ? "" : textCategories.size());
@@ -121,7 +150,7 @@ public final class ChatManager {
 
         return category;
     }
-
+    
     public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
         Clan clan = Objects.requireNonNull(clanPlayer.getClan(), "Clan cannot be null");
         List<ClanPlayer> receivers = new ArrayList<>();
