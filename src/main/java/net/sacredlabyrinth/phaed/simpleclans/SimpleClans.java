@@ -104,15 +104,11 @@ public class SimpleClans extends JavaPlugin {
         teleportManager = new TeleportManager();
         protectionManager = new ProtectionManager();
         protectionManager.registerListeners();
+        chatManager = new ChatManager(this);
         migrateChatFormat();
         registerEvents();
         permissionsManager.loadPermissions();
-        chatManager = new ChatManager(this);
-        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null || settingsManager.is(DISCORDCHAT_ENABLE)) {
-            DiscordSRV.api.subscribe(chatManager);
-        }
         commandManager = new SCCommandManager(this);
-
         bankLogger = new CSVBankLogger(this);
 
         logStatus();
@@ -137,6 +133,9 @@ public class SimpleClans extends JavaPlugin {
         pm.registerEvents(new TamableMobsSharing(this), this);
         pm.registerEvents(new PvPOnlyInWar(this), this);
         pm.registerEvents(new FriendlyFire(this), this);
+        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null || settingsManager.is(DISCORDCHAT_ENABLE)) {
+            DiscordSRV.api.subscribe(chatManager);
+        }
     }
 
     private void migrateChatFormat() {
@@ -199,6 +198,7 @@ public class SimpleClans extends JavaPlugin {
         getStorageManager().closeConnection();
         getPermissionsManager().savePermissions();
         getSettingsManager().loadAndSave();
+        // TODO: 02.08.2021 Saves all text categories to config in case there server crashed
     }
 
     /**
