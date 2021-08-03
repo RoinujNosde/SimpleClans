@@ -28,14 +28,10 @@ public class PlotSquared3Provider implements ProtectionProvider {
     private Method getPlots;
 
     @Override
-    public void setup() {
-        try {
-            Class.forName("com.intellectualcrafters.plot.object.Location");
-            Class.forName("com.intellectualcrafters.plot.object.Plot");
-            getLocation = BukkitUtil.class.getMethod("getLocation", Location.class);
-        } catch (NoSuchMethodException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void setup() throws ClassNotFoundException, NoSuchMethodException {
+        Class.forName("com.intellectualcrafters.plot.object.Location");
+        Class.forName("com.intellectualcrafters.plot.object.Plot");
+        getLocation = BukkitUtil.class.getMethod("getLocation", Location.class);
     }
 
     @Override

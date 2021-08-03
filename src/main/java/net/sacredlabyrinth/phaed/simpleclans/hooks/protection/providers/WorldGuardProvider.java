@@ -25,6 +25,7 @@ public class WorldGuardProvider implements ProtectionProvider {
 
     private RegionContainer regionContainer;
 
+    @Override
     public void setup() {
         regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
     }

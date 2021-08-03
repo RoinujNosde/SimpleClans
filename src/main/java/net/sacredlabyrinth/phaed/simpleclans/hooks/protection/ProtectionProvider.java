@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface ProtectionProvider {
 
-    void setup();
+    void setup() throws LinkageError, Exception;
 
     @NotNull
     Set<Land> getLandsAt(@NotNull Location location);
