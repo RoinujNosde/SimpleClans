@@ -1,26 +1,27 @@
 package net.sacredlabyrinth.phaed.simpleclans.storage;
 
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.threads.ThreadUpdateSQL;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERFORMANCE_USE_THREADS;
 
 /**
  * @author cc_madelg
  */
 public class MySQLCore implements DBCore {
 
-    private Logger log;
+    private final Logger log;
     private Connection connection;
-    private String host;
-    private String username;
-    private String password;
-    private String database;
-    private int port;
+    private final String host;
+    private final String username;
+    private final String password;
+    private final String database;
+    private final int port;
 
     /**
      * @param host
@@ -110,7 +111,7 @@ public class MySQLCore implements DBCore {
      */
     @Override
     public void insert(String query) {
-        if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
             executeAsync(query, "INSERT");
         } else {
             try {
@@ -131,7 +132,7 @@ public class MySQLCore implements DBCore {
      */
     @Override
     public void update(String query) {
-        if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
             executeAsync(query, "UPDATE");
         } else {
             try {
@@ -152,7 +153,7 @@ public class MySQLCore implements DBCore {
      */
     @Override
     public void delete(String query) {
-        if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
             executeAsync(query, "DELETE");
         } else {
             try {

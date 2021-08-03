@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.hooks.discord;
+package net.sacredlabyrinth.phaed.simpleclans.hooks;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHANNEL;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.ADD;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.REMOVE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 
@@ -63,19 +65,12 @@ public class DiscordHook implements Listener {
 
     @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
-        ClanPlayer clanPlayer = event.getClanPlayer();
-        String abandonedClan = event.getClan().getName();
-
-        Member member = getMember(clanPlayer);
-        if (member == null) return;
-
-        getChannel(abandonedClan).ifPresent(channel -> channel.getManager().removePermissionOverride(member));
+        updatePermissions(event.getClanPlayer(), event.getClan().getTag(), REMOVE);
     }
 
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
-        ClanPlayer clanPlayer = event.getClanPlayer();
-        addPermissions(clanPlayer);
+        updatePermissions(event.getClanPlayer());
     }
 
     @Subscribe
@@ -85,7 +80,7 @@ public class DiscordHook implements Listener {
             return;
         }
 
-        addPermissions(clanPlayer);
+        updatePermissions(clanPlayer);
     }
 
     protected void setupDiscord() {
@@ -135,9 +130,6 @@ public class DiscordHook implements Listener {
     /**
      * Creates a new {@link ClanPlayer.Channel} in available categories,
      * otherwise creates one
-     * <p>
-     * Makes a new category ({@link #createCategory()}) if no one available.
-     * </p>
      */
     public boolean createChannel(@NotNull String clanTag) {
         Category availableCategory = getCategories().stream().
@@ -148,11 +140,11 @@ public class DiscordHook implements Listener {
     }
 
     public Optional<TextChannel> getChannel(@NotNull String channelName) {
-        for (Category category : getCategories()) {
-            return category.getTextChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
-        }
-
-        return Optional.empty();
+        return getCategories().stream().
+                map(Category::getTextChannels).
+                flatMap(Collection::stream).
+                filter(textChannel -> textChannel.getName().equals(channelName)).
+                findFirst();
     }
 
     /**
@@ -167,8 +159,6 @@ public class DiscordHook implements Listener {
      *
      * <p>Sets {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
      *
-     * @param category The category, where channel will be created
-     * @param clanTag  The clan tag
      * @return true, if channel was created. False, if category reached the limit.
      */
     public boolean createChannel(@NotNull Category category, @NotNull String clanTag) {
@@ -188,7 +178,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Deletes channel from discord and configuration
+     * Deletes channel from discord and configuration.
      */
     public void deleteChannel(@NotNull String channelName) {
         for (Category category : getCategories()) {
@@ -209,7 +199,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * @return All linked clan players by clan tag.
+     * @return All linked clan players in clan.
      */
     public List<Long> getDiscordPlayersId(String clanTag) {
         return plugin.getClanManager().getClan(clanTag).getMembers().stream().
@@ -218,12 +208,6 @@ public class DiscordHook implements Listener {
                 filter(Objects::nonNull).
                 map(Long::valueOf).
                 collect(Collectors.toList());
-    }
-
-    @Nullable
-    public Member getMember(ClanPlayer clanPlayer) {
-        String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
-        return DiscordUtil.getMemberById(discordId);
     }
 
     /**
@@ -236,23 +220,35 @@ public class DiscordHook implements Listener {
                 collect(Collectors.toList());
     }
 
-    public void addPermissions(@NotNull ClanPlayer clanPlayer, @NotNull String channelName,
-                               Collection<Permission> grant, Collection<Permission> deny) {
-        Optional<TextChannel> channel = getChannel(channelName);
-        Member member = getMember(clanPlayer);
-
-        if (member != null && channel.isPresent()) {
-            channel.get().upsertPermissionOverride(member).setPermissions(grant, deny).queue();
-        }
-    }
-
-    private void addPermissions(@NotNull ClanPlayer clanPlayer) {
+    private void updatePermissions(@NotNull ClanPlayer clanPlayer) {
         Clan clan = clanPlayer.getClan();
         if (clan == null) {
             return;
         }
 
-        addPermissions(clanPlayer, clan.getName(), Collections.singletonList(VIEW_CHANNEL), Collections.emptyList());
+        updatePermissions(clanPlayer, clan.getTag(), ADD);
+    }
+
+    private void updatePermissions(@NotNull ClanPlayer clanPlayer, @NotNull String channelName, PermissionAction action) {
+        Optional<TextChannel> channel = getChannel(channelName);
+        String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
+        Member member = DiscordUtil.getMemberById(discordId);
+        plugin.getLogger().log(Level.INFO, "{0} | {1}", new Object[]{member != null, channel.isPresent()});
+        if (member != null && channel.isPresent()) {
+            switch (action) {
+                case ADD:
+                    channel.get().upsertPermissionOverride(member).setPermissions(
+                            Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).
+                            queue();
+                    break;
+                case REMOVE:
+                    channel.get().getManager().removePermissionOverride(member).queue();
+            }
+        }
+    }
+
+    enum PermissionAction {
+        ADD, REMOVE
     }
 
     @NotNull
