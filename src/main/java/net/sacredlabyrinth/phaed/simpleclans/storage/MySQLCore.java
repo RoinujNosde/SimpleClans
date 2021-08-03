@@ -1,15 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans.storage;
 
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.threads.ThreadUpdateSQL;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERFORMANCE_USE_THREADS;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.threads.ThreadUpdateSQL;
 
 /**
  * @author cc_madelg
@@ -112,9 +110,8 @@ public class MySQLCore implements DBCore {
      */
     @Override
     public void insert(String query) {
-        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
-            Thread th = new Thread(new ThreadUpdateSQL(getConnection(), query, "INSERT"));
-            th.start();
+        if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+            executeAsync(query, "INSERT");
         } else {
             try {
                 getConnection().createStatement().executeUpdate(query);
@@ -134,9 +131,8 @@ public class MySQLCore implements DBCore {
      */
     @Override
     public void update(String query) {
-        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
-            Thread th = new Thread(new ThreadUpdateSQL(getConnection(), query, "UPDATE"));
-            th.start();
+        if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+            executeAsync(query, "UPDATE");
         } else {
             try {
                 getConnection().createStatement().executeUpdate(query);
@@ -156,9 +152,8 @@ public class MySQLCore implements DBCore {
      */
     @Override
     public void delete(String query) {
-        if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
-            Thread th = new Thread(new ThreadUpdateSQL(getConnection(), query, "DELETE"));
-            th.start();
+        if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+            executeAsync(query, "DELETE");
         } else {
             try {
                 getConnection().createStatement().executeUpdate(query);
