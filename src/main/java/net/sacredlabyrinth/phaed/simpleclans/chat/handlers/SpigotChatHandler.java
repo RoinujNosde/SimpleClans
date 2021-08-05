@@ -5,11 +5,14 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_FORMAT_FROM;
+import static org.bukkit.Bukkit.getPluginManager;
 
 public class SpigotChatHandler implements ChatHandler {
 
@@ -24,13 +27,15 @@ public class SpigotChatHandler implements ChatHandler {
                 ChatEvent event = new ChatEvent(message.getContent(), message.getSender(), message.getReceivers(),
                         ChatEvent.Type.valueOf(message.getChannel().name()));
 
-                Bukkit.getServer().getPluginManager().callEvent(event);
+                getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
                     return;
                 }
 
-                String format = plugin.getSettingsManager().getString(ConfigField.valueOf(message.getChannel() + "CHAT_FORMAT"));
-                String formattedMessage = plugin.getChatManager().parseChatFormat(format, message, event.getPlaceholders());
+                String format = (message.getSource() == SPIGOT) ?
+                        settingsManager.getString(ConfigField.valueOf(message.getChannel() + "CHAT_FORMAT")) :
+                        settingsManager.getString(DISCORDCHAT_FORMAT_FROM);
+                String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
 
                 plugin.getLogger().info(formattedMessage);
 
@@ -43,6 +48,7 @@ public class SpigotChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT;
+        return source == SPIGOT || (source == DISCORD && settingsManager.is(DISCORDCHAT_ENABLE) &&
+                getPluginManager().getPlugin("DiscordSRV") != null);
     }
 }

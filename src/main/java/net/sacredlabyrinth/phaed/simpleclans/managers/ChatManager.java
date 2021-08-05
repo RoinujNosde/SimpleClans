@@ -29,7 +29,7 @@ public final class ChatManager {
 
     private final SimpleClans plugin;
 
-    private DiscordHook discordHook;
+    private static DiscordHook discordHook;
     private final Set<ChatHandler> handlers = new HashSet<>();
 
     public ChatManager(SimpleClans plugin) {
@@ -139,7 +139,7 @@ public final class ChatManager {
         }
     }
 
-    public DiscordHook getDiscordHook() {
+    public static DiscordHook getDiscordHook() {
         return discordHook;
     }
 

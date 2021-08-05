@@ -203,6 +203,7 @@ discordchat:
     enable: false
     formatTo: "%player% » %message%"
     formatFrom: "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"
+    spy-format: "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"
     rank: "[%rank%]"
     text:
         category-format: "SC - TextChannels"

@@ -188,7 +188,7 @@ public final class SettingsManager {
     public boolean isUnrivable(String tag) {
         return getStringList(UNRIVABLE_CLANS).stream().
                 map(String::toLowerCase).
-                anyMatch(unrivable -> unrivable.equals(tag));
+                anyMatch(unrivable -> unrivable.equals(tag.toLowerCase()));
     }
 
     /**
@@ -516,6 +516,7 @@ public final class SettingsManager {
         DISCORDCHAT_ENABLE("discordchat.enable", false),
         DISCORDCHAT_FORMAT_TO("discordchat.formatTo", "%player% » %message%"),
         DISCORDCHAT_FORMAT_FROM("discordchat.formatFrom", "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
+        DISCORDCHAT_SPYFORMAT("discordchat.formatFrom", "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
         DISCORDCHAT_RANK("discordchat.rank", "[%rank%]"),
         DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-format", "SC - TextChannels"),
         DISCORDCHAT_TEXT_CATEGORY_IDS("discordchat.text.category-ids"),
