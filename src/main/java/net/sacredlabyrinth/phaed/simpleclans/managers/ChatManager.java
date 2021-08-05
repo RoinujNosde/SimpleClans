@@ -98,8 +98,16 @@ public final class ChatManager {
         String trustedColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_TRUSTED_COLOR"));
 
         String rank = sender.getRankId().isEmpty() ? null : ChatUtils.parseColors(sender.getRankDisplayName());
-        String rankFormat = (rank != null) ?
-                sm.getColored(ConfigField.valueOf(channel + "_RANK")).replace("%rank%", rank) : "";
+        String rankFormat = "";
+        if (rank != null) {
+            switch (message.getSource()) {
+                case SPIGOT:
+                    rankFormat = sm.getColored(ConfigField.valueOf(channel + "CHAT_RANK"));
+                    break;
+                case DISCORD:
+                    rankFormat = sm.getColored(DISCORDCHAT_RANK);
+            }
+        }
 
         if (placeholders != null) {
             for (Map.Entry<String, String> e : placeholders.entrySet()) {
@@ -123,9 +131,6 @@ public final class ChatManager {
 
         for (Class<? extends ChatHandler> handler : chatHandlers) {
             try {
-                if (plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
-                    continue;
-                }
                 handlers.add(handler.getConstructor().newInstance());
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to register {0} handler: " +

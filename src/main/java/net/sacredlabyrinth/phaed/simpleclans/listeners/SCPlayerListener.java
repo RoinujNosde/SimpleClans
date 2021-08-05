@@ -5,7 +5,6 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
@@ -22,6 +21,7 @@ import java.util.Objects;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.NONE;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
@@ -68,7 +68,7 @@ public class SCPlayerListener implements Listener {
                 ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
                 return;
             }
-            plugin.getChatManager().processChat(SCMessage.Source.SPIGOT, channel, cp, event.getMessage());
+            plugin.getChatManager().processChat(SPIGOT, channel, cp, event.getMessage());
             event.setCancelled(true);
         }
     }

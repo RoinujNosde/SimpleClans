@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.hooks;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
+import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
@@ -15,6 +16,8 @@ import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.DisbandClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerJoinedClanEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerKickedClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +30,8 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHANNEL;
+import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
 import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.ADD;
 import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.REMOVE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -36,6 +41,8 @@ public class DiscordHook implements Listener {
 
     private final SimpleClans plugin;
     private final SettingsManager settingsManager;
+    private final ChatManager chatManager;
+    private final ClanManager clanManager;
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
 
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
@@ -47,10 +54,30 @@ public class DiscordHook implements Listener {
     public DiscordHook(SimpleClans plugin) {
         this.plugin = plugin;
         settingsManager = plugin.getSettingsManager();
+        chatManager = plugin.getChatManager();
+        clanManager = plugin.getClanManager();
         textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
                 filter(this::categoryExists).collect(Collectors.toList());
 
         setupDiscord();
+    }
+
+    @Subscribe
+    public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
+        UUID uuid = accountManager.getUuid(event.getAuthor().getId());
+        ClanPlayer clanPlayer = clanManager.getClanPlayer(uuid);
+        Optional<TextChannel> channel = getChannel(event.getChannel().getName());
+        if (clanPlayer == null) {
+            return;
+        }
+        Clan clan = clanPlayer.getClan();
+        if (clan == null) {
+            return;
+        }
+
+        if (channel.isPresent() && channel.get().getName().equals(clan.getTag())) {
+            chatManager.processChat(DISCORD, CLAN, clanPlayer, event.getMessage().getContentRaw());
+        }
     }
 
     @EventHandler
@@ -75,7 +102,7 @@ public class DiscordHook implements Listener {
 
     @Subscribe
     public void onPlayerLinking(AccountLinkedEvent event) {
-        ClanPlayer clanPlayer = plugin.getClanManager().getClanPlayer(event.getPlayer());
+        ClanPlayer clanPlayer = clanManager.getClanPlayer(event.getPlayer());
         if (clanPlayer == null) {
             return;
         }
@@ -101,6 +128,7 @@ public class DiscordHook implements Listener {
 
     /**
      * Creates a new {@link Category} with numbering
+     *
      * @return Category or null, if reached the limit
      */
     @Nullable
@@ -109,9 +137,7 @@ public class DiscordHook implements Listener {
             return null;
         }
 
-        String categoryNumeric = String.valueOf(textCategories.size() == 0 ? "" : textCategories.size());
-        String categoryName = settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT).concat(" ").concat(categoryNumeric);
-
+        String categoryName = settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT);
         Category category = null;
         try {
             category = guild.createCategory(categoryName).
@@ -208,7 +234,7 @@ public class DiscordHook implements Listener {
      * @return All linked clan players in clan.
      */
     public List<Long> getDiscordPlayersId(String clanTag) {
-        return plugin.getClanManager().getClan(clanTag).getMembers().stream().
+        return clanManager.getClan(clanTag).getMembers().stream().
                 map(ClanPlayer::getUniqueId).
                 map(accountManager::getDiscordId).
                 filter(Objects::nonNull).
@@ -260,7 +286,7 @@ public class DiscordHook implements Listener {
     private List<String> getClanTags() {
         List<String> whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
 
-        List<String> clanTags = plugin.getClanManager().getClans().stream().
+        List<String> clanTags = clanManager.getClans().stream().
                 filter(Clan::isVerified).
                 filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
                 map(Clan::getTag).

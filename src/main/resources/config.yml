@@ -201,7 +201,8 @@ allychat:
     member-color: '7'
 discordchat:
     enable: false
-    format: "<%player%> %rank%: %message%"
+    formatTo: "%player% » %message%"
+    formatFrom: "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"
     rank: "[%rank%]"
     text:
         category-format: "SC - TextChannels"

@@ -514,7 +514,8 @@ public final class SettingsManager {
         ================
          */
         DISCORDCHAT_ENABLE("discordchat.enable", false),
-        DISCORDCHAT_FORMAT("discordchat.format", "<%player%> %rank%: %message%"),
+        DISCORDCHAT_FORMAT_TO("discordchat.formatTo", "%player% » %message%"),
+        DISCORDCHAT_FORMAT_FROM("discordchat.formatFrom", "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
         DISCORDCHAT_RANK("discordchat.rank", "[%rank%]"),
         DISCORDCHAT_TEXT_CATEGORY_FORMAT("discordchat.text.category-format", "SC - TextChannels"),
         DISCORDCHAT_TEXT_CATEGORY_IDS("discordchat.text.category-ids"),
