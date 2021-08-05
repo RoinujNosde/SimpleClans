@@ -78,7 +78,7 @@ public class ChatUtils {
         }
 
         if (one.equals("&")) {
-            return parseColors(two);
+            return getColorByChar(two.charAt(0));
         }
 
         return "";

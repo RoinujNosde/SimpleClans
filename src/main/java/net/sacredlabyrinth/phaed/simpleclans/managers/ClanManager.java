@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -232,13 +231,6 @@ public final class ClanManager {
      */
     public List<ClanPlayer> getAllClanPlayers() {
         return new ArrayList<>(clanPlayers.values());
-    }
-
-    /**
-     * Returns the collection of all online clan players, including the disabled ones
-     */
-    public List<ClanPlayer> getOnlineClanPlayers() {
-        return clanPlayers.values().stream().filter(cp -> Bukkit.getOfflinePlayer(cp.getUniqueId()).isOnline()).collect(Collectors.toList());
     }
 
     /**
@@ -1002,7 +994,7 @@ public final class ClanManager {
      * Purchase Home Teleport
      */
     public boolean purchaseHomeTeleport(Player player) {
-        if (!plugin.getSettingsManager().is(ECONOMY_PURCHASE_HOME_TELEPORT_SET)) {
+        if (!plugin.getSettingsManager().is(ECONOMY_PURCHASE_HOME_TELEPORT)) {
             return true;
         }
 

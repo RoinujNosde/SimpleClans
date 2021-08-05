@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import co.aikar.commands.BukkitCommandIssuer;
-import github.scarsz.discordsrv.DiscordSRV;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
@@ -17,7 +16,6 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -133,9 +131,6 @@ public class SimpleClans extends JavaPlugin {
         pm.registerEvents(new TamableMobsSharing(this), this);
         pm.registerEvents(new PvPOnlyInWar(this), this);
         pm.registerEvents(new FriendlyFire(this), this);
-        if (Bukkit.getPluginManager().getPlugin("DiscordSRV") != null || settingsManager.is(DISCORDCHAT_ENABLE)) {
-            DiscordSRV.api.subscribe(chatManager);
-        }
     }
 
     private void migrateChatFormat() {
@@ -298,19 +293,13 @@ public class SimpleClans extends JavaPlugin {
     @NotNull
     public static String lang(@NotNull String key, @Nullable Player player, Object... arguments) {
         String lang = optionalLang(key, player, arguments);
-        if (lang == null) {
-            return key;
-        }
-        return lang;
+        return (lang == null) ? key : lang;
     }
 
     @NotNull
     public static String lang(@NotNull String key, @Nullable ClanPlayer clanPlayer, Object... arguments) {
         String lang = optionalLang(key, clanPlayer, arguments);
-        if (lang == null) {
-            return key;
-        }
-        return lang;
+        return (lang == null) ? key : lang;
     }
 
     @NotNull

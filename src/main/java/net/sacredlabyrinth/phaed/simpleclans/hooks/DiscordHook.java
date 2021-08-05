@@ -32,7 +32,6 @@ import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.Permission
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 
-@SuppressWarnings({"ResultOfMethodCallIgnored", "UnusedReturnValue"})
 public class DiscordHook implements Listener {
 
     private final SimpleClans plugin;
@@ -43,6 +42,7 @@ public class DiscordHook implements Listener {
     private final List<String> textCategories;
 
     private static final int MAX_CHANNELS_PER_CATEGORY = 50;
+    private static final int MAX_CHANNELS_PER_GUILD = 500;
 
     public DiscordHook(SimpleClans plugin) {
         this.plugin = plugin;
@@ -101,9 +101,14 @@ public class DiscordHook implements Listener {
 
     /**
      * Creates a new {@link Category} with numbering
+     * @return Category or null, if reached the limit
      */
     @Nullable
     public Category createCategory() {
+        if (guild.getChannels().size() >= MAX_CHANNELS_PER_GUILD) {
+            return null;
+        }
+
         String categoryNumeric = String.valueOf(textCategories.size() == 0 ? "" : textCategories.size());
         String categoryName = settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT).concat(" ").concat(categoryNumeric);
 
@@ -161,6 +166,7 @@ public class DiscordHook implements Listener {
      *
      * @return true, if channel was created. False, if category reached the limit.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean createChannel(@NotNull Category category, @NotNull String clanTag) {
         ChannelAction<TextChannel> action = category.createTextChannel(clanTag);
 
@@ -233,7 +239,6 @@ public class DiscordHook implements Listener {
         Optional<TextChannel> channel = getChannel(channelName);
         String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
         Member member = DiscordUtil.getMemberById(discordId);
-        plugin.getLogger().log(Level.INFO, "{0} | {1}", new Object[]{member != null, channel.isPresent()});
         if (member != null && channel.isPresent()) {
             switch (action) {
                 case ADD:
@@ -263,7 +268,9 @@ public class DiscordHook implements Listener {
                 limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
                 collect(Collectors.toList());
 
-        List<String> channels = guild.getTextChannels().stream().
+        List<String> channels = getCategories().stream().
+                map(Category::getTextChannels).
+                flatMap(Collection::stream).
                 map(GuildChannel::getName).
                 collect(Collectors.toList());
 

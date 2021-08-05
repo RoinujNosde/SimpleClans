@@ -21,10 +21,10 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  * and uses the format from {@link CSVFormatter}
  *
  * Typical usage:
- * <code>
+ * <pre>{@code
  *     CSVBankLogger bankLogger = new CSVBankLogger(plugin);
  *     bankLogger.log(new BankLog(sender, clan, economyResponse, operation, cause, amount));
- * </code>
+ * }</pre>
  */
 public class CSVBankLogger implements BankLogger {
 

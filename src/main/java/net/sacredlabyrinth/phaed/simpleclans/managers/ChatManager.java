@@ -12,7 +12,6 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +23,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.Bukkit.getServer;
+import static org.bukkit.Bukkit.getPluginManager;
 
 public final class ChatManager {
 
@@ -36,13 +35,16 @@ public final class ChatManager {
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         registerHandlers();
+        if (getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
+            DiscordSRV.api.subscribe(this);
+        }
     }
 
     @Subscribe
     public void registerDiscord(DiscordReadyEvent event) {
         discordHook = new DiscordHook(plugin);
         DiscordSRV.api.subscribe(discordHook);
-        getServer().getPluginManager().registerEvents(discordHook, plugin);
+        getPluginManager().registerEvents(discordHook, plugin);
     }
 
     public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
@@ -65,15 +67,14 @@ public final class ChatManager {
                     return;
                 }
 
-                receivers.addAll(clan.getOnlineMembers().stream().filter(member -> !member.isMuted()).collect(Collectors.toList()));
+                receivers.addAll(clan.getOnlineMembers().stream().
+                        filter(member -> !member.isMuted()).
+                        collect(Collectors.toList()));
         }
 
-        SCMessage scMessage;
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            scMessage = new SCMessage(source, channel, clanPlayer,
-                    PlaceholderAPI.setPlaceholders(clanPlayer.toPlayer(), message), receivers);
-        } else {
-            scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
+        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
+        if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            scMessage.setContent(PlaceholderAPI.setPlaceholders(clanPlayer.toPlayer(), message));
         }
 
         for (ChatHandler ch : handlers) {
@@ -108,8 +109,8 @@ public final class ChatManager {
 
         return ChatUtils.parseColors(format)
                 .replace("%clan%", Objects.requireNonNull(sender.getClan()).getColorTag())
-                .replace("%nick-color%", (sender.isLeader() ?
-                        leaderColor : sender.isTrusted() ? trustedColor : memberColor))
+                .replace("%nick-color%",
+                        (sender.isLeader() ? leaderColor : sender.isTrusted() ? trustedColor : memberColor))
                 .replace("%player%", sender.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", message.getContent());
@@ -138,6 +139,8 @@ public final class ChatManager {
     }
 
     private List<ClanPlayer> getOnlineAllyMembers(Clan clan) {
-        return clan.getAllAllyMembers().stream().filter(allyPlayer -> allyPlayer.toPlayer() != null).collect(Collectors.toList());
+        return clan.getAllAllyMembers().stream().
+                filter(allyPlayer -> allyPlayer.toPlayer() != null).
+                collect(Collectors.toList());
     }
 }

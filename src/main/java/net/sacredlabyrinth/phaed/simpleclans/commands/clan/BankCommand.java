@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
+import net.sacredlabyrinth.phaed.simpleclans.events.BankDepositEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.BankWithdrawEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
@@ -109,7 +110,7 @@ public class BankCommand extends BaseCommand {
         /*
             TODO: Remove at SimpleClans 3.0
          */
-        BankWithdrawEvent event = new BankWithdrawEvent(player, clan, amount);
+        BankDepositEvent event = new BankDepositEvent(player, clan, amount);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;

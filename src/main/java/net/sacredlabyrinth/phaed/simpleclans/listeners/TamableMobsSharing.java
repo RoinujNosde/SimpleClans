@@ -2,6 +2,8 @@ package net.sacredlabyrinth.phaed.simpleclans.listeners;
 
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
@@ -18,17 +20,19 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 
 public class TamableMobsSharing implements Listener {
 
-    private final SimpleClans plugin;
+    private final SettingsManager settings;
+    private final ClanManager clanManager;
 
     public TamableMobsSharing(@NotNull SimpleClans plugin) {
-        this.plugin = plugin;
+        settings = plugin.getSettingsManager();
+        clanManager = plugin.getClanManager();
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (plugin.getSettingsManager().is(TAMABLE_MOBS_SHARING)) {
+        if (settings.is(TAMABLE_MOBS_SHARING)) {
             if (event.getEntity() instanceof Wolf && event.getDamager() instanceof Player) {
-                ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(event.getDamager().getUniqueId());
+                ClanPlayer cp = clanManager.getAnyClanPlayer(event.getDamager().getUniqueId());
                 if (cp == null || cp.getClan() == null) {
                     return;
                 }
@@ -44,9 +48,9 @@ public class TamableMobsSharing implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityTarget(EntityTargetLivingEntityEvent event) {
-        if (plugin.getSettingsManager().is(TAMABLE_MOBS_SHARING)) {
+        if (settings.is(TAMABLE_MOBS_SHARING)) {
             if (event.getEntity() instanceof Tameable && event.getTarget() instanceof Player) {
-                ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(event.getTarget().getUniqueId());
+                ClanPlayer cp = clanManager.getAnyClanPlayer(event.getTarget().getUniqueId());
                 if (cp == null || cp.getClan() == null) {
                     return;
                 }
@@ -65,9 +69,9 @@ public class TamableMobsSharing implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
-        if (plugin.getSettingsManager().is(TAMABLE_MOBS_SHARING) && event.getRightClicked() instanceof Tameable) {
+        if (settings.is(TAMABLE_MOBS_SHARING) && event.getRightClicked() instanceof Tameable) {
             Player player = event.getPlayer();
-            ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
+            ClanPlayer cp = clanManager.getAnyClanPlayer(player.getUniqueId());
             if (cp == null || cp.getClan() == null) {
                 return;
             }

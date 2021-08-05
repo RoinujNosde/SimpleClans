@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -15,6 +14,7 @@ import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
+import static org.bukkit.Bukkit.getPluginManager;
 
 /**
  * @author phaed
@@ -32,7 +32,7 @@ public final class SettingsManager {
         config.options().copyDefaults(true);
         configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
         loadAndSave();
-        warnAboutAutoGroupGroupName();
+        warnAboutPluginDependencies();
     }
 
     public <T> void set(ConfigField field, T value) {
@@ -102,12 +102,18 @@ public final class SettingsManager {
         }
     }
 
-    private void warnAboutAutoGroupGroupName() {
-        Plugin luckPerms = Bukkit.getServer().getPluginManager().getPlugin("LuckPerms");
+    private void warnAboutPluginDependencies() {
+        Plugin luckPerms = getPluginManager().getPlugin("LuckPerms");
+        Plugin discordSrv = getPluginManager().getPlugin("DiscordSRV");
+
         if (luckPerms != null && is(PERMISSIONS_AUTO_GROUP_GROUPNAME)) {
             plugin.getLogger().warning("LuckPerms was found and the setting auto-group-groupname is enabled.");
             plugin.getLogger().warning("Be careful with that as players will be automatically added in the group" +
                     " that matches their clan tag.");
+        }
+
+        if (discordSrv == null && is (DISCORDCHAT_ENABLE)) {
+            plugin.getLogger().warning("DiscordChat can't be initialized, please, install DiscordSRV.");
         }
     }
 
@@ -180,7 +186,9 @@ public final class SettingsManager {
      * @return whether the clan is unrivable
      */
     public boolean isUnrivable(String tag) {
-        return getStringList(UNRIVABLE_CLANS).contains(tag.toLowerCase());
+        return getStringList(UNRIVABLE_CLANS).stream().
+                map(String::toLowerCase).
+                anyMatch(unrivable -> unrivable.equals(tag));
     }
 
     /**
@@ -190,12 +198,13 @@ public final class SettingsManager {
      */
     public void addBanned(UUID playerUniqueId) {
         List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
-        if (bannedPlayers.contains(playerUniqueId.toString())) {
+        if (isBanned(playerUniqueId)) {
             return;
         }
 
         bannedPlayers.add(playerUniqueId.toString());
         set(BANNED_PLAYERS, bannedPlayers);
+        save();
     }
 
     /**
