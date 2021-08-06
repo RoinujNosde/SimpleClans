@@ -12,6 +12,7 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.Bukkit.getPluginManager;
@@ -29,7 +31,7 @@ public final class ChatManager {
 
     private final SimpleClans plugin;
 
-    private static DiscordHook discordHook;
+    private DiscordHook discordHook;
     private final Set<ChatHandler> handlers = new HashSet<>();
 
     public ChatManager(SimpleClans plugin) {
@@ -47,7 +49,8 @@ public final class ChatManager {
         getPluginManager().registerEvents(discordHook, plugin);
     }
 
-    public void processChat(Source source, @NotNull Channel channel, @NotNull ClanPlayer clanPlayer, String message) {
+    public void processChat(@NotNull Source source, @NotNull Channel channel,
+                            @NotNull ClanPlayer clanPlayer, String message) {
         Clan clan = Objects.requireNonNull(clanPlayer.getClan(), "Clan cannot be null");
         List<ClanPlayer> receivers = new ArrayList<>();
 
@@ -73,9 +76,6 @@ public final class ChatManager {
         }
 
         SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
-        if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            scMessage.setContent(PlaceholderAPI.setPlaceholders(clanPlayer.toPlayer(), message));
-        }
 
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {
@@ -98,16 +98,9 @@ public final class ChatManager {
         String trustedColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_TRUSTED_COLOR"));
 
         String rank = sender.getRankId().isEmpty() ? null : ChatUtils.parseColors(sender.getRankDisplayName());
-        String rankFormat = "";
-        if (rank != null) {
-            switch (message.getSource()) {
-                case SPIGOT:
-                    rankFormat = sm.getColored(ConfigField.valueOf(channel + "CHAT_RANK"));
-                    break;
-                case DISCORD:
-                    rankFormat = sm.getColored(DISCORDCHAT_RANK);
-            }
-        }
+        ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_RANK",
+                message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
+        String rankFormat = (rank != null) ? sm.getColored(configField) : "";
 
         if (placeholders != null) {
             for (Map.Entry<String, String> e : placeholders.entrySet()) {
@@ -115,13 +108,17 @@ public final class ChatManager {
             }
         }
 
-        return ChatUtils.parseColors(format)
+        String parsedFormat = ChatUtils.parseColors(format)
                 .replace("%clan%", Objects.requireNonNull(sender.getClan()).getColorTag())
                 .replace("%nick-color%",
                         (sender.isLeader() ? leaderColor : sender.isTrusted() ? trustedColor : memberColor))
                 .replace("%player%", sender.getName())
                 .replace("%rank%", rankFormat)
                 .replace("%message%", message.getContent());
+
+        return getPluginManager().getPlugin("PlaceholderAPI") != null ?
+                PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(message.getSender().getUniqueId()), parsedFormat)
+                : parsedFormat;
     }
 
     private void registerHandlers() {
@@ -139,7 +136,7 @@ public final class ChatManager {
         }
     }
 
-    public static DiscordHook getDiscordHook() {
+    public DiscordHook getDiscordHook() {
         return discordHook;
     }
 

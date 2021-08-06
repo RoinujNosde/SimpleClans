@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHANNEL;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
 import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.ADD;
 import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.REMOVE;
@@ -47,6 +48,9 @@ public class DiscordHook implements Listener {
 
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
     private final List<String> textCategories;
+    private final List<TextChannel> channels;
+    private final List<String> discordClanTags;
+    private final List<String> clanTags;
 
     private static final int MAX_CHANNELS_PER_CATEGORY = 50;
     private static final int MAX_CHANNELS_PER_GUILD = 500;
@@ -58,6 +62,21 @@ public class DiscordHook implements Listener {
         clanManager = plugin.getClanManager();
         textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
                 filter(this::categoryExists).collect(Collectors.toList());
+
+        List<String> whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
+
+        clanTags = clanManager.getClans().stream().
+                filter(Clan::isVerified).
+                filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
+                map(Clan::getTag).
+                filter(clanTag -> whitelist.isEmpty() || whitelist.contains(clanTag)).
+                limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
+                collect(Collectors.toList());
+
+        channels = getChannels();
+        discordClanTags = channels.stream().
+                map(GuildChannel::getName).
+                collect(Collectors.toList());
 
         setupDiscord();
     }
@@ -75,8 +94,21 @@ public class DiscordHook implements Listener {
             return;
         }
 
-        if (channel.isPresent() && channel.get().getName().equals(clan.getTag())) {
-            chatManager.processChat(DISCORD, CLAN, clanPlayer, event.getMessage().getContentRaw());
+        if (channel.isPresent()) {
+            TextChannel textChannel = channel.get();
+            if (textChannel.getName().equals(clan.getTag())) {
+                chatManager.processChat(DISCORD, CLAN, clanPlayer, event.getMessage().getContentRaw());
+            } else {
+                textChannel.deleteMessageById(event.getMessage().getId()).queue(unused -> {
+                    String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
+                    User user = DiscordUtil.getUserById(discordId);
+                    String channelLink = "<#" + textChannel.getId() + ">";
+                    user.openPrivateChannel().flatMap(privateChannel ->
+                                    privateChannel.sendMessage(
+                                            lang("cannot.send.discord.message", clanPlayer, channelLink)))
+                            .queue();
+                });
+            }
         }
     }
 
@@ -111,14 +143,9 @@ public class DiscordHook implements Listener {
     }
 
     protected void setupDiscord() {
-        Iterator<String> tagIter = getClanTags().iterator();
-        while (tagIter.hasNext()) {
-            if (createChannel(tagIter.next())) {
-                tagIter.remove();
-            } else {
-                break;
-            }
-        }
+        removeInvalidChannels();
+        resetPermissions();
+        createChannels();
     }
 
     @NotNull
@@ -127,7 +154,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Creates a new {@link Category} with numbering
+     * Creates a new {@link Category}
      *
      * @return Category or null, if reached the limit
      */
@@ -170,12 +197,13 @@ public class DiscordHook implements Listener {
         return availableCategory != null && createChannel(availableCategory, clanTag);
     }
 
+    /**
+     * Retrieves channel in SimpleClans' categories.
+     *
+     * @see #getCategories() retreive categories.
+     */
     public Optional<TextChannel> getChannel(@NotNull String channelName) {
-        return getCategories().stream().
-                map(Category::getTextChannels).
-                flatMap(Collection::stream).
-                filter(textChannel -> textChannel.getName().equals(channelName)).
-                findFirst();
+        return channels.stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
     }
 
     /**
@@ -210,7 +238,8 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Deletes channel from discord and configuration.
+     * Deletes channel from SimpleClans' categories.
+     * If there are no channels, removes category as well.
      */
     public void deleteChannel(@NotNull String channelName) {
         for (Category category : getCategories()) {
@@ -222,12 +251,11 @@ public class DiscordHook implements Listener {
                 }
             } else {
                 textCategories.remove(category.getId());
+                settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
+                settingsManager.save();
                 category.delete().complete();
             }
         }
-
-        settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
-        settingsManager.save();
     }
 
     /**
@@ -252,6 +280,18 @@ public class DiscordHook implements Listener {
                 collect(Collectors.toList());
     }
 
+    /**
+     * @return All channels in SimpleClans' categories
+     */
+    public List<TextChannel> getChannels() {
+        return getCategories().stream().map(Category::getTextChannels).flatMap(Collection::stream).
+                collect(Collectors.toList());
+    }
+
+    enum PermissionAction {
+        ADD, REMOVE
+    }
+
     private void updatePermissions(@NotNull ClanPlayer clanPlayer) {
         Clan clan = clanPlayer.getClan();
         if (clan == null) {
@@ -269,7 +309,7 @@ public class DiscordHook implements Listener {
             switch (action) {
                 case ADD:
                     channel.get().upsertPermissionOverride(member).setPermissions(
-                            Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).
+                                    Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).
                             queue();
                     break;
                 case REMOVE:
@@ -278,29 +318,34 @@ public class DiscordHook implements Listener {
         }
     }
 
-    enum PermissionAction {
-        ADD, REMOVE
+    private void removeInvalidChannels() {
+        ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
+        clansToDelete.removeAll(clanTags);
+        clansToDelete.forEach(this::deleteChannel);
     }
 
-    @NotNull
-    private List<String> getClanTags() {
-        List<String> whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
-
-        List<String> clanTags = clanManager.getClans().stream().
-                filter(Clan::isVerified).
-                filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
-                map(Clan::getTag).
-                filter(clanTag -> whitelist.isEmpty() || whitelist.contains(clanTag)).
-                limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
-                collect(Collectors.toList());
-
-        List<String> channels = getCategories().stream().
-                map(Category::getTextChannels).
+    private void resetPermissions() {
+        channels.stream().
+                map(TextChannel::getPermissionOverrides).
                 flatMap(Collection::stream).
-                map(GuildChannel::getName).
-                collect(Collectors.toList());
+                forEach(permissionOverride -> permissionOverride.delete().queue());
 
-        clanTags.removeAll(channels);
-        return clanTags;
+        clanTags.stream().map(clanManager::getClan).
+                filter(Objects::nonNull).
+                map(Clan::getMembers).
+                flatMap(Collection::stream).
+                forEach(this::updatePermissions);
+    }
+
+    private void createChannels() {
+        clanTags.removeAll(discordClanTags);
+        Iterator<String> tagIter = clanTags.iterator();
+        while (tagIter.hasNext()) {
+            if (createChannel(tagIter.next())) {
+                tagIter.remove();
+            } else {
+                break;
+            }
+        }
     }
 }

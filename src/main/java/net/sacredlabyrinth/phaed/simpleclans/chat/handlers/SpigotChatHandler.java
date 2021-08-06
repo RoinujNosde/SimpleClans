@@ -31,9 +31,10 @@ public class SpigotChatHandler implements ChatHandler {
                     return;
                 }
 
-                String format = (message.getSource() == SPIGOT) ?
-                        settingsManager.getString(ConfigField.valueOf(message.getChannel() + "CHAT_FORMAT")) :
-                        settingsManager.getString(ConfigField.valueOf(message.getSource() + "CHAT_FORMAT"));
+                ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
+                        message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
+
+                String format = settingsManager.getString(configField);
                 String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
 
                 plugin.getLogger().info(formattedMessage);

@@ -193,7 +193,6 @@ public class SimpleClans extends JavaPlugin {
         getStorageManager().closeConnection();
         getPermissionsManager().savePermissions();
         getSettingsManager().loadAndSave();
-        // TODO: 02.08.2021 Saves all text categories to config in case there server crashed
     }
 
     /**

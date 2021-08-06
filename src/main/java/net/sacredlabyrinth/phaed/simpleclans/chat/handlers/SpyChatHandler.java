@@ -16,9 +16,9 @@ public class SpyChatHandler implements ChatHandler {
 
     @Override
     public void sendMessage(SCMessage message) {
-        String format = (message.getSource() == SPIGOT) ?
-                settingsManager.getString(ConfigField.valueOf(message.getChannel() + "CHAT_SPYFORMAT")) :
-                settingsManager.getString(ConfigField.valueOf(message.getSource() + "CHAT_SPYFORMAT"));
+        ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_SPYFORMAT",
+                message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
+        String format = settingsManager.getString(configField);
 
         String formattedMessage = chatManager.parseChatFormat(format, message);
 

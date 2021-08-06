@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.storage;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.sql.Connection;

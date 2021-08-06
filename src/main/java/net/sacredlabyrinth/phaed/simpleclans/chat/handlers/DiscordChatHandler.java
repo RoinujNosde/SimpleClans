@@ -5,7 +5,6 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
 
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class DiscordChatHandler implements ChatHandler {
             return;
         }
 
-        Optional<TextChannel> channel = ChatManager.getDiscordHook().getChannel(clan.getTag());
+        Optional<TextChannel> channel = chatManager.getDiscordHook().getChannel(clan.getTag());
         channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
     }
 
