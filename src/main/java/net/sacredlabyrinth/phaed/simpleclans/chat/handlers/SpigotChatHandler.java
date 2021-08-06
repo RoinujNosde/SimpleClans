@@ -11,7 +11,6 @@ import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCOR
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_FORMAT_FROM;
 import static org.bukkit.Bukkit.getPluginManager;
 
 public class SpigotChatHandler implements ChatHandler {
@@ -34,7 +33,7 @@ public class SpigotChatHandler implements ChatHandler {
 
                 String format = (message.getSource() == SPIGOT) ?
                         settingsManager.getString(ConfigField.valueOf(message.getChannel() + "CHAT_FORMAT")) :
-                        settingsManager.getString(DISCORDCHAT_FORMAT_FROM);
+                        settingsManager.getString(ConfigField.valueOf(message.getSource() + "CHAT_FORMAT"));
                 String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
 
                 plugin.getLogger().info(formattedMessage);
