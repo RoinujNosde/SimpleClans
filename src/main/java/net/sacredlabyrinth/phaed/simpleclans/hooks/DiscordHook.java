@@ -326,8 +326,9 @@ public class DiscordHook implements Listener {
 
     private void resetPermissions() {
         channels.stream().
-                map(TextChannel::getPermissionOverrides).
+                map(TextChannel::getMemberPermissionOverrides).
                 flatMap(Collection::stream).
+                filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
                 forEach(permissionOverride -> permissionOverride.delete().queue());
 
         clanTags.stream().map(clanManager::getClan).
