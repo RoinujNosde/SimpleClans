@@ -9,7 +9,7 @@ description: null
 You can use a different tablist plugin, as long as it supports PlaceholderAPI
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [TAB](https://www.spigotmc.org/resources/tab-1-7-x-1-16-5-free-version.57806/)
+* [TAB](https://github.com/NEZNAMY/TAB/releases)
 
 ## Step by step
 
