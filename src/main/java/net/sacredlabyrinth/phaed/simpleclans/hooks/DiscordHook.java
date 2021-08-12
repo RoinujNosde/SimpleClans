@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -102,37 +103,40 @@ public class DiscordHook implements Listener {
 
     @Subscribe
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
-        UUID uuid = accountManager.getUuid(event.getAuthor().getId());
-        if (uuid == null) {
-            return;
-        }
-
-        ClanPlayer clanPlayer = clanManager.getClanPlayer(uuid);
-        if (clanPlayer == null) {
-            return;
-        }
-
-        Clan clan = clanPlayer.getClan();
-        if (clan == null) {
-            return;
-        }
-
         Optional<TextChannel> channel = getChannel(event.getChannel().getName());
         if (channel.isPresent()) {
+            User author = event.getAuthor();
+            RestAction<PrivateChannel> privateChannelAction = author.openPrivateChannel();
             TextChannel textChannel = channel.get();
-            if (textChannel.getName().equals(clan.getTag())) {
-                chatManager.processChat(DISCORD, CLAN, clanPlayer, event.getMessage().getContentRaw());
-            } else {
+
+            UUID uuid = accountManager.getUuid(author.getId());
+            if (uuid == null) {
+                textChannel.deleteMessageById(event.getMessage().getId()).queue(unused ->
+                        privateChannelAction.flatMap(privateChannel ->
+                                privateChannel.sendMessage(lang("you.did.not.link.your.account"))).queue());
+                return;
+            }
+
+            ClanPlayer clanPlayer = clanManager.getClanPlayer(uuid);
+            if (clanPlayer == null) {
+                return;
+            }
+
+            Clan clan = clanPlayer.getClan();
+            if (clan == null) {
+                return;
+            }
+
+            if (!textChannel.getName().equals(clan.getTag())) {
                 textChannel.deleteMessageById(event.getMessage().getId()).queue(unused -> {
-                    String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
-                    User user = DiscordUtil.getUserById(discordId);
                     String channelLink = "<#" + textChannel.getId() + ">";
-                    user.openPrivateChannel().flatMap(privateChannel ->
-                                    privateChannel.sendMessage(
-                                            lang("cannot.send.discord.message", clanPlayer, channelLink)))
-                            .queue();
+                    privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(
+                            lang("cannot.send.discord.message", clanPlayer, channelLink))
+                    ).queue();
                 });
             }
+
+            chatManager.processChat(DISCORD, CLAN, clanPlayer, event.getMessage().getContentRaw());
         }
     }
 
