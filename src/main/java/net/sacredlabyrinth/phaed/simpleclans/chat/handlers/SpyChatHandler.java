@@ -8,12 +8,16 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
 import static org.bukkit.Bukkit.getPluginManager;
 
+/**
+ * Handles delivering messages from {@link Source#SPIGOT} and {@link Source#DISCORD} to internal spy chat.
+ */
 public class SpyChatHandler implements ChatHandler {
 
     @Override

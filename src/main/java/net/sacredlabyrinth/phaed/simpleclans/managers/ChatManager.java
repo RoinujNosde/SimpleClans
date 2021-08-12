@@ -14,6 +14,7 @@ import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -47,6 +48,11 @@ public final class ChatManager {
         discordHook = new DiscordHook(plugin);
         DiscordSRV.api.subscribe(discordHook);
         getPluginManager().registerEvents(discordHook, plugin);
+    }
+
+    @Nullable
+    public DiscordHook getDiscordHook() {
+        return discordHook;
     }
 
     public void processChat(@NotNull Source source, @NotNull Channel channel,
@@ -134,10 +140,6 @@ public final class ChatManager {
                         ex.getMessage(), handler.getSimpleName());
             }
         }
-    }
-
-    public DiscordHook getDiscordHook() {
-        return discordHook;
     }
 
     private List<ClanPlayer> getOnlineAllyMembers(Clan clan) {

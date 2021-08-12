@@ -6,17 +6,27 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_FORMAT_TO;
 import static org.bukkit.Bukkit.getPluginManager;
 
+/**
+ * Handles delivering messages from {@link Source#SPIGOT} to {@link Source#DISCORD}.
+ */
 public class DiscordChatHandler implements ChatHandler {
 
     @Override
     public void sendMessage(SCMessage message) {
+        if (message.getChannel() != CLAN) {
+            return;
+        }
+
         String format = settingsManager.getString(DISCORDCHAT_FORMAT_TO);
         String formattedMessage = chatManager.parseChatFormat(format, message);
 
@@ -25,7 +35,7 @@ public class DiscordChatHandler implements ChatHandler {
             return;
         }
 
-        Optional<TextChannel> channel = chatManager.getDiscordHook().getChannel(clan.getTag());
+        Optional<TextChannel> channel = Objects.requireNonNull(chatManager.getDiscordHook()).getChannel(clan.getTag());
         channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
     }
 

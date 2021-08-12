@@ -37,7 +37,26 @@ import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.Permission
 import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.REMOVE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
-
+/**
+ * Hooks SimpleClans and Discord, using DiscordSRV.
+ * <p>
+ * On server' startup:
+ * </p>
+ * <ul>
+ *  <li>Creates categories and channels, respecting discord's limits.</li>
+ *  <li>Removes invalid channels, resets permissions.</li>
+ * </ul>
+ * <p>
+ * Manages events:
+ * </p>
+ * <ul>
+ *     <li>Clan creation/deletion</li>
+ *     <li>ClanPlayer joining/resigning</li>
+ *     <li>Player linking</li>
+ * </ul>
+ * <p>
+ * Currently, works with clan chat only.
+ */
 public class DiscordHook implements Listener {
 
     private final SimpleClans plugin;
@@ -84,16 +103,21 @@ public class DiscordHook implements Listener {
     @Subscribe
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
         UUID uuid = accountManager.getUuid(event.getAuthor().getId());
+        if (uuid == null) {
+            return;
+        }
+
         ClanPlayer clanPlayer = clanManager.getClanPlayer(uuid);
-        Optional<TextChannel> channel = getChannel(event.getChannel().getName());
         if (clanPlayer == null) {
             return;
         }
+
         Clan clan = clanPlayer.getClan();
         if (clan == null) {
             return;
         }
 
+        Optional<TextChannel> channel = getChannel(event.getChannel().getName());
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
             if (textChannel.getName().equals(clan.getTag())) {
@@ -154,7 +178,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Creates a new {@link Category}
+     * Creates a new SimpleClans {@link Category}
      *
      * @return Category or null, if reached the limit
      */
@@ -198,7 +222,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Retrieves channel in SimpleClans' categories.
+     * Retrieves channel in SimpleClans categories.
      *
      * @see #getCategories() retreive categories.
      */
@@ -238,7 +262,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Deletes channel from SimpleClans' categories.
+     * Deletes channel from SimpleClans categories.
      * If there are no channels, removes category as well.
      */
     public void deleteChannel(@NotNull String channelName) {
@@ -259,7 +283,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * @return All linked clan players in clan.
+     * @return All linked clan players as discord ids in clan.
      */
     public List<Long> getDiscordPlayersId(String clanTag) {
         return clanManager.getClan(clanTag).getMembers().stream().
@@ -281,7 +305,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * @return All channels in SimpleClans' categories
+     * @return All channels in categories
      */
     public List<TextChannel> getChannels() {
         return getCategories().stream().map(Category::getTextChannels).flatMap(Collection::stream).
