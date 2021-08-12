@@ -4,12 +4,16 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
+import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
+import github.scarsz.discordsrv.dependencies.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
+import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
+import github.scarsz.discordsrv.util.MessageUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -134,9 +138,28 @@ public class DiscordHook implements Listener {
                             lang("cannot.send.discord.message", clanPlayer, channelLink))
                     ).queue();
                 });
+                return;
             }
 
-            chatManager.processChat(DISCORD, CLAN, clanPlayer, event.getMessage().getContentRaw());
+            String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
+            Component component = MessageUtil.reserializeToMinecraft(event.getMessage().getContentRaw());
+            String message = MessageUtil.toLegacy(component);
+            boolean hideEmoji = emojiBehavior.equalsIgnoreCase("hide");
+            if (hideEmoji && StringUtils.isBlank(EmojiParser.removeAllEmojis(message))) {
+                DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
+                return;
+            }
+
+            if (emojiBehavior.equalsIgnoreCase("show")) {
+                // emojis already exist as unicode
+            } else if (hideEmoji) {
+                message = EmojiParser.removeAllEmojis(message);
+            } else {
+                // parse emojis from unicode back to :code:
+                message = EmojiParser.parseToAliases(message);
+            }
+
+            chatManager.processChat(DISCORD, CLAN, clanPlayer, message);
         }
     }
 
