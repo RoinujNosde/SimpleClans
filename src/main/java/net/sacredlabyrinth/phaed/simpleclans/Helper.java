@@ -63,9 +63,10 @@ public class Helper {
     public static Set<Path> getPathsIn(String path, Predicate<? super Path> filter) {
         Set<Path> files = new LinkedHashSet<>();
         String packagePath = path.replace(".", "/");
+
         try {
             URI uri = SimpleClans.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-            FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri.toString()), Collections.emptyMap());
+            FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri), Collections.emptyMap());
             files = Files.walk(fileSystem.getPath(packagePath)).
                     filter(Objects::nonNull).
                     filter(filter).
@@ -88,7 +89,13 @@ public class Helper {
         };
 
         for (Path filesPath : getPathsIn(packageName, filter)) {
-            String fileName = filesPath.toString().replace("/", ".").split(".class")[0];
+            // Compatibility with different Java versions
+            String path = filesPath.toString();
+            if (path.charAt(0) == '/') {
+                path = path.substring(1);
+            }
+
+            String fileName = path.replace("/", ".").split(".class")[0];
 
             try {
                 Class<?> clazz = Class.forName(fileName);

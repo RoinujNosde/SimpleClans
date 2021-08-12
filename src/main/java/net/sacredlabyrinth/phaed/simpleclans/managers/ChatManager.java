@@ -106,7 +106,7 @@ public final class ChatManager {
         String rank = sender.getRankId().isEmpty() ? null : ChatUtils.parseColors(sender.getRankDisplayName());
         ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_RANK",
                 message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
-        String rankFormat = (rank != null) ? sm.getColored(configField) : "";
+        String rankFormat = (rank != null) ? sm.getColored(configField).replace("%rank%", rank) : "";
 
         if (placeholders != null) {
             for (Map.Entry<String, String> e : placeholders.entrySet()) {

@@ -72,7 +72,6 @@ public class DiscordHook implements Listener {
 
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
     private final List<String> textCategories;
-    private final List<TextChannel> channels;
     private final List<String> discordClanTags;
     private final List<String> clanTags;
 
@@ -97,8 +96,7 @@ public class DiscordHook implements Listener {
                 limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
                 collect(Collectors.toList());
 
-        channels = getChannels();
-        discordClanTags = channels.stream().
+        discordClanTags = getChannels().stream().
                 map(GuildChannel::getName).
                 collect(Collectors.toList());
 
@@ -254,7 +252,7 @@ public class DiscordHook implements Listener {
      * @see #getCategories() retreive categories.
      */
     public Optional<TextChannel> getChannel(@NotNull String channelName) {
-        return channels.stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
+        return getChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
     }
 
     /**
@@ -376,7 +374,7 @@ public class DiscordHook implements Listener {
     }
 
     private void resetPermissions() {
-        channels.stream().
+        getChannels().stream().
                 map(TextChannel::getMemberPermissionOverrides).
                 flatMap(Collection::stream).
                 filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
