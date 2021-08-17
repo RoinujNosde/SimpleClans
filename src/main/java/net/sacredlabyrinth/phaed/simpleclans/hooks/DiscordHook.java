@@ -29,7 +29,9 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -75,6 +77,8 @@ public class DiscordHook implements Listener {
     private final List<String> discordClanTags;
     private final List<String> clanTags;
 
+    private final Role leaderRole;
+
     private static final int MAX_CHANNELS_PER_CATEGORY = 50;
     private static final int MAX_CHANNELS_PER_GUILD = 500;
 
@@ -100,6 +104,7 @@ public class DiscordHook implements Listener {
                 map(GuildChannel::getName).
                 collect(Collectors.toList());
 
+        leaderRole = getLeaderRole();
         setupDiscord();
     }
 
@@ -200,6 +205,40 @@ public class DiscordHook implements Listener {
     @NotNull
     public Guild getGuild() {
         return guild;
+    }
+
+    @NotNull
+    public Role getLeaderRole() {
+        Role role = guild.getRoleById(settingsManager.getString(DISCORDCHAT_LEADER_ID));
+
+        if (role == null || !role.getName().equals(settingsManager.getString(DISCORDCHAT_LEADER_ROLE))) {
+            role = guild.createRole().
+                    setName(settingsManager.getString(DISCORDCHAT_LEADER_ROLE)).
+                    setColor(getLeaderColor()).
+                    setMentionable(true).
+                    complete();
+
+            settingsManager.set(DISCORDCHAT_LEADER_ID, role.getId());
+            settingsManager.save();
+        }
+
+        return role;
+    }
+
+    public Color getLeaderColor() {
+        String[] colors = settingsManager.getString(DISCORDCHAT_LEADER_COLOR).
+                replaceAll("\\s", "").split(",");
+        try {
+            int red = Integer.parseInt(colors[0]);
+            int green = Integer.parseInt(colors[1]);
+            int blue = Integer.parseInt(colors[2]);
+            int alpha = Integer.parseInt(colors[3]);
+
+            return new Color(red, green, blue, alpha);
+        } catch (IllegalArgumentException ex) {
+            plugin.getLogger().warning("Color is invalid, using default color: " + ex.getMessage());
+            return Color.RED;
+        }
     }
 
     /**
@@ -354,14 +393,23 @@ public class DiscordHook implements Listener {
         Optional<TextChannel> channel = getChannel(channelName);
         String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
         Member member = DiscordUtil.getMemberById(discordId);
+
         if (member != null && channel.isPresent()) {
             switch (action) {
                 case ADD:
+                    if (clanPlayer.isLeader()) {
+                        guild.addRoleToMember(member, leaderRole).queue();
+                    }
+
                     channel.get().upsertPermissionOverride(member).setPermissions(
                                     Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).
                             queue();
                     break;
                 case REMOVE:
+                    if (clanPlayer.isLeader()) {
+                        guild.removeRoleFromMember(member, leaderRole).queue();
+                    }
+
                     channel.get().getManager().removePermissionOverride(member).queue();
             }
         }
