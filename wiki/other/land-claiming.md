@@ -2,7 +2,7 @@
 description: This page contains information about sharing your lands with clan members.
 ---
 
-# Land Claims Plugins
+# Land Claiming
 
 ## Sharing lands
 

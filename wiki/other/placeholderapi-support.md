@@ -2,7 +2,7 @@
 description: null
 ---
 
-# PlaceholderAPI Support
+# Placeholders
 
 ## Available placeholders
 
@@ -78,6 +78,15 @@ This one is another group of placeholders to create leaderboards. As the name su
 Adding `_topplayers_#_` to existing player placeholders will get the value for the Player in the specified rank.  
 Ex.:  
 `%simpleclans_topplayers_2_tag_label%` - this will return the tag label for the Player in the second position.
+
+#### Relational placeholders
+
+Relational placeholders return values based on the relation between 2 players. One example is the tab, there is the player viewing it and the players listed there  
+Currently the only relational placeholder available on SimpleClans is: `%rel_simpleclans_color%`   
+This returns a color based on rivalries/alliances.  
+Allies: aqua  
+Rivals: red  
+Same clan: green
 
 #### HolographicDisplays
 

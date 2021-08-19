@@ -4,7 +4,7 @@ description: >-
   in your plugins.
 ---
 
-# SimpleClans API Example
+# API Examples
 
 ## Step 1. Add the SimpleClans API to your plugin
 
