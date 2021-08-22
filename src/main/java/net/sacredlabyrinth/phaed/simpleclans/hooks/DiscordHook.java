@@ -37,8 +37,8 @@ import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHAN
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.ADD;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.PermissionAction.REMOVE;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.DiscordAction.ADD;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook.DiscordAction.REMOVE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
@@ -176,49 +176,27 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Member member = getMember(clanPlayer);
-        Clan clan = clanPlayer.getClan();
-        if (member == null || clan == null) {
-            return;
-        }
 
-        updatePermissions(member, clan.getTag(), REMOVE);
-        guild.removeRoleFromMember(member, leaderRole).queue();
+        updatePermissions(clanPlayer, REMOVE);
+        updateRole(clanPlayer, REMOVE);
     }
 
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Clan clan = clanPlayer.getClan();
-        Member member = getMember(clanPlayer);
-        if (member == null || clan == null) {
-            return;
-        }
 
-        updatePermissions(member, clan.getTag(), ADD);
-        guild.addRoleToMember(member, leaderRole).queue();
+        updatePermissions(clanPlayer, ADD);
+        updateRole(clanPlayer, ADD);
     }
 
     @EventHandler
     public void onPlayerPromote(PlayerPromoteEvent event) {
-        ClanPlayer clanPlayer = event.getClanPlayer();
-        Member member = getMember(clanPlayer);
-        if (member == null) {
-            return;
-        }
-
-        guild.addRoleToMember(member, leaderRole).queue();
+        updateRole(event.getClanPlayer(), ADD);
     }
 
     @EventHandler
     public void onPlayerDemote(PlayerDemoteEvent event) {
-        ClanPlayer clanPlayer = event.getClanPlayer();
-        Member member = getMember(clanPlayer);
-        if (member == null) {
-            return;
-        }
-
-        guild.removeRoleFromMember(member, leaderRole).queue();
+        updateRole(event.getClanPlayer(), REMOVE);
     }
 
     @Subscribe
@@ -464,7 +442,7 @@ public class DiscordHook implements Listener {
         });
     }
 
-    private void updateRole(ClanPlayer clanPlayer, PermissionAction action) {
+    private void updateRole(ClanPlayer clanPlayer, DiscordAction action) {
         Member member = getMember(clanPlayer);
         if (member == null) {
             return;
@@ -477,18 +455,14 @@ public class DiscordHook implements Listener {
         }
     }
 
-    private void updatePermissions(@NotNull ClanPlayer clanPlayer, PermissionAction action) {
+    private void updatePermissions(@NotNull ClanPlayer clanPlayer, DiscordAction action) {
         Clan clan = clanPlayer.getClan();
         Member member = getMember(clanPlayer);
         if (clan == null || member == null) {
             return;
         }
 
-        updatePermissions(member, clan.getTag(), action);
-    }
-
-    private void updatePermissions(@NotNull Member member, String channelName, PermissionAction action) {
-        Optional<TextChannel> channel = getChannel(channelName);
+        Optional<TextChannel> channel = getChannel(clan.getTag());
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
 
@@ -501,7 +475,7 @@ public class DiscordHook implements Listener {
         }
     }
 
-    enum PermissionAction {
+    enum DiscordAction {
         ADD, REMOVE
     }
 }
