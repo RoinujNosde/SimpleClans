@@ -415,14 +415,14 @@ settings:
     <tr>
       <td style="text-align:left"><code>land-creation.only-leaders</code>
       </td>
-      <td style="text-align:left">Allows only clan leaders to create lands</td>
+      <td style="text-align:left">Allows only clan leaders to create lands (not compatible with WorldGuard)</td>
       <td style="text-align:left"><code>false</code>
       </td>
     </tr>
     <tr>
       <td style="text-align:left"><code>land-creation.only-one-per-clan</code>
       </td>
-      <td style="text-align:left">Allows to have only one land per clan</td>
+      <td style="text-align:left">Allows to have only one land per clan (not compatible with WorldGuard)</td>
       <td style="text-align:left"><code>false</code>
       </td>
     </tr>

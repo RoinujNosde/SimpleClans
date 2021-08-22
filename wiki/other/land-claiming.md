@@ -34,7 +34,7 @@ Actions list:
 
 {% hint style="info" %}
 **Note**  
-The commands will affect the land you are currently standing on or all lands, if you are not in one _\(when enabled\)_.
+The commands will affect the land you are currently standing on or all lands, if you are not in one _\(when edit-all-lands is true\)_.
 {% endhint %}
 
 ## Making your own provider
