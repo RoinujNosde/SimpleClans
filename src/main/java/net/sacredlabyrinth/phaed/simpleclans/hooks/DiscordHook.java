@@ -3,13 +3,13 @@ package net.sacredlabyrinth.phaed.simpleclans.hooks;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
+import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
-import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.ChannelAction;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import github.scarsz.discordsrv.util.DiscordUtil;
@@ -17,10 +17,7 @@ import github.scarsz.discordsrv.util.MessageUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.DisbandClanEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.PlayerJoinedClanEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.PlayerKickedClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
@@ -30,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -66,6 +63,9 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  */
 public class DiscordHook implements Listener {
 
+    private static final int MAX_CHANNELS_PER_CATEGORY = 50;
+    private static final int MAX_CHANNELS_PER_GUILD = 500;
+
     private final SimpleClans plugin;
     private final SettingsManager settingsManager;
     private final ChatManager chatManager;
@@ -76,11 +76,7 @@ public class DiscordHook implements Listener {
     private final List<String> textCategories;
     private final List<String> discordClanTags;
     private final List<String> clanTags;
-
     private final Role leaderRole;
-
-    private static final int MAX_CHANNELS_PER_CATEGORY = 50;
-    private static final int MAX_CHANNELS_PER_GUILD = 500;
 
     public DiscordHook(SimpleClans plugin) {
         this.plugin = plugin;
@@ -94,7 +90,8 @@ public class DiscordHook implements Listener {
 
         clanTags = clanManager.getClans().stream().
                 filter(Clan::isVerified).
-                filter(clan -> !getDiscordPlayersId(clan.getTag()).isEmpty() || clan.isPermanent()).
+                filter(clan -> clan.getMembers().stream().
+                        anyMatch(clanPlayer -> getMember(clanPlayer) != null) || clan.isPermanent()).
                 map(Clan::getTag).
                 filter(clanTag -> whitelist.isEmpty() || whitelist.contains(clanTag)).
                 limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
@@ -111,16 +108,15 @@ public class DiscordHook implements Listener {
     @Subscribe
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
         Optional<TextChannel> channel = getChannel(event.getChannel().getName());
-        if (channel.isPresent()) {
-            User author = event.getAuthor();
-            RestAction<PrivateChannel> privateChannelAction = author.openPrivateChannel();
-            TextChannel textChannel = channel.get();
 
-            UUID uuid = accountManager.getUuid(author.getId());
+        if (channel.isPresent()) {
+            Message eventMessage = event.getMessage();
+            User Author = event.getAuthor();
+            TextChannel textChannel = channel.get();
+            UUID uuid = accountManager.getUuid(Author.getId());
+
             if (uuid == null) {
-                textChannel.deleteMessageById(event.getMessage().getId()).queue(unused ->
-                        privateChannelAction.flatMap(privateChannel ->
-                                privateChannel.sendMessage(lang("you.did.not.link.your.account"))).queue());
+                sendPrivateMessage(textChannel, eventMessage, lang("you.did.not.link.your.account"));
                 return;
             }
 
@@ -134,30 +130,31 @@ public class DiscordHook implements Listener {
                 return;
             }
 
-            if (!textChannel.getName().equals(clan.getTag())) {
-                textChannel.deleteMessageById(event.getMessage().getId()).queue(unused -> {
-                    String channelLink = "<#" + textChannel.getId() + ">";
-                    privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(
-                            lang("cannot.send.discord.message", clanPlayer, channelLink))
-                    ).queue();
-                });
+            if (!Objects.equals(textChannel.getName(), clan.getTag())) {
+                String channelLink = "<#" + textChannel.getId() + ">";
+                sendPrivateMessage(textChannel, eventMessage, lang("cannot.send.discord.message", clanPlayer, channelLink));
                 return;
             }
 
             String emojiBehavior = DiscordSRV.config().getString("DiscordChatChannelEmojiBehavior");
-            Component component = MessageUtil.reserializeToMinecraft(event.getMessage().getContentRaw());
-            String message = MessageUtil.toLegacy(component);
+
             boolean hideEmoji = emojiBehavior.equalsIgnoreCase("hide");
+            boolean nameEmoji = emojiBehavior.equalsIgnoreCase("name");
+
+            Component component = MessageUtil.reserializeToMinecraft(eventMessage.getContentRaw());
+            String message = MessageUtil.toLegacy(component);
+
             if (hideEmoji && StringUtils.isBlank(EmojiParser.removeAllEmojis(message))) {
-                DiscordSRV.debug("Ignoring message from " + event.getAuthor() + " because it became completely blank after removing unicode emojis");
+                DiscordSRV.debug("Ignoring message from "
+                        + Author.getName() +
+                        " because it became completely blank after removing unicode emojis");
                 return;
             }
 
-            if (emojiBehavior.equalsIgnoreCase("show")) {
-                // emojis already exist as unicode
-            } else if (hideEmoji) {
+            if (hideEmoji) {
+                // remove all emojis
                 message = EmojiParser.removeAllEmojis(message);
-            } else {
+            } else if (nameEmoji) {
                 // parse emojis from unicode back to :code:
                 message = EmojiParser.parseToAliases(message);
             }
@@ -178,12 +175,50 @@ public class DiscordHook implements Listener {
 
     @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
-        updatePermissions(event.getClanPlayer(), event.getClan().getTag(), REMOVE);
+        ClanPlayer clanPlayer = event.getClanPlayer();
+        Member member = getMember(clanPlayer);
+        Clan clan = clanPlayer.getClan();
+        if (member == null || clan == null) {
+            return;
+        }
+
+        updatePermissions(member, clan.getTag(), REMOVE);
+        guild.removeRoleFromMember(member, leaderRole).queue();
     }
 
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
-        updatePermissions(event.getClanPlayer());
+        ClanPlayer clanPlayer = event.getClanPlayer();
+        Clan clan = clanPlayer.getClan();
+        Member member = getMember(clanPlayer);
+        if (member == null || clan == null) {
+            return;
+        }
+
+        updatePermissions(member, clan.getTag(), ADD);
+        guild.addRoleToMember(member, leaderRole).queue();
+    }
+
+    @EventHandler
+    public void onPlayerPromote(PlayerPromoteEvent event) {
+        ClanPlayer clanPlayer = event.getClanPlayer();
+        Member member = getMember(clanPlayer);
+        if (member == null) {
+            return;
+        }
+
+        guild.addRoleToMember(member, leaderRole).queue();
+    }
+
+    @EventHandler
+    public void onPlayerDemote(PlayerDemoteEvent event) {
+        ClanPlayer clanPlayer = event.getClanPlayer();
+        Member member = getMember(clanPlayer);
+        if (member == null) {
+            return;
+        }
+
+        guild.removeRoleFromMember(member, leaderRole).queue();
     }
 
     @Subscribe
@@ -193,7 +228,18 @@ public class DiscordHook implements Listener {
             return;
         }
 
-        updatePermissions(clanPlayer);
+        updatePermissions(clanPlayer, ADD);
+    }
+
+    @Subscribe
+    public void onPlayerUnlinking(AccountUnlinkedEvent event) {
+        ClanPlayer clanPlayer = clanManager.getClanPlayer(event.getPlayer());
+        if (clanPlayer == null) {
+            return;
+        }
+
+        updatePermissions(clanPlayer, REMOVE);
+        guild.removeRoleFromMember(event.getDiscordId(), leaderRole).queue();
     }
 
     protected void setupDiscord() {
@@ -207,6 +253,9 @@ public class DiscordHook implements Listener {
         return guild;
     }
 
+    /**
+     * @return A leader role from guild, otherwise creates one.
+     */
     @NotNull
     public Role getLeaderRole() {
         Role role = guild.getRoleById(settingsManager.getString(DISCORDCHAT_LEADER_ID));
@@ -225,6 +274,9 @@ public class DiscordHook implements Listener {
         return role;
     }
 
+    /**
+     * @return A leader color from configuration
+     */
     public Color getLeaderColor() {
         String[] colors = settingsManager.getString(DISCORDCHAT_LEADER_COLOR).
                 replaceAll("\\s", "").split(",");
@@ -308,20 +360,19 @@ public class DiscordHook implements Listener {
      *
      * @return true, if channel was created. False, if category reached the limit.
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean createChannel(@NotNull Category category, @NotNull String clanTag) {
-        ChannelAction<TextChannel> action = category.createTextChannel(clanTag);
-
         if (category.getTextChannels().size() >= MAX_CHANNELS_PER_CATEGORY) {
             return false;
         }
 
-        for (Long discordId : getDiscordPlayersId(clanTag)) {
-            action.addMemberPermissionOverride(discordId,
-                    Collections.singletonList(VIEW_CHANNEL),
-                    Collections.emptyList());
+        TextChannel textChannel = category.createTextChannel(clanTag).complete();
+        Clan clan = clanManager.getClan(clanTag);
+
+        if (clan != null) {
+            for (ClanPlayer member : clan.getMembers()) {
+                updatePermissions(member, ADD);
+            }
         }
-        action.complete();
         return true;
     }
 
@@ -337,25 +388,15 @@ public class DiscordHook implements Listener {
                         textChannel.delete().complete();
                     }
                 }
-            } else {
-                textCategories.remove(category.getId());
-                settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
-                settingsManager.save();
-                category.delete().complete();
+
+                if (category.getTextChannels().size() == 0) {
+                    textCategories.remove(category.getId());
+                    settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
+                    settingsManager.save();
+                    category.delete().complete();
+                }
             }
         }
-    }
-
-    /**
-     * @return All linked clan players as discord ids in clan.
-     */
-    public List<Long> getDiscordPlayersId(String clanTag) {
-        return clanManager.getClan(clanTag).getMembers().stream().
-                map(ClanPlayer::getUniqueId).
-                map(accountManager::getDiscordId).
-                filter(Objects::nonNull).
-                map(Long::valueOf).
-                collect(Collectors.toList());
     }
 
     /**
@@ -376,43 +417,10 @@ public class DiscordHook implements Listener {
                 collect(Collectors.toList());
     }
 
-    enum PermissionAction {
-        ADD, REMOVE
-    }
-
-    private void updatePermissions(@NotNull ClanPlayer clanPlayer) {
-        Clan clan = clanPlayer.getClan();
-        if (clan == null) {
-            return;
-        }
-
-        updatePermissions(clanPlayer, clan.getTag(), ADD);
-    }
-
-    private void updatePermissions(@NotNull ClanPlayer clanPlayer, @NotNull String channelName, PermissionAction action) {
-        Optional<TextChannel> channel = getChannel(channelName);
+    @Nullable
+    public Member getMember(@NotNull ClanPlayer clanPlayer) {
         String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
-        Member member = DiscordUtil.getMemberById(discordId);
-
-        if (member != null && channel.isPresent()) {
-            switch (action) {
-                case ADD:
-                    if (clanPlayer.isLeader()) {
-                        guild.addRoleToMember(member, leaderRole).queue();
-                    }
-
-                    channel.get().upsertPermissionOverride(member).setPermissions(
-                                    Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).
-                            queue();
-                    break;
-                case REMOVE:
-                    if (clanPlayer.isLeader()) {
-                        guild.removeRoleFromMember(member, leaderRole).queue();
-                    }
-
-                    channel.get().getManager().removePermissionOverride(member).queue();
-            }
-        }
+        return DiscordUtil.getMemberById(discordId);
     }
 
     private void removeInvalidChannels() {
@@ -432,7 +440,7 @@ public class DiscordHook implements Listener {
                 filter(Objects::nonNull).
                 map(Clan::getMembers).
                 flatMap(Collection::stream).
-                forEach(this::updatePermissions);
+                forEach(clanPlayer -> updatePermissions(clanPlayer, ADD));
     }
 
     private void createChannels() {
@@ -445,5 +453,55 @@ public class DiscordHook implements Listener {
                 break;
             }
         }
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void sendPrivateMessage(TextChannel textChannel, Message eventMessage, String message) {
+        RestAction<PrivateChannel> privateChannelAction = eventMessage.getAuthor().openPrivateChannel();
+        textChannel.deleteMessageById(eventMessage.getId()).queue(unused -> {
+            String channelLink = "<#" + textChannel.getId() + ">";
+            privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message));
+        });
+    }
+
+    private void updateRole(ClanPlayer clanPlayer, PermissionAction action) {
+        Member member = getMember(clanPlayer);
+        if (member == null) {
+            return;
+        }
+
+        if (action == ADD) {
+            guild.addRoleToMember(member, leaderRole).queue();
+        } else {
+            guild.removeRoleFromMember(member, leaderRole).queue();
+        }
+    }
+
+    private void updatePermissions(@NotNull ClanPlayer clanPlayer, PermissionAction action) {
+        Clan clan = clanPlayer.getClan();
+        Member member = getMember(clanPlayer);
+        if (clan == null || member == null) {
+            return;
+        }
+
+        updatePermissions(member, clan.getTag(), action);
+    }
+
+    private void updatePermissions(@NotNull Member member, String channelName, PermissionAction action) {
+        Optional<TextChannel> channel = getChannel(channelName);
+        if (channel.isPresent()) {
+            TextChannel textChannel = channel.get();
+
+            if (action == ADD) {
+                textChannel.upsertPermissionOverride(member).
+                        setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
+            } else {
+                textChannel.getManager().removePermissionOverride(member).queue();
+            }
+        }
+    }
+
+    enum PermissionAction {
+        ADD, REMOVE
     }
 }
