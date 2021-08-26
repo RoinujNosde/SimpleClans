@@ -48,9 +48,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
-                <configuration>
-                    <outputDirectory>C:\Purpur-1.16.5\plugins</outputDirectory>
-                </configuration>
             </plugin>
 
             <!-- Release plugin -->
@@ -59,7 +56,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.3.2</version>
             </plugin>
-
+            
             <!-- Shade plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -162,18 +159,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.7.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>${powermock.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -288,7 +273,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <powermock.version>2.0.9</powermock.version>
     </properties>
 
     <!-- Upstream Distribution -->
