@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Class responsible for logging bank related transactions.
+ *
  * @since 2.15.3
  */
 public class BankLog {

@@ -10,6 +10,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.text.MessageFormat;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TASKS_COLLECT_FEE_HOUR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TASKS_COLLECT_FEE_MINUTE;
 
 /**
  *
@@ -28,8 +30,8 @@ public class CollectFeeTask extends BukkitRunnable {
     public void start() {
     	SettingsManager sm = plugin.getSettingsManager();
     	
-    	int hour = sm.getTasksCollectFeeHour();
-    	int minute = sm.getTasksCollectFeeMinute();
+    	int hour = sm.getInt(TASKS_COLLECT_FEE_HOUR);
+    	int minute = sm.getInt(TASKS_COLLECT_FEE_MINUTE);
         long delay = Helper.getDelayTo(hour, minute);
         
         this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);

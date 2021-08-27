@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -16,16 +17,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class ClanDetailsFrame extends SCFrame {
 	private final Clan clan;
 	private final ClanPlayer cp;
 	private final SimpleClans plugin;
+	private final SettingsManager settings;
 
 	public ClanDetailsFrame(@Nullable SCFrame parent, @NotNull Player viewer, @NotNull Clan clan) {
 		super(parent, viewer);
 		this.clan = clan;
 		plugin = SimpleClans.getInstance();
+		settings = plugin.getSettingsManager();
 		cp = plugin.getClanManager().getClanPlayer(getViewer());
 	}
 
@@ -91,16 +95,15 @@ public class ClanDetailsFrame extends SCFrame {
 		String clanStatus = clanEnabled ? joined : notJoined;
 		String allyStatus = allyEnabled ? joined : notJoined;
 
-		SettingsManager sm = plugin.getSettingsManager();
-		String chatCommand = sm.isTagBasedClanChat() ? clan.getTag() : sm.getCommandClanChat();
+		String chatCommand = settings.is(CLANCHAT_TAG_BASED) ? clan.getTag() : settings.getString(COMMANDS_CLAN_CHAT);
 		String joinArg = lang("join", getViewer());
 		String leaveArg = lang("leave", getViewer());
 		return new SCComponentImpl(lang("gui.clandetails.chat.title", getViewer()),
 				Arrays.asList(
 						lang("gui.clandetails.chat.clan.chat.lore", getViewer(), chatCommand),
 						lang("gui.clandetails.chat.clan.join.leave.lore", getViewer(), chatCommand, joinArg, leaveArg),
-						lang("gui.clandetails.chat.ally.chat.lore", getViewer(), sm.getCommandAlly()),
-						lang("gui.clandetails.chat.ally.join.leave.lore", getViewer(), sm.getCommandAlly(), joinArg, leaveArg),
+						lang("gui.clandetails.chat.ally.chat.lore", getViewer(), settings.getString(COMMANDS_ALLY)),
+						lang("gui.clandetails.chat.ally.join.leave.lore", getViewer(), settings.getString(COMMANDS_ALLY), joinArg, leaveArg),
 						lang("gui.clandetails.chat.clan.status.lore", getViewer(), clanStatus),
 						lang("gui.clandetails.chat.ally.status.lore", getViewer(), allyStatus),
 						lang("gui.clandetails.chat.clan.toggle.lore", getViewer()),
@@ -151,8 +154,7 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addVerify() {
 		boolean verified = clan.isVerified();
-		boolean purchaseVerification = plugin.getSettingsManager().isRequireVerification()
-				&& plugin.getSettingsManager().isePurchaseVerification();
+		boolean purchaseVerification = settings.is(REQUIRE_VERIFICATION) && settings.is(ECONOMY_PURCHASE_CLAN_VERIFY);
 
 		XMaterial material = verified ? XMaterial.REDSTONE_TORCH : XMaterial.LEVER;
 		String title = verified ? lang("gui.clandetails.verified.title", getViewer())
@@ -160,7 +162,7 @@ public class ClanDetailsFrame extends SCFrame {
 		List<String> lore = verified ? null : new ArrayList<>();
 		if (!verified) {
 			if (purchaseVerification) {
-				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), plugin.getSettingsManager().getVerificationPrice()));
+				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), settings.getDouble(ECONOMY_VERIFICATION_PRICE)));
 			}
 			lore.add(lang("gui.clandetails.not.verified.lore", getViewer()));
 		}
@@ -233,9 +235,9 @@ public class ClanDetailsFrame extends SCFrame {
 
 	private void addRegroup() {
 		double price = 0;
-		if (plugin.getSettingsManager().isePurchaseHomeRegroup()) {
-			price = plugin.getSettingsManager().getHomeRegroupPrice();
-			if (!plugin.getSettingsManager().iseUniqueTaxOnRegroup()) {
+		if (settings.is(ECONOMY_PURCHASE_HOME_REGROUP)) {
+			price = settings.getDouble(ECONOMY_REGROUP_PRICE);
+			if (!settings.is(ECONOMY_UNIQUE_TAX_ON_REGROUP)) {
 				price = price * VanishUtils.getNonVanished(getViewer(), clan).size();
 			}
 		}
@@ -259,9 +261,8 @@ public class ClanDetailsFrame extends SCFrame {
 	}
 
 	private void addHome() {
-		SettingsManager sm = plugin.getSettingsManager();
-		double homePrice = sm.isePurchaseHomeTeleport() ? sm.getHomeTeleportPrice() : 0;
-		double setPrice = sm.isePurchaseHomeTeleportSet() ? sm.getHomeTeleportPriceSet() : 0;
+		double homePrice = settings.is(ECONOMY_PURCHASE_HOME_TELEPORT) ? settings.getDouble(ECONOMY_HOME_TELEPORT_PRICE) : 0;
+		double setPrice = settings.is(ECONOMY_PURCHASE_HOME_TELEPORT_SET) ? settings.getDouble(ECONOMY_HOME_TELEPORT_SET_PRICE) : 0;
 
 		List<String> lore = new ArrayList<>();
 		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), homePrice));
@@ -336,7 +337,7 @@ public class ClanDetailsFrame extends SCFrame {
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.clandetails.title",getViewer(), Helper.stripColors(clan.getColorTag()),
+		return lang("gui.clandetails.title",getViewer(), ChatUtils.stripColors(clan.getColorTag()),
 				clan.getName());
 	}
 

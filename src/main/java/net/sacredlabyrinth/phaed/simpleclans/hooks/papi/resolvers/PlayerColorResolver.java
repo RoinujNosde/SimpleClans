@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.PlaceholderResolver;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,10 +11,16 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+
 @SuppressWarnings("unused")
 public class PlayerColorResolver extends PlaceholderResolver {
+
+    private final SettingsManager settings;
+
     public PlayerColorResolver(@NotNull SimpleClans plugin) {
         super(plugin);
+        settings = plugin.getSettingsManager();
     }
 
     @Override
@@ -39,26 +46,26 @@ public class PlayerColorResolver extends PlaceholderResolver {
 
     private String getClanChatColor(ClanPlayer player) {
         if (player.isLeader()) {
-            return plugin.getSettingsManager().getClanChatLeaderColor();
+            return settings.getColored(CLANCHAT_LEADER_COLOR);
         }
         if (player.isTrusted()) {
-            return plugin.getSettingsManager().getClanChatTrustedColor();
+            return settings.getColored(CLANCHAT_TRUSTED_COLOR);
         }
         if (player.getClan() != null) {
-            return plugin.getSettingsManager().getClanChatMemberColor();
+            return settings.getColored(CLANCHAT_MEMBER_COLOR);
         }
         return "";
     }
 
     private String getAllyChatColor(ClanPlayer player) {
         if (player.isLeader()) {
-            return plugin.getSettingsManager().getAllyChatLeaderColor();
+            return settings.getColored(ALLYCHAT_LEADER_COLOR);
         }
         if (player.isTrusted()) {
-            return plugin.getSettingsManager().getAllyChatTrustedColor();
+            return settings.getColored(ALLYCHAT_TRUSTED_COLOR);
         }
         if (player.getClan() != null) {
-            return plugin.getSettingsManager().getAllyChatMemberColor();
+            return settings.getColored(ALLYCHAT_MEMBER_COLOR);
         }
         return "";
     }

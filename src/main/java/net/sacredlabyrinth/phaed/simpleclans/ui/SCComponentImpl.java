@@ -1,8 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -10,6 +7,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SCComponentImpl extends SCComponent {
 
@@ -29,7 +29,7 @@ public class SCComponentImpl extends SCComponent {
 
 	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @NotNull XMaterial material,
 						   int slot) {
-		this(displayName, lore, material.parseItem(true), slot);
+		this(displayName, lore, material.parseItem(), slot);
 	}
 
 	public SCComponentImpl(@Nullable String displayName, @Nullable List<String> lore, @Nullable ItemStack item,
@@ -63,7 +63,7 @@ public class SCComponentImpl extends SCComponent {
 		private @Nullable List<String> lore;
 
 		public Builder(@NotNull XMaterial material) {
-			this(material.parseItem(true));
+			this(material.parseItem());
 		}
 
 		public Builder(@NotNull Material material) {

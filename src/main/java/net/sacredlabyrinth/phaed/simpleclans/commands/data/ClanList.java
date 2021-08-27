@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType.ORDINAL;
 import static org.bukkit.ChatColor.*;
 
@@ -52,7 +53,7 @@ public class ClanList extends Sendable {
                                                                                     @Nullable String order) {
         boolean ascending = order == null || lang("list.order.asc").equalsIgnoreCase(order);
         if (type == null) {
-            type = sm.getListDefaultOrderBy();
+            type = sm.getString(LIST_DEFAULT_ORDER_BY);
         }
         if (type.equalsIgnoreCase(lang("list.type.size"))) {
             return new RankingNumberResolver<>(clans, Clan::getSize, order != null && ascending, ORDINAL);
@@ -73,15 +74,15 @@ public class ClanList extends Sendable {
     @NotNull
     private List<Clan> getListableClans() {
         List<Clan> clans = plugin.getClanManager().getClans();
-        clans = clans.stream().filter(clan -> clan.isVerified() || sm.isShowUnverifiedOnList())
+        clans = clans.stream().filter(clan -> clan.isVerified() || sm.is(SHOW_UNVERIFIED_ON_LIST))
                 .collect(Collectors.toList());
         return clans;
     }
 
     private void sendHeader(List<Clan> clans) {
         ChatBlock.sendBlank(sender);
-        ChatBlock.saySingle(sender, sm.getServerName() + subColor + " " + lang("clans.lower", sender)
-                + " " + headColor + Helper.generatePageSeparator(sm.getPageSep()));
+        ChatBlock.saySingle(sender, sm.getColored(SERVER_NAME) + subColor + " " + lang("clans.lower", sender)
+                + " " + headColor + Helper.generatePageSeparator(sm.getString(PAGE_SEPARATOR)));
         ChatBlock.sendBlank(sender);
         ChatBlock.sendMessage(sender, headColor + lang("total.clans", sender) + " " + subColor + clans.size());
         ChatBlock.sendBlank(sender);
@@ -91,12 +92,11 @@ public class ClanList extends Sendable {
                 lang("kdr", sender), lang("members", sender));
     }
 
-    @SuppressWarnings("deprecation")
     private void addLine(RankingNumberResolver<Clan, ? extends Comparable<?>> ranking, Clan clan) {
-        String tag = sm.getClanChatBracketColor() + sm.getClanChatTagBracketLeft()
-                + sm.getTagDefaultColor() + clan.getColorTag() + sm.getClanChatBracketColor()
-                + sm.getClanChatTagBracketRight();
-        String name = (clan.isVerified() ? sm.getPageClanNameColor() : GRAY) + clan.getName();
+        String tag = sm.getColored(CLANCHAT_BRACKET_COLOR) + sm.getString(CLANCHAT_BRACKET_LEFT)
+                + sm.getColored(TAG_DEFAULT_COLOR) + clan.getColorTag() + sm.getColored(CLANCHAT_BRACKET_COLOR)
+                + sm.getString(CLANCHAT_BRACKET_RIGHT);
+        String name = (clan.isVerified() ? sm.getColored(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
         String fullname = tag + " " + name;
         String size = WHITE + "" + clan.getSize();
         String kdr = clan.isVerified() ? YELLOW + "" + KDRFormat.format(clan.getTotalKDR()) : "";

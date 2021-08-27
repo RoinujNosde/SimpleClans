@@ -1,6 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,18 +8,18 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WordWrapperTest {
+public class WordWrapperTest {
 
     @Test
-    void wrap() {
+    public void wrap() {
         String[] wrap = new WordWrapper("a§aa", 2).wrap();
-        assertArrayEquals(new String[] {"§fa§aa"}, wrap);
+        assertArrayEquals(new String[]{"§fa§aa"}, wrap);
         wrap = new WordWrapper("a§aa a§aa", 2).wrap();
-        assertArrayEquals(new String[] {"§fa§aa", "§aa§aa"}, wrap);
+        assertArrayEquals(new String[]{"§fa§aa", "§aa§aa"}, wrap);
     }
 
     @Test
-    void split() {
+    public void split() {
         String s = "§x§f§f§f§f§f§f";
         List<String> split = WordWrapper.split(s, 1);
         assertEquals(1, split.size());

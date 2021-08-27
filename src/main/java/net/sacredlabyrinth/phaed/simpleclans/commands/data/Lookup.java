@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 public class Lookup extends Sendable {
@@ -51,7 +52,7 @@ public class Lookup extends Sendable {
                     .replace("%player_last_seen%", target.getLastSeenString(sender))
                     .replace("%player_past_clans%", target.getPastClansString(headColor + ", "))
                     .replace("%player_inactive_days%", String.valueOf(target.getInactiveDays()))
-                    .replace("%player_max_inactive_days%", Helper.formatMaxInactiveDays(sm.getPurgePlayers()))
+                    .replace("%player_max_inactive_days%", Helper.formatMaxInactiveDays(sm.getInt(PURGE_INACTIVE_PLAYER_DAYS)))
                     .replace("%kill_type_line%", getKillTypeLine());
             sender.sendMessage(lookup);
         } else {
@@ -81,15 +82,15 @@ public class Lookup extends Sendable {
             return lang("free.agent", sender);
         }
         if (target.isLeader()) {
-            return sm.getPageLeaderColor() + lang("leader", sender);
+            return sm.getColored(PAGE_LEADER_COLOR) + lang("leader", sender);
         }
         if (target.isTrusted()) {
-            return sm.getPageTrustedColor() + lang("trusted", sender);
+            return sm.getColored(PAGE_TRUSTED_COLOR) + lang("trusted", sender);
         }
         if (!target.getRankId().isEmpty()) {
-            return sm.getPageTrustedColor() + lang("in.rank", sender);
+            return sm.getColored(PAGE_TRUSTED_COLOR) + lang("in.rank", sender);
         }
-        return sm.getPageUnTrustedColor() + lang("untrusted", sender);
+        return sm.getColored(PAGE_UNTRUSTED_COLOR) + lang("untrusted", sender);
     }
 
     @NotNull

@@ -4,13 +4,13 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -186,8 +186,9 @@ public class SimpleClansExpansion extends PlaceholderExpansion implements Relati
     }
 
     private void registerResolvers() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers");
-        Set<Class<? extends PlaceholderResolver>> resolvers = reflections.getSubTypesOf(PlaceholderResolver.class);
+        Set<Class<? extends PlaceholderResolver>> resolvers =
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers",
+                        PlaceholderResolver.class);
         plugin.getLogger().info(String.format("Registering %d placeholder resolvers...", resolvers.size()));
         for (Class<? extends PlaceholderResolver> r : resolvers) {
             try {

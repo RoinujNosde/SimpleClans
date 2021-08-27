@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
  * @author phaed
@@ -431,11 +433,11 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
-        SimpleClans plugin = SimpleClans.getInstance();
-        double kills = ((double) getRivalKills() * plugin.getSettingsManager().getKwRival()) +
-                ((double) getNeutralKills() * plugin.getSettingsManager().getKwNeutral()) +
-                ((double) getAllyKills() * plugin.getSettingsManager().getKwAlly()) +
-                ((double) getCivilianKills() * plugin.getSettingsManager().getKwCivilian());
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+        double kills = getRivalKills() * settings.getDouble(KILL_WEIGHTS_RIVAL) +
+                getNeutralKills() * settings.getDouble(KILL_WEIGHTS_NEUTRAL) +
+                getAllyKills() * settings.getDouble(KILL_WEIGHTS_ALLY) +
+                getCivilianKills() * settings.getDouble(KILL_WEIGHTS_CIVILIAN);
         if (kills < 0) {
             return 0;
         }
@@ -544,7 +546,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param PackedPastClans the PackedPastClans to set
      */
     public void setPackedPastClans(String PackedPastClans) {
-        this.pastClans = Helper.fromArray2(PackedPastClans.split("[|]"));
+        this.pastClans = Helper.fromArrayToSet(PackedPastClans.split("[|]"));
     }
 
     /**
@@ -626,7 +628,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setResignTimes(Map<String, Long> resignTimes) {
         if (resignTimes != null) {
-            final int cooldown = SimpleClans.getInstance().getSettingsManager().getRejoinCooldown();
+            final int cooldown = SimpleClans.getInstance().getSettingsManager().getInt(REJOIN_COOLDOWN);
             resignTimes.forEach((k, v) -> {
                 long timePassed = Instant.ofEpochMilli(v).until(Instant.now(), ChronoUnit.MINUTES);
                 if (timePassed < cooldown) {
@@ -739,7 +741,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
             if (channelName != null) {
                 return Channel.valueOf(channelName);
             }
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalArgumentException ignored) {
+        }
         return Channel.NONE;
     }
 
@@ -759,13 +762,16 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     @Deprecated
-    public void setGlobalChat(boolean globalChat) {}
+    public void setGlobalChat(boolean globalChat) {
+    }
 
     @Deprecated
-    public void setAllyChat(boolean allyChat) {}
+    public void setAllyChat(boolean allyChat) {
+    }
 
     @Deprecated
-    public void setClanChat(boolean clanChat) {}
+    public void setClanChat(boolean clanChat) {
+    }
 
     public void setChannel(@NotNull Channel channel) {
         flags.put("channel", channel.toString());
@@ -787,7 +793,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     @Deprecated
-    public void setCapeEnabled(boolean capeEnabled) {}
+    public void setCapeEnabled(boolean capeEnabled) {
+    }
 
     @Placeholder("is_tag_enabled")
     public boolean isTagEnabled() {
@@ -858,10 +865,29 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         }
     }
 
+    public void mute(Channel channel, boolean b) {
+        switch (channel) {
+            case CLAN:
+                clanChatMute = b;
+                break;
+            case ALLY:
+                allyChatMute = b;
+        }
+    }
+
+
+    /**
+     * @deprecated use {@link ClanPlayer#mute(Channel, boolean)}
+     */
+    @Deprecated
     public void setMuted(boolean b) {
         clanChatMute = b;
     }
 
+    /**
+     * @deprecated use {@link ClanPlayer#mute(Channel, boolean)}
+     */
+    @Deprecated
     public void setMutedAlly(boolean b) {
         allyChatMute = b;
     }

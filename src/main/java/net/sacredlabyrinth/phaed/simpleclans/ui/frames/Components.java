@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class Components {
 
@@ -60,7 +61,7 @@ public class Components {
                         lang("gui.playerdetails.player.lore.past.clans", viewer, cp.getPastClansString(
                                 lang("gui.playerdetails.player.lore.past.clans.separator", viewer))),
                         lang("gui.playerdetails.player.lore.inactive", viewer, cp.getInactiveDays(),
-                                pl.getSettingsManager().getPurgePlayers())),
+                                pl.getSettingsManager().getInt(PURGE_INACTIVE_PLAYER_DAYS))),
                 XMaterial.PLAYER_HEAD, slot);
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(cp.getUniqueId());
         setOwningPlayer(c.getItem(), offlinePlayer);
@@ -117,7 +118,7 @@ public class Components {
                     lang("gui.clandetails.clan.lore.inactive", viewer, clan.getInactiveDays(), Helper.formatMaxInactiveDays(clan.getMaxInactiveDays())));
         } else {
             name = lang("gui.clandetails.free.agent.title", viewer);
-            double price = pl.getSettingsManager().isePurchaseCreation() ? pl.getSettingsManager().getCreationPrice() : 0;
+            double price = pl.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_CREATE) ? pl.getSettingsManager().getDouble(ECONOMY_CREATION_PRICE) : 0;
             lore = new ArrayList<>();
             if (price != 0) {
                 lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), price));

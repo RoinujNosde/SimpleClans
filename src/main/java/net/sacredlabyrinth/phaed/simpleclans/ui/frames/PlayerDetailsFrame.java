@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_CONFIRMATION_FOR_DEMOTE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_CONFIRMATION_FOR_PROMOTE;
 
 public class PlayerDetailsFrame extends SCFrame {
 
@@ -61,16 +64,17 @@ public class PlayerDetailsFrame extends SCFrame {
 	}
 
 	private void addPromoteDemote() {
+		SettingsManager settings = plugin.getSettingsManager();
 		SCComponent promoteDemote = new SCComponentImpl(lang("gui.playerdetails.promote.demote.title",getViewer()),
 				Arrays.asList(lang("gui.playerdetails.promote.lore.left.click",getViewer()),
 						lang("gui.playerdetails.demote.lore.right.click",getViewer())),
 				XMaterial.GUNPOWDER, 30);
 		promoteDemote.setConfirmationRequired(ClickType.LEFT);
 		promoteDemote.setListener(ClickType.LEFT,
-				() -> InventoryController.runSubcommand(getViewer(), "promote", !plugin.getSettingsManager().isConfirmationForPromote(), subjectName));
+				() -> InventoryController.runSubcommand(getViewer(), "promote", !settings.is(CLAN_CONFIRMATION_FOR_PROMOTE), subjectName));
 		promoteDemote.setPermission(ClickType.LEFT, "simpleclans.leader.promote");
 		promoteDemote.setListener(ClickType.RIGHT,
-				() -> InventoryController.runSubcommand(getViewer(), "demote", !plugin.getSettingsManager().isConfirmationForDemote(), subjectName));
+				() -> InventoryController.runSubcommand(getViewer(), "demote", !settings.is(CLAN_CONFIRMATION_FOR_DEMOTE), subjectName));
 		promoteDemote.setConfirmationRequired(ClickType.RIGHT);
 		add(promoteDemote);
 		promoteDemote.setPermission(ClickType.RIGHT, "simpleclans.leader.demote");

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanNamePrompt.NAME_KEY;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
@@ -51,7 +52,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandAlias("%clan")
     @HelpSearchTags("menu gui interface ui")
     public void main(CommandSender sender) {
-        if (sender instanceof Player && settings.isEnableGUI()) {
+        if (sender instanceof Player && settings.is(ENABLE_GUI)) {
             InventoryDrawer.open(new MainFrame((Player) sender));
         } else {
             help(sender, new CommandHelp(getCurrentCommandManager(),
@@ -157,7 +158,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.vip.resetkdr")
     @Description("{@@command.description.resetkdr}")
     public void resetKdr(Player player, ClanPlayer cp) {
-        if (!settings.isAllowResetKdr()) {
+        if (!settings.is(ALLOW_RESET_KDR)) {
             ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
             return;
         }
@@ -199,12 +200,12 @@ public class GeneralCommands extends BaseCommand {
             return;
         }
 
-        chatBlock.sendBlock(player, settings.getPageSize());
+        chatBlock.sendBlock(player, settings.getInt(PAGE_SIZE));
 
         if (chatBlock.size() > 0) {
             ChatBlock.sendBlank(player);
-            ChatBlock.sendMessage(player, settings.getPageHeadingsColor() + lang("view.next.page", player,
-                    settings.getCommandMore()));
+            ChatBlock.sendMessage(player, settings.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", player,
+                    settings.getString(COMMANDS_MORE)));
         }
         ChatBlock.sendBlank(player);
     }
