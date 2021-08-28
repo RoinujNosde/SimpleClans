@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 @SuppressWarnings("unused")
 public class ClanPlayerInputContextResolver extends AbstractInputOnlyContextResolver<ClanPlayerInput> {
     public ClanPlayerInputContextResolver(@NotNull SimpleClans plugin) {
@@ -22,6 +24,9 @@ public class ClanPlayerInputContextResolver extends AbstractInputOnlyContextReso
         if (cp == null) {
             @SuppressWarnings("deprecation")
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arg);
+            if (!offlinePlayer.hasPlayedBefore()) {
+                throw new InvalidCommandArgument(lang("user.hasnt.played.before", context.getSender()));
+            }
             cp = clanManager.getCreateClanPlayer(offlinePlayer.getUniqueId());
         }
 
