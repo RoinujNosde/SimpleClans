@@ -5,7 +5,9 @@ import java.util.Date;
 
 /**
  * @author phaed
+ * @deprecated No usage
  */
+@Deprecated
 public class DamageRecord {
     private String victim;
     private String attacker;

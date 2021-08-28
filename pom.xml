@@ -65,7 +65,7 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>org.bstats.bukkit</pattern>
+                            <pattern>org.bstats</pattern>
                             <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.metrics</shadedPattern>
                         </relocation>
                         <relocation>
