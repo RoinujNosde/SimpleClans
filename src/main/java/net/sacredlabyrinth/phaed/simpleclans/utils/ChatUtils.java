@@ -36,7 +36,7 @@ public class ChatUtils {
 
     public static String getColorByChar(char character) {
         ChatColor color = ChatColor.getByChar(character);
-        return color != null ? color.toString() : "";
+        return color != null ? color.toString() : Character.toString(character);
     }
 
     public static String parseColors(@NotNull String text) {
