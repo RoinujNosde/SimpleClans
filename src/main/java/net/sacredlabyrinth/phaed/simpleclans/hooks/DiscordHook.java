@@ -48,7 +48,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  * </p>
  * <ul>
  *  <li>Creates categories and channels, respecting discord's limits.</li>
- *  <li>Removes invalid channels, resets permissions.</li>
+ *  <li>Removes invalid channels, resets permissions and roles.</li>
  * </ul>
  * <p>
  * Manages events:
@@ -57,6 +57,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  *     <li>Clan creation/deletion</li>
  *     <li>ClanPlayer joining/resigning</li>
  *     <li>Player linking</li>
+ *     <li>ClanPlayer promoting/demoting</li>
  * </ul>
  * <p>
  * Currently, works with clan chat only.
