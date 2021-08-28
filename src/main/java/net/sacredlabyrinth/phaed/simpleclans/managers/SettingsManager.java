@@ -15,6 +15,8 @@ import java.util.*;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
 import static org.bukkit.Bukkit.getPluginManager;
+import static org.bukkit.util.NumberConversions.toDouble;
+import static org.bukkit.util.NumberConversions.toInt;
 
 /**
  * @author phaed
@@ -40,11 +42,11 @@ public final class SettingsManager {
     }
 
     public int getInt(ConfigField field) {
-        return config.getInt(field.path, (Integer) field.defaultValue);
+        return config.getInt(field.path, toInt(field.defaultValue));
     }
 
     public double getDouble(ConfigField field) {
-        return config.getDouble(field.path, (Double) field.defaultValue);
+        return config.getDouble(field.path, toDouble(field.defaultValue));
     }
 
     public List<String> getStringList(ConfigField field) {
@@ -62,17 +64,17 @@ public final class SettingsManager {
 
     public int getMinutes(ConfigField field) {
         int value = getInt(field);
-        return (value >= 1) ? value * 20 * 60 : (int) field.defaultValue * 20 * 60;
+        return (value >= 1) ? value * 20 * 60 : toInt(field.defaultValue) * 20 * 60;
     }
 
     public int getSeconds(ConfigField field) {
         int value = getInt(field);
-        return (value >= 1) ? value * 20 : (int) field.defaultValue * 20;
+        return (value >= 1) ? value * 20 : toInt(field.defaultValue) * 20;
     }
 
     public double getPercent(ConfigField field) {
         double value = getDouble(field);
-        return (getDouble(field) >= 0 || getDouble(field) <= 100) ? value : (double) field.defaultValue;
+        return (getDouble(field) >= 0 || getDouble(field) <= 100) ? value : toDouble(field.defaultValue);
     }
 
     public boolean is(ConfigField field) {

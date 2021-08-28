@@ -46,8 +46,8 @@ public class SCCommandManager extends PaperCommandManager {
     }
     
     private void configure() {
-        registerDependencies();
         enableUnstableAPI("help");
+        registerDependencies();
         addCommandReplacements();
         registerContexts();
         registerCommands();
