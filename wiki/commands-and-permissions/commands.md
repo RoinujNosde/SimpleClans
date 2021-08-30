@@ -128,6 +128,8 @@ description: null
 | `/clan resetkdr (игрок)` | Сбросить KDR игрока |
 | `/clan admin demote (игрок)` | Понизить лидера любого клана |
 | `/clan admin promote (игрок)` | Повысить лидера любого клана |
+| `/clan admin permanent (клан)` | Выдать перманентный статус клану |
+|  |  |
 
 
 
