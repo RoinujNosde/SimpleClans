@@ -416,15 +416,17 @@ settings:
       <td style="text-align:left"><code>land-creation.only-leaders</code>
       </td>
       <td style="text-align:left">Allows only clan leaders to create lands (not compatible with WorldGuard)</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
+      <td
+      style="text-align:left"><code>false</code>
+        </td>
     </tr>
     <tr>
       <td style="text-align:left"><code>land-creation.only-one-per-clan</code>
       </td>
       <td style="text-align:left">Allows to have only one land per clan (not compatible with WorldGuard)</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
+      <td
+      style="text-align:left"><code>false</code>
+        </td>
     </tr>
   </tbody>
 </table>
@@ -649,9 +651,9 @@ clan:
 
 ## Tasks
 
-This section allows you to set the time of collection for the two types of fee. The fees are described on the economy section. 
+This section allows you to set the time of collection for the two types of fee. The fees are described on the economy section.
 
-The collect-upkeep-warning is sent when the clan doesn't have enough money to pay for its upkeep. 
+The collect-upkeep-warning is sent when the clan doesn't have enough money to pay for its upkeep.
 
 The time is in the 24-hour clock.
 
@@ -774,7 +776,7 @@ allychat:
 
 ## Purge Data
 
-This feature allows you to purge data of inactive players or clans. 
+This feature allows you to purge data of inactive players or clans.
 
 ### Example
 

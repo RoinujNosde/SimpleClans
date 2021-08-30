@@ -48,11 +48,11 @@ In this example, we will use the IntelliJ IDEA, but the following actions also w
 1. Open the structure of your project \(`F4`\)
 2. Select Libraries, click on the cross, select "New Project Library -&gt; Java" in the window that appears and add SimpleClans.
 
-![](../.gitbook/assets/izobrazhenie%20%284%29.png)
+![](../.gitbook/assets/izobrazhenie%20%284%29%20%281%29.png)
 
 Return to the project structure, then go to Project Settings - &gt; Modules, set the compilation mode to "Provided".
 
-![](../.gitbook/assets/izobrazhenie%20%285%29.png)
+![](../.gitbook/assets/izobrazhenie%20%285%29%20%281%29.png)
 
 * [x] Congratulations, you have added the SimpleClans API to your project. 😃
 
