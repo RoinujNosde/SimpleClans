@@ -21,12 +21,15 @@
 * [Ranks with Permissions](commands-and-permissions/ranks-with-permissions.md)
 * [Permanent clan](commands-and-permissions/permanent-clan.md)
 
+## Integration
+
+* [Land Claiming](integration/land-claiming.md)
+* [DiscordSRV](integration/discordsrv-integration.md)
+
 ## Other
 
 * [API Examples](other/simpleclans-api.md)
 * [Placeholders](other/placeholderapi-support.md)
-* [Land Claiming](other/land-claiming.md)
 * [Logging server economy](other/untitled.md)
-* [DiscordSRV integration](other/discordsrv-integration.md)
 * [Known issues](other/known-issues.md)
 
