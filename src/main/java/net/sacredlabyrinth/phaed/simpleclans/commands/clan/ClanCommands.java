@@ -132,6 +132,10 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.invite}")
     public void invite(Player sender, ClanPlayer cp, Clan clan,
                        @Conditions("not_banned|not_in_clan|online:ignore_vanished") @Name("player") ClanPlayerInput invited) {
+        if (!invited.getClanPlayer().isInviteEnabled()){
+            ChatBlock.sendMessage(sender, RED + lang("invitedplayer.invite.off", sender));
+            return;
+        }
         Player invitedPlayer = invited.getClanPlayer().toPlayer();
         if (invitedPlayer == null) return;
         if (!permissions.has(invitedPlayer, "simpleclans.member.can-join")) {
