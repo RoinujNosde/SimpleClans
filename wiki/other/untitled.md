@@ -1,7 +1,8 @@
 ---
 description: >-
   Economics on your server is probably one of the most important things to do.
-  To understand how much money your clans operate, you can rely this function.
+  To understand how much money your clans operate, you can rely on this
+  function.
 ---
 
 # Logging server economy
