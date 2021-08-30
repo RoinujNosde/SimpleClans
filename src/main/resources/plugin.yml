@@ -68,6 +68,8 @@ permissions:
     description: Can view alliances by clan
   simpleclans.anyone.rivalries:
     description: Can view rivalries by clan
+  simpleclans.anyone.invite-toggle:
+    description: Can toggle invite on/off
   simpleclans.other.kdr-exempt:
     description: The player's KDR is not affected on killing/dying
     default: false
@@ -238,6 +240,7 @@ permissions:
       simpleclans.anyone.leaderboard: true
       simpleclans.anyone.alliances: true
       simpleclans.anyone.rivalries: true
+      simpleclans.anyone.invite-toggle: true
   simpleclans.member.land.*:
     description: Permissions for allowing/blocking actions in lands
     default: false
@@ -270,6 +273,7 @@ permissions:
       simpleclans.member.bb: true
       simpleclans.member.bb-add: true
       simpleclans.member.bb-toggle: true
+      simpleclans.member.invite-toggle: true
       simpleclans.member.cape-toggle: true
       simpleclans.member.tag-toggle: true
       simpleclans.member.ff: true
