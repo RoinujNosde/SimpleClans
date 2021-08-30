@@ -27,5 +27,6 @@
 * [Placeholders](other/placeholderapi-support.md)
 * [Land Claiming](other/land-claiming.md)
 * [Logging server economy](other/untitled.md)
+* [DiscordSRV integration](other/discordsrv-integration.md)
 * [Known issues](other/known-issues.md)
 
