@@ -24,6 +24,7 @@ public class ToggleCommand extends BaseCommand {
 
     @Conditions("verified")
     public class Verified extends BaseCommand {
+        
         @Subcommand("%bb")
         @CommandPermission("simpleclans.member.bb-toggle")
         @Description("{@@command.description.toggle.bb}")
