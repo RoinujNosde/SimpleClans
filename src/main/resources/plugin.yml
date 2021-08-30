@@ -273,7 +273,6 @@ permissions:
       simpleclans.member.bb: true
       simpleclans.member.bb-add: true
       simpleclans.member.bb-toggle: true
-      simpleclans.member.invite-toggle: true
       simpleclans.member.cape-toggle: true
       simpleclans.member.tag-toggle: true
       simpleclans.member.ff: true
