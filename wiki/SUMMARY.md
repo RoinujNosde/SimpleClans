@@ -19,10 +19,13 @@
 * [Союзники и противники](commands-and-permissions/aliances-and-rivalries.md)
 * [Ранги с разрешениями](commands-and-permissions/ranks-with-permissions.md)
 
+## Интеграции
+
+* [GriefPrevention, WorldGuard и другие](integracii/land-claims.md)
+
 ## Другое <a id="other"></a>
 
 * [Известные проблемы](other/known-issues.md)
 * [SimpleClans API](other/simpleclans-api.md)
 * [Поддержка PlaceholderAPI](other/placeholderapi-support.md)
-* [GriefPrevention, WorldGuard и другие](other/land-claims.md)
 

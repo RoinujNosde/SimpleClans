@@ -129,6 +129,11 @@ description: null
 | `simpleclans.admin.promote` | Может повышать игроков до лидера |
 | `simpleclans.admin.all-seeing-eye` | Может читать чаты всех кланов |
 | `simpleclans.admin.reload` | Может перезагрузить конфигурацию |
+| `simpleclans.admin.permanent` | Позволяет переключить перманентный статус |
+| `simpleclans.admin.bank.status` | Позволяет проверить баланс клана |
+| `simpleclans.admin.bank.take` | Позволяет забрать деньги из баланса клана |
+| `simpleclans.admin.bank.give` | Позволяет выдать деньги в баланс клана |
+| `simpleclans.admin.bank.set` | Позволяет установить баланс клана |
 
 ### Другие разрешения
 
