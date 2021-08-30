@@ -8,41 +8,373 @@ description: null
 
 ## Главные настройки
 
-* `enable-gui` - Включить GUI. 
-* `disable-messages` - Отключить такие оповещения, как "Клан создан", "Клан расформирован", и другие. 
-* `tameable-mobs-sharing` -  
-* `teleport-blocks` -  
-* `teleport-home-on-spawn` - При возрождении игроки будут телепортированы на базу клана. 
-* `drop-items-on-clan-home` - При телепортации на базу клана, выкидывать предметы на землю. 
-* `keep-items-on-clan-home` - При телепортации на базу клана, оставлять предметы. 
-* `item-list` - Список предметов, используемый для keep- и drop- items-on-clan-home 
-* `show-debug-info` -  
-* `mchat-integration` -  
-* `enable-auto-groups` -  
-* `chat-compatibility-mode` -  
-* `rival-limit-percent` -  
-* `use-colorcode-from-prefix-for-name` -  
-* `display-chat-tags` - Отображать ли тег клана в чате? 
-* `unrivable-clans` - Кланы, которые с которыми невозможно начать вражду. 
-* `show-unverified-on-list` - Показывать ли не подтвержденные кланы в списке кланов? 
-* `blacklisted-worlds` -  
-* `banned-players` - Игроки, которые не могут пользоваться командами плагина. 
-* `disallowed-tags` - Запрещённые теги. 
-* `language` - Язык по-умолчанию. 
-* `user-language-selector` - Разрешить ли игрокам выбирать язык? 
-* `disallowed-tag-colors` - Запрещенные цветовые кода для тега. 
-* `server-name` - Название вашего сервера. 
-* `new-clan-verification-required` -  
-* `allow-regroup-command` - Разрешить ли команду для перегруппировки \(телепортации игроков к себе/на базу\)? 
-* `allow-reset-kdr` - Разрешить сбросить КДР \(соотношение убийств к смертям\) 
-* `rejoin-cooldown` -  
-* `rejoin-cooldown-enabled` -  
-* `min-to-verify` - Количество игроков в клане, чтобы можно было пройти подтверждение \(Модераторы могут обойти это ограничение\). 
-* `ranking-type` - Допустимые параметры: ORDINAL или DENSE
-  * `DENSE`: Если у игроков будет одинаковый KDR, их ранговая позиция будет одинаковой. Пример: 12234
-  * `ORDINAL`: Каждый игрок будет иметь разную ранговую позицию.  Пример: 12345
+<table>
+  <thead>
+    <tr>
+      <th style="text-align:left">&#x41E;&#x43F;&#x446;&#x438;&#x44F;</th>
+      <th style="text-align:left">&#x41E;&#x43F;&#x438;&#x441;&#x430;&#x43D;&#x438;&#x435;</th>
+      <th style="text-align:left">&#x41F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left"><code>enable-gui</code>
+      </td>
+      <td style="text-align:left">&#x412;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; GUI</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>disable-messages</code>
+      </td>
+      <td style="text-align:left">&#x41E;&#x442;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x442;&#x430;&#x43A;&#x438;&#x435;
+        &#x43E;&#x43F;&#x43E;&#x432;&#x435;&#x449;&#x435;&#x43D;&#x438;&#x44F;,
+        &#x43A;&#x430;&#x43A; &quot;&#x41A;&#x43B;&#x430;&#x43D; &#x441;&#x43E;&#x437;&#x434;&#x430;&#x43D;&quot;,
+        &quot;&#x41A;&#x43B;&#x430;&#x43D; &#x440;&#x430;&#x441;&#x444;&#x43E;&#x440;&#x43C;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&quot;,
+        &#x438; &#x434;&#x440;&#x443;&#x433;&#x438;&#x435;</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>tameable-mobs-sharing</code>
+      </td>
+      <td style="text-align:left">&#x415;&#x441;&#x43B;&#x438; &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D;&#x43E;,
+        &#x442;&#x43E; &#x43F;&#x440;&#x438;&#x440;&#x443;&#x447;&#x430;&#x435;&#x43C;&#x44B;&#x435;
+        &#x43C;&#x43E;&#x431;&#x44B; &#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x43E;&#x434;&#x435;&#x43B;&#x435;&#x43D;&#x44B;
+        &#x441; &#x443;&#x447;&#x430;&#x441;&#x442;&#x43D;&#x438;&#x43A;&#x430;&#x43C;&#x438;
+        &#x432;&#x430;&#x448;&#x435;&#x433;&#x43E; &#x43A;&#x43B;&#x430;&#x43D;&#x430;.
+        &#x422;&#x430;&#x43A;&#x436;&#x435; &#x43E;&#x442;&#x43A;&#x43B;&#x44E;&#x447;&#x430;&#x435;&#x442;
+        &#x43B;&#x44E;&#x431;&#x43E;&#x439; &#x43A;&#x43B;&#x430;&#x43D;&#x43E;&#x432;&#x44B;&#x439;
+        &#x443;&#x440;&#x43E;&#x43D;, &#x43D;&#x430;&#x43D;&#x43E;&#x441;&#x438;&#x43C;&#x44B;&#x439;
+        &#x43F;&#x43E; &#x43D;&#x438;&#x43C;</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>teleport-blocks</code>
+      </td>
+      <td style="text-align:left">&#x41C;&#x44F;&#x433;&#x43A;&#x43E;&#x435; &#x442;&#x435;&#x43B;&#x435;&#x43F;&#x43E;&#x440;&#x442;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435;
+        (&#x431;&#x43B;&#x43E;&#x43A; &#x441;&#x442;&#x435;&#x43A;&#x43B;&#x430;
+        &#x43F;&#x43E;&#x434; &#x43D;&#x43E;&#x433;&#x430;&#x43C;&#x438;)</td>
+      <td
+      style="text-align:left"><code>false</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>teleport-home-on-spawn</code>
+      </td>
+      <td style="text-align:left">&#x41F;&#x440;&#x438; &#x432;&#x43E;&#x437;&#x440;&#x43E;&#x436;&#x434;&#x435;&#x43D;&#x438;&#x438;
+        &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x438; &#x431;&#x443;&#x434;&#x443;&#x442;
+        &#x442;&#x435;&#x43B;&#x435;&#x43F;&#x43E;&#x440;&#x442;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x44B;
+        &#x43D;&#x430; &#x431;&#x430;&#x437;&#x443; &#x43A;&#x43B;&#x430;&#x43D;&#x430;</td>
+      <td
+      style="text-align:left"><code>false</code>
+        <br />
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>drop-items-on-clan-home</code>
+      </td>
+      <td style="text-align:left">&#x41F;&#x440;&#x438; &#x442;&#x435;&#x43B;&#x435;&#x43F;&#x43E;&#x440;&#x442;&#x430;&#x446;&#x438;&#x438;
+        &#x43D;&#x430; &#x431;&#x430;&#x437;&#x443; &#x43A;&#x43B;&#x430;&#x43D;&#x430;,
+        &#x432;&#x44B;&#x43A;&#x438;&#x434;&#x44B;&#x432;&#x430;&#x442;&#x44C;
+        &#x43F;&#x440;&#x435;&#x434;&#x43C;&#x435;&#x442;&#x44B; &#x43D;&#x430;
+        &#x437;&#x435;&#x43C;&#x43B;&#x44E;</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>keep-items-on-clan-hom</code>
+      </td>
+      <td style="text-align:left">&#x41F;&#x440;&#x438; &#x442;&#x435;&#x43B;&#x435;&#x43F;&#x43E;&#x440;&#x442;&#x430;&#x446;&#x438;&#x438;
+        &#x43D;&#x430; &#x431;&#x430;&#x437;&#x443; &#x43A;&#x43B;&#x430;&#x43D;&#x430;,
+        &#x43E;&#x441;&#x442;&#x430;&#x432;&#x43B;&#x44F;&#x442;&#x44C; &#x43F;&#x440;&#x435;&#x434;&#x43C;&#x435;&#x442;&#x44B;</td>
+      <td
+      style="text-align:left"><code>false</code>
+        <br />
+        <br />
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>item-list</code>
+      </td>
+      <td style="text-align:left">&#x421;&#x43F;&#x438;&#x441;&#x43E;&#x43A; &#x43F;&#x440;&#x435;&#x434;&#x43C;&#x435;&#x442;&#x43E;&#x432;.
+        &#x418;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x443;&#x435;&#x442;&#x441;&#x44F;
+        &#x432; &#x441;&#x432;&#x44F;&#x437;&#x43A;&#x435; &#x441; <code>keep-items-on-clan-home</code> &#x438; <code>drop-items-on-clan-home</code>
+      </td>
+      <td style="text-align:left"><code>[]</code>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>show-debug-info</code>
+      </td>
+      <td style="text-align:left">&#x41F;&#x43E;&#x43A;&#x430;&#x437;&#x430;&#x442;&#x44C; &#x43E;&#x442;&#x43B;&#x430;&#x434;&#x43E;&#x447;&#x43D;&#x443;&#x44E;
+        &#x438;&#x43D;&#x444;&#x43E;&#x440;&#x43C;&#x430;&#x446;&#x438;&#x44E;
+        &#x432; &#x43A;&#x43E;&#x43D;&#x441;&#x43E;&#x43B;&#x438;</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>enable-auto-groups</code>
+      </td>
+      <td style="text-align:left">
+        <p>&#x423;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x44F;&#x435;&#x442; &#x433;&#x440;&#x443;&#x43F;&#x43F;&#x430;&#x43C;&#x438;
+          &#x430;&#x432;&#x442;&#x43E;&#x43C;&#x430;&#x442;&#x438;&#x447;&#x435;&#x441;&#x43A;&#x438;.
+          &#x41F;&#x440;&#x438; &#x443;&#x441;&#x43B;&#x43E;&#x432;&#x438;&#x438;,
+          &#x447;&#x442;&#x43E; &#x443; &#x432;&#x430;&#x441; &#x435;&#x441;&#x442;&#x44C;
+          LuckPerms, &#x430; &#x432; &#x43D;&#x435;&#x439; &#x441;&#x43E;&#x437;&#x434;&#x430;&#x43D;&#x430;
+          &#x43B;&#x44E;&#x431;&#x430;&#x44F; &#x438;&#x437; &#x441;&#x43B;&#x435;&#x434;&#x443;&#x44E;&#x449;&#x438;&#x445;
+          &#x433;&#x440;&#x443;&#x43F;&#x43F;:</p>
+        <ul>
+          <li>sc_leader</li>
+          <li>sc_trusted</li>
+          <li>sc_untrusted</li>
+        </ul>
+        <p>&#x411;&#x443;&#x434;&#x435;&#x442; &#x430;&#x432;&#x442;&#x43E;&#x43C;&#x430;&#x442;&#x438;&#x447;&#x435;&#x441;&#x43A;&#x438;
+          &#x437;&#x430;&#x43A;&#x438;&#x434;&#x44B;&#x432;&#x430;&#x442;&#x44C;
+          &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x43E;&#x432; &#x432; &#x44D;&#x442;&#x443;
+          &#x433;&#x440;&#x443;&#x43F;&#x43F;&#x443;</p>
+      </td>
+      <td style="text-align:left"><code>false</code>
+        <br />
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>chat-compatibility-mode</code>
+      </td>
+      <td style="text-align:left">&#x420;&#x435;&#x436;&#x438;&#x43C; &#x441;&#x43E;&#x432;&#x43C;&#x435;&#x441;&#x442;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x438;
+        &#x441; &#x447;&#x430;&#x442;&#x43E;&#x43C;. &#x415;&#x441;&#x43B;&#x438;
+        &#x443; &#x432;&#x430;&#x441; &#x435;&#x441;&#x442;&#x44C; &#x43A;&#x430;&#x43A;&#x438;&#x435;-&#x43B;&#x438;&#x431;&#x43E;
+        &#x43F;&#x440;&#x43E;&#x431;&#x43B;&#x435;&#x43C;&#x44B; &#x441; &#x447;&#x430;&#x442;&#x43E;&#x43C;,
+        &#x43F;&#x43E;&#x43F;&#x440;&#x43E;&#x431;&#x443;&#x439;&#x442;&#x435;
+        &#x432;&#x44B;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x44D;&#x442;&#x43E;&#x442;
+        &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;</td>
+      <td style="text-align:left"><code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>rival-limit-percent</code>
+      </td>
+      <td style="text-align:left">
+        <p>&#x41F;&#x440;&#x43E;&#x446;&#x435;&#x43D;&#x442; &#x432;&#x43E;&#x437;&#x43C;&#x43E;&#x436;&#x43D;&#x44B;&#x445;
+          &#x441;&#x43E;&#x43F;&#x435;&#x440;&#x43D;&#x438;&#x43A;&#x43E;&#x432;
+          &#x43D;&#x430; &#x43A;&#x43B;&#x430;&#x43D;.</p>
+        <p>&#x424;&#x43E;&#x440;&#x443;&#x43C;&#x443;&#x43B;&#x430;: <code>(rivalsOfClan - 1) * rivalLimitPercent / 100</code>
+        </p>
+      </td>
+      <td style="text-align:left">
+        <br />
+        <br /><code>50</code>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>use-colorcode-from-prefix-for-name</code>
+      </td>
+      <td style="text-align:left">&#x418;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x442;&#x44C;
+        &#x43F;&#x43E;&#x441;&#x43B;&#x435;&#x434;&#x43D;&#x438;&#x439; &#x446;&#x432;&#x435;&#x442;&#x43E;&#x432;&#x43E;&#x439;
+        &#x43A;&#x43E;&#x434; &#x432; &#x43A;&#x43E;&#x43D;&#x446;&#x435; &#x43F;&#x440;&#x435;&#x444;&#x438;&#x43A;&#x441;&#x430;</td>
+      <td
+      style="text-align:left"><code>true</code>
+        <br />
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>display-chat-tags</code>
+      </td>
+      <td style="text-align:left">&#x41E;&#x442;&#x43E;&#x431;&#x440;&#x430;&#x436;&#x430;&#x442;&#x44C;
+        &#x442;&#x435;&#x433; &#x43A;&#x43B;&#x430;&#x43D;&#x430; &#x432; &#x447;&#x430;&#x442;&#x435;</td>
+      <td
+      style="text-align:left"><code>true</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>unrivable-clans</code>
+      </td>
+      <td style="text-align:left">&#x421;&#x43F;&#x438;&#x441;&#x43E;&#x43A; &#x43A;&#x43B;&#x430;&#x43D;&#x43E;&#x432;,
+        &#x441; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x43C;&#x438; &#x43D;&#x435;&#x432;&#x43E;&#x437;&#x43C;&#x43E;&#x436;&#x43D;&#x43E;
+        &#x43D;&#x430;&#x447;&#x430;&#x442;&#x44C; &#x432;&#x440;&#x430;&#x436;&#x434;&#x443;</td>
+      <td
+      style="text-align:left"><code>[]</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>show-unverified-on-list</code>
+      </td>
+      <td style="text-align:left">&#x41F;&#x43E;&#x43A;&#x430;&#x437;&#x44B;&#x432;&#x430;&#x442;&#x44C;
+        &#x43D;&#x435; &#x43F;&#x43E;&#x434;&#x442;&#x435;&#x440;&#x436;&#x434;&#x451;&#x43D;&#x43D;&#x44B;&#x435;
+        &#x43A;&#x43B;&#x430;&#x43D;&#x44B; &#x432; <code>/clan list</code>
+      </td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>blacklisted-worlds</code>
+      </td>
+      <td style="text-align:left">&#x421;&#x43F;&#x438;&#x441;&#x43E;&#x43A; &#x43C;&#x438;&#x440;&#x43E;&#x432;,
+        &#x433;&#x434;&#x435; SimpleClans &#x43D;&#x435; &#x431;&#x443;&#x434;&#x435;&#x442;
+        &#x440;&#x430;&#x431;&#x43E;&#x442;&#x430;&#x442;&#x44C;</td>
+      <td style="text-align:left"><code>[]</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>banned-players</code>
+      </td>
+      <td style="text-align:left">&#x421;&#x43F;&#x438;&#x441;&#x43E;&#x43A; &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x43E;&#x432;,
+        &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; &#x43D;&#x435; &#x43C;&#x43E;&#x433;&#x443;&#x442;
+        &#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x442;&#x44C;&#x441;&#x44F;
+        &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x430;&#x43C;&#x438; &#x43F;&#x43B;&#x430;&#x433;&#x438;&#x43D;&#x430;</td>
+      <td
+      style="text-align:left"><code>[]</code>
+        <br />
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>disallowed-tags</code>
+      </td>
+      <td style="text-align:left">&#x421;&#x43F;&#x438;&#x441;&#x43E;&#x43A; &#x437;&#x430;&#x43F;&#x440;&#x435;&#x449;&#x435;&#x43D;&#x43D;&#x44B;&#x445;
+        &#x442;&#x435;&#x433;&#x43E;&#x432;</td>
+      <td style="text-align:left"><code>[]</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>language</code>
+      </td>
+      <td style="text-align:left">&#x42F;&#x437;&#x44B;&#x43A; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;</td>
+      <td
+      style="text-align:left"><code>en</code>
+        <br />
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>user-language-selector</code>
+      </td>
+      <td style="text-align:left">&#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x430;&#x43C;
+        &#x43C;&#x435;&#x43D;&#x44F;&#x442;&#x44C; &#x438;&#x445; &#x44F;&#x437;&#x44B;&#x43A;</td>
+      <td
+      style="text-align:left"><code>true</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>disallowed-tag-colors</code>
+      </td>
+      <td style="text-align:left">&#x421;&#x43F;&#x438;&#x441;&#x43E;&#x43A; &#x437;&#x430;&#x43F;&#x440;&#x435;&#x449;&#x435;&#x43D;&#x43D;&#x44B;&#x445;
+        &#x446;&#x432;&#x435;&#x442;&#x43E;&#x432;&#x44B;&#x445; &#x43A;&#x43E;&#x434;&#x43E;&#x432;
+        &#x434;&#x43B;&#x44F; &#x442;&#x435;&#x433;&#x430;</td>
+      <td style="text-align:left"><code>[]</code>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>server-name</code>
+      </td>
+      <td style="text-align:left">&#x41D;&#x430;&#x437;&#x432;&#x430;&#x43D;&#x438;&#x435; &#x432;&#x430;&#x448;&#x435;&#x433;&#x43E;
+        &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x430;</td>
+      <td style="text-align:left"><code>&amp;4SimpleClans</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>new-clan-verification-require</code>
+      </td>
+      <td style="text-align:left">&#x414;&#x43E;&#x43B;&#x436;&#x43D;&#x44B; &#x43B;&#x438; &#x43D;&#x43E;&#x432;&#x44B;&#x435;
+        &#x43A;&#x43B;&#x430;&#x43D;&#x44B; &#x43F;&#x440;&#x43E;&#x445;&#x43E;&#x434;&#x438;&#x442;&#x44C;
+        &#x432;&#x435;&#x440;&#x438;&#x444;&#x438;&#x43A;&#x430;&#x446;&#x438;&#x44E;?</td>
+      <td
+      style="text-align:left"><code>true</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>allow-regroup-command</code>
+      </td>
+      <td style="text-align:left">&#x420;&#x430;&#x437;&#x440;&#x435;&#x448;&#x438;&#x442;&#x44C; &#x43B;&#x438;
+        &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x443; &#x434;&#x43B;&#x44F;
+        &#x43F;&#x435;&#x440;&#x435;&#x433;&#x440;&#x443;&#x43F;&#x43F;&#x438;&#x440;&#x43E;&#x432;&#x43A;&#x438;
+        (&#x442;&#x435;&#x43B;&#x435;&#x43F;&#x43E;&#x440;&#x442;&#x430;&#x446;&#x438;&#x438;
+        &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x43E;&#x432; &#x43A; &#x441;&#x435;&#x431;&#x435;/&#x43D;&#x430;
+        &#x431;&#x430;&#x437;&#x443;)</td>
+      <td style="text-align:left"><code>true</code>
+        <br />
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>allow-reset-kdr</code>
+      </td>
+      <td style="text-align:left">&#x420;&#x430;&#x437;&#x440;&#x435;&#x448;&#x438;&#x442;&#x44C; &#x441;&#x431;&#x440;&#x43E;&#x441;
+        &#x41A;&#x414;&#x420;
+        <br />(&#x441;&#x43E;&#x43E;&#x442;&#x43D;&#x43E;&#x448;&#x435;&#x43D;&#x438;&#x435;
+        &#x443;&#x431;&#x438;&#x439;&#x441;&#x442;&#x432; &#x43A; &#x441;&#x43C;&#x435;&#x440;&#x442;&#x44F;&#x43C;)</td>
+      <td
+      style="text-align:left"><code>true</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>rejoin-cooldown</code>
+      </td>
+      <td style="text-align:left">&#x412;&#x440;&#x435;&#x43C;&#x44F; &#x432; &#x43C;&#x438;&#x43D;&#x443;&#x442;&#x430;&#x445;,
+        &#x43A;&#x43E;&#x433;&#x434;&#x430; &#x438;&#x433;&#x440;&#x43E;&#x43A;
+        &#x441;&#x43C;&#x43E;&#x436;&#x435;&#x442; &#x43F;&#x440;&#x438;&#x441;&#x43E;&#x435;&#x434;&#x438;&#x43D;&#x438;&#x442;&#x44C;&#x441;&#x44F;
+        &#x43A; &#x43A;&#x43B;&#x430;&#x43D;&#x443; &#x43F;&#x43E;&#x441;&#x43B;&#x435;
+        &#x432;&#x44B;&#x445;&#x43E;&#x434;&#x430; &#x438;&#x437; &#x43D;&#x435;&#x433;&#x43E;.</td>
+      <td
+      style="text-align:left"><code>60</code>
+        </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>rejoin-cooldown-enabled</code>
+      </td>
+      <td style="text-align:left">&#x414;&#x43E;&#x43B;&#x436;&#x435;&#x43D; &#x43B;&#x438; &#x431;&#x44B;&#x442;&#x44C;
+        &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D; &#x442;&#x430;&#x439;&#x43C;&#x435;&#x440;
+        &#x43F;&#x435;&#x440;&#x435;-&#x43F;&#x440;&#x438;&#x441;&#x43E;&#x435;&#x434;&#x438;&#x43D;&#x435;&#x43D;&#x438;&#x44F;
+        &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D;?</td>
+      <td style="text-align:left"><code>false</code>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>min-to-verify</code>
+      </td>
+      <td style="text-align:left">
+        <p>&#x41A;&#x43E;&#x43B;&#x438;&#x447;&#x435;&#x441;&#x442;&#x432;&#x43E;
+          &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x43E;&#x432; &#x432; &#x43A;&#x43B;&#x430;&#x43D;&#x435;,
+          &#x447;&#x442;&#x43E;&#x431;&#x44B; &#x43C;&#x43E;&#x436;&#x43D;&#x43E;
+          &#x431;&#x44B;&#x43B;&#x43E; &#x43F;&#x440;&#x43E;&#x439;&#x442;&#x438;
+          &#x43F;&#x43E;&#x434;&#x442;&#x432;&#x435;&#x440;&#x436;&#x434;&#x435;&#x43D;&#x438;&#x435;</p>
+        <p>(&#x41C;&#x43E;&#x434;&#x435;&#x440;&#x430;&#x442;&#x43E;&#x440;&#x44B;
+          &#x43C;&#x43E;&#x433;&#x443;&#x442; &#x43E;&#x431;&#x43E;&#x439;&#x442;&#x438;
+          &#x44D;&#x442;&#x43E; &#x43E;&#x433;&#x440;&#x430;&#x43D;&#x438;&#x447;&#x435;&#x43D;&#x438;&#x435;)</p>
+      </td>
+      <td style="text-align:left"></td>
+    </tr>
+    <tr>
+      <td style="text-align:left"><code>ranking-type</code>
+      </td>
+      <td style="text-align:left">
+        <p></p>
+        <p>&#x414;&#x43E;&#x43F;&#x443;&#x441;&#x442;&#x438;&#x43C;&#x44B;&#x435;
+          &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x44B;: ORDINAL
+          &#x438;&#x43B;&#x438; DENSE</p>
+        <ul>
+          <li><code>DENSE</code>: &#x415;&#x441;&#x43B;&#x438; &#x443; &#x438;&#x433;&#x440;&#x43E;&#x43A;&#x43E;&#x432;
+            &#x431;&#x443;&#x434;&#x435;&#x442; &#x43E;&#x434;&#x438;&#x43D;&#x430;&#x43A;&#x43E;&#x432;&#x44B;&#x439;
+            KDR, &#x438;&#x445; &#x440;&#x430;&#x43D;&#x433;&#x43E;&#x432;&#x430;&#x44F;
+            &#x43F;&#x43E;&#x437;&#x438;&#x446;&#x438;&#x44F; &#x431;&#x443;&#x434;&#x435;&#x442;
+            &#x43E;&#x434;&#x438;&#x43D;&#x430;&#x43A;&#x43E;&#x432;&#x43E;&#x439;.
+            &#x41F;&#x440;&#x438;&#x43C;&#x435;&#x440;: 12234</li>
+          <li><code>ORDINAL</code>: &#x41A;&#x430;&#x436;&#x434;&#x44B;&#x439; &#x438;&#x433;&#x440;&#x43E;&#x43A;
+            &#x431;&#x443;&#x434;&#x435;&#x442; &#x438;&#x43C;&#x435;&#x442;&#x44C;
+            &#x440;&#x430;&#x437;&#x43D;&#x443;&#x44E; &#x440;&#x430;&#x43D;&#x433;&#x43E;&#x432;&#x443;&#x44E;
+            &#x43F;&#x43E;&#x437;&#x438;&#x446;&#x438;&#x44E;.
+            <br />&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x440;: 12345</li>
+        </ul>
+      </td>
+      <td style="text-align:left"><code>DENSE</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-#### Пример
+### Пример
 
 ```yaml
 settings:
