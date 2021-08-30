@@ -26,9 +26,6 @@
 * [API Examples](other/simpleclans-api.md)
 * [Placeholders](other/placeholderapi-support.md)
 * [Land Claiming](other/land-claiming.md)
+* [Logging server economy](other/untitled.md)
 * [Known issues](other/known-issues.md)
-
----
-
-* [Untitled](untitled.md)
 

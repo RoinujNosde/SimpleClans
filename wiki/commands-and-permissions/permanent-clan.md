@@ -48,7 +48,7 @@ Alternatively, you may want to join your players by NPC:
 To do it, you need to:
 
 1. Create an NPC: `/npc create <name>`
-2. Set the command on player's clicking: `/npc command add clan -o mod place <clan>`
+2. Set the command on player's clicking: `/npc command add clan -o mod place <p> jedi`
 
 ## How to use it?
 
