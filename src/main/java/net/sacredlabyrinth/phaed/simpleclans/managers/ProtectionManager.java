@@ -105,8 +105,10 @@ public class ProtectionManager {
     }
 
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
+        debug(String.format("Action %s, Player %s (%s), Other Player %s", action, player, player.getUniqueId(), other));
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
+                debug(String.valueOf(owner));
                 if (owner == null) {
                     continue;
                 }
@@ -118,10 +120,12 @@ public class ProtectionManager {
                 }
                 if (isWarringAndAllowed(action, owner, involved) ||
                         isSameClanAndAllowed(action, owner, involved, land.getId())) {
+                    debug("Allowed action");
                     return true;
                 }
             }
         }
+        debug("Denied action");
         return false;
     }
 
@@ -258,8 +262,7 @@ public class ProtectionManager {
         String requiredPlugin = provider.getRequiredPluginName();
         String providerName = provider.getClass().getSimpleName();
         if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
-            logger.warning(String.format("Required plugin %s for the provider %s was not found!",
-                    requiredPlugin, providerName));
+            debug(String.format("Required plugin %s for the provider %s was not found!", requiredPlugin, providerName));
             return;
         }
         try {
@@ -273,6 +276,7 @@ public class ProtectionManager {
         }
         providers.add(provider);
         landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
+        logger.info(String.format("Registered %s successfully", providerName));
     }
 
     @NotNull

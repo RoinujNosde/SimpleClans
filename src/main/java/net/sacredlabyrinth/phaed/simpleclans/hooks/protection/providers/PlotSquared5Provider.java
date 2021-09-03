@@ -21,7 +21,9 @@ import java.util.stream.Collectors;
 public class PlotSquared5Provider implements ProtectionProvider {
 
     @Override
-    public void setup() {
+    public void setup() throws NoSuchMethodException {
+        //noinspection ResultOfMethodCallIgnored
+        BukkitUtil.class.getMethod("getPlot", Location.class);
     }
 
     @Override
