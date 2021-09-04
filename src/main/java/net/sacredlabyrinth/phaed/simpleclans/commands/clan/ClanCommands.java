@@ -359,6 +359,26 @@ public class ClanCommands extends BaseCommand {
         clan.removePlayerFromClan(clanPlayer.getUniqueId());
     }
 
+    @Subcommand("%resign %confirm")
+    @CommandPermission("simpleclans.member.resign")
+    @Description("{@@command.description.resign}")
+    @HelpSearchTags("leave")
+    public void resignConfirm(Player player, ClanPlayer cp, Clan clan) {
+        if (clan.isPermanent() || !clan.isLeader(player) || clan.getLeaders().size() > 1) {
+            clan.addBb(player.getName(), AQUA + lang("0.has.resigned", player.getName()));
+            cp.addResignTime(clan.getTag());
+            clan.removePlayerFromClan(player.getUniqueId());
+
+            ChatBlock.sendMessage(cp,AQUA + lang("resign.success", player));
+        } else if (clan.isLeader(player) && clan.getLeaders().size() == 1) {
+            clan.disband(player, true, false);
+            ChatBlock.sendMessage(cp, RED + lang("clan.has.been.disbanded", player, clan.getName()));
+        } else {
+            ChatBlock.sendMessage(cp, RED +
+                    lang("last.leader.cannot.resign.you.must.appoint.another.leader.or.disband.the.clan", player));
+        }
+    }
+
     @Subcommand("%resign")
     @CommandPermission("simpleclans.member.resign")
     @Description("{@@command.description.resign}")
