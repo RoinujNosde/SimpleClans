@@ -10,6 +10,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+/***
+ * @deprecated No usages
+ */
+@Deprecated
 public class CommandHelper {
 
     private CommandHelper() {
