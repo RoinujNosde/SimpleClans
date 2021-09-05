@@ -169,6 +169,7 @@ public class SimpleClans extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("money_per_kill", () -> sm.is(ECONOMY_MONEY_PER_KILL) ? on : off));
         metrics.addCustomChart(new SimplePie("threads", () -> sm.is(PERFORMANCE_USE_THREADS) ? on : off));
         metrics.addCustomChart(new SimplePie("bungeecord", () -> sm.is(PERFORMANCE_USE_BUNGEECORD) ? on : off));
+        metrics.addCustomChart(new SimplePie("discord_chat", () -> sm.is(DISCORDCHAT_ENABLE) ? on : off));
     }
 
     private void startTasks() {
