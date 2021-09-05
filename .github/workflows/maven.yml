@@ -10,7 +10,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  Build:
+  build:
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -31,8 +31,8 @@ jobs:
       - name: Build with Maven
         run: mvn -B -U package --file pom.xml
       - name: Upload a Build Artifact
+        if: "${{ matrix.java-version == 8 }}"
         uses: actions/upload-artifact@v2
         with:
           name: SimpleClans
           path: target/SimpleClans.jar
-
