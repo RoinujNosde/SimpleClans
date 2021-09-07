@@ -56,6 +56,8 @@ permissions:
     description: Can bypass pvp in wars
   simpleclans.anyone.list:
     description: Can list simpleclans
+  simpleclans.anyone.list.balance:
+    description: Can list clans by balance
   simpleclans.anyone.profile:
     description: Can view a clan's profile
   simpleclans.anyone.roster:

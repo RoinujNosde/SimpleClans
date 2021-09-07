@@ -4,7 +4,7 @@
   <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
   <artifactId>SimpleClans</artifactId>
   <name>SimpleClans</name>
-  <version>2.15.3</version>
+  <version>2.15.2</version>
   <url>https://www.spigotmc.org/resources/simpleclans.71242/</url>
   <build>
     <resources>
@@ -57,7 +57,7 @@
         <configuration>
           <relocations>
             <relocation>
-              <pattern>org.bstats.bukkit</pattern>
+              <pattern>org.bstats</pattern>
               <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.metrics</shadedPattern>
             </relocation>
             <relocation>
@@ -75,14 +75,6 @@
             <relocation>
               <pattern>com.cryptomorin.xseries</pattern>
               <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.xseries</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>org.reflections</pattern>
-              <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.reflections</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>javassist</pattern>
-              <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.javassist</shadedPattern>
             </relocation>
           </relocations>
           <artifactSet>
@@ -126,6 +118,10 @@
     <repository>
       <id>plotsquared</id>
       <url>https://plotsquared.com/mvn/</url>
+    </repository>
+    <repository>
+      <id>Scarsz-Nexus</id>
+      <url>https://nexus.scarsz.me/content/groups/public/</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
@@ -194,13 +190,13 @@
     <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
-      <version>16.0.2</version>
+      <version>22.0.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.4.0</version>
+      <version>5.7.2</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -306,6 +302,98 @@
         <exclusion>
           <artifactId>VaultAPI</artifactId>
           <groupId>net.milkbowl.vault</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>guava</artifactId>
+          <groupId>com.google.guava</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.discordsrv</groupId>
+      <artifactId>discordsrv</artifactId>
+      <version>1.23.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>JDA</artifactId>
+          <groupId>net.dv8tion</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>nv-websocket-client</artifactId>
+          <groupId>com.neovisionaries</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>trove4j</artifactId>
+          <groupId>net.sf.trove4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>configuralize</artifactId>
+          <groupId>github.scarsz</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-jdk14</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-io</artifactId>
+          <groupId>commons-io</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-collections</artifactId>
+          <groupId>commons-collections</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-lang3</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-codec</artifactId>
+          <groupId>commons-codec</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>emoji-java</artifactId>
+          <groupId>com.vdurmont</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>java-semver</artifactId>
+          <groupId>com.github.zafarkhaja</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>http-request</artifactId>
+          <groupId>com.github.kevinsawicki</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>minidns-hla</artifactId>
+          <groupId>org.minidns</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-expression</artifactId>
+          <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>MCDiscordReserializer</artifactId>
+          <groupId>dev.vankka</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adventure-api</artifactId>
+          <groupId>net.kyori</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adventure-text-serializer-legacy</artifactId>
+          <groupId>net.kyori</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adventure-text-serializer-gson</artifactId>
+          <groupId>net.kyori</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adventure-platform-bukkit</artifactId>
+          <groupId>net.kyori</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>adventure-text-minimessage</artifactId>
+          <groupId>net.kyori</groupId>
         </exclusion>
         <exclusion>
           <artifactId>guava</artifactId>
