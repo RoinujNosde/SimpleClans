@@ -1,17 +1,15 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.text.MessageFormat;
-
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TASKS_COLLECT_FEE_HOUR;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TASKS_COLLECT_FEE_MINUTE;
+import static org.bukkit.ChatColor.AQUA;
 
 /**
  *
@@ -34,7 +32,7 @@ public class CollectFeeTask extends BukkitRunnable {
     	int minute = sm.getInt(TASKS_COLLECT_FEE_MINUTE);
         long delay = Helper.getDelayTo(hour, minute);
         
-        this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);
+        this.runTaskTimer(plugin, delay * 20, 86400 * 20);
     }
     
     /**
@@ -47,24 +45,17 @@ public class CollectFeeTask extends BukkitRunnable {
             
             if (clan.isMemberFeeEnabled() && memberFee > 0) {
                 for (ClanPlayer cp : clan.getFeePayers()) {
-                	                	
-					final boolean success = plugin.getPermissionsManager()
-							.playerChargeMoney(Bukkit.getOfflinePlayer(cp.getUniqueId()), memberFee);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (success) {
-                                ChatBlock.sendMessage(cp.toPlayer(), ChatColor.AQUA + 
-                                        MessageFormat.format(lang("fee.collected",cp.toPlayer()), memberFee));
-                                clan.deposit(cp.toPlayer(), ClanBalanceUpdateEvent.Cause.MEMBER_FEE, memberFee);
-                                plugin.getStorageManager().updateClan(clan);
-                            } else {
-                            	clan.removePlayerFromClan(cp.getUniqueId());
-                                clan.addBb(ChatColor.AQUA + 
-                                        MessageFormat.format(lang("bb.fee.player.kicked"), cp.getName()));
-                            }
-                        }
-                    }.runTask(plugin);   
+					boolean success = plugin.getPermissionsManager()
+                            .playerChargeMoney(Bukkit.getOfflinePlayer(cp.getUniqueId()), memberFee);
+                    if (success) {
+                        ChatBlock.sendMessage(cp.toPlayer(), AQUA + lang("fee.collected", cp, memberFee));
+                        clan.deposit(cp.toPlayer(), Cause.MEMBER_FEE, memberFee);
+                        plugin.getStorageManager().updateClan(clan);
+                    } else {
+                        clan.removePlayerFromClan(cp.getUniqueId());
+                        clan.addBb(AQUA + lang("bb.fee.player.kicked", cp.getName()));
+                    }
+
                 }
             }
         } 

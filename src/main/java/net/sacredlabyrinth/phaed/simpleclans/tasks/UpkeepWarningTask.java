@@ -32,7 +32,7 @@ public class UpkeepWarningTask extends BukkitRunnable {
     	int minute = sm.getInt(TASKS_COLLECT_UPKEEP_WARNING_MINUTE);
         long delay = Helper.getDelayTo(hour, minute);
         
-		this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);
+		this.runTaskTimer(plugin, delay * 20, 86400 * 20);
     }
 
     /**
