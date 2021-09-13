@@ -26,7 +26,7 @@ slot-items:
 ```
 {% endcode %}
 
-2. Restart \(or reload\) and enjoy!
+1. Restart \(or reload\) and enjoy!
 
 ## Screenshot
 

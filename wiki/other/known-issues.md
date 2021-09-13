@@ -4,7 +4,7 @@ description: List of the plugin's known issues and possible solutions.
 
 # Known issues
 
-#### MySQL \#1366 - Incorrect string value
+## MySQL \#1366 - Incorrect string value
 
 This error happens when you try to insert characters that MySQL's current encoding doesn't support.
 
@@ -20,7 +20,7 @@ character-set-server=utf8mb4
 collation-server=utf8mb4_unicode_ci
 ```
 
-#### KDR is not counted
+## KDR is not counted
 
 Players report that their KDR is not changing.
 

@@ -26,11 +26,9 @@ _OTHER_:
 ```
 {% endcode %}
 
-2. Find the option `belowname` or `classic-vanilla-belowname` and disable it.
-
-3. Find the option `unlimited-nametag-prefix-suffix-mode` and enable it.
-
-4. Restart \(or reload\) and enjoy!
+1. Find the option `belowname` or `classic-vanilla-belowname` and disable it.
+2. Find the option `unlimited-nametag-prefix-suffix-mode` and enable it.
+3. Restart \(or reload\) and enjoy!
 
 ## Screenshot
 
