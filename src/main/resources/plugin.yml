@@ -6,6 +6,7 @@ softdepend:
   - PlaceholderAPI
   - LuckPerms
   - WorldGuard
+  - DiscordSRV
 loadbefore:
   - GriefPrevention
   - PlotSquared
@@ -55,6 +56,8 @@ permissions:
     description: Can bypass pvp in wars
   simpleclans.anyone.list:
     description: Can list simpleclans
+  simpleclans.anyone.list.balance:
+    description: Can list clans by balance
   simpleclans.anyone.profile:
     description: Can view a clan's profile
   simpleclans.anyone.roster:
@@ -67,6 +70,8 @@ permissions:
     description: Can view alliances by clan
   simpleclans.anyone.rivalries:
     description: Can view rivalries by clan
+  simpleclans.anyone.invite-toggle:
+    description: Can toggle invite on/off
   simpleclans.other.kdr-exempt:
     description: The player's KDR is not affected on killing/dying
     default: false
@@ -237,6 +242,7 @@ permissions:
       simpleclans.anyone.leaderboard: true
       simpleclans.anyone.alliances: true
       simpleclans.anyone.rivalries: true
+      simpleclans.anyone.invite-toggle: true
   simpleclans.member.land.*:
     description: Permissions for allowing/blocking actions in lands
     default: false

@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_LEADER_COLOR;
 
 public class ClanProfile extends Sendable {
 
@@ -25,7 +26,7 @@ public class ClanProfile extends Sendable {
                 .replace("%clan_color_tag%", clan.getColorTag())
                 .replace("%clan_description%", getDescription())
                 .replace("%clan_status%", Helper.getFormattedClanStatus(clan, sender))
-                .replace("%clan_leaders%", clan.getLeadersString(sm.getPageLeaderColor(), subColor + ", "))
+                .replace("%clan_leaders%", clan.getLeadersString(sm.getColored(PAGE_LEADER_COLOR), subColor + ", "))
                 .replace("%clan_online_count%", String.valueOf(VanishUtils.getNonVanished(sender, clan).size()))
                 .replace("%clan_size%", String.valueOf(clan.getSize()))
                 .replace("%clan_kdr%", KDRFormat.format(clan.getTotalKDR()))

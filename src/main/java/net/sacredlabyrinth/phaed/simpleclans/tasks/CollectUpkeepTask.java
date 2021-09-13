@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
-import net.md_5.bungee.api.ChatColor;
 import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -11,6 +10,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.text.MessageFormat;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static org.bukkit.ChatColor.AQUA;
 
 /**
  *
@@ -29,11 +30,11 @@ public class CollectUpkeepTask extends BukkitRunnable {
      * Starts the repetitive task
      */
     public void start() {
-    	int hour = settingsManager.getTasksCollectUpkeepHour();
-    	int minute = settingsManager.getTasksCollectUpkeepMinute();
+    	int hour = settingsManager.getInt(TASKS_COLLECT_UPKEEP_HOUR);
+    	int minute = settingsManager.getInt(TASKS_COLLECT_UPKEEP_MINUTE);
         long delay = Helper.getDelayTo(hour, minute);
 
-        this.runTaskTimerAsynchronously(plugin, delay * 20, 86400 * 20);
+        this.runTaskTimer(plugin, delay * 20, 86400 * 20);
     }
 
     /**
@@ -45,11 +46,11 @@ public class CollectUpkeepTask extends BukkitRunnable {
     		throw new IllegalStateException("Use the start() method!");
     	}        
     	plugin.getClanManager().getClans().forEach((clan) -> {
-        	if (settingsManager.isChargeUpkeepOnlyIfMemberFeeEnabled() && !clan.isMemberFeeEnabled()) {
+        	if (settingsManager.is(ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE) && !clan.isMemberFeeEnabled()) {
         		return;
         	}
-            double upkeep = settingsManager.getClanUpkeep();
-            if (settingsManager.isMultiplyUpkeepBySize()) {
+            double upkeep = settingsManager.getDouble(ECONOMY_UPKEEP);
+            if (settingsManager.is(ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE)) {
                 upkeep = upkeep * clan.getSize();
             }
 
@@ -58,7 +59,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
                 clan.disband(null, true, false);
             }
             if (response == EconomyResponse.SUCCESS) {
-                clan.addBb(ChatColor.AQUA + MessageFormat.format(lang("upkeep.collected"), upkeep), false);
+                clan.addBb(AQUA + MessageFormat.format(lang("upkeep.collected"), upkeep), false);
             }
         });
     }

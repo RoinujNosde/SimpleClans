@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -49,7 +50,7 @@ public class ClanCommands extends BaseCommand {
 
         List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(requestClan.getLeaders());
 
-        if (settings.isWarRequestEnabled()) {
+        if (settings.is(WAR_START_REQUEST_ENABLED)) {
             if (!onlineLeaders.isEmpty()) {
                 requestManager.addWarStartRequest(requester, targetClan, requestClan);
                 ChatBlock.sendMessage(player, AQUA + lang("leaders.have.been.asked.to.accept.the.war.request",
@@ -67,13 +68,13 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=WAR_END")
     @Description("{@@command.description.war.end}")
     @CommandCompletion("@warring_clans")
-    public void endWar(Player player, ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
+    public void endWar(ClanPlayer cp, Clan issuerClan, @Name("clan") ClanInput other) {
         Clan war = other.getClan();
         if (issuerClan.isWarring(war.getTag())) {
             requestManager.addWarEndRequest(cp, war, issuerClan);
-            ChatBlock.sendMessage(player, AQUA + lang("leaders.asked.to.end.rivalry", player, war.getName()));
+            ChatBlock.sendMessage(cp, AQUA + lang("leaders.asked.to.end.rivalry", cp, war.getName()));
         } else {
-            ChatBlock.sendMessage(player, RED + lang("clans.not.at.war", player));
+            ChatBlock.sendMessage(cp, RED + lang("clans.not.at.war", cp));
         }
     }
 
@@ -131,6 +132,10 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.invite}")
     public void invite(Player sender, ClanPlayer cp, Clan clan,
                        @Conditions("not_banned|not_in_clan|online:ignore_vanished") @Name("player") ClanPlayerInput invited) {
+        if (!invited.getClanPlayer().isInviteEnabled()){
+            ChatBlock.sendMessage(sender, RED + lang("invitedplayer.invite.off", sender));
+            return;
+        }
         Player invitedPlayer = invited.getClanPlayer().toPlayer();
         if (invitedPlayer == null) return;
         if (!permissions.has(invitedPlayer, "simpleclans.member.can-join")) {
@@ -149,7 +154,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        if (clan.getSize() >= settings.getMaxMembers() && settings.getMaxMembers() > 0) {
+        if (clan.getSize() >= settings.getInt(CLAN_MAX_MEMBERS) && settings.getInt(CLAN_MAX_MEMBERS) > 0) {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.members.reached.limit", sender));
             return;
         }
@@ -180,7 +185,7 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.fee.set}")
     public void setFee(Player player, Clan clan, @Name("fee") double fee) {
         fee = Math.abs(fee);
-        double maxFee = settings.getMaxMemberFee();
+        double maxFee = settings.getDouble(ECONOMY_MAX_MEMBER_FEE);
         if (fee > maxFee) {
             ChatBlock.sendMessage(player, RED
                     + lang("max.fee.allowed.is.0", player, maxFee));
@@ -218,14 +223,14 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=DESCRIPTION")
     @Description("{@@command.description.description}")
     public void setDescription(Player player, Clan clan, @Name("description") String description) {
-        if (description.length() < settings.getClanMinDescriptionLength()) {
+        if (description.length() < settings.getInt(CLAN_MIN_DESCRIPTION_LENGTH)) {
             ChatBlock.sendMessage(player, RED + lang("your.clan.description.must.be.longer.than",
-                    player, settings.getClanMinDescriptionLength()));
+                    player, settings.getInt(CLAN_MIN_DESCRIPTION_LENGTH)));
             return;
         }
-        if (description.length() > settings.getClanMaxDescriptionLength()) {
+        if (description.length() > settings.getInt(CLAN_MAX_DESCRIPTION_LENGTH)) {
             ChatBlock.sendMessage(player, RED + lang("your.clan.description.cannot.be.longer.than",
-                    player, settings.getClanMaxDescriptionLength()));
+                    player, settings.getInt(CLAN_MAX_DESCRIPTION_LENGTH)));
             return;
         }
         clan.setDescription(description);
@@ -292,7 +297,7 @@ public class ClanCommands extends BaseCommand {
             ChatBlock.sendMessage(player, RED + lang("your.clans.are.already.allies", player));
             return;
         }
-        int maxAlliances = settings.getClanMaxAlliances();
+        int maxAlliances = settings.getInt(CLAN_MAX_ALLIANCES);
         if (maxAlliances != -1) {
             if (issuerClan.getAllies().size() >= maxAlliances) {
                 ChatBlock.sendMessage(player, lang("your.clan.reached.max.alliances", player));
@@ -352,6 +357,26 @@ public class ClanCommands extends BaseCommand {
         clan.addBb(sender.getName(), AQUA + lang("has.been.kicked.by", clanPlayer.getName(),
                 sender.getName(), sender));
         clan.removePlayerFromClan(clanPlayer.getUniqueId());
+    }
+
+    @Subcommand("%resign %confirm")
+    @CommandPermission("simpleclans.member.resign")
+    @Description("{@@command.description.resign}")
+    @HelpSearchTags("leave")
+    public void resignConfirm(Player player, ClanPlayer cp, Clan clan) {
+        if (clan.isPermanent() || !clan.isLeader(player) || clan.getLeaders().size() > 1) {
+            clan.addBb(player.getName(), AQUA + lang("0.has.resigned", player.getName()));
+            cp.addResignTime(clan.getTag());
+            clan.removePlayerFromClan(player.getUniqueId());
+
+            ChatBlock.sendMessage(cp,AQUA + lang("resign.success", player));
+        } else if (clan.isLeader(player) && clan.getLeaders().size() == 1) {
+            clan.disband(player, true, false);
+            ChatBlock.sendMessage(cp, RED + lang("clan.has.been.disbanded", player, clan.getName()));
+        } else {
+            ChatBlock.sendMessage(cp, RED +
+                    lang("last.leader.cannot.resign.you.must.appoint.another.leader.or.disband.the.clan", player));
+        }
     }
 
     @Subcommand("%resign")

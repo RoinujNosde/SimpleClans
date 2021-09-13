@@ -6,6 +6,8 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.completions.AbstractAsyncCompletion;
 import net.sacredlabyrinth.phaed.simpleclans.commands.completions.AbstractCompletion;
@@ -22,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.optionalLang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class SCCommandManager extends PaperCommandManager {
     private final SimpleClans plugin;
@@ -44,8 +46,8 @@ public class SCCommandManager extends PaperCommandManager {
     }
     
     private void configure() {
-        registerDependencies();
         enableUnstableAPI("help");
+        registerDependencies();
         addCommandReplacements();
         registerContexts();
         registerCommands();
@@ -60,11 +62,13 @@ public class SCCommandManager extends PaperCommandManager {
         registerDependency(PermissionsManager.class, plugin.getPermissionsManager());
         registerDependency(RequestManager.class, plugin.getRequestManager());
         registerDependency(ProtectionManager.class, plugin.getProtectionManager());
+        registerDependency(ChatManager.class, plugin.getChatManager());
     }
 
     private void registerCompletions() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.completions");
-        Set<Class<? extends AbstractCompletion>> completions = reflections.getSubTypesOf(AbstractCompletion.class);
+        Set<Class<? extends AbstractCompletion>> completions =
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands.completions",
+                        AbstractCompletion.class);
         plugin.getLogger().info(String.format("Registering %d command completions...", completions.size()));
         for (Class<? extends AbstractCompletion> c : completions) {
             if (Modifier.isAbstract(c.getModifiers())) {
@@ -90,8 +94,9 @@ public class SCCommandManager extends PaperCommandManager {
 
     @SuppressWarnings("unchecked")
     private void registerConditions() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.conditions");
-        Set<Class<? extends AbstractCondition>> conditions = reflections.getSubTypesOf(AbstractCondition.class);
+        Set<Class<? extends AbstractCondition>> conditions =
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands.conditions",
+                        AbstractCondition.class);
         plugin.getLogger().info(String.format("Registering %d command conditions...", conditions.size()));
         for (Class<? extends AbstractCondition> c : conditions) {
             if (Modifier.isAbstract(c.getModifiers())) {
@@ -116,8 +121,9 @@ public class SCCommandManager extends PaperCommandManager {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void registerContexts() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands.contexts");
-        Set<Class<? extends AbstractContextResolver>> resolvers = reflections.getSubTypesOf(AbstractContextResolver.class);
+        Set<Class<? extends AbstractContextResolver>> resolvers =
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands.contexts",
+                        AbstractContextResolver.class);
         plugin.getLogger().info(String.format("Registering %d command contexts...", resolvers.size()));
         for (Class<? extends AbstractContextResolver> cr : resolvers) {
             if (Modifier.isAbstract(cr.getModifiers())) {
@@ -138,9 +144,8 @@ public class SCCommandManager extends PaperCommandManager {
     }
 
     private void registerCommands() {
-        boolean forceCommandPriority = plugin.getSettingsManager().isForceCommandPriority();
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.commands");
-        Set<Class<? extends BaseCommand>> commands = reflections.getSubTypesOf(BaseCommand.class);
+        boolean forceCommandPriority = plugin.getSettingsManager().is(COMMANDS_FORCE_PRIORITY);
+        Set<Class<? extends BaseCommand>> commands = Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.commands", BaseCommand.class);
         plugin.getLogger().info(String.format("Registering %d base commands...", commands.size()));
         for (Class<? extends BaseCommand> c : commands) {
             //ACF already registers nested classes
@@ -160,16 +165,16 @@ public class SCCommandManager extends PaperCommandManager {
         SettingsManager sm = plugin.getSettingsManager();
         getCommandReplacements().addReplacements(
                 "basic_conditions", "not_blacklisted|not_banned",
-                "clan", sm.getCommandClan(),
-                "deny", sm.getCommandDeny() + "|deny",
-                "more", sm.getCommandMore(),
-                "ally_chat", sm.getCommandAlly(),
-                "accept", sm.getCommandAccept() + "|accept",
-                "clan_chat", sm.getCommandClanChat()
+                "clan", sm.getString(COMMANDS_CLAN),
+                "deny", sm.getString(COMMANDS_DENY) + "|deny",
+                "more", sm.getString(COMMANDS_MORE),
+                "ally_chat", sm.getString(COMMANDS_ALLY),
+                "accept", sm.getString(COMMANDS_ACCEPT) + "|accept",
+                "clan_chat", sm.getString(COMMANDS_CLAN_CHAT)
         );
 
         SUBCOMMANDS.forEach(s -> {
-            String command = optionalLang(s + ".command", null);
+            String command = optionalLang(s + ".command", (ClanPlayer) null);
             if (command == null) {
                 command = s;
             }
@@ -206,7 +211,6 @@ public class SCCommandManager extends PaperCommandManager {
             };
             //this.locales.loadLanguages();
         }
-
         return this.locales;
     }
 
@@ -219,6 +223,6 @@ public class SCCommandManager extends PaperCommandManager {
                 "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set", "status", "tp", "all", "everyone",
                 "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help", "mod",
                 "setdefault", "removedefault", "land", "break", "interact", "place_block", "damage", "interact_entity",
-                "container", "permanent", "take", "give");
+                "container", "permanent", "take", "give", "join", "leave", "mute", "confirm", "balance");
     }
 }

@@ -27,6 +27,7 @@ settings:
     rival-limit-percent: 50
     use-colorcode-from-prefix-for-name: true
     display-chat-tags: true
+    global-friendly-fire: false
     unrivable-clans:
     - admin
     - staff
@@ -175,6 +176,7 @@ clanchat:
     tag-based-clan-chat: false
     announcement-color: e
     format: "&b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"
+    spy-format: "&8[Spy] [&bC&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%&8: %message%"
     rank: "&f[%rank%&f]"
     leader-color: '4'
     trusted-color: 'f'
@@ -192,10 +194,25 @@ bb:
 allychat:
     enable: true
     format: "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"
+    spy-format: "&8[Spy] [&cA&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%&8: %message%"
     rank: "&f[%rank%&f]"
     leader-color: '4'
     trusted-color: 'f'
     member-color: '7'
+discordchat:
+    enable: false
+    discord-format: "%player% » %message%"
+    format: "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"
+    spy-format: "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%&8: %message%"
+    rank: "[%rank%]"
+    leader-role: "Leader"
+    leader-color: 231, 76, 60, 100
+    leader-id: 0
+    text:
+        category-format: "SC - TextChannels"
+        category-ids: []
+        whitelist: []
+        clans-limit: 100
 purge:
     inactive-player-data-days: 30
     inactive-clan-days: 7

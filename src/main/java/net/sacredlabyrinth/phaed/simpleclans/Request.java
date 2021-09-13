@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUEST_MAX;
+
 /**
  * @author phaed
  */
@@ -178,6 +180,6 @@ public final class Request {
     }
 
     public boolean reachedRequestLimit() {
-        return askCount > SimpleClans.getInstance().getSettingsManager().getMaxAsksPerRequest();
+        return askCount > SimpleClans.getInstance().getSettingsManager().getInt(REQUEST_MAX);
     }
 }

@@ -11,8 +11,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DEBUG;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_BANK_LOG_ENABLED;
+
 /**
- * Logs all bank actions to one csv file per day.
+ * Logs all bank actions to one CSV file per day.
+ * <p>
+ * It accepts {@link BankLog} as a record
+ * and uses the format from {@link CSVFormatter}
+ * <p>
+ * Typical usage:
+ * <pre>{@code
+ *     CSVBankLogger bankLogger = new CSVBankLogger(plugin);
+ *     bankLogger.log(new BankLog(sender, clan, economyResponse, operation, cause, amount));
+ * }</pre>
+ *
  * @since 2.15.3
  */
 public class CSVBankLogger implements BankLogger {
@@ -20,20 +33,23 @@ public class CSVBankLogger implements BankLogger {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final SimpleClans plugin;
 
+    static final int FILE_SIZE = (int) (100 * Math.pow(10, 6));
+    static final int FILE_COUNT = 1;
+
     public CSVBankLogger(SimpleClans plugin) {
         this.plugin = plugin;
 
-        if (!plugin.getSettingsManager().isBankLogEnabled()) {
+        if (!plugin.getSettingsManager().is(ECONOMY_BANK_LOG_ENABLED)) {
             return;
         }
 
         try {
-            FileHandler fh = new FileHandler(getFilePath(), (int) (100 * Math.pow(10, 6)), 1, true);
+            FileHandler fh = new FileHandler(getFilePath(), FILE_SIZE, FILE_COUNT, true);
             fh.setFormatter(new CSVFormatter());
             fh.setLevel(Level.INFO);
             fh.setEncoding("UTF-8");
             logger.addHandler(fh);
-            if (!plugin.getSettingsManager().isDebugging()) {
+            if (!plugin.getSettingsManager().is(DEBUG)) {
                 logger.setUseParentHandlers(false);
             }
         } catch (IOException e) {
@@ -43,7 +59,7 @@ public class CSVBankLogger implements BankLogger {
 
     @Override
     public void log(BankLog log) {
-        if (!plugin.getSettingsManager().isBankLogEnabled()) {
+        if (!plugin.getSettingsManager().is(ECONOMY_BANK_LOG_ENABLED)) {
             return;
         }
 

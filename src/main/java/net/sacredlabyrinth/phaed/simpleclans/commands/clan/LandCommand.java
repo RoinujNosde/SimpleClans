@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.LAND_EDIT_ALL_LANDS;
+
 @CommandAlias("%clan")
 @Subcommand("%land")
 @Conditions("%basic_conditions|land_sharing|own_land")
@@ -27,7 +29,7 @@ public class LandCommand extends BaseCommand {
 
     private Set<Land> getLands(ClanPlayer cp, Location location) {
         Player player = Objects.requireNonNull(cp.toPlayer());
-        if (settings.isEditAllLands()) {
+        if (settings.is(LAND_EDIT_ALL_LANDS)) {
             return protection.getLands(player, location);
         } else {
             return protection.getLandsAt(location).stream().filter(l -> l.getOwners().contains(player.getUniqueId()))

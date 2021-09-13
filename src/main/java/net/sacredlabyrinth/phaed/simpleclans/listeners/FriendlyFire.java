@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+
 public class FriendlyFire implements Listener {
 
     private final SimpleClans plugin;
@@ -29,7 +31,7 @@ public class FriendlyFire implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player) ||
-                plugin.getSettingsManager().isBlacklistedWorld(event.getEntity().getWorld())) {
+                plugin.getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(event.getEntity().getWorld().getName())) {
             return;
         }
         Player victim = (Player) event.getEntity();
@@ -53,14 +55,14 @@ public class FriendlyFire implements Listener {
                          @Nullable Clan victimClan,
                          @Nullable Clan attackerClan) {
         if (vcp == null || victimClan == null || attackerClan == null) {
-            if (plugin.getSettingsManager().getSafeCivilians()) {
+            if (plugin.getSettingsManager().is(SAFE_CIVILIANS)) {
                 ChatBlock.sendMessageKey(attacker, "cannot.attack.civilians");
                 event.setCancelled(true);
             }
             return;
         }
 
-        if (vcp.isFriendlyFire() || victimClan.isFriendlyFire() || plugin.getSettingsManager().isGlobalff()) {
+        if (vcp.isFriendlyFire() || victimClan.isFriendlyFire() || plugin.getSettingsManager().is(GLOBAL_FRIENDLY_FIRE)) {
             return;
         }
 

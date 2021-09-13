@@ -24,11 +24,15 @@ import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.MessageFormat;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanNamePrompt.NAME_KEY;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
@@ -51,7 +55,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandAlias("%clan")
     @HelpSearchTags("menu gui interface ui")
     public void main(CommandSender sender) {
-        if (sender instanceof Player && settings.isEnableGUI()) {
+        if (sender instanceof Player && settings.is(ENABLE_GUI)) {
             InventoryDrawer.open(new MainFrame((Player) sender));
         } else {
             help(sender, new CommandHelp(getCurrentCommandManager(),
@@ -157,7 +161,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.vip.resetkdr")
     @Description("{@@command.description.resetkdr}")
     public void resetKdr(Player player, ClanPlayer cp) {
-        if (!settings.isAllowResetKdr()) {
+        if (!settings.is(ALLOW_RESET_KDR)) {
             ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
             return;
         }
@@ -199,12 +203,12 @@ public class GeneralCommands extends BaseCommand {
             return;
         }
 
-        chatBlock.sendBlock(player, settings.getPageSize());
+        chatBlock.sendBlock(player, settings.getInt(PAGE_SIZE));
 
         if (chatBlock.size() > 0) {
             ChatBlock.sendBlank(player);
-            ChatBlock.sendMessage(player, settings.getPageHeadingsColor() + lang("view.next.page", player,
-                    settings.getCommandMore()));
+            ChatBlock.sendMessage(player, settings.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", player,
+                    settings.getString(COMMANDS_MORE)));
         }
         ChatBlock.sendBlank(player);
     }
@@ -231,6 +235,31 @@ public class GeneralCommands extends BaseCommand {
     public void mostKilled(Player player) {
         MostKilled mk = new MostKilled(plugin, player);
         mk.send();
+    }
+
+    @Subcommand("%list %balance")
+    @CommandPermission("simpleclans.anyone.list.balance")
+    @Description("{@@command.description.list.balance}")
+    public void listBalance(CommandSender sender) {
+        List<Clan> clans = cm.getClans();
+        if (clans.isEmpty()) {
+            sender.sendMessage(RED + lang("no.clans.have.been.created", sender));
+            return;
+        }
+        clans.sort(Comparator.comparingDouble(Clan::getBalance).reversed());
+
+        sender.sendMessage(lang("clan.list.balance.header", sender, settings.getColored(SERVER_NAME), clans.size()));
+        String lineFormat = lang("clan.list.balance.line", sender);
+
+        String leftBracket = settings.getColored(TAG_BRACKET_COLOR) + settings.getColored(TAG_BRACKET_LEFT);
+        String rightBracket = settings.getColored(TAG_BRACKET_COLOR) + settings.getColored(TAG_BRACKET_RIGHT);
+        for (int i = 0; i < 10 && i < clans.size(); i++) {
+            Clan clan = clans.get(i);
+            String name = " " + (clan.isVerified() ? settings.getColored(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
+            String line = MessageFormat.format(lineFormat, i + 1, leftBracket, clan.getColorTag(),
+                    rightBracket, name, clan.getBalance());
+            sender.sendMessage(line);
+        }
     }
 
     @Subcommand("%list")

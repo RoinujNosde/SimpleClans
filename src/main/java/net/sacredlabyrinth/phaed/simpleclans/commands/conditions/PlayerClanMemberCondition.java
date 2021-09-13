@@ -8,6 +8,8 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
+
 @SuppressWarnings("unused")
 public class PlayerClanMemberCondition extends AbstractParameterCondition<Player> {
     public PlayerClanMemberCondition(@NotNull SimpleClans plugin) {
@@ -23,6 +25,7 @@ public class PlayerClanMemberCondition extends AbstractParameterCondition<Player
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context,
                                   BukkitCommandExecutionContext execContext,
                                   Player value) throws InvalidCommandArgument {
+        debug(String.format("PlayerClanMemberCondition -> %s %s", value.getName(), value.getUniqueId()));
         Conditions.assertClanMember(clanManager, context.getIssuer());
     }
 

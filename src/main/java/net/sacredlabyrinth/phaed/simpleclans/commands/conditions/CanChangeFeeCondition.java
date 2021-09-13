@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 @SuppressWarnings("unused")
 public class CanChangeFeeCondition extends AbstractCommandCondition {
@@ -26,7 +27,7 @@ public class CanChangeFeeCondition extends AbstractCommandCondition {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime collectTime = getCollectTime();
         long interval = now.until(collectTime, MINUTES);
-        if (interval <= settingsManager.geteMemberFeeLastMinuteChangeInterval() * HOUR_IN_MINUTES) {
+        if (interval <= settingsManager.getInt(ECONOMY_MEMBER_FEE_LAST_MINUTE_CHANGE_INTERVAL) * HOUR_IN_MINUTES) {
             BukkitCommandIssuer issuer = context.getIssuer();
             String error = lang("cannot.change.member.fee.now", issuer);
             if (interval <= 60) {
@@ -40,8 +41,8 @@ public class CanChangeFeeCondition extends AbstractCommandCondition {
 
     private LocalDateTime getCollectTime() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime collectTime = now.withHour(settingsManager.getTasksCollectFeeHour())
-                .withMinute(settingsManager.getTasksCollectFeeMinute());
+        LocalDateTime collectTime = now.withHour(settingsManager.getInt(TASKS_COLLECT_FEE_HOUR))
+                .withMinute(settingsManager.getInt(TASKS_COLLECT_FEE_MINUTE));
         if (collectTime.isBefore(now)) {
             collectTime = collectTime.plusDays(1);
         }

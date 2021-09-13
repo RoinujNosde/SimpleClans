@@ -1,6 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
-import org.bukkit.conversations.*;
+import org.bukkit.conversations.Conversable;
+import org.bukkit.conversations.Conversation;
+import org.bukkit.conversations.ConversationCanceller;
+import org.bukkit.conversations.Prompt;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +31,7 @@ public class SCConversation extends Conversation {
     public SCConversation(@NotNull Plugin plugin, @NotNull Conversable forWhom, @Nullable Prompt firstPrompt, @NotNull Map<Object, Object> initialSessionData, int timeout) {
         super(plugin, forWhom, firstPrompt, initialSessionData);
         this.setLocalEchoEnabled(true);
-        this.addConversationCanceller(new InactivityConversationCanceller(plugin, timeout));
+        this.addConversationCanceller(new InactivityCanceller(plugin, timeout));
     }
 
     @Override
@@ -46,6 +49,6 @@ public class SCConversation extends Conversation {
 
     public void addConversationCanceller(@NotNull ConversationCanceller canceller) {
         canceller.setConversation(this);
-        this.cancellers.add(canceller);
+        cancellers.add(canceller);
     }
 }

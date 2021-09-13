@@ -8,10 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
@@ -26,6 +23,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.GLOBAL_FRIENDLY_FIRE;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -194,10 +192,10 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.globalff")
     @Description("{@@command.description.globalff.allow}")
     public void allowGlobalFf(CommandSender sender) {
-        if (settings.isGlobalff()) {
+        if (settings.is(GLOBAL_FRIENDLY_FIRE)) {
             ChatBlock.sendMessage(sender, AQUA + lang("global.friendly.fire.is.already.being.allowed", sender));
         } else {
-            settings.setGlobalff(true);
+            settings.set(GLOBAL_FRIENDLY_FIRE, true);
             ChatBlock.sendMessage(sender, AQUA + lang("global.friendly.fire.is.set.to.allowed", sender));
         }
     }
@@ -206,11 +204,11 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.globalff")
     @Description("{@@command.description.globalff.auto}")
     public void autoGlobalFf(CommandSender sender) {
-        if (!settings.isGlobalff()) {
+        if (!settings.is(GLOBAL_FRIENDLY_FIRE)) {
             ChatBlock.sendMessage(sender, AQUA +
                     lang("global.friendy.fire.is.already.being.managed.by.each.clan", sender));
         } else {
-            settings.setGlobalff(false);
+            settings.set(GLOBAL_FRIENDLY_FIRE, false);
             ChatBlock.sendMessage(sender, AQUA + lang("global.friendy.fire.is.now.managed.by.each.clan",
                     sender));
         }
@@ -280,13 +278,14 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.admin.promote")
     @Description("{@@command.description.admin.promote}")
     public void promote(CommandSender sender, @Conditions("online|clan_member") @Name("player") ClanPlayerInput promote) {
-        Player promotePl = Objects.requireNonNull(promote.getClanPlayer().toPlayer());
+        ClanPlayer clanPlayer = promote.getClanPlayer();
+        Player promotePl = Objects.requireNonNull(clanPlayer.toPlayer());
         if (!permissions.has(promotePl, "simpleclans.leader.promotable")) {
             ChatBlock.sendMessage(sender, RED + lang("the.player.does.not.have.the.permissions.to.lead.a.clan",
                     sender));
             return;
         }
-        Clan clan = Objects.requireNonNull(promote.getClanPlayer().getClan());
+        Clan clan = Objects.requireNonNull(clanPlayer.getClan());
         if (clan.isLeader(promotePl)) {
             ChatBlock.sendMessage(sender, RED + lang("the.player.is.already.a.leader", sender));
             return;
@@ -304,12 +303,17 @@ public class StaffCommands extends BaseCommand {
     public void demote(CommandSender sender, @Conditions("clan_member") @Name("leader") ClanPlayerInput other) {
         ClanPlayer otherCp = other.getClanPlayer();
         Clan clan = Objects.requireNonNull(otherCp.getClan());
-        if (clan.getLeaders().size() == 1) {
+
+        if (!otherCp.isLeader()) {
+            ChatBlock.sendMessage(sender, RED + lang("player.is.not.a.leader", sender));
+            return;
+        }
+
+        if (clan.getLeaders().size() == 1 && !clan.isPermanent()) {
             ChatBlock.sendMessage(sender, RED + lang("you.cannot.demote.the.last.leader", sender));
             return;
         }
         clan.demote(otherCp.getUniqueId());
-
         clan.addBb(sender.getName(), AQUA + lang("demoted.back.to.member", otherCp.getName()));
         ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.demoted", sender));
     }

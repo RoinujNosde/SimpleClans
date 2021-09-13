@@ -28,15 +28,12 @@ public class WorldGuard6Provider implements ProtectionProvider {
     private Method getApplicableRegions;
 
     @Override
-    public void setup() {
+    public void setup() throws NoSuchMethodException {
         worldGuard = WorldGuardPlugin.inst();
-        try {
-            getRegionManager = worldGuard.getClass().getMethod("getRegionManager", World.class);
-            //noinspection JavaReflectionMemberAccess
-            getApplicableRegions = RegionManager.class.getMethod("getApplicableRegions", Location.class);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        getRegionManager = worldGuard.getClass().getMethod("getRegionManager", World.class);
+        //noinspection JavaReflectionMemberAccess
+        getApplicableRegions = RegionManager.class.getMethod("getApplicableRegions", Location.class);
+
     }
 
     private @Nullable RegionManager getRegionManager(@Nullable World world) {

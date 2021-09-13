@@ -6,10 +6,11 @@ import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLog;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,6 +29,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.EconomyResponse.*;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause;
 import static net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger.Operation.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.*;
 
 /**
@@ -74,7 +76,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.lastUsed = (new Date()).getTime();
         this.verified = verified;
         this.capeUrl = "";
-        if (SimpleClans.getInstance().getSettingsManager().isClanFFOnByDefault()) {
+        if (SimpleClans.getInstance().getSettingsManager().is(CLAN_FF_ON_BY_DEFAULT)) {
             friendlyFire = true;
         }
     }
@@ -340,8 +342,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             return -1;
         }
 
-        int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getPurgeClan();
-        int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getPurgeUnverified();
+        int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getInt(PURGE_INACTIVE_CLAN_DAYS);
+        int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getInt(PURGE_UNVERIFIED_CLAN_DAYS);
 
         return this.isVerified() ? verifiedClanInactiveDays : unverifiedClanInactiveDays;
     }
@@ -489,7 +491,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Adds a bulletin board message without saving it to the database
      */
     public void addBbWithoutSaving(String msg) {
-        while (bb.size() > SimpleClans.getInstance().getSettingsManager().getBbSize()) {
+        while (bb.size() > SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE)) {
             bb.remove(0);
         }
 
@@ -588,7 +590,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("is_verified")
     public boolean isVerified() {
-        return !SimpleClans.getInstance().getSettingsManager().isRequireVerification() || verified;
+        return !SimpleClans.getInstance().getSettingsManager().is(REQUIRE_VERIFICATION) || verified;
 
     }
 
@@ -645,7 +647,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedBb the packedBb to set
      */
     public void setPackedBb(String packedBb) {
-        this.bb = Helper.fromArray(packedBb.split("[|]"));
+        this.bb = Helper.fromArrayToList(packedBb.split("[|]"));
     }
 
     /**
@@ -663,7 +665,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedAllies the packedAllies to set
      */
     public void setPackedAllies(String packedAllies) {
-        this.allies = Helper.fromArray(packedAllies.split("[|]"));
+        this.allies = Helper.fromArrayToList(packedAllies.split("[|]"));
     }
 
     /**
@@ -681,7 +683,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedRivals the packedRivals to set
      */
     public void setPackedRivals(String packedRivals) {
-        this.rivals = Helper.fromArray(packedRivals.split("[|]"));
+        this.rivals = Helper.fromArrayToList(packedRivals.split("[|]"));
     }
 
     /**
@@ -812,16 +814,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the fee payers
      */
     public Set<ClanPlayer> getFeePayers() {
-        Set<ClanPlayer> feePayers = new HashSet<>();
-
-        getNonLeaders().forEach(cp -> {
-            OfflinePlayer op = Bukkit.getOfflinePlayer(cp.getUniqueId());
-            if (!SimpleClans.getInstance().getPermissionsManager().has(null, op, "simpleclans.member.bypass-fee")) {
-                feePayers.add(cp);
-            }
-        });
-
-        return feePayers;
+        PermissionsManager permissions = SimpleClans.getInstance().getPermissionsManager();
+        return getNonLeaders().stream().filter(cp -> !permissions.has(cp.toPlayer(), "simpleclans.member.bypass-fee")).collect(Collectors.toSet());
     }
 
     /**
@@ -866,6 +860,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         return out;
     }
+
 
     /**
      * Get all leaders in the clan
@@ -1081,9 +1076,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     public boolean reachedRivalLimit() {
         int rivalCount = rivals.size();
         int clanCount = SimpleClans.getInstance().getClanManager().getRivableClanCount() - 1;
-        int rivalPercent = SimpleClans.getInstance().getSettingsManager().getRivalLimitPercent();
+        double rivalPercent = SimpleClans.getInstance().getSettingsManager().getPercent(RIVAL_LIMIT_PERCENT);
 
-        double limit = ((double) clanCount) * (((double) rivalPercent) / ((double) 100));
+        double limit = ((double) clanCount) * (rivalPercent / ((double) 100));
 
         return rivalCount > limit;
     }
@@ -1095,7 +1090,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         cp.removePastClan(getColorTag());
         cp.setClan(this);
         cp.setLeader(false);
-        cp.setTrusted(SimpleClans.getInstance().getSettingsManager().isClanTrustByDefault());
+        cp.setTrusted(SimpleClans.getInstance().getSettingsManager().is(CLAN_TRUST_MEMBERS_BY_DEFAULT));
         if (defaultRank != null) {
             cp.setRank(defaultRank);
         }
@@ -1266,13 +1261,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("is_anyonline")
     public boolean isAnyOnline() {
-        for (String member : members) {
-            if (Helper.isOnline(UUID.fromString(member))) {
-                return true;
-            }
-        }
-
-        return false;
+        return members.stream().map(UUID::fromString).map(Bukkit::getPlayer).anyMatch(Objects::nonNull);
     }
 
     /**
@@ -1285,7 +1274,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<ClanPlayer> online = getOnlineLeaders();
         online.remove(cp);
 
-        double minimum = SimpleClans.getInstance().getSettingsManager().getPercentageOnlineToDemote();
+        double minimum = SimpleClans.getInstance().getSettingsManager().getPercent(CLAN_PERCENTAGE_ONLINE_TO_DEMOTE);
         // all leaders minus the one being demoted
         double totalLeaders = getLeaders().size() - 1;
         double onlineLeaders = online.size();
@@ -1310,7 +1299,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<ClanPlayer> leaders = getLeaders();
 
         for (ClanPlayer leader : leaders) {
-            if (!Helper.isOnline(leader.getUniqueId())) {
+            if (leader.toPlayer() == null) {
                 return false;
             }
         }
@@ -1330,7 +1319,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 continue;
             }
 
-            if (!Helper.isOnline(leader.getName())) {
+            if (leader.toPlayer() == null) {
                 return false;
             }
         }
@@ -1349,7 +1338,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 continue;
             }
 
-            if (!Helper.isOnline(leader.getUniqueId())) {
+            if (leader.toPlayer() == null) {
                 return false;
             }
         }
@@ -1369,7 +1358,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Announce message to a whole clan
      */
     public void clanAnnounce(String playerName, String msg) {
-        String message = SimpleClans.getInstance().getSettingsManager().getClanChatAnnouncementColor() + msg;
+        String message = SimpleClans.getInstance().getSettingsManager().getColored(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
 
         for (ClanPlayer cp : getMembers()) {
             Player pl = cp.toPlayer();
@@ -1386,7 +1375,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * Announce message to a all the leaders of a clan
      */
     public void leaderAnnounce(String msg) {
-        String message = SimpleClans.getInstance().getSettingsManager().getClanChatAnnouncementColor() + msg;
+        String message = SimpleClans.getInstance().getSettingsManager().getColored(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
 
         List<ClanPlayer> leaders = getLeaders();
 
@@ -1405,8 +1394,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getBbColor() + msg);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
+            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1415,8 +1404,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getBbColor() + msg, updateLastUsed);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getBbAccentColor() + "* " + SimpleClans.getInstance().getSettingsManager().getBbColor() + ChatUtils.parseColors(msg));
+            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg, updateLastUsed);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1435,14 +1424,14 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void displayBb(Player player, int maxSize) {
         if (isVerified()) {
             ChatBlock.sendBlank(player);
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getBbAccentColor();
-            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getPageHeadingsColor();
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
+            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getColored(PAGE_HEADINGS_COLOR);
             ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
 
             List<String> localBb;
             if (maxSize == -1) {
                 localBb = bb;
-                maxSize = SimpleClans.getInstance().getSettingsManager().getBbSize();
+                maxSize = SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE);
             } else {
                 localBb = new ArrayList<>(bb);
             }
@@ -1452,7 +1441,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
             for (String msg : localBb) {
                 if (!sendBbTime(player, msg)) {
-                    String bbColor = SimpleClans.getInstance().getSettingsManager().getBbColor();
+                    String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
                     ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
                 }
             }
@@ -1474,8 +1463,8 @@ public class Clan implements Serializable, Comparable<Clan> {
                 return false;
             }
             long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getBbAccentColor();
-            String bbColor = SimpleClans.getInstance().getSettingsManager().getBbColor();
+            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
+            String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
             msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
             TextComponent textComponent = new TextComponent(msg);
             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
@@ -1504,7 +1493,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         }
 
         if (announce) {
-            if (SimpleClans.getInstance().getSettingsManager().isDisableMessages() && sender != null) {
+            if (SimpleClans.getInstance().getSettingsManager().is(DISABLE_MESSAGES) && sender != null) {
                 this.clanAnnounce(sender.getName(), AQUA + lang("clan.has.been.disbanded", this.getName()));
             } else {
                 SimpleClans.getInstance().getClanManager().serverAnnounce(AQUA + lang("clan.has.been.disbanded", this.getName()));
@@ -1689,27 +1678,15 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     public String getTagLabel(boolean isLeader) {
-        SimpleClans plugin = SimpleClans.getInstance();
+        SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
+        String bracketColor = isLeader ? sm.getColored(TAG_BRACKET_LEADER_COLOR) : sm.getColored(TAG_BRACKET_COLOR);
+        String bracketDefaultColor = sm.getColored(TAG_DEFAULT_COLOR);
+        String bracketLeft = sm.getColored(TAG_BRACKET_LEFT);
+        String bracketRight = sm.getColored(TAG_BRACKET_RIGHT);
+        String tagSeparatorColor = isLeader ? sm.getColored(TAG_SEPARATOR_LEADER_COLOR) : sm.getColored(TAG_SEPARATOR_COLOR);
+        String tagSeparator = sm.getString(TAG_SEPARATOR_char);
 
-        if (isLeader) {
-            return plugin.getSettingsManager().getTagBracketLeaderColor() +
-                    plugin.getSettingsManager().getTagBracketLeft() +
-                    plugin.getSettingsManager().getTagDefaultColor() +
-                    getColorTag() +
-                    plugin.getSettingsManager().getTagBracketLeaderColor() +
-                    plugin.getSettingsManager().getTagBracketRight() +
-                    plugin.getSettingsManager().getTagSeparatorLeaderColor() +
-                    plugin.getSettingsManager().getTagSeparator();
-        } else {
-            return plugin.getSettingsManager().getTagBracketColor() +
-                    plugin.getSettingsManager().getTagBracketLeft() +
-                    plugin.getSettingsManager().getTagDefaultColor() +
-                    getColorTag() +
-                    plugin.getSettingsManager().getTagBracketColor() +
-                    plugin.getSettingsManager().getTagBracketRight() +
-                    plugin.getSettingsManager().getTagSeparatorColor() +
-                    plugin.getSettingsManager().getTagSeparator();
-        }
+        return bracketColor + bracketLeft + bracketDefaultColor + getColorTag() + bracketColor + bracketRight + tagSeparatorColor + tagSeparator;
     }
 
     /**

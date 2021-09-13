@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class InviteFrame extends SCFrame {
 
@@ -50,7 +51,7 @@ public class InviteFrame extends SCFrame {
 
 	@NotNull
 	private SCComponent createPlayerComponent(@NotNull Player player, int slot) {
-		double price = plugin.getSettingsManager().isePurchaseInvite() ? plugin.getSettingsManager().getInvitePrice() : 0;
+		double price = plugin.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_INVITE) ? plugin.getSettingsManager().getDouble(ECONOMY_INVITE_PRICE) : 0;
 		List<String> lore = new ArrayList<>();
 		if (price != 0) lore.add(lang("gui.invite.player.price.lore", getViewer(), price));
 		lore.add(lang("gui.invite.player.lore", getViewer()));

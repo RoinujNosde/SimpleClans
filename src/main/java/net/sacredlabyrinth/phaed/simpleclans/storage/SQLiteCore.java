@@ -1,5 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.storage;
 
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,9 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERFORMANCE_USE_THREADS;
 
 /**
  * @author cc_madelg
@@ -119,7 +119,7 @@ public class SQLiteCore implements DBCore {
      */
     @Override
     public void insert(String query) {
-    	if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+    	if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
     		executeAsync(query, "INSERT");    		
     	} else {
     		try {
@@ -140,7 +140,7 @@ public class SQLiteCore implements DBCore {
      */
     @Override
     public void update(String query) {
-    	if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+    	if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
     		executeAsync(query, "UPDATE");    		
     	} else {
     		try {
@@ -161,7 +161,7 @@ public class SQLiteCore implements DBCore {
      */
     @Override
     public void delete(String query) {
-    	if (SimpleClans.getInstance().getSettingsManager().getUseThreads()) {
+    	if (SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS)) {
     		executeAsync(query, "DELETE");    		
     	} else {
     		try {
@@ -224,26 +224,5 @@ public class SQLiteCore implements DBCore {
             log.severe("Failed to check if column " + column + " exists in table " + table + " : " + e.getMessage());
             return false;
         }
-    }
-    
-    private void executeAsync(String query, String sqlType) {
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-		        try {
-		        	if (connection != null && !connection.isClosed()) {
-		        		connection.createStatement().executeUpdate(query);
-		        	}
-		        }
-		        catch (SQLException ex) {
-		            if (!ex.toString().contains("not return ResultSet"))
-		            {
-		                log.severe("[Thread] Error at SQL " + sqlType + " Query: " + ex);
-		                log.severe("[Thread] Query: " + query);
-		            }
-		        }				
-			}
-		}.runTaskAsynchronously(SimpleClans.getInstance());
-
     }
 }

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class ProtectionManager {
 
@@ -38,7 +39,7 @@ public class ProtectionManager {
         settingsManager = plugin.getSettingsManager();
         clanManager = plugin.getClanManager();
         logger = plugin.getLogger();
-        if (!settingsManager.isWarEnabled() && !settingsManager.isLandSharing()) {
+        if (!settingsManager.is(ENABLE_WAR) && !settingsManager.is(LAND_SHARING)) {
             return;
         }
         //running on next tick, so all plugins are already loaded
@@ -48,7 +49,7 @@ public class ProtectionManager {
 
     public void registerListeners() {
         landProtection = new LandProtection(plugin);
-        if (!settingsManager.isWarEnabled() && !settingsManager.isLandSharing()) {
+        if (!settingsManager.is(ENABLE_WAR) && !settingsManager.is(LAND_SHARING)) {
             return;
         }
         landProtection.registerListeners();
@@ -104,8 +105,10 @@ public class ProtectionManager {
     }
 
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
+        debug(String.format("Action %s, Player %s (%s), Other Player %s", action, player, player.getUniqueId(), other));
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
+                debug(String.valueOf(owner));
                 if (owner == null) {
                     continue;
                 }
@@ -117,10 +120,12 @@ public class ProtectionManager {
                 }
                 if (isWarringAndAllowed(action, owner, involved) ||
                         isSameClanAndAllowed(action, owner, involved, land.getId())) {
+                    debug("Allowed action");
                     return true;
                 }
             }
         }
+        debug("Denied action");
         return false;
     }
 
@@ -141,7 +146,7 @@ public class ProtectionManager {
         requestClan.addWarringClan(requester, targetClan);
         targetClan.addWarringClan(requester, requestClan);
 
-        wars.put(war, scheduleTask(war, settingsManager.getWarNormalExpirationTime()));
+        wars.put(war, scheduleTask(war, settingsManager.getMinutes(WAR_NORMAL_EXPIRATION_TIME)));
         return true;
     }
 
@@ -199,7 +204,7 @@ public class ProtectionManager {
     }
 
     private void clearWars() {
-        if (!settingsManager.isWarEnabled()) {
+        if (!settingsManager.is(ENABLE_WAR)) {
             return;
         }
         for (Clan clan : clanManager.getClans()) {
@@ -210,7 +215,7 @@ public class ProtectionManager {
     }
 
     private boolean isSameClanAndAllowed(Action action, UUID owner, Player involved, String landId) {
-        if (!settingsManager.isLandSharing()) {
+        if (!settingsManager.is(LAND_SHARING)) {
             return false;
         }
         ClanPlayer cp = clanManager.getCreateClanPlayer(owner);
@@ -222,7 +227,7 @@ public class ProtectionManager {
     }
 
     private boolean isWarringAndAllowed(@NotNull Action action, @NotNull UUID owner, @NotNull Player involved) {
-        if (!settingsManager.isActionAllowedInWar(action) || !settingsManager.isWarEnabled()) {
+        if (!settingsManager.isActionAllowedInWar(action) || !settingsManager.is(ENABLE_WAR)) {
             return false;
         }
         Clan ownerClan = clanManager.getClanByPlayerUniqueId(owner);
@@ -234,7 +239,7 @@ public class ProtectionManager {
     }
 
     private void registerProviders() {
-        for (String className : settingsManager.getProtectionProviders()) {
+        for (String className : settingsManager.getStringList(LAND_PROTECTION_PROVIDERS)) {
             Object instance = null;
             try {
                 Class<?> clazz = getProviderClass(className);
@@ -257,21 +262,21 @@ public class ProtectionManager {
         String requiredPlugin = provider.getRequiredPluginName();
         String providerName = provider.getClass().getSimpleName();
         if (requiredPlugin != null && Bukkit.getPluginManager().getPlugin(requiredPlugin) == null) {
-            logger.warning(String.format("Required plugin %s for the provider %s was not found!",
-                    requiredPlugin, providerName));
+            debug(String.format("Required plugin %s for the provider %s was not found!", requiredPlugin, providerName));
             return;
         }
         try {
             provider.setup();
         } catch (LinkageError | Exception throwable) {
             logger.log(Level.WARNING, String.format("Error registering provider %s", providerName));
-            if (settingsManager.isDebugging()) {
+            if (settingsManager.is(DEBUG)) {
                 throwable.printStackTrace();
             }
             return;
         }
         providers.add(provider);
         landProtection.registerCreateLandEvent(provider, provider.getCreateLandEvent());
+        logger.info(String.format("Registered %s successfully", providerName));
     }
 
     @NotNull

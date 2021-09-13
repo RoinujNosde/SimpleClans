@@ -1,13 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ChatUtilsTest {
+public class ChatUtilsTest {
 
     @Test
-    void getLastColors() {
+    public void getLastColors() {
         String lastColors = ChatUtils.getLastColors("§aa mensagem§x termina com §4vermelho");
         assertEquals("§4", lastColors);
         lastColors = ChatUtils.getLastColors("§aa mensagem§x termina com §a§4vermelho");

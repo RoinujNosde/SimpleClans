@@ -1,14 +1,16 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.papi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.clip.placeholderapi.expansion.Relational;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,7 +20,9 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SimpleClansExpansion extends PlaceholderExpansion {
+import static org.bukkit.ChatColor.*;
+
+public class SimpleClansExpansion extends PlaceholderExpansion implements Relational {
 
     private static final Pattern TOP_CLANS_PATTERN = Pattern.compile("(?<strip>^topclans_(?<position>\\d+)_)clan_");
     private static final Pattern TOP_PLAYERS_PATTERN = Pattern.compile("(?<strip>^topplayers_(?<position>\\d+)_)");
@@ -68,27 +72,42 @@ public class SimpleClansExpansion extends PlaceholderExpansion {
         return placeholders;
     }
 
-    private void addPlaceholders(String prefix, Class<?> clazz, List<String> placeholders) {
-        for (Method method : clazz.getDeclaredMethods()) {
-            Placeholder[] annotations = method.getAnnotationsByType(Placeholder.class);
-            for (Placeholder annotation : annotations) {
-                placeholders.add("%" + prefix + annotation.value() + "%");
-                //Commented because the list would be very long
-                //placeholders.add("%simpleclans_topplayers_<number>_" + annotation.value() + "%");
-            }
-        }
-    }
-
     @Override
     public boolean canRegister() {
         return true;
     }
 
     @Override
+    @Nullable
+    public String onPlaceholderRequest(Player player1, Player player2, String params) {
+        if (player1 == null || player2 == null) {
+            return null;
+        }
+        if (params.equalsIgnoreCase("color")) {
+            ClanPlayer cp1 = clanManager.getClanPlayer(player1);
+            if (cp1 == null) {
+                return "";
+            }
+            //noinspection ConstantConditions -- getClanPlayer != null == getClan() != null
+            if (cp1.getClan().isMember(player2)) {
+                return GREEN.toString();
+            }
+            if (cp1.isRival(player2)) {
+                return RED.toString();
+            }
+            if (cp1.isAlly(player2)) {
+                return AQUA.toString();
+            }
+            return "";
+        }
+        return null;
+    }
+
+    @Override
     public String onRequest(@Nullable OfflinePlayer player, @NotNull String params) {
         ClanPlayer cp = null;
         if (player != null) {
-            cp = clanManager.getAnyClanPlayer(player.getUniqueId());
+            cp = clanManager.getCreateClanPlayer(player.getUniqueId());
         }
         Clan clan = cp != null ? cp.getClan() : null;
         Matcher matcher = TOP_CLANS_PATTERN.matcher(params);
@@ -167,8 +186,9 @@ public class SimpleClansExpansion extends PlaceholderExpansion {
     }
 
     private void registerResolvers() {
-        Reflections reflections = new Reflections("net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers");
-        Set<Class<? extends PlaceholderResolver>> resolvers = reflections.getSubTypesOf(PlaceholderResolver.class);
+        Set<Class<? extends PlaceholderResolver>> resolvers =
+                Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.hooks.papi.resolvers",
+                        PlaceholderResolver.class);
         plugin.getLogger().info(String.format("Registering %d placeholder resolvers...", resolvers.size()));
         for (Class<? extends PlaceholderResolver> r : resolvers) {
             try {
@@ -177,6 +197,17 @@ public class SimpleClansExpansion extends PlaceholderExpansion {
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                     NoSuchMethodException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error registering placeholder resolver", e);
+            }
+        }
+    }
+
+    private void addPlaceholders(String prefix, Class<?> clazz, List<String> placeholders) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            Placeholder[] annotations = method.getAnnotationsByType(Placeholder.class);
+            for (Placeholder annotation : annotations) {
+                placeholders.add("%" + prefix + annotation.value() + "%");
+                //Commented because the list would be very long
+                //placeholders.add("%simpleclans_topplayers_<number>_" + annotation.value() + "%");
             }
         }
     }

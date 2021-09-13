@@ -1,7 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans.storage;
 
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -9,6 +15,7 @@ import java.sql.ResultSet;
  */
 public interface DBCore
 {
+
     /**
      * @return connection
      */
@@ -71,4 +78,24 @@ public interface DBCore
      * @return
      */
     Boolean existsColumn(String tabell, String colum);
+
+    default void executeAsync(String query, String sqlType) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    if (getConnection() != null) {
+                        getConnection().createStatement().executeUpdate(query);
+                    }
+                }
+                catch (SQLException ex) {
+                    if (!ex.toString().contains("not return ResultSet")) {
+                        Logger.getLogger("SimpleClans")
+                                .log(Level.SEVERE, String.format("Error at SQL %s query: %s", sqlType, query), ex);
+                    }
+                }
+            }
+        }.runTaskAsynchronously(SimpleClans.getInstance());
+
+    }
 }

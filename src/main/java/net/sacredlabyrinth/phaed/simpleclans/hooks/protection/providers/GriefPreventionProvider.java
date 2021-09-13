@@ -24,7 +24,10 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
 public class GriefPreventionProvider implements ProtectionProvider {
 
     @Override
-    public void setup() {}
+    public void setup() throws NoSuchMethodException {
+        //noinspection ResultOfMethodCallIgnored
+        Claim.class.getMethod("getOwnerID");
+    }
 
     @Override
     public @NotNull Set<Land> getLandsAt(@NotNull Location location) {

@@ -9,6 +9,7 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_MIN_SIZE_TO_SET_RIVAL;
 import static org.bukkit.ChatColor.RED;
 
 @SuppressWarnings("unused")
@@ -21,9 +22,9 @@ public class MinimumToRivalCondition extends AbstractCommandCondition {
     public void validateCondition(ConditionContext<BukkitCommandIssuer> context) throws InvalidCommandArgument {
         BukkitCommandIssuer issuer = context.getIssuer();
         Clan clan = Conditions.assertClanMember(clanManager, issuer);
-        if (clan.getSize() < settingsManager.getClanMinSizeToRival()) {
+        if (clan.getSize() < settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_RIVAL)) {
             throw new ConditionFailedException(RED + lang("min.players.rivalries", issuer,
-                    settingsManager.getClanMinSizeToRival()));
+                    settingsManager.getInt(CLAN_MIN_SIZE_TO_SET_RIVAL)));
         }
     }
 

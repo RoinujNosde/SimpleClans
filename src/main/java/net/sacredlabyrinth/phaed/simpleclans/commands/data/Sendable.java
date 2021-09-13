@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public abstract class Sendable {
 
@@ -25,19 +26,19 @@ public abstract class Sendable {
         sm = plugin.getSettingsManager();
         cm = plugin.getClanManager();
         this.sender = sender;
-        headColor = sm.getPageHeadingsColor();
-        subColor = sm.getPageSubTitleColor();
+        headColor = sm.getColored(PAGE_HEADINGS_COLOR);
+        subColor = sm.getColored(PAGE_SUBTITLE_COLOR);
     }
 
     protected void sendBlock() {
         SettingsManager sm = plugin.getSettingsManager();
-        boolean more = chatBlock.sendBlock(sender, sm.getPageSize());
+        boolean more = chatBlock.sendBlock(sender, sm.getInt(PAGE_SIZE));
 
         if (more) {
             plugin.getStorageManager().addChatBlock(sender, chatBlock);
             ChatBlock.sendBlank(sender);
-            ChatBlock.sendMessage(sender, sm.getPageHeadingsColor() + lang("view.next.page", sender,
-                    sm.getCommandMore()));
+            ChatBlock.sendMessage(sender, sm.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", sender,
+                    sm.getString(COMMANDS_MORE)));
         }
         ChatBlock.sendBlank(sender);
     }
