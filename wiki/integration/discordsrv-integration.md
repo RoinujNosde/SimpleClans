@@ -6,7 +6,7 @@ description: More space for communication
 
 ## Enabling
 
-To enable this feature, you need to have the latest [dev build](https://ci.codemc.io/job/RoinujNosde/job/SimpleClans/job/Dev/) of SimpleClans and enable it in `config.yml`:
+To enable this feature all what you need to do is enable it in `config.yml`and install [DiscordSRV](https://www.spigotmc.org/resources/discordsrv.18494/):
 
 {% tabs %}
 {% tab title="config.yml" %}
@@ -19,7 +19,7 @@ discordchat:
 
 {% hint style="warning" %}
 **Notice**  
-Please, make sure you have the latest version of DiscordSRV \(1.23.0\)
+Please, make sure you have the latest version of DiscordSRV \(&gt;=1.23.0\)
 {% endhint %}
 
 ## How does it work?
