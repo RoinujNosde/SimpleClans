@@ -225,6 +225,12 @@
             <version>1.23.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>biz.princeps</groupId>
+            <artifactId>landlord-latest</artifactId>
+            <version>4.351</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <!-- Repositories -->
@@ -264,6 +270,10 @@
         <repository>
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>eldonexus</id>
+            <url>https://eldonexus.de/repository/maven-public</url>
         </repository>
         <repository>
             <id>jitpack.io</id>

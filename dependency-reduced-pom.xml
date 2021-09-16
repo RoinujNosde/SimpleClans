@@ -124,6 +124,10 @@
       <url>https://nexus.scarsz.me/content/groups/public/</url>
     </repository>
     <repository>
+      <id>eldonexus</id>
+      <url>https://eldonexus.de/repository/maven-public</url>
+    </repository>
+    <repository>
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
     </repository>
@@ -398,6 +402,18 @@
         <exclusion>
           <artifactId>guava</artifactId>
           <groupId>com.google.guava</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>biz.princeps</groupId>
+      <artifactId>landlord-latest</artifactId>
+      <version>4.351</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>landlord-core</artifactId>
+          <groupId>biz.princeps</groupId>
         </exclusion>
       </exclusions>
     </dependency>
