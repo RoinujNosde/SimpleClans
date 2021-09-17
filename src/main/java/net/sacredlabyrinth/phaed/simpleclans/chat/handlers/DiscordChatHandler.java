@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import static org.bukkit.Bukkit.getPluginManager;
 public class DiscordChatHandler implements ChatHandler {
 
     @Override
-    public void sendMessage(SCMessage message) {
+    public void sendMessage(@NotNull SCMessage message) {
         if (message.getChannel() != CLAN) {
             return;
         }
