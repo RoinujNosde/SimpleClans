@@ -60,7 +60,7 @@ public class LandProtection implements Listener {
     public void registerCreateLandEvent(ProtectionProvider provider, @Nullable Class<? extends Event> createLandEvent) {
         if (createLandEvent == null) return;
         Bukkit.getPluginManager().registerEvent(createLandEvent, this, EventPriority.NORMAL, (listener, event) -> {
-            if (!createLandEvent.isInstance(createLandEvent)) {
+            if (!createLandEvent.isInstance(event)) {
                 return;
             }
             Player player = provider.getPlayer(event);
