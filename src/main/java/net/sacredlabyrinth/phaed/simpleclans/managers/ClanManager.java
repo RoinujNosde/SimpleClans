@@ -153,6 +153,7 @@ public final class ClanManager {
         cp.setCivilianKills(0);
         cp.setNeutralKills(0);
         cp.setRivalKills(0);
+        cp.setAllyKills(0);
         cp.setDeaths(0);
         plugin.getStorageManager().updateClanPlayer(cp);
     }
