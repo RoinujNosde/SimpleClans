@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
@@ -31,9 +32,8 @@ import static org.bukkit.Bukkit.getPluginManager;
 public final class ChatManager {
 
     private final SimpleClans plugin;
-
-    private DiscordHook discordHook;
     private final Set<ChatHandler> handlers = new HashSet<>();
+    private DiscordHook discordHook;
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -52,6 +52,11 @@ public final class ChatManager {
 
     @Nullable
     public DiscordHook getDiscordHook() {
+        // Manually instantiate, if JDA did load faster than SC
+        if (discordHook == null && DiscordSRV.getPlugin().getJda().getStatus() == JDA.Status.CONNECTED) {
+            registerDiscord(new DiscordReadyEvent());
+        }
+
         return discordHook;
     }
 
