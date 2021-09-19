@@ -58,7 +58,7 @@ public class LanguageSelectorFrame extends SCFrame {
 
     private void addLanguage(int slot, Locale locale) {
         SCComponent c = new SCComponentImpl.Builder(XMaterial.PAPER)
-                .withDisplayName(lang("gui.languageselector.language.title", getViewer(), locale.toLanguageTag()))
+                .withDisplayName(lang("gui.languageselector.language.title", getViewer(), locale.toLanguageTag().replace("-", "_")))
                 .withSlot(slot).withLore(
                         Arrays.asList(lang("gui.languageselector.language.lore.left.click", getViewer()),
                                 lang("gui.languageselector.language.lore.translation.status", getViewer(),
