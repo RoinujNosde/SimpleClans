@@ -121,6 +121,7 @@ public final class ChatManager {
 
         String parsedFormat = ChatUtils.parseColors(format)
                 .replace("%clan%", Objects.requireNonNull(sender.getClan()).getColorTag())
+                .replace("%clean-tag%", sender.getClan().getTag())
                 .replace("%nick-color%",
                         (sender.isLeader() ? leaderColor : sender.isTrusted() ? trustedColor : memberColor))
                 .replace("%player%", sender.getName())
