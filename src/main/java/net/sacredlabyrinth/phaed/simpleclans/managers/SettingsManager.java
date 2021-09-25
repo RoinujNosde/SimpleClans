@@ -486,11 +486,11 @@ public final class SettingsManager {
         > BB Settings
         ================
          */
-        BB_COLOR("clanchat.color", "e"),
-        BB_ACCENT_COLOR("clanchat.accent-color", "8"),
-        BB_SHOW_ON_LOGIN("clanchat.show-on-login", true),
-        BB_SIZE("clanchat.size", 6),
-        BB_LOGIN_SIZE("clanchat.login-size", 6),
+        BB_COLOR("bb.color", "e"),
+        BB_ACCENT_COLOR("bb.accent-color", "8"),
+        BB_SHOW_ON_LOGIN("bb.show-on-login", true),
+        BB_SIZE("bb.size", 6),
+        BB_LOGIN_SIZE("bb.login-size", 6),
         /*
         ================
         > Ally Chat Settings
