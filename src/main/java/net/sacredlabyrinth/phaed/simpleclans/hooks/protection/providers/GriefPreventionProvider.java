@@ -6,6 +6,7 @@ import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.events.ClaimCreatedEvent;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -17,16 +18,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
+import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class GriefPreventionProvider implements ProtectionProvider {
 
     @Override
-    public void setup() throws NoSuchMethodException {
-        //noinspection ResultOfMethodCallIgnored
-        Claim.class.getMethod("getOwnerID");
+    public void setup() {
     }
 
     @Override
@@ -36,16 +34,6 @@ public class GriefPreventionProvider implements ProtectionProvider {
             return Collections.emptySet();
         }
         return Collections.singleton(getLand(claim));
-    }
-
-    @Nullable
-    private Land getLand(@Nullable Claim claim) {
-        if (claim == null) {
-            return null;
-        }
-        debug(String.format("id %s name %s uuid %s", claim.getID(), claim.getOwnerName(), claim.getOwnerID()));
-
-        return new Land(getIdPrefix() + claim.getID().toString(), Collections.singleton(claim.getOwnerID()));
     }
 
     @Override
@@ -92,5 +80,24 @@ public class GriefPreventionProvider implements ProtectionProvider {
     @Override
     public @Nullable String getRequiredPluginName() {
         return "GriefPrevention";
+    }
+
+    @Nullable
+    private Land getLand(@Nullable Claim claim) {
+        if (claim == null) {
+            return null;
+        }
+
+        return new Land(getIdPrefix() + claim.getID().toString(), Collections.singleton(getOwnerID(claim)));
+    }
+
+    @SuppressWarnings("deprecation")
+    @NotNull
+    private UUID getOwnerID(@NotNull Claim claim) {
+        try {
+            return claim.getOwnerID();
+        } catch (NoSuchMethodError error) {
+            return Bukkit.getOfflinePlayer(claim.getOwnerName()).getUniqueId();
+        }
     }
 }
