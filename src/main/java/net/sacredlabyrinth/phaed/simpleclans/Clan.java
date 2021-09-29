@@ -1500,9 +1500,9 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         }
 
+        SimpleClans.getInstance().getPermissionsManager().removeClanPermissions(this);
         for (ClanPlayer cp : clanPlayers) {
             if (cp.getTag().equals(getTag())) {
-                SimpleClans.getInstance().getPermissionsManager().removeClanPermissions(this);
                 cp.setClan(null);
 
                 if (isVerified()) {

@@ -4,11 +4,13 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
@@ -24,30 +26,24 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  */
 public final class PermissionsManager {
 
-    /**
-     *
-     */
     private final SimpleClans plugin;
 
-    private static Permission permission = null;
-    private static Economy economy = null;
-    private static Chat chat = null;
+    private @Nullable Permission permission;
+    private @Nullable Economy economy;
+    private @Nullable Chat chat;
 
     private final HashMap<String, List<String>> permissions = new HashMap<>();
     private final HashMap<Player, PermissionAttachment> permAttaches = new HashMap<>();
 
-    /**
-     *
-     */
     public PermissionsManager() {
         plugin = SimpleClans.getInstance();
 
         try {
             Class.forName("net.milkbowl.vault.permission.Permission");
 
-            setupChat();
-            setupEconomy();
-            setupPermissions();
+            chat = getProvider(Chat.class);
+            economy = getProvider(Economy.class);
+            permission = getProvider(Permission.class);
         } catch (ClassNotFoundException e) {
             SimpleClans.getInstance().getLogger().info("Vault not found. No economy or extended Permissions support.");
         }
@@ -129,6 +125,7 @@ public final class PermissionsManager {
     public void removeClanPermissions(Clan clan) {
         for (ClanPlayer cp : clan.getMembers()) {
             removeClanPlayerPermissions(cp);
+            removeClanPermissions(cp);
         }
     }
 
@@ -143,6 +140,22 @@ public final class PermissionsManager {
                 permAttaches.get(player).remove();
                 permAttaches.remove(player);
             }
+        }
+    }
+
+    /**
+     * Removes permissions linked to a clan from the player
+     */
+    public void removeClanPermissions(ClanPlayer cp) {
+        if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
+            return;
+        }
+
+        if (permission != null && cp.toPlayer() != null) {
+            permission.playerRemoveGroup(cp.toPlayer(), "clan_" + cp.getTag());
+            permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
+            permission.playerRemoveGroup(cp.toPlayer(), "sc_trusted");
+            permission.playerRemoveGroup(cp.toPlayer(), "sc_leader");
         }
     }
 
@@ -182,7 +195,7 @@ public final class PermissionsManager {
      *
      */
     public boolean playerChargeMoney(Player player, double money) {
-    	return playerChargeMoney((OfflinePlayer) player, money);
+        return playerChargeMoney((OfflinePlayer) player, money);
     }
 
     /**
@@ -280,35 +293,35 @@ public final class PermissionsManager {
      */
     @Deprecated
     public boolean has(Player player, RankPermission permission, PermissionLevel level, boolean notify) {
-    	if (player == null || permission == null) {
-    		return false;
+        if (player == null || permission == null) {
+            return false;
         }
 
-    	ClanPlayer clanPlayer = plugin.getClanManager().getClanPlayer(player);
-    	if (clanPlayer == null) {
-    		return false;
+        ClanPlayer clanPlayer = plugin.getClanManager().getClanPlayer(player);
+        if (clanPlayer == null) {
+            return false;
         }
 
-    	boolean hasBukkitPermission = has(player, permission.getBukkitPermission());
-    	if (!hasBukkitPermission) {
-    		return false;
+        boolean hasBukkitPermission = has(player, permission.getBukkitPermission());
+        if (!hasBukkitPermission) {
+            return false;
         }
 
-    	boolean hasLevel = false;
-    	if (level != null) {
-    		switch (level) {
-    			case LEADER:
-    				hasLevel = clanPlayer.isLeader();
-    				break;
-    			case TRUSTED:
-    				hasLevel = clanPlayer.isTrusted();
-    				break;
-    		}
+        boolean hasLevel = false;
+        if (level != null) {
+            switch (level) {
+                case LEADER:
+                    hasLevel = clanPlayer.isLeader();
+                    break;
+                case TRUSTED:
+                    hasLevel = clanPlayer.isTrusted();
+                    break;
+            }
         }
 
-    	boolean hasRankPermission = false;
-    	String rankName = clanPlayer.getRankId();
-    	Clan clan = clanPlayer.getClan();
+        boolean hasRankPermission = false;
+        String rankName = clanPlayer.getRankId();
+        Clan clan = clanPlayer.getClan();
         //noinspection ConstantConditions
         if (clan.hasRank(rankName)) {
             //noinspection ConstantConditions
@@ -317,12 +330,12 @@ public final class PermissionsManager {
             clanPlayer.setRank(null);
         }
 
-		if (notify && !hasLevel && !hasRankPermission) {
+        if (notify && !hasLevel && !hasRankPermission) {
             ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this", player),
-            		level == PermissionLevel.LEADER ? lang("leader", player) : lang("trusted", player), permission.toString()));
+                    level == PermissionLevel.LEADER ? lang("leader", player) : lang("trusted", player), permission.toString()));
         }
 
-    	return hasLevel || hasRankPermission;
+        return hasLevel || hasRankPermission;
     }
 
     /**
@@ -333,54 +346,54 @@ public final class PermissionsManager {
      * @param notify notify the player if they don't have permission
      */
     public boolean has(Player player, RankPermission permission, boolean notify) {
-    	if (player == null || permission == null) {
-    		return false;
+        if (player == null || permission == null) {
+            return false;
         }
 
-    	ClanPlayer clanPlayer = plugin.getClanManager().getClanPlayer(player);
-    	if (clanPlayer == null) {
-    	    if (notify) {
-    	        player.sendMessage(ChatColor.RED + lang("not.a.member.of.any.clan", player));
+        ClanPlayer clanPlayer = plugin.getClanManager().getClanPlayer(player);
+        if (clanPlayer == null) {
+            if (notify) {
+                player.sendMessage(ChatColor.RED + lang("not.a.member.of.any.clan", player));
             }
-    		return false;
+            return false;
         }
 
-    	boolean hasBukkitPermission = has(player, permission.getBukkitPermission());
-    	if (!hasBukkitPermission) {
-    	    if (notify) {
-                ChatBlock.sendMessage(player,ChatColor.RED + lang("insufficient.permissions", player));
+        boolean hasBukkitPermission = has(player, permission.getBukkitPermission());
+        if (!hasBukkitPermission) {
+            if (notify) {
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
             }
-    		return false;
+            return false;
         }
 
-		boolean hasLevel = false;
-		switch (permission.getPermissionLevel()) {
-			case LEADER:
-				hasLevel = clanPlayer.isLeader();
-				break;
-			case TRUSTED:
-				hasLevel = clanPlayer.isTrusted();
-				break;
+        boolean hasLevel = false;
+        switch (permission.getPermissionLevel()) {
+            case LEADER:
+                hasLevel = clanPlayer.isLeader();
+                break;
+            case TRUSTED:
+                hasLevel = clanPlayer.isTrusted();
+                break;
         }
 
-    	boolean hasRankPermission = false;
-    	String rankName = clanPlayer.getRankId();
-    	Clan clan = clanPlayer.getClan();
+        boolean hasRankPermission = false;
+        String rankName = clanPlayer.getRankId();
+        Clan clan = clanPlayer.getClan();
         if (clan != null) {
             Rank rank = clan.getRank(rankName);
             if (rank != null) {
                 hasRankPermission = rank.getPermissions().contains(permission.toString());
             }
-		} else if (!rankName.isEmpty()) {
-			clanPlayer.setRank(null);
+        } else if (!rankName.isEmpty()) {
+            clanPlayer.setRank(null);
         }
 
-		if (notify && !hasLevel && !hasRankPermission) {
-            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this",player),
-            		permission.getPermissionLevel() == PermissionLevel.LEADER ? lang("leader",player) : lang("trusted",player), permission.toString()));
+        if (notify && !hasLevel && !hasRankPermission) {
+            ChatBlock.sendMessage(player, ChatColor.RED + MessageFormat.format(lang("you.must.be.0.or.have.the.permission.1.to.use.this", player),
+                    permission.getPermissionLevel() == PermissionLevel.LEADER ? lang("leader", player) : lang("trusted", player), permission.toString()));
         }
 
-    	return hasLevel || hasRankPermission;
+        return hasLevel || hasRankPermission;
     }
 
     /**
@@ -388,89 +401,32 @@ public final class PermissionsManager {
      *
      */
     public void addClanPermissions(ClanPlayer cp) {
-        if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
+        if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS) || cp == null || permission == null) {
+            return;
+        }
+        Player player = cp.toPlayer();
+        if (player == null) {
             return;
         }
 
-        if (permission != null) {
-            if (cp != null && cp.toPlayer() != null) {
-                if (cp.getClan() != null) {
-                    if (!permission.playerInGroup(cp.toPlayer(), "clan_" + cp.getTag())) {
-                        permission.playerAddGroup(cp.toPlayer(), "clan_" + cp.getTag());
-                    }
+        permission.playerRemoveGroup(player, "sc_leader");
+        permission.playerRemoveGroup(player, "sc_trusted");
+        permission.playerRemoveGroup(player, "sc_untrusted");
 
-                    if (cp.isLeader()) {
-                        if (!permission.playerInGroup(cp.toPlayer(), "sc_leader")) {
-                            permission.playerAddGroup(cp.toPlayer(), "sc_leader");
-                        }
-                        permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
-                        permission.playerRemoveGroup(cp.toPlayer(), "sc_trusted");
-                        return;
-                    }
-
-                    if (cp.isTrusted()) {
-                        if (!permission.playerInGroup(cp.toPlayer(), "sc_trusted")) {
-                            permission.playerAddGroup(cp.toPlayer(), "sc_trusted");
-                        }
-                        permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
-                        permission.playerRemoveGroup(cp.toPlayer(), "sc_leader");
-                        return;
-                    }
-
-                    if (!permission.playerInGroup(cp.toPlayer(), "sc_untrusted")) {
-                        permission.playerAddGroup(cp.toPlayer(), "sc_untrusted");
-                    }
-                } else {
-                    permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
-                }
-                permission.playerRemoveGroup(cp.toPlayer(), "sc_trusted");
-                permission.playerRemoveGroup(cp.toPlayer(), "sc_leader");
+        if (cp.getClan() != null) {
+            permission.playerAddGroup(player, "clan_" + cp.getTag());
+            if (cp.isLeader()) {
+                permission.playerAddGroup(player, "sc_leader");
+                return;
             }
+            if (cp.isTrusted()) {
+                permission.playerAddGroup(player, "sc_trusted");
+                return;
+            }
+            permission.playerAddGroup(player, "sc_untrusted");
         }
     }
 
-    /**
-     * Removes permissions linked to a clan from the player
-     *
-     */
-    public void removeClanPermissions(ClanPlayer cp) {
-        if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
-            return;
-        }
-
-        if (permission != null && cp.toPlayer() != null) {
-            permission.playerRemoveGroup(cp.toPlayer(), "clan_" + cp.getTag());
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_trusted");
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_leader");
-        }
-    }
-
-    private void setupPermissions() {
-        RegisteredServiceProvider<Permission> permissionProvider = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permission = permissionProvider.getProvider();
-        }
-    }
-
-    private void setupChat() {
-        RegisteredServiceProvider<Chat> chatProvider = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
-        if (chatProvider != null) {
-            chat = chatProvider.getProvider();
-        }
-
-    }
-
-    private void setupEconomy() {
-        RegisteredServiceProvider<Economy> economyProvider = plugin.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
-
-    }
-
-    /**
-     */
     public String getPrefix(Player p) {
         String out = "";
 
@@ -500,21 +456,9 @@ public final class PermissionsManager {
             }
         }
 
-        // add in colorMe color
-
-        /*
-        Plugin colorMe = plugin.getServer().getPluginManager().getPlugin("ColorMe");
-
-        if (colorMe != null)
-        {
-            out += ((ColorMe) colorMe).getColor(p.getName());
-        }
-         */
         return out;
     }
 
-    /**
-     */
     public String getSuffix(Player p) {
         try {
             if (chat != null) {
@@ -542,5 +486,13 @@ public final class PermissionsManager {
             }
         }
         return "";
+    }
+
+    private <T> @Nullable T getProvider(Class<T> clazz) {
+        RegisteredServiceProvider<T> registration = Bukkit.getServicesManager().getRegistration(clazz);
+        if (registration != null) {
+            return registration.getProvider();
+        }
+        return null;
     }
 }
