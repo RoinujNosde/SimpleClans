@@ -64,7 +64,11 @@ public class GriefPreventionProvider implements ProtectionProvider {
 
     @Override
     public @Nullable Class<? extends Event> getCreateLandEvent() {
-        return ClaimCreatedEvent.class;
+        try {
+            return ClaimCreatedEvent.class;
+        } catch (NoClassDefFoundError error) {
+            return null;
+        }
     }
 
     @Override
