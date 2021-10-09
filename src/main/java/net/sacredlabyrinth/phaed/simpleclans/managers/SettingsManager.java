@@ -228,6 +228,7 @@ public final class SettingsManager {
         List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
         bannedPlayers.remove(playerUniqueId.toString());
         set(BANNED_PLAYERS, bannedPlayers);
+        save();
     }
 
     public boolean isActionAllowedInWar(@NotNull ProtectionManager.Action action) {
