@@ -43,6 +43,7 @@ public final class ChatManager {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void registerDiscord(DiscordReadyEvent event) {
         discordHook = new DiscordHook(plugin);
@@ -71,10 +72,10 @@ public final class ChatManager {
                     return;
                 }
 
-                receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allymember ->
-                        !allymember.isMutedAlly()).collect(Collectors.toList()));
-                receivers.addAll(clan.getOnlineMembers().stream().filter(allymember ->
-                        !allymember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allyMember ->
+                        !allyMember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(clan.getOnlineMembers().stream().filter(allyMember ->
+                        !allyMember.isMutedAlly()).collect(Collectors.toList()));
                 break;
             case CLAN:
                 if (!plugin.getSettingsManager().is(CLANCHAT_ENABLE)) {
@@ -86,7 +87,7 @@ public final class ChatManager {
                         collect(Collectors.toList()));
         }
 
-        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
+        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, ChatUtils.stripColors(message), receivers);
 
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {
@@ -102,7 +103,6 @@ public final class ChatManager {
     public String parseChatFormat(String format, SCMessage message, Map<String, String> placeholders) {
         SettingsManager sm = plugin.getSettingsManager();
         ClanPlayer sender = message.getSender();
-        Channel channel = message.getChannel();
 
         String leaderColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_LEADER_COLOR"));
         String memberColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_MEMBER_COLOR"));
