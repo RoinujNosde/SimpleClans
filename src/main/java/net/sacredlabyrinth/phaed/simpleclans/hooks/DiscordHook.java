@@ -23,6 +23,7 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -444,36 +445,52 @@ public class DiscordHook implements Listener {
     }
 
     private void updateRole(ClanPlayer clanPlayer, DiscordAction action) {
-        Member member = getMember(clanPlayer);
-        if (member == null) {
-            return;
-        }
+        new BukkitRunnable() {
 
-        if (action == ADD) {
-            guild.addRoleToMember(member, leaderRole).queue();
-        } else {
-            guild.removeRoleFromMember(member, leaderRole).queue();
-        }
+            @Override
+            public void run() {
+                Member member = getMember(clanPlayer);
+                if (member == null) {
+                    return;
+                }
+
+                if (action == ADD) {
+                    guild.addRoleToMember(member, leaderRole).queue();
+                } else {
+                    guild.removeRoleFromMember(member, leaderRole).queue();
+                }
+
+                this.cancel();
+            }
+        }.runTaskAsynchronously(plugin);
     }
 
     private void updatePermissions(@NotNull ClanPlayer clanPlayer, DiscordAction action) {
-        Clan clan = clanPlayer.getClan();
-        Member member = getMember(clanPlayer);
-        if (clan == null || member == null) {
-            return;
-        }
+        new BukkitRunnable() {
 
-        Optional<TextChannel> channel = getChannel(clan.getTag());
-        if (channel.isPresent()) {
-            TextChannel textChannel = channel.get();
+            @Override
+            public void run() {
+                Clan clan = clanPlayer.getClan();
+                Member member = getMember(clanPlayer);
+                if (clan == null || member == null) {
+                    return;
+                }
 
-            if (action == ADD) {
-                textChannel.upsertPermissionOverride(member).
-                        setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
-            } else {
-                textChannel.getManager().removePermissionOverride(member).queue();
+                Optional<TextChannel> channel = getChannel(clan.getTag());
+                if (channel.isPresent()) {
+                    TextChannel textChannel = channel.get();
+
+                    if (action == ADD) {
+                        textChannel.upsertPermissionOverride(member).
+                                setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
+                    } else {
+                        textChannel.getManager().removePermissionOverride(member).queue();
+                    }
+                }
+
+                this.cancel();
             }
-        }
+        }.runTaskAsynchronously(plugin);
     }
 
     enum DiscordAction {
