@@ -93,7 +93,7 @@ public class DiscordHook implements Listener {
         clanTags = clanManager.getClans().stream().
                 filter(Clan::isVerified).
                 filter(clan -> clan.getMembers().stream().
-                        anyMatch(clanPlayer -> getMember(clanPlayer) != null) || clan.isPermanent()).
+                        anyMatch(clanPlayer -> getMemberSync(clanPlayer) != null) || clan.isPermanent()).
                 map(Clan::getTag).
                 filter(clanTag -> whitelist.isEmpty() || whitelist.contains(clanTag)).
                 limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
@@ -400,6 +400,12 @@ public class DiscordHook implements Listener {
     @Nullable
     public Member getMember(@NotNull ClanPlayer clanPlayer) {
         String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
+        return DiscordUtil.getMemberById(discordId);
+    }
+
+    @Nullable
+    public Member getMemberSync(@NotNull ClanPlayer clanPlayer) {
+        String discordId = accountManager.getDiscordIdBypassCache(clanPlayer.getUniqueId());
         return DiscordUtil.getMemberById(discordId);
     }
 
