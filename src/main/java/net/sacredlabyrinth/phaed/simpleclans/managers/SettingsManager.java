@@ -151,7 +151,9 @@ public final class SettingsManager {
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
-            return disallowedTag.equalsIgnoreCase(word);
+            if (disallowedTag.equalsIgnoreCase(word)) {
+                return true;
+            }
         }
 
         return word.equalsIgnoreCase(getString(COMMANDS_CLAN)) || word.equalsIgnoreCase(getString(COMMANDS_MORE)) ||
