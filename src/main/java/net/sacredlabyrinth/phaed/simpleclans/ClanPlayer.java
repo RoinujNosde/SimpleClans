@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -581,19 +582,11 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @NotNull
     public String getPastClansString(String sep, @Nullable Player viewer) {
-        StringBuilder out = new StringBuilder();
-
-        for (String pastClan : getPastClans()) {
-            out.append(pastClan).append(sep);
-        }
-
-        out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
-
-        if (out.toString().trim().isEmpty()) {
+        if (getPastClans().isEmpty()) {
             return lang("none", viewer);
         }
 
-        return out.toString();
+        return getPastClans().stream().limit(settings.getInt(PAST_CLANS_LIMIT)).collect(Collectors.joining(sep));
     }
 
     /**
