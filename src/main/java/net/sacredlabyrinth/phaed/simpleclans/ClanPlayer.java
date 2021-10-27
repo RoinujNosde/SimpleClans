@@ -48,6 +48,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     private @Nullable Locale locale;
 
+    SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+
     /**
      *
      */
@@ -434,7 +436,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
-        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
         double kills = getRivalKills() * settings.getDouble(KILL_WEIGHTS_RIVAL) +
                 getNeutralKills() * settings.getDouble(KILL_WEIGHTS_NEUTRAL) +
                 getAllyKills() * settings.getDouble(KILL_WEIGHTS_ALLY) +
@@ -547,7 +548,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param PackedPastClans the PackedPastClans to set
      */
     public void setPackedPastClans(String PackedPastClans) {
-        this.pastClans = Helper.fromArrayToSet(PackedPastClans.split("[|]"));
+        pastClans = Helper.fromArrayToSet(PackedPastClans.split("[|]"));
     }
 
     /**
@@ -621,7 +622,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setResignTimes(Map<String, Long> resignTimes) {
         if (resignTimes != null) {
-            final int cooldown = SimpleClans.getInstance().getSettingsManager().getInt(REJOIN_COOLDOWN);
+            final int cooldown = settings.getInt(REJOIN_COOLDOWN);
             resignTimes.forEach((k, v) -> {
                 long timePassed = Instant.ofEpochMilli(v).until(Instant.now(), ChronoUnit.MINUTES);
                 if (timePassed < cooldown) {
@@ -850,7 +851,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     public @NotNull Locale getLocale() {
         if (locale == null) {
-            return SimpleClans.getInstance().getSettingsManager().getLanguage();
+            return settings.getLanguage();
         }
         return locale;
     }

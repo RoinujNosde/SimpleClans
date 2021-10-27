@@ -157,7 +157,7 @@ public class RankCommand extends BaseCommand {
 
     @Subcommand("%permissions")
     public class PermissionsCommand extends BaseCommand {
-        private final String validPermissionsToMessage = Helper.toMessage(Helper.fromPermissionArray(), ",");
+        private final String validPermissionsToMessage = String.join(",", Helper.fromPermissionArray());
 
         @Default
         @CommandPermission("simpleclans.leader.rank.permissions.available")
@@ -178,7 +178,7 @@ public class RankCommand extends BaseCommand {
                 return;
             }
             ChatBlock.sendMessage(player, AQUA + lang("rank.0.permissions", player, rank.getDisplayName()));
-            ChatBlock.sendMessage(player, AQUA + Helper.toMessage(permissions.toArray(new String[0]), ","));
+            ChatBlock.sendMessage(player, AQUA + String.join(",", permissions));
         }
 
         @Subcommand("%add")

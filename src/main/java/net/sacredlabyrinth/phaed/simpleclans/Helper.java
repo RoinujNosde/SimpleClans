@@ -309,40 +309,6 @@ public class Helper {
     }
 
     /**
-     * Converts a string array to a string with custom separators
-     *
-     * @param args
-     * @param sep
-     * @return
-     */
-    public static String toMessage(String[] args, String sep) {
-        String out = "";
-
-        for (String arg : args) {
-            out += arg + ", ";
-        }
-
-        return stripTrailing(out, ", ");
-    }
-
-    /**
-     * Converts a string array to a string with custom separators
-     *
-     * @param args
-     * @param sep
-     * @return
-     */
-    public static String toMessage(List<String> args, String sep) {
-        String out = "";
-
-        for (String arg : args) {
-            out += arg + sep;
-        }
-
-        return stripTrailing(out, sep);
-    }
-
-    /**
      * Cleans up the tag from color codes and makes it lowercase
      *
      * @param tag

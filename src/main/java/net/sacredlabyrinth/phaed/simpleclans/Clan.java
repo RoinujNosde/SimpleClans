@@ -638,7 +638,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the packedBb
      */
     public String getPackedBb() {
-        return Helper.toMessage(bb, "|");
+        return String.join("|", bb);
     }
 
     /**
@@ -656,7 +656,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the packedAllies
      */
     public String getPackedAllies() {
-        return Helper.toMessage(allies, "|");
+        return String.join("|", allies);
     }
 
     /**
@@ -674,7 +674,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the packedRivals
      */
     public String getPackedRivals() {
-        return Helper.toMessage(rivals, "|");
+        return String.join("|");
     }
 
     /**
