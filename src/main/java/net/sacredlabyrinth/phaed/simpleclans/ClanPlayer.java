@@ -531,15 +531,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @return the PackedPastClans
      */
     public String getPackedPastClans() {
-        StringBuilder packedPastClans = new StringBuilder();
-
-        Set<String> pt = getPastClans();
-
-        for (String pastClan : pt) {
-            packedPastClans.append(pastClan).append("|");
-        }
-
-        return Helper.stripTrailing(packedPastClans.toString(), "|");
+        return String.join("|", getPastClans());
     }
 
     /**
@@ -549,31 +541,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setPackedPastClans(String PackedPastClans) {
         pastClans = Helper.fromArrayToSet(PackedPastClans.split("[|]"));
-    }
-
-    /**
-     * Adds a past clan to the player (does not update the clanplayer to db)
-     */
-    public void addPastClan(String tag) {
-        this.getPastClans().add(tag);
-    }
-
-    /**
-     * Removes a past clan from the player (does not update the clanplayer to db)
-     *
-     * @param tag is the clan's colored tag
-     */
-    public void removePastClan(String tag) {
-        this.getPastClans().remove(tag);
-    }
-
-    /**
-     * @param sep the separator
-     * @return a separator delimited string with the color tags for all past clans this player has been in
-     */
-    @NotNull
-    public String getPastClansString(@NotNull String sep) {
-        return getPastClansString(sep, null);
     }
 
     /**
@@ -591,12 +558,38 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     /**
+     *
+     * @param sep the separator
+     * @return a separator delimited string with the color tags for all past clans this player has been in
+     */
+    @NotNull
+    public String getPastClansString(@NotNull String sep) {
+        return getPastClansString(sep, null);
+    }
+
+    /**
      * Returns a list with all past clans color tags this player has been in
      *
      * @return the pastClans
      */
     public Set<String> getPastClans() {
         return pastClans;
+    }
+
+    /**
+     * Adds a past clan to the player (does not update the clanplayer to db)
+     */
+    public void addPastClan(String tag) {
+        pastClans.add(tag);
+    }
+
+    /**
+     * Removes a past clan from the player (does not update the clanplayer to db)
+     *
+     * @param colorTag is the clan's colored tag
+     */
+    public void removePastClan(String colorTag) {
+        pastClans.remove(colorTag);
     }
 
     /**

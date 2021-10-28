@@ -318,32 +318,6 @@ public class Helper {
         return stripColors(tag).toLowerCase();
     }
 
-    /**
-     * Removes trailing separators
-     *
-     * @param msg
-     * @param sep
-     * @return
-     */
-    public static String stripTrailing(String msg, String sep) {
-        if (msg.length() < sep.length()) {
-            return msg;
-        }
-
-        String out = msg;
-        String first = msg.substring(0, sep.length());
-        String last = msg.substring(msg.length() - sep.length());
-
-        if (first.equals(sep)) {
-            out = msg.substring(sep.length());
-        }
-
-        if (last.equals(sep)) {
-            out = msg.substring(0, msg.length() - sep.length());
-        }
-
-        return out;
-    }
 
     /**
      * Generates page separator line
