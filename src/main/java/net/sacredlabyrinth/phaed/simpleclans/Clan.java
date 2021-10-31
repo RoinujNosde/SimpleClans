@@ -691,23 +691,12 @@ public class Clan implements Serializable, Comparable<Clan> {
      * tags
      */
     public String getAllyString(String sep, @Nullable CommandSender viewer) {
-        StringBuilder out = new StringBuilder();
+        String coloredAllies = getAllies().stream().filter(allyTag -> {
+            Clan clan = SimpleClans.getInstance().getClanManager().getClan(allyTag);
+            return clan != null;
+        }).map(ChatUtils::parseColors).collect(Collectors.joining(sep));
 
-        for (String allyTag : getAllies()) {
-            Clan ally = SimpleClans.getInstance().getClanManager().getClan(allyTag);
-
-            if (ally != null) {
-                out.append(ally.getColorTag()).append(sep);
-            }
-        }
-
-        out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
-
-        if (out.toString().trim().isEmpty()) {
-            return lang("none", viewer);
-        }
-
-        return ChatUtils.parseColors(out.toString());
+        return coloredAllies.isEmpty() ? lang("none", viewer) : coloredAllies;
     }
 
     /**
@@ -723,29 +712,14 @@ public class Clan implements Serializable, Comparable<Clan> {
      * tags
      */
     public String getRivalString(String sep, @Nullable CommandSender viewer) {
-        StringBuilder out = new StringBuilder();
+        String coloredRivals = getRivals().stream().
+                map(rivalTag -> SimpleClans.getInstance().getClanManager().getClan(rivalTag)).
+                filter(Objects::nonNull).
+                map(rival -> isWarring(rival) ? DARK_RED + "[" + rival.getTag() + "]" : rival.getColorTag()).
+                map(ChatUtils::parseColors).
+                collect(Collectors.joining(sep));
 
-        for (String rivalTag : getRivals()) {
-            Clan rival = SimpleClans.getInstance().getClanManager().getClan(rivalTag);
-
-            if (rival != null) {
-                if (isWarring(rivalTag)) {
-                    out.append(DARK_RED).append("[").append(ChatUtils.stripColors(rival.getColorTag()))
-                            .append("]").append(sep);
-                } else {
-                    out.append(rival.getColorTag()).append(sep);
-                }
-
-            }
-        }
-
-        out = new StringBuilder(Helper.stripTrailing(out.toString(), sep));
-
-        if (out.toString().trim().isEmpty()) {
-            return lang("none", viewer);
-        }
-
-        return ChatUtils.parseColors(out.toString());
+        return coloredRivals.isEmpty() ? lang("none", viewer) : coloredRivals;
     }
 
     /**
@@ -762,20 +736,12 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the formatted leaders string
      */
     public String getLeadersString(String prefix, String sep) {
-        StringBuilder out = new StringBuilder();
-
-        for (String member : members) {
-            ClanPlayer cp = SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member));
-            if (cp == null) {
-                continue;
-            }
-
-            if (cp.isLeader()) {
-                out.append(prefix).append(cp.getName()).append(sep);
-            }
-        }
-
-        return Helper.stripTrailing(out.toString(), sep);
+        return members.stream().
+                map(member -> SimpleClans.getInstance().getClanManager().getClanPlayer(member)).
+                filter(Objects::nonNull).
+                filter(ClanPlayer::isLeader).
+                map(clanPlayer -> prefix.concat(clanPlayer.getName())).
+                collect(Collectors.joining(sep));
     }
 
     /**

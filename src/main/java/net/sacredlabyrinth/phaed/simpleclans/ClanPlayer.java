@@ -531,15 +531,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @return the PackedPastClans
      */
     public String getPackedPastClans() {
-        StringBuilder packedPastClans = new StringBuilder();
-
-        Set<String> pt = getPastClans();
-
-        for (String pastClan : pt) {
-            packedPastClans.append(pastClan).append("|");
-        }
-
-        return Helper.stripTrailing(packedPastClans.toString(), "|");
+        return String.join("|", getPastClans());
     }
 
     /**
