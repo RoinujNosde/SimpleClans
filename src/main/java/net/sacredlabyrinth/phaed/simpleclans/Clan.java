@@ -674,7 +674,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the packedRivals
      */
     public String getPackedRivals() {
-        return String.join("|");
+        return String.join("|", rivals);
     }
 
     /**
