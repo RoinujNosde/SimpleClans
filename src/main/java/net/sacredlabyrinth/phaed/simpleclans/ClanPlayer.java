@@ -580,7 +580,10 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         }
 
         SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
-        return getPastClans().stream().limit(settings.getInt(PAST_CLANS_LIMIT)).collect(Collectors.joining(sep));
+        return getPastClans().stream().
+                sorted(Collections.reverseOrder()).
+                limit(settings.getInt(PAST_CLANS_LIMIT)).
+                collect(Collectors.joining(sep));
     }
 
     /**

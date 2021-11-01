@@ -562,7 +562,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     private boolean removeRival(String rival) {
-        return rivals.contains(rival) && rivals.remove(rival);
+        return rivals.remove(rival);
     }
 
     /**
@@ -686,10 +686,9 @@ public class Clan implements Serializable, Comparable<Clan> {
      * tags
      */
     public String getAllyString(String sep, @Nullable CommandSender viewer) {
-        String coloredAllies = getAllies().stream().filter(allyTag -> {
-            Clan clan = SimpleClans.getInstance().getClanManager().getClan(allyTag);
-            return clan != null;
-        }).map(ChatUtils::parseColors).collect(Collectors.joining(sep));
+        String coloredAllies = getAllies().stream().
+                map(allyTag -> SimpleClans.getInstance().getClanManager().getClan(allyTag).getColorTag())
+                .collect(Collectors.joining(sep));
 
         return coloredAllies.isEmpty() ? lang("none", viewer) : coloredAllies;
     }
@@ -732,7 +731,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public String getLeadersString(String prefix, String sep) {
         return members.stream().
-                map(member -> SimpleClans.getInstance().getClanManager().getClanPlayer(member)).
+                map(member -> SimpleClans.getInstance().getClanManager().getClanPlayer(UUID.fromString(member))).
                 filter(Objects::nonNull).
                 filter(ClanPlayer::isLeader).
                 map(clanPlayer -> prefix.concat(clanPlayer.getName())).
