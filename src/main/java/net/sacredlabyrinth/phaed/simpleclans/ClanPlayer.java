@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -434,10 +435,11 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
-        double kills = getRivalKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_RIVAL) +
-                getNeutralKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_NEUTRAL) +
-                getAllyKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_ALLY) +
-                getCivilianKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_CIVILIAN);
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+        double kills = getRivalKills() * settings.getDouble(KILL_WEIGHTS_RIVAL) +
+                getNeutralKills() * settings.getDouble(KILL_WEIGHTS_NEUTRAL) +
+                getAllyKills() * settings.getDouble(KILL_WEIGHTS_ALLY) +
+                getCivilianKills() * settings.getDouble(KILL_WEIGHTS_CIVILIAN);
         if (kills < 0) {
             return 0;
         }
@@ -577,8 +579,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
             return lang("none", viewer);
         }
 
-        return getPastClans().stream().limit(SimpleClans.getInstance().getSettingsManager().getInt(PAST_CLANS_LIMIT)).
-                collect(Collectors.joining(sep));
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+        return getPastClans().stream().limit(settings.getInt(PAST_CLANS_LIMIT)).collect(Collectors.joining(sep));
     }
 
     /**
