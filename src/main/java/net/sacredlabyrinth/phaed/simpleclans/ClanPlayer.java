@@ -2,7 +2,6 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,7 +47,6 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     private @Nullable Locale locale;
 
-    SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
 
     /**
      *
@@ -436,10 +434,10 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     @Placeholder("weighted_kills")
     public double getWeightedKills() {
-        double kills = getRivalKills() * settings.getDouble(KILL_WEIGHTS_RIVAL) +
-                getNeutralKills() * settings.getDouble(KILL_WEIGHTS_NEUTRAL) +
-                getAllyKills() * settings.getDouble(KILL_WEIGHTS_ALLY) +
-                getCivilianKills() * settings.getDouble(KILL_WEIGHTS_CIVILIAN);
+        double kills = getRivalKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_RIVAL) +
+                getNeutralKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_NEUTRAL) +
+                getAllyKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_ALLY) +
+                getCivilianKills() * SimpleClans.getInstance().getSettingsManager().getDouble(KILL_WEIGHTS_CIVILIAN);
         if (kills < 0) {
             return 0;
         }
@@ -579,7 +577,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
             return lang("none", viewer);
         }
 
-        return getPastClans().stream().limit(settings.getInt(PAST_CLANS_LIMIT)).collect(Collectors.joining(sep));
+        return getPastClans().stream().limit(SimpleClans.getInstance().getSettingsManager().getInt(PAST_CLANS_LIMIT)).
+                collect(Collectors.joining(sep));
     }
 
     /**
@@ -614,7 +613,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setResignTimes(Map<String, Long> resignTimes) {
         if (resignTimes != null) {
-            final int cooldown = settings.getInt(REJOIN_COOLDOWN);
+            final int cooldown = SimpleClans.getInstance().getSettingsManager().getInt(REJOIN_COOLDOWN);
             resignTimes.forEach((k, v) -> {
                 long timePassed = Instant.ofEpochMilli(v).until(Instant.now(), ChronoUnit.MINUTES);
                 if (timePassed < cooldown) {
@@ -843,7 +842,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
 
     public @NotNull Locale getLocale() {
         if (locale == null) {
-            return settings.getLanguage();
+            return SimpleClans.getInstance().getSettingsManager().getLanguage();
         }
         return locale;
     }
