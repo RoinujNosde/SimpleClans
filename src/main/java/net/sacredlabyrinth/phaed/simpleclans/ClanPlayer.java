@@ -68,17 +68,17 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param uuid the Player's UUID
      */
     public ClanPlayer(UUID uuid) {
-        this.uniqueId = uuid;
+        uniqueId = uuid;
         Player onlinePlayer = SimpleClans.getInstance().getServer().getPlayer(uuid);
         if (onlinePlayer != null) {
-            this.displayName = onlinePlayer.getName();
+            displayName = onlinePlayer.getName();
         } else {
             OfflinePlayer offlinePlayer = SimpleClans.getInstance().getServer().getOfflinePlayer(uuid);
-            this.displayName = offlinePlayer.getName() != null ? offlinePlayer.getName() : "null";
+            displayName = offlinePlayer.getName() != null ? offlinePlayer.getName() : "null";
         }
-        this.lastSeen = (new Date()).getTime();
-        this.joinDate = (new Date()).getTime();
-        this.tag = "";
+        lastSeen = (new Date()).getTime();
+        joinDate = (new Date()).getTime();
+        tag = "";
     }
 
     @Override
@@ -93,12 +93,12 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         }
 
         ClanPlayer other = (ClanPlayer) obj;
-        return other.getName().equals(this.getName());
+        return other.getName().equals(getName());
     }
 
     @Override
     public int compareTo(ClanPlayer other) {
-        return this.getUniqueId().compareTo(other.getUniqueId());
+        return getUniqueId().compareTo(other.getUniqueId());
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param name the name to set
      */
     public void setName(String name) {
-        this.displayName = name;
+        displayName = name;
     }
 
     /**
@@ -227,7 +227,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * Updates last seen date to today
      */
     public void updateLastSeen() {
-        this.lastSeen = (new Date()).getTime();
+        lastSeen = (new Date()).getTime();
     }
 
     /**
@@ -488,7 +488,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
             return "";
         }
 
-        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(this.joinDate));
+        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(joinDate));
     }
 
     /**
@@ -513,7 +513,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         if (player != null && player.isOnline() && !VanishUtils.isVanished(sender, player)) {
             return lang("online", sender);
         }
-        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(this.lastSeen));
+        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(lastSeen));
     }
 
     /**
@@ -547,7 +547,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * Adds a past clan to the player (does not update the clanplayer to db)
      */
     public void addPastClan(String tag) {
-        this.getPastClans().add(tag);
+        getPastClans().add(tag);
     }
 
     /**
@@ -556,7 +556,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      * @param tag is the clan's colored tag
      */
     public void removePastClan(String tag) {
-        this.getPastClans().remove(tag);
+        getPastClans().remove(tag);
     }
 
     /**
@@ -650,9 +650,9 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
      */
     public void setClan(@Nullable Clan clan) {
         if (clan == null) {
-            this.tag = "";
+            tag = "";
         } else {
-            this.tag = clan.getTag();
+            tag = clan.getTag();
         }
 
         this.clan = clan;
@@ -801,7 +801,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         flags.put("hide-tag", tagEnabled);
 
         SimpleClans.getInstance().getStorageManager().updateClanPlayer(this);
-        SimpleClans.getInstance().getClanManager().updateDisplayName(this.toPlayer());
+        SimpleClans.getInstance().getClanManager().updateDisplayName(toPlayer());
     }
 
     @Deprecated

@@ -338,14 +338,14 @@ public class Clan implements Serializable, Comparable<Clan> {
      * A number <= 0 means it won't be purged
      */
     public int getMaxInactiveDays() {
-        if (this.isPermanent()) {
+        if (isPermanent()) {
             return -1;
         }
 
         int verifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getInt(PURGE_INACTIVE_CLAN_DAYS);
         int unverifiedClanInactiveDays = SimpleClans.getInstance().getSettingsManager().getInt(PURGE_UNVERIFIED_CLAN_DAYS);
 
-        return this.isVerified() ? verifiedClanInactiveDays : unverifiedClanInactiveDays;
+        return isVerified() ? verifiedClanInactiveDays : unverifiedClanInactiveDays;
     }
 
     /**
@@ -383,7 +383,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return confirmation
      */
     public boolean isMember(Player player) {
-        return this.members.contains(player.getUniqueId().toString());
+        return members.contains(player.getUniqueId().toString());
     }
 
     /**
@@ -393,7 +393,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return confirmation
      */
     public boolean isMember(UUID playerUniqueId) {
-        return this.members.contains(playerUniqueId.toString());
+        return members.contains(playerUniqueId.toString());
     }
 
     @SuppressWarnings("deprecation")
@@ -527,8 +527,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             return;
         }
 
-        if (!this.members.contains(uuid)) {
-            this.members.add(uuid);
+        if (!members.contains(uuid)) {
+            members.add(uuid);
         }
     }
 
@@ -536,7 +536,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * (used internally)
      */
     public void removeMember(UUID playerUniqueId) {
-        this.members.remove(playerUniqueId.toString());
+        members.remove(playerUniqueId.toString());
     }
 
     /**
@@ -544,7 +544,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("size")
     public int getSize() {
-        return this.members.size();
+        return members.size();
     }
 
     /**
@@ -562,12 +562,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     private boolean removeRival(String rival) {
-        if (!rivals.contains(rival)) {
-            return false;
-        }
-
-        rivals.remove(rival);
-        return true;
+        return rivals.contains(rival) && rivals.remove(rival);
     }
 
     /**
@@ -647,7 +642,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedBb the packedBb to set
      */
     public void setPackedBb(String packedBb) {
-        this.bb = Helper.fromArrayToList(packedBb.split("[|]"));
+        bb = Helper.fromArrayToList(packedBb.split("[|]"));
     }
 
     /**
@@ -665,7 +660,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedAllies the packedAllies to set
      */
     public void setPackedAllies(String packedAllies) {
-        this.allies = Helper.fromArrayToList(packedAllies.split("[|]"));
+        allies = Helper.fromArrayToList(packedAllies.split("[|]"));
     }
 
     /**
@@ -683,7 +678,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param packedRivals the packedRivals to set
      */
     public void setPackedRivals(String packedRivals) {
-        this.rivals = Helper.fromArrayToList(packedRivals.split("[|]"));
+        rivals = Helper.fromArrayToList(packedRivals.split("[|]"));
     }
 
     /**
@@ -1453,16 +1448,16 @@ public class Clan implements Serializable, Comparable<Clan> {
         Collection<ClanPlayer> clanPlayers = SimpleClans.getInstance().getClanManager().getAllClanPlayers();
         List<Clan> clans = SimpleClans.getInstance().getClanManager().getClans();
 
-        if (this.isPermanent() && !force) {
+        if (isPermanent() && !force) {
             ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent"));
             return;
         }
 
         if (announce) {
             if (SimpleClans.getInstance().getSettingsManager().is(DISABLE_MESSAGES) && sender != null) {
-                this.clanAnnounce(sender.getName(), AQUA + lang("clan.has.been.disbanded", this.getName()));
+                clanAnnounce(sender.getName(), AQUA + lang("clan.has.been.disbanded", getName()));
             } else {
-                SimpleClans.getInstance().getClanManager().serverAnnounce(AQUA + lang("clan.has.been.disbanded", this.getName()));
+                SimpleClans.getInstance().getClanManager().serverAnnounce(AQUA + lang("clan.has.been.disbanded", getName()));
             }
         }
 
@@ -1500,7 +1495,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
 
         SimpleClans.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SimpleClans.getInstance(), () -> {
-            SimpleClans.getInstance().getClanManager().removeClan(this.getTag());
+            SimpleClans.getInstance().getClanManager().removeClan(getTag());
             SimpleClans.getInstance().getStorageManager().deleteClan(this);
         }, 1);
     }
@@ -1544,8 +1539,8 @@ public class Clan implements Serializable, Comparable<Clan> {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
             if (requestPlayer != null) {
-                this.addBb(requestPlayer.getName(), AQUA + lang("you.are.at.war",
-                        this.getName(), targetClan.getColorTag()));
+                addBb(requestPlayer.getName(), AQUA + lang("you.are.at.war",
+                        getName(), targetClan.getColorTag()));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
