@@ -295,6 +295,7 @@ public final class SettingsManager {
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by", "kdr"),
         LORE_LENGTH("settings.lore-length", 36),
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
+        PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
         /*
         ================
         > Tag Settings

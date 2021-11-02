@@ -52,6 +52,7 @@ settings:
     ranking-type: "DENSE"
     list-default-order-by: kdr
     lore-length: 36
+    past-clans-limit: 10
 war-and-protection:
     war-enabled: false
     land-sharing: true
