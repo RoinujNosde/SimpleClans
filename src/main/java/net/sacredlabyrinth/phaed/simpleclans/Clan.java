@@ -687,8 +687,9 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public String getAllyString(String sep, @Nullable CommandSender viewer) {
         String coloredAllies = getAllies().stream().
-                map(allyTag -> SimpleClans.getInstance().getClanManager().getClan(allyTag).getColorTag()).
+                map(allyTag -> SimpleClans.getInstance().getClanManager().getClan(allyTag)).
                 filter(Objects::nonNull).
+                map(Clan::getColorTag).
                 collect(Collectors.joining(sep));
 
         return coloredAllies.isEmpty() ? lang("none", viewer) : coloredAllies;
