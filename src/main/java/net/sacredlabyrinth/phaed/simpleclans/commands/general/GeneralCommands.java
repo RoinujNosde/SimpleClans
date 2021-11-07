@@ -123,7 +123,7 @@ public class GeneralCommands extends BaseCommand {
 
     @Subcommand("%profile")
     @CommandPermission("simpleclans.anyone.profile")
-    @CommandCompletion("@clans")
+    @CommandCompletion("@clans:hide_own")
     @Description("{@@command.description.profile.other}")
     public void profile(CommandSender sender, @Conditions("verified") @Name("clan") ClanInput clan) {
         ClanProfile p = new ClanProfile(plugin, sender, clan.getClan());
@@ -131,7 +131,7 @@ public class GeneralCommands extends BaseCommand {
     }
 
     @Subcommand("%roster")
-    @CommandCompletion("@clans")
+    @CommandCompletion("@clans:hide_own")
     @CommandPermission("simpleclans.anyone.roster")
     @Description("{@@command.description.roster.other}")
     public void roster(CommandSender sender, @Conditions("verified") @Name("clan") ClanInput clan) {

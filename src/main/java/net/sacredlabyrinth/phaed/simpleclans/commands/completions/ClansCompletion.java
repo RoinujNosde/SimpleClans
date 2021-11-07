@@ -1,14 +1,16 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.completions;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ClansCompletion extends AbstractSyncCompletion {
     public ClansCompletion(@NotNull SimpleClans plugin) {
@@ -17,18 +19,28 @@ public class ClansCompletion extends AbstractSyncCompletion {
 
     @Override
     public Collection<String> getCompletions(BukkitCommandCompletionContext c) throws InvalidCommandArgument {
-        Stream<Clan> clans = clanManager.getClans().stream();
+        List<Clan> clans = clanManager.getClans();
         if (c.hasConfig("has_home")) {
-            clans = clans.filter(clan -> clan.getHomeLocation() != null);
+            clans.removeIf(clan -> clan.getHomeLocation() == null);
         }
         if (c.hasConfig("unverified")) {
-            clans = clans.filter(clan -> !clan.isVerified());
+            clans.removeIf(clan -> clan.isVerified());
         }
-        return clans.map(Clan::getTag).collect(Collectors.toList());
+        if (c.hasConfig("hide_own")) {
+            Clan clan = getClan(c.getIssuer());
+            if (clan != null) {
+                clans.remove(clan);
+            }
+        }
+        return clans.stream().map(Clan::getTag).collect(Collectors.toList());
     }
 
     @Override
     public @NotNull String getId() {
         return "clans";
+    }
+
+    private @Nullable Clan getClan(CommandIssuer issuer) {
+        return clanManager.getClanByPlayerUniqueId(issuer.getUniqueId());
     }
 }
