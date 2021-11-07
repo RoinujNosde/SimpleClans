@@ -139,6 +139,12 @@ permissions:
     description: Can hide his own clan tag
   simpleclans.member.fee-check:
     description: Can check his clan's fee
+  simpleclans.mod.bb-clear:
+    description: Can clear a clan's bb
+  simpleclans.mod.bb:
+    description: Can view a clan's bulletin board
+  simpleclans.mod.bb-add:
+    description: Can add to a clan's bulletin board
   simpleclans.mod.mostkilled:
     description: Can view his and other's clans mostkilled
   simpleclans.mod.keep-items:
@@ -231,6 +237,9 @@ permissions:
       simpleclans.mod.place: true
       simpleclans.mod.staffgui: true
       simpleclans.mod.modtag: true
+      simpleclans.mod.bb-clear: true
+      simpleclans.mod.bb: true
+      simpleclans.mod.bb-add: true
   simpleclans.anyone.*:
     description: Permissions for anyone
     default: true
