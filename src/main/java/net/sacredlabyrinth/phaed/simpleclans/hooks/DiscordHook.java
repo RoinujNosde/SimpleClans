@@ -178,7 +178,7 @@ public class DiscordHook implements Listener {
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
 
-        updatePermissions(clanPlayer, REMOVE);
+        updatePermissions(clanPlayer, event.getClan(), REMOVE);
         updateRole(clanPlayer, REMOVE);
     }
 
@@ -186,7 +186,7 @@ public class DiscordHook implements Listener {
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
 
-        updatePermissions(clanPlayer, ADD);
+        updatePermissions(clanPlayer, clanPlayer.getClan(), ADD);
         updateRole(clanPlayer, ADD);
     }
 
@@ -207,7 +207,7 @@ public class DiscordHook implements Listener {
             return;
         }
 
-        updatePermissions(clanPlayer, ADD);
+        updatePermissions(clanPlayer, clanPlayer.getClan(), ADD);
     }
 
     @Subscribe
@@ -217,7 +217,7 @@ public class DiscordHook implements Listener {
             return;
         }
 
-        updatePermissions(clanPlayer, REMOVE);
+        updatePermissions(clanPlayer, clanPlayer.getClan(), REMOVE);
         guild.removeRoleFromMember(event.getDiscordId(), leaderRole).queue();
     }
 
@@ -349,7 +349,7 @@ public class DiscordHook implements Listener {
 
         if (clan != null) {
             for (ClanPlayer member : clan.getMembers()) {
-                updatePermissions(member, ADD);
+                updatePermissions(member, clan, ADD);
             }
         }
         return true;
@@ -419,7 +419,7 @@ public class DiscordHook implements Listener {
                 filter(Objects::nonNull).
                 map(Clan::getMembers).
                 flatMap(Collection::stream).
-                forEach(clanPlayer -> updatePermissions(clanPlayer, ADD));
+                forEach(clanPlayer -> updatePermissions(clanPlayer, clanPlayer.getClan(), ADD));
     }
 
     private void createChannels() {
@@ -456,8 +456,7 @@ public class DiscordHook implements Listener {
         }
     }
 
-    private void updatePermissions(@NotNull ClanPlayer clanPlayer, DiscordAction action) {
-        Clan clan = clanPlayer.getClan();
+    private void updatePermissions(@NotNull ClanPlayer clanPlayer, @Nullable Clan clan, DiscordAction action) {
         Member member = getMember(clanPlayer);
         if (clan == null || member == null) {
             return;
