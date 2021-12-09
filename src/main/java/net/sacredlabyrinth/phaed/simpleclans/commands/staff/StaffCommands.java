@@ -258,7 +258,7 @@ public class StaffCommands extends BaseCommand {
     public void kick(CommandSender sender, @Conditions("clan_member") @Name("player") ClanPlayerInput cp) {
         ClanPlayer clanPlayer = cp.getClanPlayer();
         Clan clan = Objects.requireNonNull(clanPlayer.getClan());
-        if (clan.getLeaders().size() == 1) {
+        if (clanPlayer.isLeader() && clan.getLeaders().size() == 1) {
             ChatBlock.sendMessageKey(sender, "cannot.kick.last.leader");
             return;
         }
