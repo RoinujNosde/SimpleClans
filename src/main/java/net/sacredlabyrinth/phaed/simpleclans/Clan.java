@@ -1475,7 +1475,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             }
         }
 
-        Bukkit.getPluginManager().callEvent(new DisbandClanEvent(this));
+        Bukkit.getPluginManager().callEvent(new DisbandClanEvent(sender, this));
         clans.remove(this);
 
         for (Clan c : clans) {

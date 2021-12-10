@@ -259,7 +259,7 @@ public final class RequestManager {
     			if (!req.votingFinished()) {
     				return;
     			}
-				processDisband(requestClan, denies);
+                processDisband(requester, requestClan, denies);
                 break;
     		default:
     			return;
@@ -270,9 +270,9 @@ public final class RequestManager {
         req.cleanVotes();
     }
 
-	private void processDisband(Clan requestClan, List<String> denies) {
+    private void processDisband(ClanPlayer requester, Clan requestClan, List<String> denies) {
 		if (denies.isEmpty()) {
-		    requestClan.disband();
+            requestClan.disband(requester.toPlayer(), true, false);
 		} else {
 		    String deniers = String.join(", ", denies);
 		    requestClan.leaderAnnounce(RED + lang("clan.deletion", deniers));

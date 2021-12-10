@@ -1,6 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -11,14 +14,23 @@ import org.bukkit.event.HandlerList;
 public class DisbandClanEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+    private final CommandSender sender;
     private final Clan clan;
 
-    public DisbandClanEvent(Clan clan) {
+    public DisbandClanEvent(CommandSender sender, Clan clan) {
+        if (sender == null) {
+            sender = Bukkit.getConsoleSender();
+        }
+        this.sender = sender;
         this.clan = clan;
     }
 
     public Clan getClan() {
         return this.clan;
+    }
+
+    public CommandSender getSender() {
+        return sender;
     }
 
     @Override
