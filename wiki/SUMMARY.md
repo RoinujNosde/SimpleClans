@@ -19,6 +19,7 @@
 * [🚦 Permissions](commands-and-permissions/permissions.md)
 * [🪖 Clan Alliances and Rivalries](commands-and-permissions/aliances-and-rivalries.md)
 * [🏅 Ranks with Permissions](commands-and-permissions/ranks-with-permissions.md)
+* [👍 Verified Clan](commands-and-permissions/verified-clan.md)
 * [⌛ Permanent clan](commands-and-permissions/permanent-clan.md)
 
 ## Integration
