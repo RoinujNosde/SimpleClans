@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Клан в табе
+# ☝ Клан в табе
 
 ## Необходимые плагины
 
@@ -13,7 +13,7 @@ description: null
 
 ## Пошагово
 
-1. Откройте конфиг TAB и измените format, добавив`%simpleclans_clan_color_tag%`:
+1\. Откройте конфиг TAB и измените format, добавив`%simpleclans_clan_color_tag%`:
 
 {% code title="Пример:" %}
 ```yaml
@@ -23,9 +23,8 @@ Groups:
 ```
 {% endcode %}
 
-2. Перезапустите сервер \(или перезагрузите конфиг: `/tab reload`\) и наслаждайтесь!
+2\. Перезапустите сервер (или перезагрузите конфиг: `/tab reload`) и наслаждайтесь!
 
 ## Скриншот
 
-![](../.gitbook/assets/clans-tablist.png)
-
+![](../../.gitbook/assets/clans-tablist.png)
