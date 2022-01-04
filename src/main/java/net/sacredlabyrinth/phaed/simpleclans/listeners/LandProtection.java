@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -260,6 +261,9 @@ public class LandProtection implements Listener {
     private @Nullable Location getLocation(@Nullable InventoryHolder holder) {
         if (holder instanceof BlockState) {
             return ((BlockState) holder).getLocation();
+        }
+        if (holder instanceof DoubleChest) {
+            return ((DoubleChest) holder).getLocation();
         }
         return null;
     }
