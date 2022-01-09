@@ -187,7 +187,6 @@ public class DiscordHook implements Listener {
         ClanPlayer clanPlayer = event.getClanPlayer();
 
         updatePermissions(clanPlayer, clanPlayer.getClan(), ADD);
-        updateRole(clanPlayer, ADD);
     }
 
     @EventHandler
@@ -218,7 +217,7 @@ public class DiscordHook implements Listener {
         }
 
         updatePermissions(clanPlayer, clanPlayer.getClan(), REMOVE);
-        guild.removeRoleFromMember(event.getDiscordId(), leaderRole).queue();
+        updateRole(clanPlayer, REMOVE);
     }
 
     protected void setupDiscord() {
@@ -444,6 +443,9 @@ public class DiscordHook implements Listener {
     }
 
     private void updateRole(ClanPlayer clanPlayer, DiscordAction action) {
+        if (!clanPlayer.isLeader()) {
+            return;   
+        }
         Member member = getMember(clanPlayer);
         if (member == null) {
             return;
