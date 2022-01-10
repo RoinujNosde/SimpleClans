@@ -78,6 +78,7 @@ public class DiscordHook implements Listener {
     private final List<String> discordClanTags;
     private final List<String> clanTags;
     private final Role leaderRole;
+    private final List<String> whitelist;
 
     public DiscordHook(SimpleClans plugin) {
         this.plugin = plugin;
@@ -86,21 +87,10 @@ public class DiscordHook implements Listener {
         clanManager = plugin.getClanManager();
         textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
                 filter(this::categoryExists).collect(Collectors.toList());
+        whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
 
-        List<String> whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
-
-        clanTags = clanManager.getClans().stream().
-                filter(Clan::isVerified).
-                filter(clan -> clan.getMembers().stream().
-                        anyMatch(clanPlayer -> getMember(clanPlayer) != null) || clan.isPermanent()).
-                map(Clan::getTag).
-                filter(clanTag -> whitelist.isEmpty() || whitelist.contains(clanTag)).
-                limit(settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)).
-                collect(Collectors.toList());
-
-        discordClanTags = getChannels().stream().
-                map(GuildChannel::getName).
-                collect(Collectors.toList());
+        clanTags = clanManager.getClans().stream().map(Clan::getTag).collect(Collectors.toList());
+        discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
 
         leaderRole = getLeaderRole();
         setupDiscord();
@@ -108,7 +98,7 @@ public class DiscordHook implements Listener {
 
     @Subscribe
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
-        Optional<TextChannel> channel = getChannel(event.getChannel().getName());
+        Optional<TextChannel> channel = getCachedChannel(event.getChannel().getName());
 
         if (channel.isPresent()) {
             Message eventMessage = event.getMessage();
@@ -171,7 +161,11 @@ public class DiscordHook implements Listener {
 
     @EventHandler
     public void onClanCreate(CreateClanEvent event) {
-        createChannel(event.getClan().getTag());
+        try {
+            createChannel(event.getClan().getTag());
+        } catch (InvalidChannelException | LimitReachedException e) {
+            // Clan is not following the conditions and categories are fulled, nothing to do here.
+        }
     }
 
     @EventHandler
@@ -185,7 +179,6 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-
         updatePermissions(clanPlayer, clanPlayer.getClan(), ADD);
     }
 
@@ -306,22 +299,29 @@ public class DiscordHook implements Listener {
     /**
      * Creates a new {@link ClanPlayer.Channel} in available categories,
      * otherwise creates one
+     *
+     * @throws InvalidChannelException clan is not verified or permanent, no one member is linked or clan is not in the whitelist.
+     * @throws LimitReachedException   if category(-ies) reached the limit,
      */
-    public boolean createChannel(@NotNull String clanTag) {
-        Category availableCategory = getCategories().stream().
+    public void createChannel(@NotNull String clanTag) throws InvalidChannelException, LimitReachedException {
+        Category availableCategory = getCachedCategories().stream().
                 filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY).
                 findAny().orElseGet(this::createCategory);
 
-        return availableCategory != null && createChannel(availableCategory, clanTag);
+        if (availableCategory != null) {
+            createChannel(availableCategory, clanTag);
+        } else {
+            throw new LimitReachedException();
+        }
     }
 
     /**
      * Retrieves channel in SimpleClans categories.
      *
-     * @see #getCategories() retreive categories.
+     * @see #getCachedCategories() retreive categories.
      */
-    public Optional<TextChannel> getChannel(@NotNull String channelName) {
-        return getChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
+    public Optional<TextChannel> getCachedChannel(@NotNull String channelName) {
+        return getCachedChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
     }
 
     /**
@@ -334,24 +334,34 @@ public class DiscordHook implements Listener {
     /**
      * Creates a new {@link ClanPlayer.Channel} in defined {@link Category}
      *
-     * <p>Sets {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
+     * <p>Sets positive {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
      *
-     * @return true, if channel was created. False, if category reached the limit.
+     * @throws InvalidChannelException clan is not verified or permanent, no one member is linked or clan is not in the whitelist.
+     * @throws LimitReachedException   if category reached the limit.
      */
-    public boolean createChannel(@NotNull Category category, @NotNull String clanTag) {
+    public void createChannel(@NotNull Category category, @NotNull String clanTag) throws InvalidChannelException, LimitReachedException {
         if (category.getTextChannels().size() >= MAX_CHANNELS_PER_CATEGORY) {
-            return false;
+            throw new LimitReachedException();
         }
 
-        TextChannel textChannel = category.createTextChannel(clanTag).complete();
         Clan clan = clanManager.getClan(clanTag);
+        if (clan == null) {
+            return;
+        }
 
-        if (clan != null) {
+        boolean clanCondition = clan.isVerified() &&
+                clan.getMembers().stream().anyMatch(clanPlayer -> getMember(clanPlayer) != null) || clan.isPermanent();
+        boolean whitelistCondition = whitelist.isEmpty() || whitelist.contains(clan.getTag());
+
+        if (clanCondition && whitelistCondition && getChannels().size() <= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
+            TextChannel textChannel = category.createTextChannel(clanTag).complete();
+
             for (ClanPlayer member : clan.getMembers()) {
                 updatePermissions(member, clan, ADD);
             }
+        } else {
+            throw new InvalidChannelException();
         }
-        return true;
     }
 
     /**
@@ -359,7 +369,7 @@ public class DiscordHook implements Listener {
      * If there are no channels, removes category as well.
      */
     public void deleteChannel(@NotNull String channelName) {
-        for (Category category : getCategories()) {
+        for (Category category : getCachedCategories()) {
             if (category.getTextChannels().size() > 0) {
                 for (TextChannel textChannel : category.getTextChannels()) {
                     if (textChannel.getName().equals(channelName)) {
@@ -378,9 +388,9 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * @return All categories, which contains in configuration.
+     * @return categories from config
      */
-    public List<Category> getCategories() {
+    public List<Category> getCachedCategories() {
         return textCategories.stream().
                 filter(this::categoryExists).
                 map(guild::getCategoryById).
@@ -388,10 +398,29 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * @return All channels in categories
+     * In most cases, you will use {@link #getCachedCategories()}.
+     *
+     * @return categories from guild
+     */
+    public List<Category> getCategories() {
+        return guild.getCategoriesByName(settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT), false);
+    }
+
+    /**
+     * In most cases, you will use {@link #getCachedChannels()}.
+     *
+     * @return all channels from guild
      */
     public List<TextChannel> getChannels() {
         return getCategories().stream().map(Category::getTextChannels).flatMap(Collection::stream).
+                collect(Collectors.toList());
+    }
+
+    /**
+     * @return All channels in categories
+     */
+    public List<TextChannel> getCachedChannels() {
+        return getCachedCategories().stream().map(Category::getTextChannels).flatMap(Collection::stream).
                 collect(Collectors.toList());
     }
 
@@ -408,7 +437,7 @@ public class DiscordHook implements Listener {
     }
 
     private void resetPermissions() {
-        getChannels().stream().
+        getCachedChannels().stream().
                 map(TextChannel::getMemberPermissionOverrides).
                 flatMap(Collection::stream).
                 filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
@@ -423,12 +452,13 @@ public class DiscordHook implements Listener {
 
     private void createChannels() {
         clanTags.removeAll(discordClanTags);
-        Iterator<String> tagIter = clanTags.iterator();
-        while (tagIter.hasNext()) {
-            if (createChannel(tagIter.next())) {
-                tagIter.remove();
-            } else {
+        for (String clan : clanTags) {
+            try {
+                createChannel(clan);
+            } catch (LimitReachedException ex) {
                 break;
+            } catch (InvalidChannelException e) {
+                // Clan is not following the conditions, nothing to do here.
             }
         }
     }
@@ -464,7 +494,7 @@ public class DiscordHook implements Listener {
             return;
         }
 
-        Optional<TextChannel> channel = getChannel(clan.getTag());
+        Optional<TextChannel> channel = getCachedChannel(clan.getTag());
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
 
@@ -480,4 +510,19 @@ public class DiscordHook implements Listener {
     enum DiscordAction {
         ADD, REMOVE
     }
+
+    protected static class LimitReachedException extends Exception {
+
+        public LimitReachedException() {
+            super();
+        }
+    }
+
+    protected static class InvalidChannelException extends Exception {
+
+        public InvalidChannelException() {
+            super();
+        }
+    }
+
 }
