@@ -164,7 +164,7 @@ public class DiscordHook implements Listener {
         try {
             createChannel(event.getClan().getTag());
         } catch (InvalidChannelException | LimitReachedException e) {
-            // Clan is not following the conditions and categories are fulled, nothing to do here.
+            // Clan is not following the conditions or categories are fulled, nothing to do here.
         }
     }
 
@@ -298,10 +298,10 @@ public class DiscordHook implements Listener {
 
     /**
      * Creates a new {@link ClanPlayer.Channel} in available categories,
-     * otherwise creates one
+     * otherwise creates one.
      *
      * @throws InvalidChannelException clan is not verified or permanent, no one member is linked or clan is not in the whitelist.
-     * @throws LimitReachedException   if category(-ies) reached the limit,
+     * @throws LimitReachedException   if category(-ies) reached the limit.
      */
     public void createChannel(@NotNull String clanTag) throws InvalidChannelException, LimitReachedException {
         Category availableCategory = getCachedCategories().stream().
@@ -474,7 +474,7 @@ public class DiscordHook implements Listener {
 
     private void updateRole(ClanPlayer clanPlayer, DiscordAction action) {
         if (!clanPlayer.isLeader()) {
-            return;   
+            return;
         }
         Member member = getMember(clanPlayer);
         if (member == null) {
