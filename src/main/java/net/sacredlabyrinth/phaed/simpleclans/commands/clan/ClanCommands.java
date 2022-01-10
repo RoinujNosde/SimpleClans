@@ -113,7 +113,8 @@ public class ClanCommands extends BaseCommand {
     @Conditions("verified|rank:name=SETBANNER")
     @Description("{@@command.description.setbanner}")
     public void setbanner(Player player, Clan clan) {
-        ItemStack hand = player.getInventory().getItemInMainHand();
+        @SuppressWarnings("deprecation")
+        ItemStack hand = player.getItemInHand();
         if (!hand.getType().toString().contains("BANNER")) {
             ChatBlock.sendMessageKey(player, "you.must.hold.a.banner");
             return;
