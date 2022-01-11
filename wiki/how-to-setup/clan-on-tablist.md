@@ -2,7 +2,7 @@
 description: null
 ---
 
-# Clan on Tablist
+# 👆 Clan on Tablist
 
 ## Plugins needed
 
@@ -13,19 +13,17 @@ You can use a different tablist plugin, as long as it supports PlaceholderAPI
 
 ## Step by step
 
-1. Open Tab' config and edit the formats adding `%simpleclans_clan_color_tag%`:
+1\. Open Tab' `groups.yml` file and edit the formats adding `%simpleclans_clan_color_tag%`:
 
 {% code title="Example:" %}
 ```yaml
-Groups:
-    _OTHER_:
-        tabprefix: "%simpleclans_clan_color_tag%%vault-prefix% "
+_DEFAULT_:
+    tabprefix: "%simpleclans_clan_color_tag%%vault-prefix% "
 ```
 {% endcode %}
 
-2. Restart \(or reload `/tab reload`\) and enjoy!
+2\. Restart (or reload `/tab reload`) and enjoy!
 
 ## Screenshot
 
-![](../.gitbook/assets/clans-tablist.png)
-
+![](../../.gitbook/assets/clans-tablist.png)
