@@ -18,16 +18,17 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class ChatUtils {
 
+    public static boolean HEX_COLOR_SUPPORT;
+
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
-    private static boolean supportsHexColors;
 
     static {
         try {
             ChatColor.class.getDeclaredMethod("of", String.class);
-            supportsHexColors = true;
+            HEX_COLOR_SUPPORT = true;
         } catch (NoSuchMethodException e) {
-            supportsHexColors = false;
+            HEX_COLOR_SUPPORT = false;
         }
     }
 
@@ -42,7 +43,7 @@ public class ChatUtils {
     public static String parseColors(@NotNull String text) {
         // Special thanks to the Spigot community!
         // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
-        if (supportsHexColors) {
+        if (HEX_COLOR_SUPPORT) {
             Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
             StringBuffer buffer = new StringBuffer();
             while (matcher.find()) {
@@ -54,7 +55,7 @@ public class ChatUtils {
     }
 
     public static String stripColors(String text) {
-        if (supportsHexColors) {
+        if (HEX_COLOR_SUPPORT) {
             Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
             StringBuffer buffer = new StringBuffer();
             while (matcher.find()) {
