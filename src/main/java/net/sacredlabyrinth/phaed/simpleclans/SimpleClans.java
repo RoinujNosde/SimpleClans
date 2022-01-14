@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static org.bukkit.Bukkit.getPluginManager;
 
 /**
  * @author Phaed
@@ -119,8 +120,9 @@ public class SimpleClans extends JavaPlugin {
     }
 
     private void logStatus() {
-        getLogger().info("Multithreading: " + SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_THREADS));
-        getLogger().info("BungeeCord: " + SimpleClans.getInstance().getSettingsManager().is(PERFORMANCE_USE_BUNGEECORD));
+        getLogger().info("Multithreading: " + settingsManager.is(PERFORMANCE_USE_THREADS));
+        getLogger().info("BungeeCord: " + settingsManager.is(PERFORMANCE_USE_BUNGEECORD));
+        getLogger().info("HEX support: " + ChatUtils.HEX_COLOR_SUPPORT);
         getLogger().info("Help us translate SimpleClans to your language! " +
                 "Access https://crowdin.com/project/simpleclans/");
     }
@@ -142,7 +144,7 @@ public class SimpleClans extends JavaPlugin {
     }
 
     private void hookIntoPAPI() {
-        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("PlaceholderAPI found. Registering hook...");
             new SimpleClansExpansion(this).register();
         }
