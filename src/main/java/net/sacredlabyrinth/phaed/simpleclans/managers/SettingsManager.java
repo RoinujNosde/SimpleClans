@@ -311,7 +311,7 @@ public final class SettingsManager {
         TAG_MIN_LENGTH("tag.min-length", 2),
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
-        TAG_SEPARATOR_char("tag.separator.char", " ."),
+        TAG_SEPARATOR_CHAR("tag.separator.char", " ."),
         /*
         ================
         > War and Protection Settings
