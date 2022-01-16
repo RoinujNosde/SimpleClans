@@ -1646,7 +1646,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         String bracketLeft = sm.getColored(TAG_BRACKET_LEFT);
         String bracketRight = sm.getColored(TAG_BRACKET_RIGHT);
         String tagSeparatorColor = isLeader ? sm.getColored(TAG_SEPARATOR_LEADER_COLOR) : sm.getColored(TAG_SEPARATOR_COLOR);
-        String tagSeparator = sm.getString(TAG_SEPARATOR_char);
+        String tagSeparator = sm.getString(TAG_SEPARATOR_CHAR);
 
         return bracketColor + bracketLeft + bracketDefaultColor + getColorTag() + bracketColor + bracketRight + tagSeparatorColor + tagSeparator;
     }

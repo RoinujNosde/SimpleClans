@@ -38,7 +38,7 @@ public class DiscordChatHandler implements ChatHandler {
         }
         
         DiscordHook discordHook = Objects.requireNonNull(chatManager.getDiscordHook(), "DiscordHook cannot be null");
-        Optional<TextChannel> channel = discordHook.getChannel(clan.getTag());
+        Optional<TextChannel> channel = discordHook.getCachedChannel(clan.getTag());
         channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
     }
 
