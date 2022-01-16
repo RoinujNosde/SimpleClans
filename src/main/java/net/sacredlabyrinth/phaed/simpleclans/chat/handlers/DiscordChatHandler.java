@@ -5,7 +5,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
