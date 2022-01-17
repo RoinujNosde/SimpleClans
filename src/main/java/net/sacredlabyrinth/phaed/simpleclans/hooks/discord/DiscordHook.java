@@ -67,7 +67,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  */
 public class DiscordHook implements Listener {
 
-    private static final int MAX_CHANNELS_PER_CATEGORY = 1;
+    private static final int MAX_CHANNELS_PER_CATEGORY = 50;
     private static final int MAX_CHANNELS_PER_GUILD = 500;
 
     private final SimpleClans plugin;
