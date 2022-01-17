@@ -490,7 +490,7 @@ public class DiscordHook implements Listener {
             throw new InvalidChannelException("Clan %s is not listed on the whitelist", clanTag);
         }
 
-        if (getChannels().size() > settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
+        if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
             throw new ChannelsLimitException();
         }
 
