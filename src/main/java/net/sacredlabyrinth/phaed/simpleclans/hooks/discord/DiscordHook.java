@@ -243,7 +243,7 @@ public class DiscordHook implements Listener {
     }
 
     protected void setupDiscord() {
-        removeAbandonChannels();
+        removeAbandonedChannels();
         resetPermissions();
         createChannels();
     }
@@ -485,7 +485,7 @@ public class DiscordHook implements Listener {
         return DiscordUtil.getMemberById(discordId);
     }
 
-    private void removeAbandonChannels() {
+    private void removeAbandonedChannels() {
         ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
         clansToDelete.removeAll(clanTags);
         clansToDelete.forEach(this::deleteChannel);
