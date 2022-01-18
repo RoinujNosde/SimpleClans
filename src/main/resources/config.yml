@@ -209,6 +209,7 @@ discordchat:
     leader-role: "Leader"
     leader-color: 231, 76, 60, 100
     leader-id: 0
+    min-linked-players-to-create: 3
     text:
         category-format: "SC - TextChannels"
         category-ids: []
