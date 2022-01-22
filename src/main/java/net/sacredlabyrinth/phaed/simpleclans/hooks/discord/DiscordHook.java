@@ -164,8 +164,11 @@ public class DiscordHook implements Listener {
     public void onClanCreate(CreateClanEvent event) {
         try {
             createChannel(event.getClan().getTag());
-        } catch (InvalidChannelException | DiscordHookException ignored) {
+        } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
+            if (settingsManager.is(DEBUG)) {
+                plugin.getLogger().warning(ex.getMessage());
+            }
         }
     }
 
@@ -532,14 +535,24 @@ public class DiscordHook implements Listener {
             try {
                 createChannel(clan);
             } catch (CategoriesLimitException | ChannelsLimitException ex) {
+                if (settingsManager.is(DEBUG)) {
+                    plugin.getLogger().warning(ex.getMessage());
+                }
                 break;
             } catch (InvalidChannelException ex) {
+                if (settingsManager.is(DEBUG)) {
+                    plugin.getLogger().warning(ex.getMessage());
+                }
                 // Remove the channel if clan is invalid
                 if (channelExists(clan)) {
                     deleteChannel(clan);
                 }
-            } catch (ChannelExistsException ignored) {
+
+            } catch (ChannelExistsException ex) {
                 // We're creating channels, not removing them
+                if (settingsManager.is(DEBUG)) {
+                    plugin.getLogger().warning(ex.getMessage());
+                }
             }
         }
     }
@@ -587,8 +600,11 @@ public class DiscordHook implements Listener {
 
         try {
             createChannel(clan.getTag());
-        } catch (InvalidChannelException | DiscordHookException ignored) {
+        } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
+            if (settingsManager.is(DEBUG)) {
+                plugin.getLogger().warning(ex.getMessage());
+            }
         }
 
         return true;
