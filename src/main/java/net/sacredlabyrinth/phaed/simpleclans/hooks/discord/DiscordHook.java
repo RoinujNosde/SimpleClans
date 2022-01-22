@@ -166,9 +166,7 @@ public class DiscordHook implements Listener {
             createChannel(event.getClan().getTag());
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
-            if (settingsManager.is(DEBUG)) {
-                plugin.getLogger().warning(ex.getMessage());
-            }
+            SimpleClans.debug(ex.getMessage());
         }
     }
 
@@ -535,24 +533,18 @@ public class DiscordHook implements Listener {
             try {
                 createChannel(clan);
             } catch (CategoriesLimitException | ChannelsLimitException ex) {
-                if (settingsManager.is(DEBUG)) {
-                    plugin.getLogger().warning(ex.getMessage());
-                }
+                SimpleClans.debug(ex.getMessage());
                 break;
             } catch (InvalidChannelException ex) {
-                if (settingsManager.is(DEBUG)) {
-                    plugin.getLogger().warning(ex.getMessage());
-                }
+                SimpleClans.debug(ex.getMessage());
+
                 // Remove the channel if clan is invalid
                 if (channelExists(clan)) {
                     deleteChannel(clan);
                 }
-
             } catch (ChannelExistsException ex) {
                 // We're creating channels, not removing them
-                if (settingsManager.is(DEBUG)) {
-                    plugin.getLogger().warning(ex.getMessage());
-                }
+                SimpleClans.debug(ex.getMessage());
             }
         }
     }
@@ -602,9 +594,7 @@ public class DiscordHook implements Listener {
             createChannel(clan.getTag());
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
-            if (settingsManager.is(DEBUG)) {
-                plugin.getLogger().warning(ex.getMessage());
-            }
+            SimpleClans.debug(ex.getMessage());
         }
 
         return true;
