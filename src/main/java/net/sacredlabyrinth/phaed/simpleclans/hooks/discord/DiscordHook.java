@@ -172,24 +172,30 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
+        Clan clan = clanPlayer.getClan();
         Member member = getMember(clanPlayer);
-        if (member == null) {
+        if (member == null || clan == null) {
             return;
         }
 
-        updateViewPermission(clanPlayer, REMOVE);
+        updateViewPermission(member, clan, REMOVE);
         updateLeaderRole(member, clanPlayer, REMOVE);
     }
 
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
+        Clan clan = clanPlayer.getClan();
+        Member member = getMember(clanPlayer);
+        if (member == null || clan == null) {
+            return;
+        }
 
         if (!createChannelSilently(clanPlayer)) {
             return;
         }
 
-        updateViewPermission(event.getClanPlayer(), ADD);
+        updateViewPermission(member, clan, ADD);
     }
 
     @EventHandler
@@ -222,11 +228,16 @@ public class DiscordHook implements Listener {
             return;
         }
 
+        Clan clan = clanPlayer.getClan();
+        if (clan == null) {
+            return;
+        }
+
         if (!createChannelSilently(clanPlayer)) {
             return;
         }
 
-        updateViewPermission(clanPlayer, ADD);
+        updateViewPermission(member, clan, ADD);
         updateLeaderRole(member, clanPlayer, ADD);
     }
 
@@ -387,7 +398,12 @@ public class DiscordHook implements Listener {
         TextChannel textChannel = availableCategory.createTextChannel(clanTag).complete();
 
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
-            updateViewPermission(entry.getKey(), ADD);
+            Clan entryClan = entry.getKey().getClan();
+            if (entryClan == null) {
+                continue;
+            }
+
+            updateViewPermission(entry.getValue(), entryClan, ADD);
             updateLeaderRole(entry.getValue(), entry.getKey(), ADD);
         }
     }
@@ -502,7 +518,13 @@ public class DiscordHook implements Listener {
                 filter(Objects::nonNull).
                 map(Clan::getMembers).
                 flatMap(Collection::stream).
-                forEach(clanPlayer -> updateViewPermission(clanPlayer, ADD));
+                forEach(clanPlayer -> {
+                    Member member = getMember(clanPlayer);
+                    Clan clan = clanPlayer.getClan();
+                    if (member != null && clan != null) {
+                        updateViewPermission(member, clan, ADD);
+                    }
+                });
     }
 
     private void createChannels() {
@@ -543,21 +565,7 @@ public class DiscordHook implements Listener {
         }
     }
 
-    private void updateViewPermission(@NotNull ClanPlayer clanPlayer, DiscordAction action) {
-        Clan clan = clanPlayer.getClan();
-        Member member = getMember(clanPlayer);
-        if (clan == null) {
-            return;
-        }
-
-        updateViewPermission(member, clan, action);
-    }
-
-    private void updateViewPermission(@Nullable Member member, @NotNull Clan clan, DiscordAction action) {
-        if (member == null) {
-            return;
-        }
-
+    private void updateViewPermission(@NotNull Member member, @NotNull Clan clan, DiscordAction action) {
         Optional<TextChannel> channel = getCachedChannel(clan.getTag());
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
