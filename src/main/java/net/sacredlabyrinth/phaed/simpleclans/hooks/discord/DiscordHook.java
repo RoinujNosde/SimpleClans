@@ -326,7 +326,7 @@ public class DiscordHook implements Listener {
     }
 
     /**
-     * Creates a new {@link ClanPlayer.Channel} in available SimpleClans' categories,
+     * Creates a new {@link TextChannel} in available SimpleClans' categories,
      * otherwise creates one.
      *
      * <p>Sets positive {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
