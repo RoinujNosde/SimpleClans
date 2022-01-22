@@ -255,7 +255,7 @@ public class DiscordHook implements Listener {
     }
 
     protected void setupDiscord() {
-        removeAbandonedChannels();
+        clearChannels();
         resetPermissions();
         createChannels();
     }
@@ -351,42 +351,9 @@ public class DiscordHook implements Listener {
      */
     public void createChannel(@NotNull String clanTag)
             throws InvalidChannelException, CategoriesLimitException, ChannelsLimitException, ChannelExistsException {
-        Clan clan = clanManager.getClan(clanTag);
-        if (clan == null) {
-            throw new InvalidChannelException("Clan %s is null", clanTag);
-        }
+        Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clanManager.getClan(clanTag));
 
-        Map<ClanPlayer, Member> discordClanPlayers = new HashMap<>();
-        for (ClanPlayer cp : clan.getMembers()) {
-            Member member = getMember(cp);
-            if (member != null) {
-                discordClanPlayers.put(cp, getMember(cp));
-            }
-        }
-
-        if (!clan.isVerified() && !clan.isPermanent()) {
-            throw new InvalidChannelException("Clan %s is not verified or permanent", clanTag);
-        }
-
-        if (discordClanPlayers.size() == 0) {
-            throw new InvalidChannelException("Clan %s doesn't have any linked players", clanTag);
-        }
-
-        if (discordClanPlayers.size() < settingsManager.getInt(DISCORDCHAT_MINIMUM_LINKED_PLAYERS)) {
-            throw new InvalidChannelException("Clan %s doesn't have minimum linked players");
-        }
-
-        if (!whitelist.isEmpty() && !whitelist.contains(clan.getTag())) {
-            throw new InvalidChannelException("Clan %s is not listed on the whitelist", clanTag);
-        }
-
-        if (channelExists(clanTag)) {
-            throw new ChannelExistsException("Channel %s is already exist", clanTag);
-        }
-
-        if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
-            throw new ChannelsLimitException();
-        }
+        validateChannel(clanTag, discordClanPlayers);
 
         Category availableCategory = getCachedCategories().stream().
                 filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY).
@@ -399,12 +366,9 @@ public class DiscordHook implements Listener {
         TextChannel textChannel = availableCategory.createTextChannel(clanTag).complete();
 
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
-            Clan entryClan = entry.getKey().getClan();
-            if (entryClan == null) {
-                continue;
-            }
-
-            updateViewPermission(entry.getValue(), entryClan, ADD);
+            // The map is formed from clan#getMembers (so the clan exists)
+            //noinspection ConstantConditions
+            updateViewPermission(entry.getValue(), entry.getKey().getClan(), ADD);
             updateLeaderRole(entry.getValue(), entry.getKey(), ADD);
         }
     }
@@ -502,10 +466,26 @@ public class DiscordHook implements Listener {
         return DiscordUtil.getMemberById(discordId);
     }
 
-    private void removeAbandonedChannels() {
+    private void clearChannels() {
+        // Removes abandoned channels
         ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
         clansToDelete.removeAll(clanTags);
         clansToDelete.forEach(this::deleteChannel);
+
+        // Removes invalid channels
+        for (String clanTag : clanTags) {
+            try {
+                validateChannel(clanTag, getDiscordPlayers(clanManager.getClan(clanTag)));
+            } catch (InvalidChannelException ex) {
+                SimpleClans.debug(ex.getMessage());
+
+                if (channelExists(clanTag)) {
+                    deleteChannel(clanTag);
+                }
+            } catch (ChannelExistsException | ChannelsLimitException ex) {
+                SimpleClans.debug(ex.getMessage());
+            }
+        }
     }
 
     private void resetPermissions() {
@@ -535,16 +515,8 @@ public class DiscordHook implements Listener {
             } catch (CategoriesLimitException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
                 break;
-            } catch (InvalidChannelException ex) {
-                SimpleClans.debug(ex.getMessage());
-
-                // Remove the channel if clan is invalid
-                if (channelExists(clan)) {
-                    deleteChannel(clan);
-                }
-            } catch (ChannelExistsException ex) {
-                // We're creating channels, not removing them
-                SimpleClans.debug(ex.getMessage());
+            } catch (InvalidChannelException | ChannelExistsException ignored) {
+                // There is already debug on #clearChannels
             }
         }
     }
@@ -556,6 +528,49 @@ public class DiscordHook implements Listener {
             String channelLink = "<#" + textChannel.getId() + ">";
             privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message));
         });
+    }
+
+    private void validateChannel(@NotNull String clanTag, Map<ClanPlayer, Member> discordClanPlayers)
+            throws InvalidChannelException, ChannelExistsException, ChannelsLimitException {
+        Clan clan = clanManager.getClan(clanTag);
+        if (clan == null) {
+            throw new InvalidChannelException("Clan %s is null", clanTag);
+        }
+        if (!clan.isVerified() && !clan.isPermanent()) {
+            throw new InvalidChannelException("Clan %s is not verified or permanent", clanTag);
+        }
+
+        if (discordClanPlayers.size() == 0) {
+            throw new InvalidChannelException("Clan %s doesn't have any linked players", clanTag);
+        }
+
+        if (discordClanPlayers.size() < settingsManager.getInt(DISCORDCHAT_MINIMUM_LINKED_PLAYERS)) {
+            throw new InvalidChannelException("Clan %s doesn't have minimum linked players");
+        }
+
+        if (!whitelist.isEmpty() && !whitelist.contains(clan.getTag())) {
+            throw new InvalidChannelException("Clan %s is not listed on the whitelist", clanTag);
+        }
+
+        if (channelExists(clanTag)) {
+            throw new ChannelExistsException("Channel %s is already exist", clanTag);
+        }
+
+        if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
+            throw new ChannelsLimitException();
+        }
+    }
+
+    @NotNull
+    private Map<ClanPlayer, Member> getDiscordPlayers(Clan clan) {
+        Map<ClanPlayer, Member> discordClanPlayers = new HashMap<>();
+        for (ClanPlayer cp : clan.getMembers()) {
+            Member member = getMember(cp);
+            if (member != null) {
+                discordClanPlayers.put(cp, getMember(cp));
+            }
+        }
+        return discordClanPlayers;
     }
 
     private void updateLeaderRole(@NotNull Member member, @NotNull ClanPlayer clanPlayer, DiscordAction action) {
@@ -584,6 +599,7 @@ public class DiscordHook implements Listener {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean createChannelSilently(ClanPlayer clanPlayer) {
         Clan clan = clanPlayer.getClan();
         if (clan == null) {
