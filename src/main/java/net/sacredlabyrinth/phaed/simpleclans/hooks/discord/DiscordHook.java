@@ -351,9 +351,12 @@ public class DiscordHook implements Listener {
      */
     public void createChannel(@NotNull String clanTag)
             throws InvalidChannelException, CategoriesLimitException, ChannelsLimitException, ChannelExistsException {
+        validateChannel(clanTag);
         Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clanManager.getClan(clanTag));
 
-        validateChannel(clanTag, discordClanPlayers);
+        if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
+            throw new ChannelsLimitException();
+        }
 
         Category availableCategory = getCachedCategories().stream().
                 filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY).
@@ -475,7 +478,7 @@ public class DiscordHook implements Listener {
         // Removes invalid channels
         for (String clanTag : clanTags) {
             try {
-                validateChannel(clanTag, getDiscordPlayers(clanManager.getClan(clanTag)));
+                validateChannel(clanTag);
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
 
@@ -530,7 +533,7 @@ public class DiscordHook implements Listener {
         });
     }
 
-    private void validateChannel(@NotNull String clanTag, Map<ClanPlayer, Member> discordClanPlayers)
+    private void validateChannel(@NotNull String clanTag)
             throws InvalidChannelException, ChannelExistsException, ChannelsLimitException {
         Clan clan = clanManager.getClan(clanTag);
         if (clan == null) {
@@ -540,6 +543,7 @@ public class DiscordHook implements Listener {
             throw new InvalidChannelException("Clan %s is not verified or permanent", clanTag);
         }
 
+        Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clan);
         if (discordClanPlayers.size() == 0) {
             throw new InvalidChannelException("Clan %s doesn't have any linked players", clanTag);
         }
@@ -555,14 +559,10 @@ public class DiscordHook implements Listener {
         if (channelExists(clanTag)) {
             throw new ChannelExistsException("Channel %s is already exist", clanTag);
         }
-
-        if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
-            throw new ChannelsLimitException();
-        }
     }
 
     @NotNull
-    private Map<ClanPlayer, Member> getDiscordPlayers(Clan clan) {
+    private Map<ClanPlayer, Member> getDiscordPlayers(@NotNull Clan clan) {
         Map<ClanPlayer, Member> discordClanPlayers = new HashMap<>();
         for (ClanPlayer cp : clan.getMembers()) {
             Member member = getMember(cp);
