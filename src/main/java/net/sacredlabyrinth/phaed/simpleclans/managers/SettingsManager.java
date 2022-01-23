@@ -531,6 +531,7 @@ public final class SettingsManager {
         DISCORDCHAT_TEXT_CATEGORY_IDS("discordchat.text.category-ids"),
         DISCORDCHAT_TEXT_WHITELIST("discordchat.text.whitelist"),
         DISCORDCHAT_TEXT_LIMIT("discordchat.text.clans-limit", 100),
+        DISCORDCHAT_MINIMUM_LINKED_PLAYERS("discordchat.min-linked-players-to-create", 3),
         /*
         ================
         > Purge Settings
