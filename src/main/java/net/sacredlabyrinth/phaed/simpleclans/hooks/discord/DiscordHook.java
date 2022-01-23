@@ -406,24 +406,32 @@ public class DiscordHook implements Listener {
     /**
      * Deletes channel from SimpleClans categories.
      * If there are no channels, removes category as well.
+     *
+     * @return true, if channel was deleted and false if not.
      */
-    public void deleteChannel(@NotNull String channelName) {
-        for (Category category : getCachedCategories()) {
-            if (category.getTextChannels().size() > 0) {
-                for (TextChannel textChannel : category.getTextChannels()) {
-                    if (textChannel.getName().equals(channelName)) {
-                        textChannel.delete().complete();
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean deleteChannel(@NotNull String channelName) {
+        if (channelExists(channelName)) {
+            for (Category category : getCachedCategories()) {
+                if (category.getTextChannels().size() > 0) {
+                    for (TextChannel textChannel : category.getTextChannels()) {
+                        if (textChannel.getName().equals(channelName)) {
+                            textChannel.delete().complete();
+                            return true;
+                        }
                     }
-                }
 
-                if (category.getTextChannels().size() == 0) {
-                    textCategories.remove(category.getId());
-                    settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
-                    settingsManager.save();
-                    category.delete().complete();
+                    if (category.getTextChannels().size() == 0) {
+                        textCategories.remove(category.getId());
+                        settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
+                        settingsManager.save();
+                        category.delete().complete();
+                    }
                 }
             }
         }
+
+        return false;
     }
 
     /**
@@ -481,10 +489,8 @@ public class DiscordHook implements Listener {
                 validateChannel(clanTag);
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
+                deleteChannel(clanTag);
 
-                if (channelExists(clanTag)) {
-                    deleteChannel(clanTag);
-                }
             } catch (ChannelExistsException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
             }
