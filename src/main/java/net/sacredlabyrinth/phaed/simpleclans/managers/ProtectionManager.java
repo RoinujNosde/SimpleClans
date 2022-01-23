@@ -105,10 +105,8 @@ public class ProtectionManager {
     }
 
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
-        debug(String.format("Action %s, Player %s (%s), Other Player %s", action, player, player.getUniqueId(), other));
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
-                debug(String.valueOf(owner));
                 if (owner == null) {
                     continue;
                 }
@@ -120,12 +118,10 @@ public class ProtectionManager {
                 }
                 if (isWarringAndAllowed(action, owner, involved) ||
                         isSameClanAndAllowed(action, owner, involved, land.getId())) {
-                    debug("Allowed action");
                     return true;
                 }
             }
         }
-        debug("Denied action");
         return false;
     }
 
