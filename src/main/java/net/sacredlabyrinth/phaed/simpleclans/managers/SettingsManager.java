@@ -151,7 +151,9 @@ public final class SettingsManager {
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
-            return disallowedTag.equalsIgnoreCase(word);
+            if (disallowedTag.equalsIgnoreCase(word)) {
+                return true;
+            }
         }
 
         return word.equalsIgnoreCase(getString(COMMANDS_CLAN)) || word.equalsIgnoreCase(getString(COMMANDS_MORE)) ||
@@ -228,6 +230,7 @@ public final class SettingsManager {
         List<String> bannedPlayers = getStringList(BANNED_PLAYERS);
         bannedPlayers.remove(playerUniqueId.toString());
         set(BANNED_PLAYERS, bannedPlayers);
+        save();
     }
 
     public boolean isActionAllowedInWar(@NotNull ProtectionManager.Action action) {
@@ -292,6 +295,7 @@ public final class SettingsManager {
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by", "kdr"),
         LORE_LENGTH("settings.lore-length", 36),
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
+        PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
         /*
         ================
         > Tag Settings
@@ -307,7 +311,7 @@ public final class SettingsManager {
         TAG_MIN_LENGTH("tag.min-length", 2),
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
-        TAG_SEPARATOR_char("tag.separator.char", " ."),
+        TAG_SEPARATOR_CHAR("tag.separator.char", " ."),
         /*
         ================
         > War and Protection Settings
@@ -486,11 +490,11 @@ public final class SettingsManager {
         > BB Settings
         ================
          */
-        BB_COLOR("clanchat.color", "e"),
-        BB_ACCENT_COLOR("clanchat.accent-color", "8"),
-        BB_SHOW_ON_LOGIN("clanchat.show-on-login", true),
-        BB_SIZE("clanchat.size", 6),
-        BB_LOGIN_SIZE("clanchat.login-size", 6),
+        BB_COLOR("bb.color", "e"),
+        BB_ACCENT_COLOR("bb.accent-color", "8"),
+        BB_SHOW_ON_LOGIN("bb.show-on-login", true),
+        BB_SIZE("bb.size", 6),
+        BB_LOGIN_SIZE("bb.login-size", 6),
         /*
         ================
         > Ally Chat Settings
@@ -527,6 +531,7 @@ public final class SettingsManager {
         DISCORDCHAT_TEXT_CATEGORY_IDS("discordchat.text.category-ids"),
         DISCORDCHAT_TEXT_WHITELIST("discordchat.text.whitelist"),
         DISCORDCHAT_TEXT_LIMIT("discordchat.text.clans-limit", 100),
+        DISCORDCHAT_MINIMUM_LINKED_PLAYERS("discordchat.min-linked-players-to-create", 3),
         /*
         ================
         > Purge Settings

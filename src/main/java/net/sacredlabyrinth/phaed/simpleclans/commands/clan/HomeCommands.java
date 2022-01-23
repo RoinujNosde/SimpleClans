@@ -78,15 +78,15 @@ public class HomeCommands extends BaseCommand {
     @Conditions("rank:name=HOME_TP")
     @Description("{@@command.description.home.tp}")
     public void teleport(Player player, Clan clan, ClanPlayer cp) {
-        Location loc = clan.getHomeLocation();
+        Location homeLocation = clan.getHomeLocation();
 
-        if (loc == null) {
+        if (homeLocation == null) {
             ChatBlock.sendMessage(player, RED + lang("hombase.not.set", player));
             return;
         }
 
         if (cm.purchaseHomeTeleport(player)) {
-            plugin.getTeleportManager().addPlayer(player, clan.getHomeLocation(), clan.getName());
+            plugin.getTeleportManager().addPlayer(player, homeLocation, clan.getName());
         }
     }
 

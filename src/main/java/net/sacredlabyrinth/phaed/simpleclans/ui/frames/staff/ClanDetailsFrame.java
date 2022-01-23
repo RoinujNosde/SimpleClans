@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -83,7 +84,7 @@ public class ClanDetailsFrame extends SCFrame {
         lore.add(lang("gui.staffclandetails.home.lore.set", getViewer()));
 
         SCComponent home = new SCComponentImpl(lang("gui.clandetails.home.title", getViewer()), lore,
-                XMaterial.MAGENTA_BED, 30);
+                Objects.requireNonNull(XMaterial.MAGENTA_BED.parseMaterial()), 30);
         home.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
                 "mod home tp", false, clan.getTag()));
         home.setPermission(ClickType.LEFT, "simpleclans.mod.hometp");

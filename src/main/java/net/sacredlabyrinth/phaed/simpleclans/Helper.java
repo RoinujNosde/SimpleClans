@@ -309,40 +309,6 @@ public class Helper {
     }
 
     /**
-     * Converts a string array to a string with custom separators
-     *
-     * @param args
-     * @param sep
-     * @return
-     */
-    public static String toMessage(String[] args, String sep) {
-        String out = "";
-
-        for (String arg : args) {
-            out += arg + ", ";
-        }
-
-        return stripTrailing(out, ", ");
-    }
-
-    /**
-     * Converts a string array to a string with custom separators
-     *
-     * @param args
-     * @param sep
-     * @return
-     */
-    public static String toMessage(List<String> args, String sep) {
-        String out = "";
-
-        for (String arg : args) {
-            out += arg + sep;
-        }
-
-        return stripTrailing(out, sep);
-    }
-
-    /**
      * Cleans up the tag from color codes and makes it lowercase
      *
      * @param tag
@@ -350,33 +316,6 @@ public class Helper {
      */
     public static String cleanTag(String tag) {
         return stripColors(tag).toLowerCase();
-    }
-
-    /**
-     * Removes trailing separators
-     *
-     * @param msg
-     * @param sep
-     * @return
-     */
-    public static String stripTrailing(String msg, String sep) {
-        if (msg.length() < sep.length()) {
-            return msg;
-        }
-
-        String out = msg;
-        String first = msg.substring(0, sep.length());
-        String last = msg.substring(msg.length() - sep.length());
-
-        if (first.equals(sep)) {
-            out = msg.substring(sep.length());
-        }
-
-        if (last.equals(sep)) {
-            out = msg.substring(0, msg.length() - sep.length());
-        }
-
-        return out;
     }
 
     /**

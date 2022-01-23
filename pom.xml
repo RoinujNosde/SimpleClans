@@ -142,7 +142,7 @@
         <dependency>
             <groupId>io.papermc</groupId>
             <artifactId>paperlib</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.8-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -222,7 +222,13 @@
         <dependency>
             <groupId>com.discordsrv</groupId>
             <artifactId>discordsrv</artifactId>
-            <version>1.23.0</version>
+            <version>1.24.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>biz.princeps</groupId>
+            <artifactId>landlord-latest</artifactId>
+            <version>4.351</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -264,6 +270,10 @@
         <repository>
             <id>Scarsz-Nexus</id>
             <url>https://nexus.scarsz.me/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>eldonexus</id>
+            <url>https://eldonexus.de/repository/maven-public</url>
         </repository>
         <repository>
             <id>jitpack.io</id>

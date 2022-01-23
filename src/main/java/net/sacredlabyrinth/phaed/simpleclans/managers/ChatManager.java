@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
+import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
@@ -10,7 +11,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +32,8 @@ import static org.bukkit.Bukkit.getPluginManager;
 public final class ChatManager {
 
     private final SimpleClans plugin;
-
-    private DiscordHook discordHook;
     private final Set<ChatHandler> handlers = new HashSet<>();
+    private DiscordHook discordHook;
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -43,6 +43,7 @@ public final class ChatManager {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void registerDiscord(DiscordReadyEvent event) {
         discordHook = new DiscordHook(plugin);
@@ -52,6 +53,11 @@ public final class ChatManager {
 
     @Nullable
     public DiscordHook getDiscordHook() {
+        // Manually instantiate, if JDA did load faster than SC
+        if (discordHook == null && DiscordSRV.getPlugin().getJda().getStatus() == JDA.Status.CONNECTED) {
+            registerDiscord(new DiscordReadyEvent());
+        }
+
         return discordHook;
     }
 
@@ -66,10 +72,10 @@ public final class ChatManager {
                     return;
                 }
 
-                receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allymember ->
-                        !allymember.isMutedAlly()).collect(Collectors.toList()));
-                receivers.addAll(clan.getOnlineMembers().stream().filter(allymember ->
-                        !allymember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allyMember ->
+                        !allyMember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(clan.getOnlineMembers().stream().filter(allyMember ->
+                        !allyMember.isMutedAlly()).collect(Collectors.toList()));
                 break;
             case CLAN:
                 if (!plugin.getSettingsManager().is(CLANCHAT_ENABLE)) {
@@ -81,7 +87,7 @@ public final class ChatManager {
                         collect(Collectors.toList()));
         }
 
-        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
+        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, ChatUtils.stripColors(message), receivers);
 
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {
@@ -97,7 +103,6 @@ public final class ChatManager {
     public String parseChatFormat(String format, SCMessage message, Map<String, String> placeholders) {
         SettingsManager sm = plugin.getSettingsManager();
         ClanPlayer sender = message.getSender();
-        Channel channel = message.getChannel();
 
         String leaderColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_LEADER_COLOR"));
         String memberColor = sm.getColored(ConfigField.valueOf(message.getChannel() + "CHAT_MEMBER_COLOR"));
@@ -116,6 +121,7 @@ public final class ChatManager {
 
         String parsedFormat = ChatUtils.parseColors(format)
                 .replace("%clan%", Objects.requireNonNull(sender.getClan()).getColorTag())
+                .replace("%clean-tag%", sender.getClan().getTag())
                 .replace("%nick-color%",
                         (sender.isLeader() ? leaderColor : sender.isTrusted() ? trustedColor : memberColor))
                 .replace("%player%", sender.getName())

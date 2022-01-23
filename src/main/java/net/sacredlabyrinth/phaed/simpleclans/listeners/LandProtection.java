@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.*;
@@ -60,7 +61,7 @@ public class LandProtection implements Listener {
     public void registerCreateLandEvent(ProtectionProvider provider, @Nullable Class<? extends Event> createLandEvent) {
         if (createLandEvent == null) return;
         Bukkit.getPluginManager().registerEvent(createLandEvent, this, EventPriority.NORMAL, (listener, event) -> {
-            if (!createLandEvent.isInstance(createLandEvent)) {
+            if (!createLandEvent.isInstance(event)) {
                 return;
             }
             Player player = provider.getPlayer(event);
@@ -260,6 +261,9 @@ public class LandProtection implements Listener {
     private @Nullable Location getLocation(@Nullable InventoryHolder holder) {
         if (holder instanceof BlockState) {
             return ((BlockState) holder).getLocation();
+        }
+        if (holder instanceof DoubleChest) {
+            return ((DoubleChest) holder).getLocation();
         }
         return null;
     }

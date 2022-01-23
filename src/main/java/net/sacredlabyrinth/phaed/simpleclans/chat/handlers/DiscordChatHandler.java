@@ -5,7 +5,8 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import static org.bukkit.Bukkit.getPluginManager;
 public class DiscordChatHandler implements ChatHandler {
 
     @Override
-    public void sendMessage(SCMessage message) {
+    public void sendMessage(@NotNull SCMessage message) {
         if (message.getChannel() != CLAN) {
             return;
         }
@@ -37,7 +38,7 @@ public class DiscordChatHandler implements ChatHandler {
         }
         
         DiscordHook discordHook = Objects.requireNonNull(chatManager.getDiscordHook(), "DiscordHook cannot be null");
-        Optional<TextChannel> channel = discordHook.getChannel(clan.getTag());
+        Optional<TextChannel> channel = discordHook.getCachedChannel(clan.getTag());
         channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
     }
 

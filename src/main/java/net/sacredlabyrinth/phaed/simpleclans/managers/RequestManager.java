@@ -18,6 +18,7 @@ import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUEST_FREQUENCY;
+import static org.bukkit.ChatColor.RED;
 
 /**
  * @author phaed
@@ -207,7 +208,7 @@ public final class RequestManager {
             clan.addPlayerToClan(cp);
         } else {
             ChatBlock.sendMessageKey(Bukkit.getPlayerExact(invited), "denied.invitation", clan.getName());
-            clan.leaderAnnounce(ChatColor.RED + lang("membership.invitation", invited));
+            clan.leaderAnnounce(RED + lang("membership.invitation", invited));
         }
 
         requests.remove(req.getTarget().toLowerCase());
@@ -258,7 +259,7 @@ public final class RequestManager {
     			if (!req.votingFinished()) {
     				return;
     			}
-				processDisband(requestClan, denies);
+                processDisband(requester, requestClan, denies);
                 break;
     		default:
     			return;
@@ -269,12 +270,12 @@ public final class RequestManager {
         req.cleanVotes();
     }
 
-	private void processDisband(Clan requestClan, List<String> denies) {
+    private void processDisband(ClanPlayer requester, Clan requestClan, List<String> denies) {
 		if (denies.isEmpty()) {
-		    requestClan.disband();
+            requestClan.disband(requester.toPlayer(), true, false);
 		} else {
-		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-		    requestClan.leaderAnnounce(ChatColor.RED + lang("clan.deletion", deniers));
+		    String deniers = String.join(", ", denies);
+		    requestClan.leaderAnnounce(RED + lang("clan.deletion", deniers));
 		}
 	}
 
@@ -284,22 +285,21 @@ public final class RequestManager {
 		    requestClan.addBb(lang("leaders"), ChatColor.AQUA + lang("promoted.to.leader", promotedName));
 		    requestClan.promote(targetPlayer);
 		} else {
-		    String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
-		    requestClan.leaderAnnounce(ChatColor.RED + lang("denied.the.promotion", deniers, promotedName));
+		    String deniers = String.join(", ", denies);
+		    requestClan.leaderAnnounce(RED + lang("denied.the.promotion", deniers, promotedName));
 		}
 	}
 
 	private void processDemote(Request req, Clan requestClan, UUID targetPlayer, List<String> denies) {
 		String demotedName = req.getTarget();
-
 		if (denies.isEmpty()) {
 			requestClan.addBb(lang("leaders"), ChatColor.AQUA
 					+ lang("demoted.back.to.member", demotedName));
 			requestClan.demote(targetPlayer);
 		} else {
-			String deniers = Helper.toMessage(Helper.toArray(denies), ", ");
+			String deniers = String.join(", ", denies);
 			requestClan.leaderAnnounce(
-					ChatColor.RED + lang("denied.demotion", deniers, demotedName));
+					RED + lang("denied.demotion", deniers, demotedName));
 		}
 	}
 
@@ -373,7 +373,7 @@ public final class RequestManager {
         for (Request req : new LinkedList<>(requests.values())) {
             for (ClanPlayer cp : req.getAcceptors()) {
                 if (cp.getName().equalsIgnoreCase(playerName)) {
-                    req.getClan().leaderAnnounce(lang("signed.off.request.cancelled", ChatColor.RED + playerName, req.getType()));
+                    req.getClan().leaderAnnounce(lang("signed.off.request.cancelled", RED + playerName, req.getType()));
                     requests.remove(req.getClan().getTag());
                     break;
                 }

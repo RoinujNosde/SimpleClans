@@ -241,7 +241,7 @@ public class ClanCommands extends BaseCommand {
     @Subcommand("%rival %add")
     @CommandPermission("simpleclans.leader.rival")
     @Conditions("verified|rivable|minimum_to_rival|rank:name=RIVAL_ADD")
-    @CommandCompletion("@clans")
+    @CommandCompletion("@clans:hide_own")
     @Description("{@@command.description.rival.add}")
     public void addRival(Player player, Clan issuerClan, @Conditions("verified|different") @Name("clan") ClanInput rival) {
         Clan rivalInput = rival.getClan();
@@ -286,7 +286,7 @@ public class ClanCommands extends BaseCommand {
     @Subcommand("%ally %add")
     @CommandPermission("simpleclans.leader.ally")
     @Conditions("verified|rank:name=ALLY_ADD|minimum_to_ally")
-    @CommandCompletion("@clans")
+    @CommandCompletion("@clans:hide_own")
     @Description("{@@command.description.ally.add}")
     public void addAlly(Player player,
                         ClanPlayer cp,

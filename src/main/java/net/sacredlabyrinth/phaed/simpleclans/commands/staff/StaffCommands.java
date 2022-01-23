@@ -2,13 +2,15 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.staff;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
-import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
@@ -47,31 +49,32 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@players @clans")
     @HelpSearchTags("move put")
     @Description("{@@command.description.place}")
-    public void place(CommandSender sender, @Name("player") OnlinePlayer onlinePlayer, @Name("clan") ClanInput clan) {
-        Player player = onlinePlayer.getPlayer();
-        ClanPlayer oldCp = cm.getClanPlayer(player);
-        Clan newClanInput = clan.getClan();
+    public void place(CommandSender sender, @Name("player") OfflinePlayer offlinePlayer, @Name("clan") ClanInput clanInput) {
+        UUID uuid = offlinePlayer.getUniqueId();
+        ClanPlayer oldCp = cm.getClanPlayer(uuid);
+        Clan newClan = clanInput.getClan();
+
         if (oldCp != null) {
             Clan oldClan = Objects.requireNonNull(oldCp.getClan());
 
-            if (oldClan.equals(newClanInput)) {
+            if (oldClan.equals(newClan)) {
                 ChatBlock.sendMessage(sender, lang("player.already.in.this.clan", sender));
                 return;
             }
-            if (!oldClan.isPermanent() && oldClan.isLeader(player) && oldClan.getLeaders().size() <= 1) {
+            if (!oldClan.isPermanent() && oldClan.isLeader(uuid) && oldClan.getLeaders().size() <= 1) {
                 ChatBlock.sendMessage(sender, RED + lang("you.cannot.move.the.last.leader", sender));
                 return;
             } else {
-                oldClan.addBb(player.getName(), AQUA + lang("0.has.resigned", player.getName()));
-                oldClan.removePlayerFromClan(player.getUniqueId());
+                oldClan.addBb(oldCp.getName(), AQUA + lang("0.has.resigned", oldCp.getName()));
+                oldClan.removePlayerFromClan(uuid);
             }
         }
 
-        ClanPlayer cp = Objects.requireNonNull(cm.getCreateClanPlayerUUID(player.getName()));
+        ClanPlayer cp = cm.getCreateClanPlayer(uuid);
 
-        newClanInput.addBb(AQUA + lang("joined.the.clan", player.getName()));
-        cm.serverAnnounce(lang("has.joined", player.getName(), newClanInput.getName()));
-        newClanInput.addPlayerToClan(cp);
+        newClan.addBb(AQUA + lang("joined.the.clan", cp.getName()));
+        cm.serverAnnounce(lang("has.joined", cp.getName(), newClan.getName()));
+        newClan.addPlayerToClan(cp);
     }
 
     @Subcommand("%mod %modtag")
@@ -255,7 +258,7 @@ public class StaffCommands extends BaseCommand {
     public void kick(CommandSender sender, @Conditions("clan_member") @Name("player") ClanPlayerInput cp) {
         ClanPlayer clanPlayer = cp.getClanPlayer();
         Clan clan = Objects.requireNonNull(clanPlayer.getClan());
-        if (clan.getLeaders().size() == 1) {
+        if (clanPlayer.isLeader() && clan.getLeaders().size() == 1) {
             ChatBlock.sendMessageKey(sender, "cannot.kick.last.leader");
             return;
         }
