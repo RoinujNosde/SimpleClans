@@ -555,7 +555,7 @@ public class DiscordHook implements Listener {
         }
 
         if (discordClanPlayers.size() < settingsManager.getInt(DISCORDCHAT_MINIMUM_LINKED_PLAYERS)) {
-            throw new InvalidChannelException("Clan %s doesn't have minimum linked players");
+            throw new InvalidChannelException("Clan %s doesn't have minimum linked players", clanTag);
         }
 
         if (!whitelist.isEmpty() && !whitelist.contains(clan.getTag())) {
