@@ -10,8 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class ClanMembersCompletion extends AbstractSyncCompletion {
     public ClanMembersCompletion(@NotNull SimpleClans plugin) {
         super(plugin);
@@ -23,7 +25,11 @@ public class ClanMembersCompletion extends AbstractSyncCompletion {
         if (player != null) {
             Clan clan = clanManager.getClanByPlayerUniqueId(player.getUniqueId());
             if (clan != null) {
-                return clan.getMembers().stream().map(ClanPlayer::getName).collect(Collectors.toList());
+                List<String> list = clan.getMembers().stream().map(ClanPlayer::getName).collect(Collectors.toList());
+                if (c.hasConfig("hide_own")) {
+                    list.remove(player.getName());
+                }
+                return list;
             }
         }
         return Collections.emptyList();
