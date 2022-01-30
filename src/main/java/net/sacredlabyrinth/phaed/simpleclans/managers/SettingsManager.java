@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import co.aikar.commands.annotation.Dependency;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -312,6 +313,8 @@ public final class SettingsManager {
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
         TAG_SEPARATOR_CHAR("tag.separator.char", " ."),
+        @Deprecated
+        TAG_SEPARATOR_char("tag.separator.char", " ."),
         /*
         ================
         > War and Protection Settings
