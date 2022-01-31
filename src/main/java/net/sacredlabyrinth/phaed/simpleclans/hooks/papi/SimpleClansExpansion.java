@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.papi;
 
+import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
@@ -20,9 +21,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.bukkit.ChatColor.*;
-
-public class SimpleClansExpansion extends PlaceholderExpansion implements Relational {
+public class SimpleClansExpansion extends PlaceholderExpansion implements Relational, Configurable {
 
     private static final Pattern TOP_CLANS_PATTERN = Pattern.compile("(?<strip>^topclans_(?<position>\\d+)_)clan_");
     private static final Pattern TOP_PLAYERS_PATTERN = Pattern.compile("(?<strip>^topplayers_(?<position>\\d+)_)");
@@ -77,6 +76,18 @@ public class SimpleClansExpansion extends PlaceholderExpansion implements Relati
         return true;
     }
 
+
+    @Override
+    public Map<String, Object> getDefaults() {
+        Map<String, Object> defaults = new HashMap<>();
+
+        defaults.put("color.rival", "&c");
+        defaults.put("color.ally", "&b");
+        defaults.put("color.same_clan", "&a");
+
+        return defaults;
+    }
+
     @Override
     @Nullable
     public String onPlaceholderRequest(Player player1, Player player2, String params) {
@@ -90,13 +101,13 @@ public class SimpleClansExpansion extends PlaceholderExpansion implements Relati
             }
             //noinspection ConstantConditions -- getClanPlayer != null == getClan() != null
             if (cp1.getClan().isMember(player2)) {
-                return GREEN.toString();
+                return getString("color.same_clan", null);
             }
             if (cp1.isRival(player2)) {
-                return RED.toString();
+                return getString("color.rival", null);
             }
             if (cp1.isAlly(player2)) {
-                return AQUA.toString();
+                return getString("color.ally", null);
             }
             return "";
         }
