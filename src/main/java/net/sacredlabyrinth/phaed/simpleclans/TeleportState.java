@@ -1,32 +1,31 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_TELEPORT_DELAY;
 
 public class TeleportState {
-    private final UUID playerUniqueId;
-    private final Location playerLocation;
+
+    private final OfflinePlayer offlinePlayer;
+    private final Location origin;
     private final Location destination;
     private int counter;
     private final String clanName;
     private boolean processing;
 
-    public TeleportState(Player player, Location destination, String clanName) {
+    public TeleportState(Player player, Location destination, String clanName, int counter) {
+        this.offlinePlayer = player;
         this.destination = destination;
-        this.playerLocation = player.getLocation();
+        this.origin = player.getLocation();
         this.clanName = clanName;
-        this.counter = SimpleClans.getInstance().getSettingsManager().getInt(CLAN_TELEPORT_DELAY);
-        this.playerUniqueId = player.getUniqueId();
+        this.counter = counter;
     }
 
 
     public Location getLocation() {
-        return this.playerLocation;
+        return this.origin;
     }
 
     public boolean isTeleportTime() {
@@ -44,7 +43,7 @@ public class TeleportState {
      * @return the player
      */
     public @Nullable Player getPlayer() {
-    	return SimpleClans.getInstance().getServer().getPlayer(this.playerUniqueId);
+    	return offlinePlayer.getPlayer();
     }
 
     /**
@@ -76,7 +75,4 @@ public class TeleportState {
         this.processing = processing;
     }
 
-    public UUID getUniqueId() {
-        return this.playerUniqueId;
-    }
 }

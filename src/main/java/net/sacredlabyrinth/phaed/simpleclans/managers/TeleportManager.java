@@ -41,7 +41,10 @@ public final class TeleportManager {
      */
     public void addPlayer(Player player, Location destination, String clanName) {
         int secs = SimpleClans.getInstance().getSettingsManager().getInt(CLAN_TELEPORT_DELAY);
-        waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName));
+        if (plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
+            secs = 0;
+        }
+        waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName, secs));
 
         if (secs > 0) {
             ChatBlock.sendMessage(player, AQUA
