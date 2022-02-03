@@ -479,6 +479,7 @@ public final class SettingsManager {
         CLANCHAT_PLAYER_BRACKET_LEFT("clanchat.player-bracket.left", ""),
         CLANCHAT_PLAYER_BRACKET_RIGHT("clanchat.player-bracket.right", ""),
         CLANCHAT_MESSAGE_COLOR("clanchat.message-color", "b"),
+        CLANCHAT_LISTENER_PRIORITY("clanchat.listener-priority", "LOW"),
         /*
         ================
         > Request Settings

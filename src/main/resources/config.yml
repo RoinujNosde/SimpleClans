@@ -181,6 +181,7 @@ clanchat:
     leader-color: '4'
     trusted-color: 'f'
     member-color: '7'
+    listener-priority: LOW
 request:
     message-color: b
     ask-frequency-secs: 60
