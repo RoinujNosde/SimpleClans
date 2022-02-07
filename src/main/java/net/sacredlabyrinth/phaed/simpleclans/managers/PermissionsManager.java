@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
@@ -63,7 +62,7 @@ public final class PermissionsManager {
     public void loadPermissions() {
         permissions.clear();
         for (Clan clan : plugin.getClanManager().getClans()) {
-            permissions.put(clan.getTag(), SimpleClans.getInstance().getConfig().getStringList("permissions." + clan.getTag()));
+            permissions.put(clan.getTag(), SimpleClans.getInstance().getSettingsManager().getConfig().getStringList("permissions." + clan.getTag()));
         }
     }
 

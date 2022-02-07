@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import co.aikar.commands.annotation.Dependency;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -31,7 +30,7 @@ public final class SettingsManager {
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
-        this.config = plugin.getConfig();
+        config = plugin.getConfig();
         config.options().copyDefaults(true);
         configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
         loadAndSave();
@@ -383,6 +382,8 @@ public final class SettingsManager {
         ECONOMY_PURCHASE_HOME_TELEPORT_SET("economy.purchase-home-teleport-set", false),
         ECONOMY_REGROUP_PRICE("economy.home-regroup-price", 5.0),
         ECONOMY_PURCHASE_HOME_REGROUP("economy.purchase-home-regroup", false),
+        ECONOMY_PURCHASE_DISCORD_CREATE("purchase-discord-create", false),
+        ECONOMY_DISCORD_CREATION_PRICE("discord-creation-price", 1000.0),
         ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup", true),
         ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup", true),
         ECONOMY_MONEY_PER_KILL("economy.money-per-kill", false),
@@ -584,7 +585,7 @@ public final class SettingsManager {
 
         ConfigField(String path) {
             this.path = path;
-            this.defaultValue = null;
+            defaultValue = null;
         }
     }
 }

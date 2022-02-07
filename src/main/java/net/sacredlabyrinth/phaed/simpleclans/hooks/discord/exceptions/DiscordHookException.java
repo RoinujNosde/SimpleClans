@@ -1,13 +1,27 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions;
 
-import org.jetbrains.annotations.NotNull;
-
 public class DiscordHookException extends Exception {
+
+    private String translateKey;
+    private String clanTag;
+
     public DiscordHookException() {
-        super();
     }
 
-    public DiscordHookException(String message, @NotNull Object... args) {
-        super(String.format(message, args));
+    public DiscordHookException(String translateKey) {
+        this.translateKey = translateKey;
+    }
+
+    public DiscordHookException(String translateKey, String clanTag) {
+        this(translateKey);
+        this.clanTag = clanTag;
+    }
+
+    public String getTranslateKey() {
+        return translateKey;
+    }
+
+    public String getClanTag() {
+        return clanTag;
     }
 }

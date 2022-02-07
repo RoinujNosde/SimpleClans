@@ -131,6 +131,8 @@ permissions:
     description: Can clear his clan's bb
   simpleclans.leader.setbanner:
     description: Can set his clan's banner
+  simpleclans.leader.discord.create:
+    description: Can create discord channel for his clan
   simpleclans.member.land:
     description: Can use land commands
   simpleclans.member.kills:

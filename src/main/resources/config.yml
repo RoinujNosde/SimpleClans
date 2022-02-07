@@ -112,6 +112,8 @@ economy:
     purchase-home-teleport-set: false
     home-regroup-price: 5.0
     purchase-home-regroup: false
+    discord-creation-price: 1000.0
+    purchase-discord-create: false
     unique-tax-on-regroup: true
     issuer-pays-regroup: true
     money-per-kill: false

@@ -57,7 +57,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  * <ul>
  *     <li>Clan creation/deletion</li>
  *     <li>ClanPlayer joining/resigning</li>
- *     <li>Player linking</li>
+ *     <li>Player linking/unlinking</li>
  *     <li>ClanPlayer promoting/demoting</li>
  * </ul>
  * <p>
@@ -166,7 +166,7 @@ public class DiscordHook implements Listener {
             createChannel(event.getClan().getTag());
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
-            SimpleClans.debug(ex.getMessage());
+            SimpleClans.debug(lang(ex.getTranslateKey(), ex.getClanTag()));
         }
     }
 
@@ -355,7 +355,7 @@ public class DiscordHook implements Listener {
         Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clanManager.getClan(clanTag));
 
         if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
-            throw new ChannelsLimitException();
+            throw new ChannelsLimitException("discord.reached.channels.limit");
         }
 
         Category availableCategory = getCachedCategories().stream().
@@ -363,7 +363,7 @@ public class DiscordHook implements Listener {
                 findAny().orElseGet(this::createCategory);
 
         if (availableCategory == null) {
-            throw new CategoriesLimitException();
+            throw new CategoriesLimitException("discord.reached.category.limit");
         }
 
         TextChannel textChannel = availableCategory.createTextChannel(clanTag).complete();
@@ -488,11 +488,11 @@ public class DiscordHook implements Listener {
             try {
                 validateChannel(clanTag);
             } catch (InvalidChannelException ex) {
-                SimpleClans.debug(ex.getMessage());
+                SimpleClans.debug(lang(ex.getTranslateKey(), ex.getClanTag()));
                 deleteChannel(clanTag);
 
             } catch (ChannelExistsException | ChannelsLimitException ex) {
-                SimpleClans.debug(ex.getMessage());
+                SimpleClans.debug(lang(ex.getTranslateKey(), ex.getClanTag()));
             }
         }
     }
@@ -522,7 +522,7 @@ public class DiscordHook implements Listener {
             try {
                 createChannel(clan);
             } catch (CategoriesLimitException | ChannelsLimitException ex) {
-                SimpleClans.debug(ex.getMessage());
+                SimpleClans.debug(lang(ex.getTranslateKey(), ex.getClanTag()));
                 break;
             } catch (InvalidChannelException | ChannelExistsException ignored) {
                 // There is already debug on #clearChannels
@@ -543,27 +543,27 @@ public class DiscordHook implements Listener {
             throws InvalidChannelException, ChannelExistsException, ChannelsLimitException {
         Clan clan = clanManager.getClan(clanTag);
         if (clan == null) {
-            throw new InvalidChannelException("Clan %s is null", clanTag);
+            throw new InvalidChannelException();
         }
         if (!clan.isVerified() && !clan.isPermanent()) {
-            throw new InvalidChannelException("Clan %s is not verified or permanent", clanTag);
+            throw new InvalidChannelException();
         }
 
         Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clan);
         if (discordClanPlayers.size() == 0) {
-            throw new InvalidChannelException("Clan %s doesn't have any linked players", clanTag);
+            throw new InvalidChannelException("clan.doesnt.have.any.linked.player", clanTag);
         }
 
         if (discordClanPlayers.size() < settingsManager.getInt(DISCORDCHAT_MINIMUM_LINKED_PLAYERS)) {
-            throw new InvalidChannelException("Clan %s doesn't have minimum linked players", clanTag);
+            throw new InvalidChannelException("clan.doesnt.have.minimum.linked.player", clanTag);
         }
 
         if (!whitelist.isEmpty() && !whitelist.contains(clan.getTag())) {
-            throw new InvalidChannelException("Clan %s is not listed on the whitelist", clanTag);
+            throw new InvalidChannelException("clan.is.not.on.the.whitelist", clanTag);
         }
 
         if (channelExists(clanTag)) {
-            throw new ChannelExistsException("Channel %s is already exist", clanTag);
+            throw new ChannelExistsException("channel.is.already.exit", clanTag);
         }
     }
 
@@ -616,7 +616,7 @@ public class DiscordHook implements Listener {
             createChannel(clan.getTag());
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
-            SimpleClans.debug(ex.getMessage());
+            SimpleClans.debug(lang(ex.getTranslateKey(), ex.getClanTag()));
         }
 
         return true;
