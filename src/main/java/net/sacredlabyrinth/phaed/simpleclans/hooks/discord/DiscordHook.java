@@ -517,7 +517,7 @@ public class DiscordHook implements Listener {
     }
 
     private void createChannels() {
-        if (settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
+        if (!settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
             return;
         }
 
