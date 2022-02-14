@@ -525,6 +525,7 @@ public final class SettingsManager {
         ================
          */
         DISCORDCHAT_ENABLE("discordchat.enable", false),
+        DISCORDCHAT_AUTO_CREATION("discordchat.auto-creation", true),
         DISCORDCHAT_FORMAT_TO("discordchat.discord-format", "%player% » %message%"),
         DISCORDCHAT_FORMAT("discordchat.format", "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
         DISCORDCHAT_SPYFORMAT("discordchat.spy-format", "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),

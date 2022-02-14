@@ -204,6 +204,7 @@ allychat:
     member-color: '7'
 discordchat:
     enable: false
+    auto-creation: true
     discord-format: "%player% » %message%"
     format: "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"
     spy-format: "&8[Spy] [&9D&8] <%clean-tag%&8> <%nick-color%*&8%player%>&8 %rank%&8: %message%"

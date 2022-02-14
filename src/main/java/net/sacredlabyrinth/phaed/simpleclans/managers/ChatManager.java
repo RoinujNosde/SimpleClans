@@ -134,6 +134,10 @@ public final class ChatManager {
                 : parsedFormat;
     }
 
+    public boolean isDiscordHookEnabled() {
+        return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
+    }
+
     private void registerHandlers() {
         Set<Class<? extends ChatHandler>> chatHandlers =
                 Helper.getSubTypesOf("net.sacredlabyrinth.phaed.simpleclans.chat.handlers", ChatHandler.class);
@@ -153,9 +157,5 @@ public final class ChatManager {
         return clan.getAllAllyMembers().stream().
                 filter(allyPlayer -> allyPlayer.toPlayer() != null).
                 collect(Collectors.toList());
-    }
-
-    private boolean isDiscordHookEnabled() {
-        return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
     }
 }
