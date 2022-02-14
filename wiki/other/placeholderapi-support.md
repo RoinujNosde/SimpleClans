@@ -88,6 +88,8 @@ Allies: aqua
 Rivals: red  
 Same clan: green
 
+The colors above can be changed in PlaceholderAPI's config.
+
 #### HolographicDisplays
 
 If you intend to use these placeholders with HolographicDisplays, remember to [download ](https://www.spigotmc.org/resources/18461/)the extension.
