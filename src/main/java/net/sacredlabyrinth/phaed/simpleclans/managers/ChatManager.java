@@ -38,7 +38,7 @@ public final class ChatManager {
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         registerHandlers();
-        if (discordSRVExists()) {
+        if (isDiscordHookEnabled()) {
             DiscordSRV.api.subscribe(this);
         }
     }
@@ -52,7 +52,7 @@ public final class ChatManager {
 
     @Nullable
     public DiscordHook getDiscordHook() {
-        if (discordSRVExists()) {
+        if (isDiscordHookEnabled()) {
             // Manually instantiate, if JDA did load faster than SC
             if (discordHook == null && DiscordSRV.getPlugin().getJda().getStatus() == JDA.Status.CONNECTED) {
                 registerDiscord(new DiscordReadyEvent());
@@ -155,7 +155,7 @@ public final class ChatManager {
                 collect(Collectors.toList());
     }
 
-    private boolean discordSRVExists() {
+    private boolean isDiscordHookEnabled() {
         return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
     }
 }

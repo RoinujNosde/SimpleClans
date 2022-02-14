@@ -205,7 +205,7 @@ public class LeaderCommands extends BaseCommand {
         try {
             discordHook.createChannel(clan.getTag());
         } catch (DiscordHookException ex) {
-            ChatBlock.sendMessageKey(player, ex.getTranslateKey(), ex.getClanTag());
+            ChatBlock.sendMessageKey(player, ex.getTranslateKey());
         }
     }
 }
