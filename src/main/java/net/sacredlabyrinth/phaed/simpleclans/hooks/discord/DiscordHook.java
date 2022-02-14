@@ -518,15 +518,17 @@ public class DiscordHook implements Listener {
 
     private void createChannels() {
         if (settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
-            for (String clan : clanTags) {
-                try {
-                    createChannel(clan);
-                } catch (CategoriesLimitException | ChannelsLimitException ex) {
-                    SimpleClans.debug(ex.getMessage());
-                    break;
-                } catch (InvalidChannelException | ChannelExistsException ignored) {
-                    // There is already debug on #clearChannels
-                }
+            return;
+        }
+
+        for (String clan : clanTags) {
+            try {
+                createChannel(clan);
+            } catch (CategoriesLimitException | ChannelsLimitException ex) {
+                SimpleClans.debug(ex.getMessage());
+                break;
+            } catch (InvalidChannelException | ChannelExistsException ignored) {
+                // There is already debug on #clearChannels
             }
         }
     }
