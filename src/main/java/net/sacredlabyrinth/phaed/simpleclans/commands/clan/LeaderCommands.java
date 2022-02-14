@@ -188,7 +188,11 @@ public class LeaderCommands extends BaseCommand {
     @Description("{@@command.description.discord.create}")
     @Conditions("verified")
     public void discord(Player player, Clan clan) {
-        DiscordHook discordHook = Objects.requireNonNull(chatManager.getDiscordHook(), "DiscordHook cannot be null");
+        DiscordHook discordHook = chatManager.getDiscordHook();
+        if (discordHook == null) {
+            ChatBlock.sendMessageKey(player, "discordhook.is.disabled");
+            return;
+        }
 
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
             double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
