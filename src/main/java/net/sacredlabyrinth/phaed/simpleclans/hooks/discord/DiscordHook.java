@@ -521,7 +521,7 @@ public class DiscordHook implements Listener {
             try {
                 createChannel(clan);
             } catch (CategoriesLimitException | ChannelsLimitException ex) {
-                SimpleClans.debug(lang(ex.getMessage()));
+                SimpleClans.debug(ex.getMessage());
                 break;
             } catch (InvalidChannelException | ChannelExistsException ignored) {
                 // There is already debug on #clearChannels
