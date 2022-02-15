@@ -1,10 +1,8 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions;
 
-import org.jetbrains.annotations.NotNull;
-
 public class ChannelExistsException extends DiscordHookException {
 
-    public ChannelExistsException(String message, @NotNull Object... args) {
-        super(message, args);
+    public ChannelExistsException(String debugMessage, String messageKey) {
+        super(debugMessage, messageKey);
     }
 }
