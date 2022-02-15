@@ -196,7 +196,7 @@ public class LeaderCommands extends BaseCommand {
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
             double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
             if (!permissions.playerHasMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
                 return;
             }
 

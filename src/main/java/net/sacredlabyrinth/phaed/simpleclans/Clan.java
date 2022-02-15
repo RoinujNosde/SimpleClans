@@ -118,10 +118,10 @@ public class Clan implements Serializable, Comparable<Clan> {
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
             }
         } else {
-            player.sendMessage(AQUA + lang("not.sufficient.money", player));
+            player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
         }
     }
 
