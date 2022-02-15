@@ -16,8 +16,7 @@ import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions|leader")
@@ -208,10 +207,11 @@ public class LeaderCommands extends BaseCommand {
 
         try {
             discordHook.createChannel(clan.getTag());
+            ChatBlock.sendMessage(player, AQUA + "discord.created.successfully");
         } catch (DiscordHookException ex) {
             String messageKey = ex.getMessageKey();
             if (messageKey != null) {
-                ChatBlock.sendMessageKey(player, messageKey);
+                ChatBlock.sendMessage(player, RED + lang(messageKey));
             }
         }
     }
