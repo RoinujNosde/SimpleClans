@@ -937,7 +937,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }
@@ -960,7 +960,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }
@@ -983,7 +983,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }
@@ -1006,7 +1006,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }
@@ -1029,7 +1029,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }
@@ -1052,7 +1052,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }
@@ -1085,7 +1085,7 @@ public final class ClanManager {
                     plugin.getPermissionsManager().playerChargeMoney(player, price);
                     player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
                 } else {
-                    player.sendMessage(RED + lang("not.sufficient.money", player));
+                    player.sendMessage(RED + lang("not.sufficient.money", player, price));
                     return false;
                 }
             }
@@ -1122,7 +1122,7 @@ public final class ClanManager {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
                 player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player));
+                player.sendMessage(RED + lang("not.sufficient.money", player, price));
                 return false;
             }
         }

@@ -121,7 +121,7 @@ public class BankCommand extends BaseCommand {
         */
 
         if (!permissions.playerHasMoney(player, amount)) {
-            player.sendMessage(AQUA + lang("not.sufficient.money", player));
+            player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
             return;
         }
         EconomyResponse response = clan.deposit(player, COMMAND, amount);
