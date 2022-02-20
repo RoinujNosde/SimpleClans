@@ -1032,7 +1032,7 @@ public final class StorageManager {
     }
     
     /**
-     * Gets, asynchronously, a map of victim->count of all kills that specific player did and notifies via callback when it's ready
+     * Gets, asynchronously, a map of victim-{@literal >}count of all kills that specific player did and notifies via callback when it's ready
      *
      */
     public void getKillsPerPlayer(final String playerName, final DataCallback<Map<String, Integer>> callback) {
