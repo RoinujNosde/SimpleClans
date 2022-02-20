@@ -30,7 +30,7 @@ public class UpdateChecker {
 
 	public UpdateChecker(SimpleClans plugin) {
 		this.plugin = plugin;
-		version = plugin.getDescription().getVersion().split(" ")[0]; //removing trailing hash
+		version = plugin.getDescription().getVersion().split("-")[0]; //removing trailing hash
 		userAgent = "SimpleClans/" + version;
 	}
 
