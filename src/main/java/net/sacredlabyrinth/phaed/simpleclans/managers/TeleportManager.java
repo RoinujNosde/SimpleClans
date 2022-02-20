@@ -133,7 +133,7 @@ public final class TeleportManager {
                 }
                 state.setProcessing(true);
 
-                if (!Helper.isSameBlock(player.getLocation(), state.getLocation())) {
+                if (!isSameBlock(player.getLocation(), state.getLocation())) {
                     ChatBlock.sendMessage(player, RED + lang("you.moved.teleport.cancelled", player));
                     iter.remove();
                     continue;
@@ -178,4 +178,10 @@ public final class TeleportManager {
         }
         teleportToHome(player, clan.getHomeLocation(), clan.getName());
     }
+
+    private boolean isSameBlock(Location loc, Location loc2) {
+        return loc.getBlockX() == loc2.getBlockX() && loc.getBlockY() == loc2.getBlockY() &&
+                loc.getBlockZ() == loc2.getBlockZ();
+    }
+
 }

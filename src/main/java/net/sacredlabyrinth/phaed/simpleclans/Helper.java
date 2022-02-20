@@ -365,24 +365,13 @@ public class Helper {
     }
 
     /**
-     * Returns a prettier coordinate, does not include world
+     * Returns a prettier coordinate
      *
      * @param loc
      * @return
      */
     public static String toLocationString(Location loc) {
         return loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + " " + loc.getWorld().getName();
-    }
-
-    /**
-     * Whether the two locations refer to the same block
-     *
-     * @param loc
-     * @param loc2
-     * @return
-     */
-    public static boolean isSameBlock(Location loc, Location loc2) {
-        return loc.getBlockX() == loc2.getBlockX() && loc.getBlockY() == loc2.getBlockY() && loc.getBlockZ() == loc2.getBlockZ();
     }
 
     /**
