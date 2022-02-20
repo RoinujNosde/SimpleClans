@@ -259,7 +259,7 @@ public class Helper {
     }
 
     /**
-     * Converts string array to ArrayList<String>, remove empty strings
+     * Converts string array to {@literal ArrayList<String>}, remove empty strings
      *
      * @param values
      * @return
@@ -272,7 +272,7 @@ public class Helper {
     }
 
     /**
-     * Converts string array to HashSet<String>, remove empty strings
+     * Converts string array to {@literal HashSet<String>}, remove empty strings
      *
      * @param values
      * @return
@@ -285,7 +285,7 @@ public class Helper {
     }
 
     /**
-     * Converts ArrayList<String> to string array
+     * Converts  {@literal ArrayList<String>} to string array
      *
      * @param list
      * @return
