@@ -287,8 +287,9 @@ public final class ClanManager {
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan
      */
-    public @Nullable ClanPlayer getClanPlayerName(String playerDisplayName) {
-        UUID uuid = UUIDMigration.getForcedPlayerUUID(playerDisplayName);
+    @Deprecated
+    public @Nullable ClanPlayer getClanPlayerName(String playerName) {
+        UUID uuid = UUIDMigration.getForcedPlayerUUID(playerName);
 
         if (uuid == null) {
             return null;
@@ -315,8 +316,8 @@ public final class ClanManager {
      */
 
     @Nullable
-    public ClanPlayer getAnyClanPlayer(UUID playerUniqueId) {
-        return clanPlayers.get(playerUniqueId.toString());
+    public ClanPlayer getAnyClanPlayer(UUID uuid) {
+        return clanPlayers.get(uuid.toString());
     }
 
     @SuppressWarnings("deprecation")
@@ -333,8 +334,8 @@ public final class ClanManager {
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      */
-    public @Nullable ClanPlayer getCreateClanPlayerUUID(String playerDisplayName) {
-        UUID playerUniqueId = UUIDMigration.getForcedPlayerUUID(playerDisplayName);
+    public @Nullable ClanPlayer getCreateClanPlayerUUID(String playerName) {
+        UUID playerUniqueId = UUIDMigration.getForcedPlayerUUID(playerName);
         if (playerUniqueId != null) {
             return getCreateClanPlayer(playerUniqueId);
         } else {

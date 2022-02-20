@@ -731,13 +731,13 @@ public final class StorageManager {
     /**
      * Change the name of a player in the database asynchronously
      *
-     * @param p to update
+     * @param cp to update
      */
-    public void updatePlayerNameAsync(final Player p) {
+    public void updatePlayerNameAsync(final @NotNull ClanPlayer cp) {
     	new BukkitRunnable() {
 			@Override
 			public void run() {
-                updatePlayerName(p);
+                updatePlayerName(cp);
 			}
 		}.runTaskAsynchronously(plugin);
     }
@@ -745,10 +745,10 @@ public final class StorageManager {
     /**
      * Change the name of a player in the database
      *
-     * @param p to update
+     * @param cp to update
      */
-    public void updatePlayerName(final Player p) {
-        String query = "UPDATE `sc_players` SET `name` = '" + p.getName() + "' WHERE uuid = '" + p.getUniqueId().toString() + "';";
+    public void updatePlayerName(final @NotNull ClanPlayer cp) {
+        String query = "UPDATE `sc_players` SET `name` = '" + cp.getName() + "' WHERE uuid = '" + cp.getUniqueId() + "';";
         core.update(query);
     }
 

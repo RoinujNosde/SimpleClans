@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -94,7 +95,7 @@ public class SCPlayerListener extends SCListener {
             cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
         }
 
-        plugin.getStorageManager().updatePlayerNameAsync(player);
+        updatePlayerName(cp);
         plugin.getClanManager().updateLastSeen(player);
         plugin.getClanManager().updateDisplayName(player);
 
@@ -184,6 +185,29 @@ public class SCPlayerListener extends SCListener {
                 event.setCancelled(true);
             }
         }, plugin, true);
+    }
+
+    private void updatePlayerName(@Nullable ClanPlayer cp) {
+        if (cp == null) {
+            return;
+        }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ClanPlayer duplicate = null;
+            for (ClanPlayer other : plugin.getClanManager().getAllClanPlayers()) {
+                if (other.getName().equals(cp.getName()) && !other.getUniqueId().equals(cp.getUniqueId())) {
+                    duplicate = other;
+                    break;
+                }
+            }
+
+            if (duplicate != null) {
+                plugin.getLogger().warning(String.format("Found duplicate for %s, UUIDs: %s, %s", cp.getName(),
+                        cp.getUniqueId(), duplicate.getUniqueId()));
+                duplicate.setName(duplicate.getName() + "_duplicate");
+                plugin.getStorageManager().updatePlayerName(duplicate);
+            }
+            plugin.getStorageManager().updatePlayerName(cp);
+        });
     }
 
 }
