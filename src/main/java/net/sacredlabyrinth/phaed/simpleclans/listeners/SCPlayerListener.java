@@ -13,8 +13,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -27,13 +27,12 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 /**
  * @author phaed
  */
-public class SCPlayerListener implements Listener {
+public class SCPlayerListener extends SCListener {
 
-    private final SimpleClans plugin;
     private final SettingsManager settingsManager;
 
-    public SCPlayerListener() {
-        plugin = SimpleClans.getInstance();
+    public SCPlayerListener(@NotNull SimpleClans plugin) {
+        super(plugin);
         settingsManager = plugin.getSettingsManager();
         registerChatListener();
     }
@@ -56,7 +55,7 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void handleChatTags(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(getWorldName(event))) {
+        if (isBlacklistedWorld(player)) {
             return;
         }
 
@@ -84,8 +83,7 @@ public class SCPlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-
-        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(getWorldName(event))) {
+        if (isBlacklistedWorld(player)) {
             return;
         }
 
@@ -117,8 +115,7 @@ public class SCPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!settingsManager.is(TELEPORT_HOME_ON_SPAWN) || settingsManager.getStringList(BLACKLISTED_WORLDS)
-                .contains(getWorldName(event))) {
+        if (!settingsManager.is(TELEPORT_HOME_ON_SPAWN) || isBlacklistedWorld(player)) {
             return;
         }
 
@@ -143,7 +140,7 @@ public class SCPlayerListener implements Listener {
                 }
             });
         }
-        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(getWorldName(event))) {
+        if (isBlacklistedWorld(event.getPlayer())) {
             return;
         }
 
@@ -155,7 +152,7 @@ public class SCPlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        if (settingsManager.getStringList(BLACKLISTED_WORLDS).contains(getWorldName(event))) {
+        if (isBlacklistedWorld(event.getPlayer())) {
             return;
         }
 
@@ -171,7 +168,7 @@ public class SCPlayerListener implements Listener {
             AsyncPlayerChatEvent event = (AsyncPlayerChatEvent) e;
             Player player = event.getPlayer();
             ClanPlayer cp = plugin.getClanManager().getClanPlayer(player.getUniqueId());
-            if (cp == null || settingsManager.getStringList(BLACKLISTED_WORLDS).contains(getWorldName(event))) {
+            if (cp == null || isBlacklistedWorld(player)) {
                 return;
             }
 
@@ -189,7 +186,4 @@ public class SCPlayerListener implements Listener {
         }, plugin, true);
     }
 
-    private String getWorldName(PlayerEvent event) {
-        return event.getPlayer().getWorld().getName();
-    }
 }

@@ -7,7 +7,6 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,20 +17,18 @@ import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
-public class FriendlyFire implements Listener {
+public class FriendlyFire extends SCListener {
 
-    private final SimpleClans plugin;
     private final Map<UUID, Long> warned = new HashMap<>();
     private static final long WARN_DELAY = 10000;
 
     public FriendlyFire(@NotNull SimpleClans plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player) ||
-                plugin.getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(event.getEntity().getWorld().getName())) {
+        if (!(event.getEntity() instanceof Player) || isBlacklistedWorld(event.getEntity())) {
             return;
         }
         Player victim = (Player) event.getEntity();
