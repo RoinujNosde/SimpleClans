@@ -748,41 +748,20 @@ public final class ClanManager {
     }
 
     /**
-     * Returns a formatted string detailing the players health
+     * Returns a colored bar based on the length
      */
-    public String getHealthString(double health) {
+    public String getBar(double length) {
         StringBuilder out = new StringBuilder();
 
-        if (health >= 16) {
+        if (length >= 16) {
             out.append(ChatColor.GREEN);
-        } else if (health >= 8) {
+        } else if (length >= 8) {
             out.append(ChatColor.GOLD);
         } else {
             out.append(RED);
         }
 
-        for (int i = 0; i < health; i++) {
-            out.append('|');
-        }
-
-        return out.toString();
-    }
-
-    /**
-     * Returns a formatted string detailing the players hunger
-     */
-    public String getHungerString(int health) {
-        StringBuilder out = new StringBuilder();
-
-        if (health >= 16) {
-            out.append(ChatColor.GREEN);
-        } else if (health >= 8) {
-            out.append(ChatColor.GOLD);
-        } else {
-            out.append(RED);
-        }
-
-        for (int i = 0; i < health; i++) {
+        for (int i = 0; i < length; i++) {
             out.append('|');
         }
 

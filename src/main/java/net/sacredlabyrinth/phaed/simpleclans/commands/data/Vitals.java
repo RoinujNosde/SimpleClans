@@ -66,8 +66,8 @@ public class Vitals extends Sendable {
             if (p != null) {
                 String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR)
                         : sm.getColored(PAGE_UNTRUSTED_COLOR))) + cpm.getName();
-                String health = cm.getHealthString(p.getHealth());
-                String hunger = cm.getHungerString(p.getFoodLevel());
+                String health = cm.getBar(p.getHealth());
+                String hunger = cm.getBar(p.getFoodLevel());
                 String armor = cm.getArmorString(p.getInventory());
                 String weapons = cm.getWeaponString(p.getInventory());
                 String food = cm.getFoodString(p.getInventory());
