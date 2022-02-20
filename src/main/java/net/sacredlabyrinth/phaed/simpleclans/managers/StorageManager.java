@@ -947,7 +947,11 @@ public final class StorageManager {
     }
 
     /**
-     * Returns a map of victim->count of all kills that specific player did
+     * Returns a map of victim-{@literal >}count of all kills that specific player did
+     *
+     * @param playerName the attacker name
+     *
+     * @return a map of kills per victim
      *
      */
     public Map<String, Integer> getKillsPerPlayer(String playerName) {
@@ -979,8 +983,9 @@ public final class StorageManager {
     }
 
     /**
-     * Returns a map of tag->count of all kills
+     * Returns a map of tag-{@literal >}count of all kills
      *
+     * @return a map of kills per attacker+victim
      */
     public Map<String, Integer> getMostKilled() {
         HashMap<String, Integer> out = new HashMap<>();
@@ -1012,8 +1017,9 @@ public final class StorageManager {
     }
 
     /**
-     * Gets, asynchronously, a map of tag->count of all kills and notifies via callback when it's ready
-     * 
+     * Gets, asynchronously, a map of tag-{@literal >}count of all kills and notifies via callback when it's ready
+     *
+     * @param callback the callback
      */
     public void getMostKilled(DataCallback<Map<String, Integer>> callback) {
     	new BukkitRunnable() {

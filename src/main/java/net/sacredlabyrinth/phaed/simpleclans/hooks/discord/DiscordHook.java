@@ -343,6 +343,8 @@ public class DiscordHook implements Listener {
      *
      * <p>Sets positive {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
      *
+     * @param clanTag the clan tag
+     *
      * @throws InvalidChannelException  clan is not verified or permanent,
      *                                  no one member is linked or clan is not in the whitelist.
      * @throws ChannelExistsException   if channel is already exist
@@ -379,7 +381,11 @@ public class DiscordHook implements Listener {
     /**
      * Retrieves channel in SimpleClans categories.
      *
+     * @param channelName the channel name
+     *
      * @see #getCachedCategories() retreive categories.
+     *
+     * @return the channel
      */
     public Optional<TextChannel> getCachedChannel(@NotNull String channelName) {
         return getCachedChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
@@ -388,7 +394,10 @@ public class DiscordHook implements Listener {
     /**
      * Checks if a category can be obtained by id.
      *
+     * @param categoryId the category id
      * @see #channelExists(String)
+     *
+     * @return true if the category exists
      */
     public boolean categoryExists(String categoryId) {
         return guild.getCategoryById(categoryId) != null;
@@ -406,6 +415,8 @@ public class DiscordHook implements Listener {
     /**
      * Deletes channel from SimpleClans categories.
      * If there are no channels, removes category as well.
+     *
+     * @param channelName the channel name
      *
      * @return true, if channel was deleted and false if not.
      */

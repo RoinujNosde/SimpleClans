@@ -110,7 +110,7 @@ public class Paginator {
 	}
 
 	/**
-	 * Decreases the page number if current > 0
+	 * Decreases the page number if current {@literal >} 0
 	 *
 	 * @author RoinujNosde
 	 */
