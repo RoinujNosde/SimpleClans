@@ -31,6 +31,8 @@ public abstract class PlaceholderResolver {
      * @param method      the annotated method
      * @param placeholder the placeholder to resolve
      * @param config      configuration for the resolver
+     *
+     * @return the resolved placeholder
      */
     @NotNull
     public abstract String resolve(@Nullable OfflinePlayer player, @NotNull Object object, @NotNull Method method,

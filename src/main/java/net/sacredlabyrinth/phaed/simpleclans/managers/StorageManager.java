@@ -731,13 +731,13 @@ public final class StorageManager {
     /**
      * Change the name of a player in the database asynchronously
      *
-     * @param p to update
+     * @param cp to update
      */
-    public void updatePlayerNameAsync(final Player p) {
+    public void updatePlayerNameAsync(final @NotNull ClanPlayer cp) {
     	new BukkitRunnable() {
 			@Override
 			public void run() {
-                updatePlayerName(p);
+                updatePlayerName(cp);
 			}
 		}.runTaskAsynchronously(plugin);
     }
@@ -745,10 +745,10 @@ public final class StorageManager {
     /**
      * Change the name of a player in the database
      *
-     * @param p to update
+     * @param cp to update
      */
-    public void updatePlayerName(final Player p) {
-        String query = "UPDATE `sc_players` SET `name` = '" + p.getName() + "' WHERE uuid = '" + p.getUniqueId().toString() + "';";
+    public void updatePlayerName(final @NotNull ClanPlayer cp) {
+        String query = "UPDATE `sc_players` SET `name` = '" + cp.getName() + "' WHERE uuid = '" + cp.getUniqueId() + "';";
         core.update(query);
     }
 
@@ -947,7 +947,11 @@ public final class StorageManager {
     }
 
     /**
-     * Returns a map of victim->count of all kills that specific player did
+     * Returns a map of victim-{@literal >}count of all kills that specific player did
+     *
+     * @param playerName the attacker name
+     *
+     * @return a map of kills per victim
      *
      */
     public Map<String, Integer> getKillsPerPlayer(String playerName) {
@@ -979,8 +983,9 @@ public final class StorageManager {
     }
 
     /**
-     * Returns a map of tag->count of all kills
+     * Returns a map of tag-{@literal >}count of all kills
      *
+     * @return a map of kills per attacker+victim
      */
     public Map<String, Integer> getMostKilled() {
         HashMap<String, Integer> out = new HashMap<>();
@@ -1012,8 +1017,9 @@ public final class StorageManager {
     }
 
     /**
-     * Gets, asynchronously, a map of tag->count of all kills and notifies via callback when it's ready
-     * 
+     * Gets, asynchronously, a map of tag-{@literal >}count of all kills and notifies via callback when it's ready
+     *
+     * @param callback the callback
      */
     public void getMostKilled(DataCallback<Map<String, Integer>> callback) {
     	new BukkitRunnable() {
@@ -1026,7 +1032,7 @@ public final class StorageManager {
     }
     
     /**
-     * Gets, asynchronously, a map of victim->count of all kills that specific player did and notifies via callback when it's ready
+     * Gets, asynchronously, a map of victim-{@literal >}count of all kills that specific player did and notifies via callback when it's ready
      *
      */
     public void getKillsPerPlayer(final String playerName, final DataCallback<Map<String, Integer>> callback) {

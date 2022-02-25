@@ -34,7 +34,7 @@ public class SCMessage {
     /**
      * Creates a new SCMessage without receivers
      *
-     * @see SCMessage#SCMessage(Source, ClanPlayer.Channel, ClanPlayer, String, List instantiate with initial receievers
+     * @see SCMessage#SCMessage(Source, ClanPlayer.Channel, ClanPlayer, String, List) instantiate with initial receievers
      */
     public SCMessage(@NotNull Source source, @NotNull ClanPlayer.Channel channel, @NotNull ClanPlayer sender, String content) {
         this(source, channel, sender, content, new ArrayList<>());

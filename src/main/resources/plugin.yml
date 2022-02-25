@@ -1,6 +1,6 @@
 name: SimpleClans
 main: net.sacredlabyrinth.phaed.simpleclans.SimpleClans
-version: '${project.version}'
+version: '${project.version}-${git.commit.id.describe-short}'
 softdepend:
   - Vault
   - PlaceholderAPI
@@ -131,6 +131,8 @@ permissions:
     description: Can clear his clan's bb
   simpleclans.leader.setbanner:
     description: Can set his clan's banner
+  simpleclans.leader.discord.create:
+    description: Can create discord channel for his clan
   simpleclans.member.land:
     description: Can use land commands
   simpleclans.member.kills:
@@ -335,3 +337,4 @@ permissions:
       simpleclans.leader.rank.permissions.add: true
       simpleclans.leader.rank.permissions.remove: true
       simpleclans.leader.rank.permissions.list: true
+      simpleclans.leader.discord.create: true

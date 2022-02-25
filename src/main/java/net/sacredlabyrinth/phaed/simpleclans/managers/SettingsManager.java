@@ -30,7 +30,7 @@ public final class SettingsManager {
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
-        this.config = plugin.getConfig();
+        config = plugin.getConfig();
         config.options().copyDefaults(true);
         configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
         loadAndSave();
@@ -312,6 +312,8 @@ public final class SettingsManager {
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
         TAG_SEPARATOR_CHAR("tag.separator.char", " ."),
+        @Deprecated
+        TAG_SEPARATOR_char("tag.separator.char", " ."),
         /*
         ================
         > War and Protection Settings
@@ -380,6 +382,8 @@ public final class SettingsManager {
         ECONOMY_PURCHASE_HOME_TELEPORT_SET("economy.purchase-home-teleport-set", false),
         ECONOMY_REGROUP_PRICE("economy.home-regroup-price", 5.0),
         ECONOMY_PURCHASE_HOME_REGROUP("economy.purchase-home-regroup", false),
+        ECONOMY_PURCHASE_DISCORD_CREATE("purchase-discord-create", false),
+        ECONOMY_DISCORD_CREATION_PRICE("discord-creation-price", 1000.0),
         ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup", true),
         ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup", true),
         ECONOMY_MONEY_PER_KILL("economy.money-per-kill", false),
@@ -476,6 +480,7 @@ public final class SettingsManager {
         CLANCHAT_PLAYER_BRACKET_LEFT("clanchat.player-bracket.left", ""),
         CLANCHAT_PLAYER_BRACKET_RIGHT("clanchat.player-bracket.right", ""),
         CLANCHAT_MESSAGE_COLOR("clanchat.message-color", "b"),
+        CLANCHAT_LISTENER_PRIORITY("clanchat.listener-priority", "LOW"),
         /*
         ================
         > Request Settings
@@ -520,6 +525,7 @@ public final class SettingsManager {
         ================
          */
         DISCORDCHAT_ENABLE("discordchat.enable", false),
+        DISCORDCHAT_AUTO_CREATION("discordchat.auto-creation", true),
         DISCORDCHAT_FORMAT_TO("discordchat.discord-format", "%player% » %message%"),
         DISCORDCHAT_FORMAT("discordchat.format", "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
         DISCORDCHAT_SPYFORMAT("discordchat.spy-format", "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
@@ -580,7 +586,7 @@ public final class SettingsManager {
 
         ConfigField(String path) {
             this.path = path;
-            this.defaultValue = null;
+            defaultValue = null;
         }
     }
 }

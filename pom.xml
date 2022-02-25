@@ -100,6 +100,40 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>8</source>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <!-- Dependencies -->
@@ -148,7 +182,7 @@
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
+            <version>0.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
@@ -173,24 +207,24 @@
             <version>16.17.1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.plotsquared</groupId>
-            <artifactId>PlotSquared-Core</artifactId>
-            <version>5.13.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.plotsquared</groupId>
-            <artifactId>PlotSquared-Bukkit</artifactId>
-            <version>5.13.3</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>PlotSquared-Core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.plotsquared</groupId>-->
+<!--            <artifactId>PlotSquared-Core</artifactId>-->
+<!--            <version>5.13.3</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.plotsquared</groupId>-->
+<!--            <artifactId>PlotSquared-Bukkit</artifactId>-->
+<!--            <version>5.13.3</version>-->
+<!--            <scope>provided</scope>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>*</groupId>-->
+<!--                    <artifactId>PlotSquared-Core</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.plotsquared</groupId>
             <artifactId>plotsquared-api</artifactId>
@@ -259,10 +293,10 @@
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-        <repository>
-            <id>IntellectualSites</id>
-            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>IntellectualSites</id>-->
+<!--            <url>https://mvn.intellectualsites.com/content/groups/public/</url>-->
+<!--        </repository>-->
         <repository>
             <id>plotsquared</id>
             <url>https://plotsquared.com/mvn/</url>

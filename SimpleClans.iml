@@ -27,7 +27,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: me.clip:placeholderapi:2.10.9" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:22.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.papermc:paperlib:1.0.8-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: co.aikar:acf-paper:0.5.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: co.aikar:acf-paper:0.5.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.github.cryptomorin:XSeries:8.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.7.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.1.0" level="project" />
@@ -86,13 +86,11 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.flywaydb:flyway-core:3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sk89q:commandbook:2.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.TechFortress:GriefPrevention:16.17.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:PlotSquared-Core:5.13.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:PlotSquared-Bukkit:5.13.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:plotsquared-api:3.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.plotsquared:plotsquared-bukkitapi:3.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.milkbowl.vault:VaultAPI:1.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.discordsrv:discordsrv:1.24.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: net.dv8tion:JDA:4.3.0_310" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.dv8tion:JDA:4.3.0_349" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.findbugs:jsr305:3.0.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.squareup.okhttp3:okhttp:3.13.0" level="project" />

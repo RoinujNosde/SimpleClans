@@ -6,6 +6,8 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,8 +16,7 @@ import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.*;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions|leader")
@@ -31,6 +32,8 @@ public class LeaderCommands extends BaseCommand {
     private RequestManager requestManager;
     @Dependency
     private ClanManager cm;
+    @Dependency
+    private ChatManager chatManager;
 
     @Subcommand("%demote")
     @CommandCompletion("@clan_leaders")
@@ -177,5 +180,39 @@ public class LeaderCommands extends BaseCommand {
                 player.getName()));
         trustedInput.setTrusted(false);
         storage.updateClanPlayer(trustedInput);
+    }
+
+    @Subcommand("%discord %create")
+    @CommandPermission("simpleclans.leader.discord.create")
+    @Description("{@@command.description.discord.create}")
+    @Conditions("verified")
+    public void discord(Player player, Clan clan) {
+        DiscordHook discordHook = chatManager.getDiscordHook();
+        if (discordHook == null) {
+            ChatBlock.sendMessageKey(player, "discordhook.is.disabled");
+            return;
+        }
+
+        if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
+            double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
+            if (!permissions.playerHasMoney(player, amount)) {
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+                return;
+            }
+
+            if (!permissions.playerChargeMoney(player, amount)) {
+                return;
+            }
+        }
+
+        try {
+            discordHook.createChannel(clan.getTag());
+            ChatBlock.sendMessage(player, AQUA + "discord.created.successfully");
+        } catch (DiscordHookException ex) {
+            String messageKey = ex.getMessageKey();
+            if (messageKey != null) {
+                ChatBlock.sendMessage(player, RED + lang(messageKey));
+            }
+        }
     }
 }

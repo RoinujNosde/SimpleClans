@@ -1,10 +1,12 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions;
 
-import org.jetbrains.annotations.NotNull;
-
 public class InvalidChannelException extends DiscordHookException {
 
-    public InvalidChannelException(String message, @NotNull Object... args) {
-        super(message, args);
+    public InvalidChannelException(String debugMessage, String messageKey) {
+        super(debugMessage, messageKey);
+    }
+
+    public InvalidChannelException(String debugMessage) {
+        super(debugMessage);
     }
 }

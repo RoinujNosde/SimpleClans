@@ -41,7 +41,10 @@ public final class TeleportManager {
      */
     public void addPlayer(Player player, Location destination, String clanName) {
         int secs = SimpleClans.getInstance().getSettingsManager().getInt(CLAN_TELEPORT_DELAY);
-        waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName));
+        if (plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
+            secs = 0;
+        }
+        waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName, secs));
 
         if (secs > 0) {
             ChatBlock.sendMessage(player, AQUA
@@ -130,7 +133,7 @@ public final class TeleportManager {
                 }
                 state.setProcessing(true);
 
-                if (!Helper.isSameBlock(player.getLocation(), state.getLocation())) {
+                if (!isSameBlock(player.getLocation(), state.getLocation())) {
                     ChatBlock.sendMessage(player, RED + lang("you.moved.teleport.cancelled", player));
                     iter.remove();
                     continue;
@@ -175,4 +178,10 @@ public final class TeleportManager {
         }
         teleportToHome(player, clan.getHomeLocation(), clan.getName());
     }
+
+    private boolean isSameBlock(Location loc, Location loc2) {
+        return loc.getBlockX() == loc2.getBlockX() && loc.getBlockY() == loc2.getBlockY() &&
+                loc.getBlockZ() == loc2.getBlockZ();
+    }
+
 }

@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -24,21 +23,16 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 /**
  * @author phaed
  */
-public class PlayerDeath implements Listener {
+public class PlayerDeath extends SCListener {
 
-    private final SimpleClans plugin;
-
-    public PlayerDeath() {
-        plugin = SimpleClans.getInstance();
+    public PlayerDeath(SimpleClans plugin) {
+        super(plugin);
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onEntityDeath(PlayerDeathEvent event) {
-        SimpleClans.debug("A player died");
         Player victim = event.getEntity();
-        if (plugin.getSettingsManager().getStringList(BLACKLISTED_WORLDS).contains(victim.getLocation().getWorld().getName())
-                || victim.hasMetadata("NPC")) {
-            SimpleClans.debug("Blacklisted world");
+        if (isNPC(victim) || isBlacklistedWorld(victim)) {
             return;
         }
 
@@ -193,5 +187,17 @@ public class PlayerDeath implements Listener {
             reward = kdr;
         }
         return reward;
+    }
+
+    private boolean isNPC(Player player) {
+        if (player.hasMetadata("NPC")) {
+            SimpleClans.debug(String.format("%s has NPC metadata", player.getName()));
+            return true;
+        }
+        if (Bukkit.getOfflinePlayer(player.getUniqueId()).getName() == null) {
+            SimpleClans.debug(String.format("%s has a null name", player.getUniqueId()));
+            return true;
+        }
+        return false;
     }
 }

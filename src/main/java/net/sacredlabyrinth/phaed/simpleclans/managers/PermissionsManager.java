@@ -63,7 +63,7 @@ public final class PermissionsManager {
     public void loadPermissions() {
         permissions.clear();
         for (Clan clan : plugin.getClanManager().getClans()) {
-            permissions.put(clan.getTag(), SimpleClans.getInstance().getConfig().getStringList("permissions." + clan.getTag()));
+            permissions.put(clan.getTag(), SimpleClans.getInstance().getSettingsManager().getConfig().getStringList("permissions." + clan.getTag()));
         }
     }
 

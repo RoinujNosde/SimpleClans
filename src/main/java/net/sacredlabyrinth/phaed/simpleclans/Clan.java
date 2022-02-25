@@ -118,10 +118,10 @@ public class Clan implements Serializable, Comparable<Clan> {
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
             }
         } else {
-            player.sendMessage(AQUA + lang("not.sufficient.money", player));
+            player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
         }
     }
 
@@ -335,7 +335,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
     /**
      * Returns the max number of days the clan can be inactive
-     * A number <= 0 means it won't be purged
+     * A {@literal <=} 0 means it won't be purged
      */
     public int getMaxInactiveDays() {
         if (isPermanent()) {

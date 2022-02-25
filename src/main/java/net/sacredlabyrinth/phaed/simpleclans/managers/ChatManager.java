@@ -38,7 +38,7 @@ public final class ChatManager {
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         registerHandlers();
-        if (getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
+        if (isDiscordHookEnabled()) {
             DiscordSRV.api.subscribe(this);
         }
     }
@@ -53,9 +53,11 @@ public final class ChatManager {
 
     @Nullable
     public DiscordHook getDiscordHook() {
-        // Manually instantiate, if JDA did load faster than SC
-        if (discordHook == null && DiscordSRV.getPlugin().getJda().getStatus() == JDA.Status.CONNECTED) {
-            registerDiscord(new DiscordReadyEvent());
+        if (isDiscordHookEnabled()) {
+            // Manually instantiate, if JDA did load faster than SC
+            if (discordHook == null && DiscordSRV.getPlugin().getJda().getStatus() == JDA.Status.CONNECTED) {
+                registerDiscord(new DiscordReadyEvent());
+            }
         }
 
         return discordHook;
@@ -74,8 +76,8 @@ public final class ChatManager {
 
                 receivers.addAll(getOnlineAllyMembers(clan).stream().filter(allyMember ->
                         !allyMember.isMutedAlly()).collect(Collectors.toList()));
-                receivers.addAll(clan.getOnlineMembers().stream().filter(allyMember ->
-                        !allyMember.isMutedAlly()).collect(Collectors.toList()));
+                receivers.addAll(clan.getOnlineMembers().stream().filter(onlineMember ->
+                        !onlineMember.isMutedAlly()).collect(Collectors.toList()));
                 break;
             case CLAN:
                 if (!plugin.getSettingsManager().is(CLANCHAT_ENABLE)) {
@@ -131,6 +133,10 @@ public final class ChatManager {
         return getPluginManager().getPlugin("PlaceholderAPI") != null ?
                 PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(message.getSender().getUniqueId()), parsedFormat)
                 : parsedFormat;
+    }
+
+    public boolean isDiscordHookEnabled() {
+        return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
     }
 
     private void registerHandlers() {

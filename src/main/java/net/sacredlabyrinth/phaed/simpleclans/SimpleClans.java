@@ -129,8 +129,8 @@ public class SimpleClans extends JavaPlugin {
 
     private void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new PlayerDeath(), this);
-        pm.registerEvents(new SCPlayerListener(), this);
+        pm.registerEvents(new PlayerDeath(this), this);
+        pm.registerEvents(new SCPlayerListener(this), this);
         pm.registerEvents(new InventoryController(), this);
         pm.registerEvents(new TamableMobsSharing(this), this);
         pm.registerEvents(new PvPOnlyInWar(this), this);

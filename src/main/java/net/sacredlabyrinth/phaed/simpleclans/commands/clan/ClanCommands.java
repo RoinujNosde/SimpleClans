@@ -337,7 +337,7 @@ public class ClanCommands extends BaseCommand {
 
     @Subcommand("%kick")
     @CommandPermission("simpleclans.leader.kick")
-    @CommandCompletion("@clan_members")
+    @CommandCompletion("@clan_members:hide_own")
     @Conditions("rank:name=KICK")
     @Description("{@@command.description.kick}")
     public void kick(@Conditions("clan_member") Player sender,

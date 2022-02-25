@@ -248,7 +248,7 @@ public class ProtectionManager {
             }
             if (instance instanceof ProtectionProvider) {
                 registerProvider((ProtectionProvider) instance);
-            } else {
+            } else if (instance != null) {
                 logger.warning(String.format("%s is not an instance of ProtectionProvider", className));
             }
         }

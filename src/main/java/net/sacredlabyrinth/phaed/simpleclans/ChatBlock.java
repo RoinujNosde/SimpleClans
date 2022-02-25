@@ -523,6 +523,9 @@ public class ChatBlock {
 
     /**
      * Outputs a single line out, crops overflow
+     *
+     * @param receiver the receiver
+     * @param msg the message
      */
     public static void saySingle(CommandSender receiver, String msg) {
         if (receiver == null) {
@@ -534,6 +537,9 @@ public class ChatBlock {
 
     /**
      * Outputs a message to a user
+     *
+     * @param receiver the receiver
+     * @param msg the message
      */
     public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
@@ -541,11 +547,6 @@ public class ChatBlock {
         }
 
         receiver.sendMessage(ChatUtils.parseColors(msg));
-//        String[] message = colorize(wordWrap(msg));
-//
-//        for (String out : message) {
-//            receiver.sendMessage(out);
-//        }
     }
 
     public static void sendMessage(@Nullable ClanPlayer receiver, @NotNull String msg) {
@@ -572,7 +573,9 @@ public class ChatBlock {
     }
 
     /**
-     * Send blank line
+     * Sends a blank line
+     *
+     * @param receiver the receiver
      */
     public static void sendBlank(CommandSender receiver) {
         if (receiver == null) {
