@@ -5,7 +5,7 @@ SimpleClans
 
 Full featured clan system for PVP Minecraft Servers!
 
-[![Build Status](https://travis-ci.com/RoinujNosde/SimpleClans.svg?branch=master)](https://travis-ci.com/RoinujNosde/SimpleClans)
+[![Build Status](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fci.roinujnosde.me%2Fjob%2FSimpleClans%2F)](https://ci.roinujnosde.me/job/SimpleClans/)
 [![Spiget Downloads](https://img.shields.io/spiget/downloads/71242)](https://www.spigotmc.org/resources/simpleclans.71242/)
 [![Issues](https://img.shields.io/github/issues/RoinujNosde/SimpleClans.svg)](https://github.com/RoinujNosde/SimpleClans/issues)
 [![Crowdin](https://badges.crowdin.net/simpleclans/localized.svg)](https://crowdin.com/project/simpleclans)
@@ -50,8 +50,8 @@ Including SimpleClans with Maven:
 ```xml
 <repositories>
     <repository>
-        <id>codemc-repo</id>
-        <url>https://repo.codemc.org/repository/maven-public</url>
+        <id>roinujnosde-repo</id>
+        <url>https://repo.roinujnosde.me/releases/</url>
     </repository>
 </repositories>
 ```
@@ -60,7 +60,7 @@ Including SimpleClans with Maven:
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.15.0</version> <!-- You can find the latest version at the bottom -->
+        <version>2.16.2</version> <!-- You can find the latest version at the bottom -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -70,15 +70,15 @@ Using Gradle:
 ```groovy
 repositories {
     maven {
-        url  "https://repo.codemc.org/repository/maven-public" 
+        url  "https://repo.roinujnosde.me/releases/" 
     }
 }
 dependencies {
-    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.15.0"
+    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.16.2"
 }
 ```
 
 ##### Latest version:
-[![](https://jitpack.io/v/roinujnosde/simpleclans.svg?label=Maven)]()
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.roinujnosde.me%2Freleases%2Fnet%2Fsacredlabyrinth%2Fphaed%2Fsimpleclans%2FSimpleClans%2Fmaven-metadata.xml)](https://repo.roinujnosde.me/#/releases/net/sacredlabyrinth/phaed/simpleclans/SimpleClans)
 ##### API Examples
 * [Examples of how to use the API](https://simpleclans.gitbook.io/simpleclans/other/simpleclans-api)
