@@ -501,6 +501,7 @@ public class DiscordHook implements Listener {
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
                 deleteChannel(clanTag);
+
             } catch (ChannelExistsException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
             }
@@ -531,7 +532,6 @@ public class DiscordHook implements Listener {
         if (!settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
             return;
         }
-
         for (String clan : clanTags) {
             try {
                 createChannel(clan);

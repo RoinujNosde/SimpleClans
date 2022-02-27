@@ -24,6 +24,6 @@ jobs:
         file_path: target/SimpleClans.jar
         changelog: ${{ github.event.release.body }}
         display_name: ${{ github.event.release.tag_name }}
-        game_versions: 8503,7915,7667,7330,7105,6588,630,591,585,531
+        game_versions: 8849,8503,7915,7667,7330,7105,6588,630,591,585,531
         release_type: release
         relations: vault:optionalDependency,worldguard:optionalDependency,grief-prevention:optionalDependency

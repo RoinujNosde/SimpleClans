@@ -43,6 +43,7 @@ public final class ChatManager {
         }
     }
 
+    @SuppressWarnings("unused")
     @Subscribe
     public void registerDiscord(DiscordReadyEvent event) {
         discordHook = new DiscordHook(plugin);
