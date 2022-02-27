@@ -24,7 +24,7 @@ public class ClanPlayerInputContextResolver extends AbstractInputOnlyContextReso
         if (cp == null) {
             @SuppressWarnings("deprecation")
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arg);
-            if (!offlinePlayer.hasPlayedBefore()) {
+            if (offlinePlayer.getPlayer() == null && !offlinePlayer.hasPlayedBefore()) {
                 throw new InvalidCommandArgument(lang("user.hasnt.played.before", context.getSender()));
             }
             cp = clanManager.getCreateClanPlayer(offlinePlayer.getUniqueId());
