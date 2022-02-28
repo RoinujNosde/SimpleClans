@@ -3,6 +3,7 @@
 * [😃 Introduction](README.md)
 * [Discord Support](https://discord.gg/CkNwgdE)
 * [Bugs and Suggestions](https://github.com/RoinujNosde/SimpleClans/issues)
+* [Javadoc](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/)
 
 ## How to Setup
 

@@ -4,11 +4,11 @@ description: >-
   in your plugins.
 ---
 
-# API Examples
+# ♟ API Examples
 
 ## Step 1. Add the SimpleClans API to your plugin
 
-There are two ways to do this: via Maven or locally.   
+There are two ways to do this: via Maven or locally. \
 We strongly **recommend** doing this via Maven.
 
 ### Maven
@@ -37,22 +37,22 @@ Add the following lines to `pom.xml`:
 ```
 
 {% hint style="info" %}
-**Note**  
-The latest version can be found here: [link](https://github.com/RoinujNosde/SimpleClans/releases)
+**Note**\
+****The latest version can be found here: [link](https://github.com/RoinujNosde/SimpleClans/releases)
 {% endhint %}
 
 ### Locally
 
 In this example, we will use the IntelliJ IDEA, but the following actions also work in other IDEs.
 
-1. Open the structure of your project \(`F4`\)
-2. Select Libraries, click on the cross, select "New Project Library -&gt; Java" in the window that appears and add SimpleClans.
+1. Open the structure of your project (`F4`)
+2. Select Libraries, click on the cross, select "New Project Library -> Java" in the window that appears and add SimpleClans.
 
-![](../.gitbook/assets/izobrazhenie%20%284%29%20%281%29.png)
+![](<../../.gitbook/assets/izobrazhenie (4) (1).png>)
 
-Return to the project structure, then go to Project Settings - &gt; Modules, set the compilation mode to "Provided".
+Return to the project structure, then go to Project Settings - > Modules, set the compilation mode to "Provided".
 
-![](../.gitbook/assets/izobrazhenie%20%285%29%20%281%29.png)
+![](<../../.gitbook/assets/izobrazhenie (5) (1).png>)
 
 * [x] Congratulations, you have added the SimpleClans API to your project. 😃
 
@@ -157,8 +157,6 @@ public class Example {
 {% endtab %}
 {% endtabs %}
 
-{% hint style="info" %}
-**Note**  
-_Javadoc_ is not currently implemented, you can speed up its output by checking [here](https://github.com/RoinujNosde/SimpleClans/discussions/210).
-{% endhint %}
+## Step 3. Continue your learning
 
+Don't stop in your beginnings, feel free to learn our API: [javadocs](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/).
