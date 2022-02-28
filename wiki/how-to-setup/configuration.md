@@ -2,248 +2,43 @@
 description: null
 ---
 
-# Configuration
+# 📘 Configuration
 
 The main configuration file for SimpleClans can be found [here.](https://github.com/RoinujNosde/SimpleClans/blob/master/src/main/resources/config.yml)
 
 ## General Settings
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align:left">Option</th>
-      <th style="text-align:left">Description</th>
-      <th style="text-align:left">Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align:left"><code>enable-gui</code>
-      </td>
-      <td style="text-align:left">Enables the GUI</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>disable-messages</code>
-      </td>
-      <td style="text-align:left">Disables broadcasts from plugin (&quot;Clan Created&quot;, &quot;Clan
-        Disbanded&quot;, etc.)</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>tameable-mobs-sharing</code>
-      </td>
-      <td style="text-align:left">If true, tameable mobs will be shared with your clan members. It also
-        disables any clan damage to them</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>teleport-blocks</code>
-      </td>
-      <td style="text-align:left">Fancy teleporting (placed glass block below)</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>teleport-home-on-spawn</code>
-      </td>
-      <td style="text-align:left">Players will be teleported to their clan&apos;s home when they respawn</td>
-      <td
-      style="text-align:left"><code>false</code>
-        </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>drop-items-on-clan-home</code>
-      </td>
-      <td style="text-align:left">Drops defined items on teleporting to clan home</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>keep-items-on-clan-home</code>
-      </td>
-      <td style="text-align:left">Keeps defined items on teleporting to clan home</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>item-list</code>
-      </td>
-      <td style="text-align:left">List of defined items (used with <code>keep-item-on-clan-home</code> and <code>drop-items-on-clan-home</code>)</td>
-      <td
-      style="text-align:left"><code>[]</code>
-        </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>show-debug-info</code>
-      </td>
-      <td style="text-align:left">Shows debug info on console</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>enable-auto-groups</code>
-      </td>
-      <td style="text-align:left">Manages group of a clan player by auto.
-        <br />(For example, a leader would be added to <code>sc_leader</code> group, trusted
-        player to <code>sc_trusted</code>, etc.)</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>chat-compatibility-mode</code>
-      </td>
-      <td style="text-align:left">Changes method of initiate tags.
-        <br />If you have a problem with tags, try to disable it.</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>rival-limit-percent</code>
-      </td>
-      <td style="text-align:left">
-        <p>The percent of possible rivals per clan</p>
-        <p>Formula: <code>(rivalsOfClan - 1) * rivalLimitPercent / 100</code>
-        </p>
-      </td>
-      <td style="text-align:left"><code>50</code>
-        <br />
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>use-colorcode-from-prefix-for-name</code>
-      </td>
-      <td style="text-align:left">Uses the last color code in the end of prefix</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>display-chat-tags</code>
-      </td>
-      <td style="text-align:left">Shows clan tags in chat</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>unrivable-clans</code>
-      </td>
-      <td style="text-align:left">The list of clans, which can&apos;t be rivaled</td>
-      <td style="text-align:left">See Example below</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>show-unverified-on-list</code>
-      </td>
-      <td style="text-align:left">
-        <p>Shows or not unverified clans on <code>/clan list</code>
-        </p>
-        <p>(Doesn&apos;t affect on GUI)</p>
-      </td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>blacklisted-worlds</code>
-      </td>
-      <td style="text-align:left">Disables SimpleClans at defined worlds</td>
-      <td style="text-align:left"><code>[]</code>
-        <br />
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>banned-players</code>
-      </td>
-      <td style="text-align:left">List of banned players from using plugin</td>
-      <td style="text-align:left"><code>[]</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>disallowed-tags</code>
-      </td>
-      <td style="text-align:left">List of tags, which wouldn&apos;t be used on clan creation</td>
-      <td style="text-align:left">See Example below</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>language</code>
-      </td>
-      <td style="text-align:left">Default language</td>
-      <td style="text-align:left"><code>en</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>user-language-selector</code>
-      </td>
-      <td style="text-align:left">Allows players to change their language</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>disallowed-tag-colors</code>
-      </td>
-      <td style="text-align:left">The list of tag colors, which wouldn&apos;t be used on clan creation</td>
-      <td
-      style="text-align:left">See Example below</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>server-name</code>
-      </td>
-      <td style="text-align:left">The name of your server</td>
-      <td style="text-align:left"><code>&amp;4SimpleClans</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>new-clan-verification-required</code>
-      </td>
-      <td style="text-align:left">Should new clans requires being verified?</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>allow-regroup-command</code>
-      </td>
-      <td style="text-align:left">Allows players to use regroup command</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>allow-reset-kdr</code>
-      </td>
-      <td style="text-align:left">Allows players to reset their KDR</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>rejoin-cooldown</code>
-      </td>
-      <td style="text-align:left">The time in minutes, when player will can join after resigning to the
-        same clan</td>
-      <td style="text-align:left"><code>60</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>rejoin-cooldown-enabled</code>
-      </td>
-      <td style="text-align:left">Should rejoin cooldown be enabled?</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>ranking-type</code>
-      </td>
-      <td style="text-align:left">
-        <p><code>DENSE</code>: if players have the same KDR, they will have the same
-          rank position. Ex.: 12234</p>
-        <p><code>ORDINAL</code>: Every player will have a different rank position.
-          Ex.: 12345</p>
-      </td>
-      <td style="text-align:left"><code>DENSE</code>
-        <br />
-      </td>
-    </tr>
-  </tbody>
-</table>
+| Option                               | Description                                                                                                                                                                                         | Default                       |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `enable-gui`                         | Enables the GUI                                                                                                                                                                                     | `true`                        |
+| `disable-messages`                   | Disables broadcasts from plugin ("Clan Created", "Clan Disbanded", etc.)                                                                                                                            | `false`                       |
+| `tameable-mobs-sharing`              | If true, tameable mobs will be shared with your clan members. It also disables any clan damage to them                                                                                              | `false`                       |
+| `teleport-blocks`                    | Fancy teleporting (placed glass block below)                                                                                                                                                        | `false`                       |
+| `teleport-home-on-spawn`             | Players will be teleported to their clan's home when they respawn                                                                                                                                   | `false`                       |
+| `drop-items-on-clan-home`            | Drops defined items on teleporting to clan home                                                                                                                                                     | `false`                       |
+| `keep-items-on-clan-home`            | Keeps defined items on teleporting to clan home                                                                                                                                                     | `false`                       |
+| `item-list`                          | List of defined items (used with `keep-item-on-clan-home` and `drop-items-on-clan-home`)                                                                                                            | `[]`                          |
+| `show-debug-info`                    | Shows debug info on console                                                                                                                                                                         | `false`                       |
+| `enable-auto-groups`                 | <p>Manages group of a clan player by auto.<br>(For example, a leader would be added to <code>sc_leader</code> group, trusted player to <code>sc_trusted</code>, etc.)</p>                           | `false`                       |
+| `chat-compatibility-mode`            | <p>Changes method of initiate tags.<br>If you have a problem with tags, try to disable it.</p>                                                                                                      | `true`                        |
+| `rival-limit-percent`                | <p>The percent of possible rivals per clan</p><p>Formula: <code>(rivalsOfClan - 1) * rivalLimitPercent / 100</code></p>                                                                             | <p><code>50</code><br></p>    |
+| `use-colorcode-from-prefix-for-name` | Uses the last color code in the end of prefix                                                                                                                                                       | `true`                        |
+| `display-chat-tags`                  | Shows clan tags in chat                                                                                                                                                                             | `true`                        |
+| `unrivable-clans`                    | The list of clans, which can't be rivaled                                                                                                                                                           | See Example below             |
+| `show-unverified-on-list`            | <p>Shows or not unverified clans on <code>/clan list</code></p><p>(Doesn't affect on GUI)</p>                                                                                                       | `false`                       |
+| `blacklisted-worlds`                 | Disables SimpleClans at defined worlds                                                                                                                                                              | <p><code>[]</code><br></p>    |
+| `banned-players`                     | List of banned players from using plugin                                                                                                                                                            | `[]`                          |
+| `disallowed-tags`                    | List of tags, which wouldn't be used on clan creation                                                                                                                                               | See Example below             |
+| `language`                           | Default language                                                                                                                                                                                    | `en`                          |
+| `user-language-selector`             | Allows players to change their language                                                                                                                                                             | `true`                        |
+| `disallowed-tag-colors`              | The list of tag colors, which wouldn't be used on clan creation                                                                                                                                     | See Example below             |
+| `server-name`                        | The name of your server                                                                                                                                                                             | `&4SimpleClans`               |
+| `new-clan-verification-required`     | Should new clans requires being verified?                                                                                                                                                           | `true`                        |
+| `allow-regroup-command`              | Allows players to use regroup command                                                                                                                                                               | `true`                        |
+| `allow-reset-kdr`                    | Allows players to reset their KDR                                                                                                                                                                   | `true`                        |
+| `rejoin-cooldown`                    | The time in minutes, when player will can join after resigning to the same clan                                                                                                                     | `60`                          |
+| `rejoin-cooldown-enabled`            | Should rejoin cooldown be enabled?                                                                                                                                                                  | `false`                       |
+| `ranking-type`                       | <p><code>DENSE</code>: if players have the same KDR, they will have the same rank position. Ex.: 12234</p><p><code>ORDINAL</code>: Every player will have a different rank position. Ex.: 12345</p> | <p><code>DENSE</code><br></p> |
 
 ### Example
 
@@ -289,147 +84,22 @@ settings:
 
 ## War and protection
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align:left">Option</th>
-      <th style="text-align:left">Description</th>
-      <th style="text-align:left">Default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align:left"><code>war-enabled</code>
-      </td>
-      <td style="text-align:left">Enables the war feature on the server</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>land-sharing</code>
-      </td>
-      <td style="text-align:left">Enables the <a href="https://simpleclans.gitbook.io/simpleclans/other/land-claims">land sharing</a> feature
-        on the server</td>
-      <td style="text-align:left"><code>true</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>protection-providers</code>
-      </td>
-      <td style="text-align:left">The list of land claim providers</td>
-      <td style="text-align:left">See Example below</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>listeners.priority</code>
-      </td>
-      <td style="text-align:left">
-        <p>It&apos;s <b>not recommended</b> to change it.</p>
-        <p>Used to set the priority of the overridden events</p>
-      </td>
-      <td style="text-align:left"><code>HIGHEST</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>listeners.ignored-list.place</code>
-      </td>
-      <td style="text-align:left">
-        <p>The list of items that will be ignored by SimpleClans.
-          <br />
-        </p>
-        <p><b>For example</b>, WorldGuard blocked player&apos; head in the region.
-          If player&apos; head is not on the list, SimpleClans will make WG allow
-          the placement</p>
-      </td>
-      <td style="text-align:left">See Example below</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>set-base-only-in-land</code>
-      </td>
-      <td style="text-align:left">Allows a clan player to set the clan base only on claimed land</td>
-      <td
-      style="text-align:left"><code>false</code>
-        </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>war-normal-expiration-time</code>
-      </td>
-      <td style="text-align:left">The time of war expiration independently
-        <br />(in minutes)</td>
-      <td style="text-align:left"><code>0</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>war-disconnect-expiration-time</code>
-      </td>
-      <td style="text-align:left">The time of war expiration if all members from <b>one</b> clan disconnects
-        (in minutes)</td>
-      <td style="text-align:left"><code>0</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>edit-all-lands</code>
-      </td>
-      <td style="text-align:left">Allows a clan player to change the action of all the lands instead of
-        the one on which it stands</td>
-      <td style="text-align:left"><code>false</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>war-actions</code>
-      </td>
-      <td style="text-align:left">The list of permitted actions regarding clan lands during the war</td>
-      <td
-      style="text-align:left">See Example below</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>war-start.request-enabled</code>
-      </td>
-      <td style="text-align:left">If true, a war will require the approval from the clan leaders</td>
-      <td
-      style="text-align:left"><code>true</code>
-        </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>war-start.members-online-max-difference</code>
-      </td>
-      <td style="text-align:left">
-        <p>If the difference between the online members of two clans is greater than
-          the one set, the war will not start</p>
-        <p>
-          <br /><b>Example 1:<br /></b>Config value: <em>5</em>
-        </p>
-        <p>Clan #1 has 10 members online</p>
-        <p>Clan #2 has 5 members online</p>
-        <p>Max difference between clans = 10 - 5 = 5
-          <br />The war <em>will</em> start.
-          <br /><b>Example 2:</b>
-          <br />Config value: 5</p>
-        <p>Clan #1 has 11 members online</p>
-        <p>Clan #2 has 5 members online</p>
-        <p>Max difference between clans = 11 - 5 = 6</p>
-        <p>The war <em>will not</em> start.</p>
-      </td>
-      <td style="text-align:left"><code>5</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>land-creation.only-leaders</code>
-      </td>
-      <td style="text-align:left">Allows only clan leaders to create lands (not compatible with WorldGuard)</td>
-      <td
-      style="text-align:left"><code>false</code>
-        </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>land-creation.only-one-per-clan</code>
-      </td>
-      <td style="text-align:left">Allows to have only one land per clan (not compatible with WorldGuard)</td>
-      <td
-      style="text-align:left"><code>false</code>
-        </td>
-    </tr>
-  </tbody>
-</table>
+| Option                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Default           |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `war-enabled`                             | Enables the war feature on the server                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`           |
+| `land-sharing`                            | Enables the [land sharing](https://simpleclans.gitbook.io/simpleclans/other/land-claims) feature on the server                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `true`            |
+| `protection-providers`                    | The list of land claim providers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | See Example below |
+| `listeners.priority`                      | <p>It's <strong>not recommended</strong> to change it.</p><p>Used to set the priority of the overridden events</p>                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `HIGHEST`         |
+| `listeners.ignored-list.place`            | <p>The list of items that will be ignored by SimpleClans.<br></p><p><strong>For example</strong>, WorldGuard blocked player' head in the region. If player' head is not on the list, SimpleClans will make WG allow the placement</p>                                                                                                                                                                                                                                                                                                                                          | See Example below |
+| `set-base-only-in-land`                   | Allows a clan player to set the clan base only on claimed land                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `false`           |
+| `war-normal-expiration-time`              | <p>The time of war expiration independently<br>(in minutes)</p>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `0`               |
+| `war-disconnect-expiration-time`          | The time of war expiration if all members from **one** clan disconnects (in minutes)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `0`               |
+| `edit-all-lands`                          | Allows a clan player to change the action of all the lands instead of the one on which it stands                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `false`           |
+| `war-actions`                             | The list of permitted actions regarding clan lands during the war                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | See Example below |
+| `war-start.request-enabled`               | If true, a war will require the approval from the clan leaders                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `true`            |
+| `war-start.members-online-max-difference` | <p>If the difference between the online members of two clans is greater than the one set, the war will not start</p><p><br><strong>Example 1:</strong><br><strong></strong>Config value: <em>5</em></p><p>Clan #1 has 10 members online</p><p>Clan #2 has 5 members online</p><p>Max difference between clans = 10 - 5 = 5<br>The war <em>will</em> start.<br><strong>Example 2:</strong><br>Config value: 5</p><p>Clan #1 has 11 members online</p><p>Clan #2 has 5 members online</p><p>Max difference between clans = 11 - 5 = 6</p><p>The war <em>will not</em> start.</p> | `5`               |
+| `land-creation.only-leaders`              | Allows only clan leaders to create lands (not compatible with WorldGuard)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `false`           |
+| `land-creation.only-one-per-clan`         | Allows to have only one land per clan (not compatible with WorldGuard)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `false`           |
 
 ```yaml
 war-and-protection:
@@ -539,14 +209,14 @@ kdr-grinding-prevention:
 * `purchase-clan-create` - players must pay to create a clan
 * `verification-price` - the price to verify a clan
 * `purchase-clan-verify` - players must pay to verify their clans
-* `invite-price` - the price to invite a player to your clan 
+* `invite-price` - the price to invite a player to your clan&#x20;
 * `purchase-clan-invite` - players must pay to invite
 * `home-teleport-price` - the price to teleport to the clan's home
 * `purchase-home-teleport` - players must pay to teleport
 * `home-teleport-set-price` - the price to set the clan's home
 * `purchase-home-teleport-set` - players must pay to set the clan's home
 * `home-regroup-price` - the price for regrouping the clan members
-* `purchase-home-regroup` - players \(or the clan\) must pay to regroup
+* `purchase-home-regroup` - players (or the clan) must pay to regroup
 * `unique-tax-on-regroup` - if false, the price is multiplied by the amount of online members of the clan
 * `issuer-pays-regroup` - if enabled, the player issuing the command pays for the regroup, otherwise the clan pays it
 * `money-per-kill` - enables a prize in money for the killer clan
@@ -557,11 +227,11 @@ kdr-grinding-prevention:
 * `member-fee-set-price` - the price to set the member fee
 * `member-fee-enabled` - if clans can charge a daily fee from their members
 * `max-member-fee` - the maximum amount clans can set for their member fee
-* `upkeep` - the daily price for maintaining a clan \(if not paid, the clan is disbanded\)
+* `upkeep` - the daily price for maintaining a clan (if not paid, the clan is disbanded)
 * `upkeep-enabled` - if clans must pay the upkeep
 * `multiply-upkeep-by-clan-size` - if the upkeep price should be multiplied by the amount of members
 * `charge-upkeep-only-if-member-fee-enabled` - if the upkeep should be charged only for clans that choose to enable the member fee
-* `bank-log.enable` - If true, all economy actions will be recorded in .CSV file  \(SimpleClans/logs/bank/\)
+* `bank-log.enable` - If true, all economy actions will be recorded in .CSV file  (SimpleClans/logs/bank/)
 
 ### Example
 
@@ -597,7 +267,7 @@ economy:
 
 ## Kill Weights
 
-Here you can set the weight of every kill type. The weight can be negative too. It's used to calculate the KDR like so: \(Kill Count \* Kill Wight\) / Death Count = KDR
+Here you can set the weight of every kill type. The weight can be negative too. It's used to calculate the KDR like so: (Kill Count \* Kill Wight) / Death Count = KDR
 
 ### Example
 
@@ -621,12 +291,12 @@ kill-weights:
 * `max-members` - the maximum amount of members a clan can have
 * `confirmation-for-promote` - if other leaders must confirm the promotion of members
 * `trust-members-by-default` - if members are set as trusted by default
-* `confirmation-for-demote` - if other leaders \(except the one being demoted, of course\) must confirm the demotion
+* `confirmation-for-demote` - if other leaders (except the one being demoted, of course) must confirm the demotion
 * `percentage-online-to-demote` - the percentage of online leaders to demote
 * `ff-on-by-default` - if the clan's friendly-fire is enabled by default
 * `min-length` - the minimum length of the clan's name
 * `min-size-to-set-ally` - the minimum amount of members a clan needs to add allies
-* `min-to-verify` - The clan must have this amount of members to get verified \(moderators can bypass this\)
+* `min-to-verify` - The clan must have this amount of members to get verified (moderators can bypass this)
 
 ### Example
 
@@ -674,14 +344,14 @@ tasks:
 
 ## Page
 
-* `untrusted-color` - 
-* `clan-name-color` - 
-* `subtitle-color` - 
-* `headings-color` - 
-* `trusted-color` - 
-* `leader-color` - 
-* `separator` - 
-* `size` - 
+* `untrusted-color` -&#x20;
+* `clan-name-color` -&#x20;
+* `subtitle-color` -&#x20;
+* `headings-color` -&#x20;
+* `trusted-color` -&#x20;
+* `leader-color` -&#x20;
+* `separator` -&#x20;
+* `size` -&#x20;
 
 ### Example
 
@@ -697,16 +367,20 @@ page:
     size: 100
 ```
 
+## Discord Chat
+
+You can checkout the configuration [here](../integration/discordsrv-integration.md#configuration).
+
 ## Clan Chat
 
 * `enable` - enables the clan chat
 * `tag-based-clan-chat` - if true, the command to talk on the clan chat is the clan tag
 * `announcement-color` - color used for announcements
 * `format` - the chat format
-* `rank` - the member's rank format \(used on the format\)
-* `leader-color` - the color for leaders \(%nick-color%\)
-* `trusted-color` - the color for trusted players \(%nick-color%\)
-* `member-color` - the color for non-leaders and non-trusted players \(%nick-color%\)
+* `rank` - the member's rank format (used on the format)
+* `leader-color` - the color for leaders (%nick-color%)
+* `trusted-color` - the color for trusted players (%nick-color%)
+* `member-color` - the color for non-leaders and non-trusted players (%nick-color%)
 
 ### Example
 
@@ -724,7 +398,7 @@ clanchat:
 
 ## Request
 
-Requests are messages sent to players to decide \(accept or deny\) on something \(joining a clan, promoting someone, etc\).
+Requests are messages sent to players to decide (accept or deny) on something (joining a clan, promoting someone, etc).
 
 * `message-color` - the message color
 * `ask-frequency-secs` - the interval in seconds between each message
@@ -742,10 +416,10 @@ request:
 ## Bulletin Board
 
 * `color` - the color
-* `accent-color` - the accent color 
-* `show-on-login` - if enabled, the BB is sent to clan members when they login 
-* `size` - the BB size \(when using its command\)
-* `login-size` - the BB size on login 
+* `accent-color` - the accent color&#x20;
+* `show-on-login` - if enabled, the BB is sent to clan members when they login&#x20;
+* `size` - the BB size (when using its command)
+* `login-size` - the BB size on login&#x20;
 
 ### Example
 
@@ -809,7 +483,7 @@ mysql:
 
 In this section, you can give clans specific permissions. In the example below, members of the clan "YourClanNameHere" will receive the permission "test.permission".
 
-* `auto-group-groupname` - if enabled, members of clans will receive the permission "group.TAG" \(tag, of course, gets replaced\). **Be careful with this setting, if you are using LuckPerms, players could create a clan called "admin" and be automatically added to the corresponding group. If you are using it, disable the creation of such clans \(mod, admin, etc\).**
+* `auto-group-groupname` - if enabled, members of clans will receive the permission "group.TAG" (tag, of course, gets replaced). **Be careful with this setting, if you are using LuckPerms, players could create a clan called "admin" and be automatically added to the corresponding group. If you are using it, disable the creation of such clans (mod, admin, etc).**
 
 ### Example
 
@@ -822,9 +496,9 @@ permissions:
 
 ## Performance
 
-* `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true. 
-* `save-interval` - The interval **in minutes** in which changes are written to the database. 
-* `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true. 
+* `save-periodically` - The plugin will save its data periodically as opposed to right away, **RECOMMENDED** to set it true.&#x20;
+* `save-interval` - The interval **in minutes** in which changes are written to the database.&#x20;
+* `use-threads` - The plugin will not use the main thread to connect with the database if this is true, **RECOMMENDED** to set it true.&#x20;
 * `use-bungeecord` - **deprecated setting, BungeeCord is not fully supported**
 
 ### Example
@@ -846,4 +520,3 @@ performance:
 ```yaml
 safe-civilians: false
 ```
-

@@ -104,6 +104,7 @@ description: null
 | `/clan rank permissions (rank)`                     | Lists the rank's permissions                                                 | Yes           |
 | `/clan rank permissions add (rank) (permission)`    | Adds a permission to the rank                                                | Yes           |
 | `/clan rank permissions remove (rank) (permission)` | Removes a permission from the rank                                           | Yes           |
+| `/clan discord create`                              | Creates a discord channel for your clan                                      | Yes           |
 | `/clan bb clear`                                    | Clears your clan's bulletin board                                            | Yes           |
 
 ## Mod Commands

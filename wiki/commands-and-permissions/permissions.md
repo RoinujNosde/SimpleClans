@@ -100,6 +100,7 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 | `simpleclans.leader.setbanner`                  | Can set his clan's banner                           |
 | `simpleclans.leader.withdraw-toggle:`           | Can toggle clan bank withdraw                       |
 | `simpleclans.leader.deposit-toggle:`            | Can toggle clan bank deposit                        |
+| `simpleclans.leader.discord.create`             | Can create a discord channel                        |
 | `simpleclans.leader.bb-clear`                   | Clan clear their clan's bb                          |
 
 ### Mod Nodes
