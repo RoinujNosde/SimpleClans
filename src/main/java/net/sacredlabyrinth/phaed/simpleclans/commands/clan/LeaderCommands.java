@@ -5,7 +5,10 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.DisbandPrompt;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
@@ -22,6 +25,8 @@ import static org.bukkit.ChatColor.*;
 @Conditions("%basic_conditions|leader")
 public class LeaderCommands extends BaseCommand {
 
+    @Dependency
+    private SimpleClans plugin;
     @Dependency
     private StorageManager storage;
     @Dependency
@@ -106,7 +111,7 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
 
-        clan.disband(player, true, false);
+        new SCConversation(plugin, player, new DisbandPrompt()).begin();
     }
 
     @Subcommand("%verify")
