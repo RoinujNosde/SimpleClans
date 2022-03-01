@@ -122,7 +122,7 @@
                                     <type>${project.packaging}</type>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${test.server}\plugins</outputDirectory>
+                            <outputDirectory>${env.TEST_SERVER}\plugins</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -344,7 +344,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <test.server>D:\Paper-1.18.1\</test.server>
+        <env.TEST_SERVER></env.TEST_SERVER>
     </properties>
 
     <!-- Upstream Distribution -->
