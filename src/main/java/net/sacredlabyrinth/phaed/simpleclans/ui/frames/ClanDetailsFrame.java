@@ -138,7 +138,6 @@ public class ClanDetailsFrame extends SCFrame {
 				Collections.singletonList(lang("gui.clandetails.disband.lore", getViewer())), XMaterial.BARRIER,
 				50);
 		disband.setListener(ClickType.DROP, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
-		disband.setConfirmationRequired(ClickType.DROP);
 		disband.setPermission(ClickType.DROP, "simpleclans.leader.disband");
 		add(disband);
 	}

@@ -17,13 +17,9 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 abstract public class ConfirmationPrompt extends StringPrompt {
 
-    protected Prompt confirm(ClanPlayer sender, Clan clan, String input) {
-        return END_OF_CONVERSATION;
-    }
+    abstract Prompt confirm(ClanPlayer sender, Clan clan, String input);
 
-    protected Prompt decline(ClanPlayer sender, Clan clan, String input) {
-        return END_OF_CONVERSATION;
-    }
+    abstract Prompt decline(ClanPlayer sender, Clan clan, String input);
 
     @Override
     public Prompt acceptInput(@NotNull ConversationContext cc, @Nullable String input) {
