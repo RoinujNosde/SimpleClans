@@ -135,8 +135,9 @@ public final class ChatManager {
                 : parsedFormat;
     }
 
-    public boolean isDiscordHookEnabled() {
-        return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
+    public static boolean isDiscordHookEnabled() {
+        return getPluginManager().getPlugin("DiscordSRV") != null &&
+                SimpleClans.getInstance().getSettingsManager().is(DISCORDCHAT_ENABLE);
     }
 
     private void registerHandlers() {
