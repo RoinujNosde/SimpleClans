@@ -163,7 +163,9 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onClanCreate(CreateClanEvent event) {
         try {
-            createChannel(event.getClan().getTag());
+            if (settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
+                createChannel(event.getClan().getTag());
+            }
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
             SimpleClans.debug(ex.getMessage());

@@ -1,13 +1,14 @@
 package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
 import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.MessagePrompt;
 import org.bukkit.conversations.Prompt;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author roinujnosde
  */
-public class MessagePromptImpl extends org.bukkit.conversations.MessagePrompt {
+public class MessagePromptImpl extends MessagePrompt {
     private final String message;
     private Prompt nextPrompt;
     public MessagePromptImpl(String message) {
