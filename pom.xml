@@ -123,6 +123,7 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${env.TEST_SERVER}\plugins</outputDirectory>
+                            <silent>true</silent>
                         </configuration>
                     </execution>
                 </executions>
@@ -344,7 +345,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <env.TEST_SERVER></env.TEST_SERVER>
     </properties>
 
     <!-- Upstream Distribution -->
