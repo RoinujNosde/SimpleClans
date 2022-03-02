@@ -59,6 +59,10 @@ description: null
 | `/ally (message)`           | Sends a message to the ally chat    | No            |
 | `/ally [join\|leave\|mute]` | Joins/leaves/mutes the ally chat    | No            |
 
+### Land Commands
+
+You can find land commands [here](../integration/land-claiming.md).
+
 ### Bank Commands
 
 | Command                        | Description                                          | Verified only |

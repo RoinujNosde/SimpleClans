@@ -8,13 +8,14 @@ description: null
 
 These super permission nodes are a quick way to setup SimpleClans, some are automatically given (See Auto Added). If you wish to setup individual permissions to groups you will need to deny these auto added super permission nodes and setup permissions one by one after.
 
-| Permission                                | Description                                   |
-| ----------------------------------------- | --------------------------------------------- |
-| `simpleclans.anyone.*` (Auto added)       | Permissions for anyone                        |
-| `simpleclans.member.*` (Auto added)       | Permissions for those who can be clan members |
-| `simpleclans.leader.*` (Auto added)       | Permissions for those who can be clan leaders |
-| `simpleclans.mod.*` (Auto added to OPS)   | Permissions for moderators                    |
-| `simpleclans.admin.*` (Auto added to OPS) | Permissions for admins                        |
+| Permission                                | Description                                        |
+| ----------------------------------------- | -------------------------------------------------- |
+| `simpleclans.anyone.*` (Auto added)       | Permissions for anyone                             |
+| `simpleclans.member.*` (Auto added)       | Permissions for those who can be clan members      |
+| `simpleclans.member.land.*` (Auto added)  | Permissions for allowing/blocking actions in lands |
+| `simpleclans.leader.*` (Auto added)       | Permissions for those who can be clan leaders      |
+| `simpleclans.mod.*` (Auto added to OPS)   | Permissions for moderators                         |
+| `simpleclans.admin.*` (Auto added to OPS) | Permissions for admins                             |
 
 ## Individual Nodes
 
@@ -35,32 +36,45 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 
 ### Member Nodes
 
-| Permission                      | Description                                                        |
-| ------------------------------- | ------------------------------------------------------------------ |
-| `simpleclans.member.abstain`    | Can abstain                                                        |
-| `simpleclans.member.accept`     | Can accept                                                         |
-| `simpleclans.member.ally`       | Can use ally chat                                                  |
-| `simpleclans.member.chat`       | Can use clan chat                                                  |
-| `simpleclans.member.bank`       | Can use the clan bank                                              |
-| `simpleclans.member.bb-add`     | Can add to his clan's bulletin board                               |
-| `simpleclans.member.bb-toggle`  | Can toggle the bulletin board on/off                               |
-| `simpleclans.member.bb`         | Can view his clan's bulletin board                                 |
-| `simpleclans.member.can-join`   | Can join clans                                                     |
-| `simpleclans.member.coords`     | Can view his clan's coords                                         |
-| `simpleclans.member.deny`       | Can deny                                                           |
-| `simpleclans.member.ff`         | Can toggle his own friendly fire                                   |
-| `simpleclans.member.home`       | Can tp to home base                                                |
-| `simpleclans.member.kills`      | Can view his and other's kills                                     |
-| `simpleclans.member.lookup`     | Can view his own player info                                       |
-| `simpleclans.member.profile`    | Can view his own clan's profile                                    |
-| `simpleclans.member.resign`     | Can resign from his clan                                           |
-| `simpleclans.member.roster`     | Can view his own clan's member list                                |
-| `simpleclans.member.stats`      | Can view his clan stats                                            |
-| `simpleclans.member.vitals`     | Can view his clan's vitals                                         |
-| `simpleclans.member.toggle.bb`  | Can toggle bb on/off                                               |
-| `simpleclans.member.tag-toggle` | Can hide/show their clan tag                                       |
-| `simpleclans.member.fee-check`  | Allows the member to check how much is the fee and if it's enabled |
-| `simpleclans.member.bypass-fee` | Can bypass the member fee                                          |
+| Permission                                      | Description                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------ |
+| `simpleclans.member.abstain`                    | Can abstain                                                        |
+| `simpleclans.member.accept`                     | Can accept                                                         |
+| `simpleclans.member.ally`                       | Can use ally chat                                                  |
+| `simpleclans.member.chat`                       | Can use clan chat                                                  |
+| `simpleclans.member.bank`                       | Can use the clan bank                                              |
+| `simpleclans.member.bb-add`                     | Can add to his clan's bulletin board                               |
+| `simpleclans.member.bb-toggle`                  | Can toggle the bulletin board on/off                               |
+| `simpleclans.member.bb`                         | Can view his clan's bulletin board                                 |
+| `simpleclans.member.can-join`                   | Can join clans                                                     |
+| `simpleclans.member.coords`                     | Can view his clan's coords                                         |
+| `simpleclans.member.deny`                       | Can deny                                                           |
+| `simpleclans.member.ff`                         | Can toggle his own friendly fire                                   |
+| `simpleclans.member.home`                       | Can tp to home base                                                |
+| `simpleclans.member.kills`                      | Can view his and other's kills                                     |
+| `simpleclans.member.lookup`                     | Can view his own player info                                       |
+| `simpleclans.member.profile`                    | Can view his own clan's profile                                    |
+| `simpleclans.member.resign`                     | Can resign from his clan                                           |
+| `simpleclans.member.roster`                     | Can view his own clan's member list                                |
+| `simpleclans.member.stats`                      | Can view his clan stats                                            |
+| `simpleclans.member.vitals`                     | Can view his clan's vitals                                         |
+| `simpleclans.member.toggle.bb`                  | Can toggle bb on/off                                               |
+| `simpleclans.member.tag-toggle`                 | Can hide/show their clan tag                                       |
+| `simpleclans.member.fee-check`                  | Allows the member to check how much is the fee and if it's enabled |
+| `simpleclans.member.bypass-fee`                 | Can bypass the member fee                                          |
+| `simpleclans.member.land`                       | Can use land command                                               |
+| `simpleclans.member.land.allow.container`       | Can allow container action                                         |
+| `simpleclans.member.land.allow.place`           | Can allow place action                                             |
+| `simpleclans.member.land.allow.damage`          | Can allow damage action                                            |
+| `simpleclans.member.land.allow.break`           | Can allow break action                                             |
+| `simpleclans.member.land.allow.interact`        | Can allow interact action                                          |
+| `simpleclans.member.land.allow.interact_entity` | Can allow interact\_entity action                                  |
+| `simpleclans.member.land.block.container`       | Can block container action                                         |
+| `simpleclans.member.land.block.place`           | Can block place action                                             |
+| `simpleclans.member.land.block.damage`          | Can block damage action                                            |
+| `simpleclans.member.land.block.break`           | Can block break action                                             |
+| `simpleclans.member.land.block.interact`        | Can block interact action                                          |
+| `simpleclans.member.land.block.interact_entity` | Can block interact\_entity action                                  |
 
 ### Leader Nodes
 
