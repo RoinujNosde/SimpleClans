@@ -212,7 +212,7 @@ public class LeaderCommands extends BaseCommand {
 
         try {
             discordHook.createChannel(clan.getTag());
-            ChatBlock.sendMessage(player, AQUA + "discord.created.successfully");
+            ChatBlock.sendMessageKey(player, "discord.created.successfully");
         } catch (DiscordHookException ex) {
             String messageKey = ex.getMessageKey();
             if (messageKey != null) {

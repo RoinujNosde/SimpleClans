@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import static github.scarsz.discordsrv.dependencies.jda.api.Permission.MANAGE_CHANNEL;
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHANNEL;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -326,6 +327,9 @@ public class DiscordHook implements Listener {
                             guild.getPublicRole().getIdLong(),
                             Collections.emptyList(),
                             Collections.singletonList(VIEW_CHANNEL)).
+                    addMemberPermissionOverride(guild.getSelfMember().getIdLong(),
+                            Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL),
+                            Collections.emptyList()).
                     submit().get();
 
             textCategories.add(category.getId());
@@ -515,6 +519,7 @@ public class DiscordHook implements Listener {
                 map(TextChannel::getMemberPermissionOverrides).
                 flatMap(Collection::stream).
                 filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
+                filter(permissionOverride -> !Objects.equals(permissionOverride.getMember(), guild.getSelfMember())).
                 forEach(permissionOverride -> permissionOverride.delete().queue());
 
         clanTags.stream().map(clanManager::getClan).
