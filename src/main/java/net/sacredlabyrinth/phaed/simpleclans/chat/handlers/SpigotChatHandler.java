@@ -30,6 +30,7 @@ public class SpigotChatHandler implements ChatHandler {
                 if (event.isCancelled()) {
                     return;
                 }
+                message.setContent(event.getMessage());
 
                 ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
                         message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
