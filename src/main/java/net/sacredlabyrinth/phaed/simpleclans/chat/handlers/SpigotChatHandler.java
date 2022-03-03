@@ -9,8 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager.isDiscordHookEnabled;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
 import static org.bukkit.Bukkit.getPluginManager;
 
 public class SpigotChatHandler implements ChatHandler {
@@ -49,6 +49,7 @@ public class SpigotChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT || (source == DISCORD && isDiscordHookEnabled());
+        return source == SPIGOT || (source == DISCORD && settingsManager.is(DISCORDCHAT_ENABLE) &&
+                getPluginManager().getPlugin("DiscordSRV") != null);
     }
 }
