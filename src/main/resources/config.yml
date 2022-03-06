@@ -53,7 +53,7 @@ settings:
     list-default-order-by: kdr
     lore-length: 36
     past-clans-limit: 10
-    username-regex: "^\**[a-zA-Z0-9_$]{1,16}$"
+    username-regex: '^\**[a-zA-Z0-9_$]{1,16}$'
 war-and-protection:
     war-enabled: false
     land-sharing: true
