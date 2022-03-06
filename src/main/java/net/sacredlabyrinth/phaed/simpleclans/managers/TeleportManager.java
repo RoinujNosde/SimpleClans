@@ -109,7 +109,7 @@ public final class TeleportManager {
     public @NotNull Location getSafe(@NotNull Location location) {
         World world = location.getWorld();
         if (world != null) {
-            for (int height = world.getMaxHeight(); height > 0; height--) {
+            for (int i = 1 + (world.getMaxHeight() - location.getBlockY()) / 2; i > 0; i--) {
                 Block bottom = location.getBlock();
                 Block top = location.add(0, 1, 0).getBlock();
                 if (isAir(bottom, top)) {
