@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -106,24 +107,21 @@ public final class TeleportManager {
      * @return the safe Location
      */
     public @NotNull Location getSafe(@NotNull Location location) {
-        int counter = 0;
-        while (counter < 256) { //max world height
-            counter++;
-            Block bottom = location.getBlock();
-            Block top = location.add(0, 1, 0).getBlock();
-            if (!isAir(bottom)) {
-                continue;
+        World world = location.getWorld();
+        if (world != null) {
+            for (int height = world.getMaxHeight(); height > 0; height--) {
+                Block bottom = location.getBlock();
+                Block top = location.add(0, 1, 0).getBlock();
+                if (isAir(bottom) && isAir(top)) {
+                    return location;
+                }
+
+                location.add(0, 1, 0);
             }
-            if (!isAir(top)) {
-                location.add(0, 1, 0); //skips checking the same block again
-                continue;
-            }
-            location.subtract(0, 1, 0); //remove what was added above
-            return location;
+
+            location.setY(world.getHighestBlockYAt(location) + 1);
         }
 
-        //noinspection ConstantConditions
-        location.setY(location.getWorld().getHighestBlockYAt(location) + 1);
         return location;
     }
 
@@ -235,7 +233,6 @@ public final class TeleportManager {
      * @param blocks blocks to test
      * @return true if all blocks are AIR
      */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isAir(@NotNull Block... blocks) {
         for (Block b : blocks) {
             if (!b.getType().name().contains("AIR")) {
