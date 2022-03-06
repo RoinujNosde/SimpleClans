@@ -112,7 +112,7 @@ public final class TeleportManager {
             for (int height = world.getMaxHeight(); height > 0; height--) {
                 Block bottom = location.getBlock();
                 Block top = location.add(0, 1, 0).getBlock();
-                if (isAir(bottom) && isAir(top)) {
+                if (isAir(bottom, top)) {
                     return location;
                 }
 
