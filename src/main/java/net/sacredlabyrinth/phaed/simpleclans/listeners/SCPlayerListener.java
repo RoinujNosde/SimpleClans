@@ -121,11 +121,9 @@ public class SCPlayerListener extends SCListener {
         }
 
         Clan clan = plugin.getClanManager().getClanByPlayerUniqueId(player.getUniqueId());
-        if (clan != null) {
-            Location home = clan.getHomeLocation();
-            if (home != null) {
-                event.setRespawnLocation(home);
-            }
+        Location home;
+        if (clan != null && (home = clan.getHomeLocation()) != null) {
+            event.setRespawnLocation(plugin.getTeleportManager().getSafe(home));
         }
     }
 

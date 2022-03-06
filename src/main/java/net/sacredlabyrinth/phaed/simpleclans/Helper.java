@@ -418,19 +418,4 @@ public class Helper {
         }
         return String.join(", ", statuses);
     }
-
-    /**
-     * Checks if all passed materials are some kind of AIR
-     *
-     * @param materials materials to test
-     * @return true if all materials are AIR
-     */
-    public static boolean isAir(@NotNull Material... materials) {
-        for (Material m : materials) {
-            if (!m.name().contains("AIR")) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

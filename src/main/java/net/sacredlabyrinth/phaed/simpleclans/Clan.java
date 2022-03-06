@@ -1632,11 +1632,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         double z = flags.getNumber("homeZ").doubleValue();
         float yaw = flags.getNumber("homeYaw").floatValue();
         float pitch = flags.getNumber("homePitch").floatValue();
-        Location location = new Location(world, x, y, z, yaw, pitch);
-        if (!Helper.isAir(location.getBlock().getType(), location.clone().add(0, 1, 0).getBlock().getType())) {
-            location.setY(world.getHighestBlockYAt(location) + 1);
-        }
-        return location;
+
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     public String getTagLabel(boolean isLeader) {
