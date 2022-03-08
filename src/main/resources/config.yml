@@ -42,6 +42,7 @@ settings:
     user-language-selector: true
     disallowed-tag-colors:
     - '4'
+    - 'k'
     server-name: '&4SimpleClans'
     new-clan-verification-required: true
     allow-regroup-command: true
