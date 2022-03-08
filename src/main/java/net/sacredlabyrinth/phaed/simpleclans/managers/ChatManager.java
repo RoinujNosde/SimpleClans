@@ -89,7 +89,7 @@ public final class ChatManager {
                         collect(Collectors.toList()));
         }
 
-        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, ChatUtils.stripColors(message), receivers);
+        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
 
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {

@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class SpyChatHandler implements ChatHandler {
                 message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
         String format = settingsManager.getString(configField);
 
-        String formattedMessage = chatManager.parseChatFormat(format, message);
+        String formattedMessage = ChatUtils.stripColors(chatManager.parseChatFormat(format, message));
 
         List<ClanPlayer> onlinePlayers = getOnlineClanPlayers().stream()
                 .filter(player -> plugin.getPermissionsManager().has(player.toPlayer(), "simpleclans.admin.all-seeing-eye"))
