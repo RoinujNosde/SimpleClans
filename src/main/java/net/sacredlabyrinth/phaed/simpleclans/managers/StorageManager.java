@@ -825,7 +825,7 @@ public final class StorageManager {
      */
     public void insertClanPlayer(ClanPlayer cp) {
     	String query = "INSERT INTO `sc_players` (`locale`, `resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
-        String values = "VALUES ('"+cp.getLocale().toLanguageTag()+"', '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
+        String values = "VALUES ('"+Helper.toLanguageTag(cp.getLocale())+"', '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
         core.insert(query + values);
     }
 
@@ -869,7 +869,7 @@ public final class StorageManager {
     }
 
     private void setValues(PreparedStatement statement, ClanPlayer cp) throws SQLException {
-        statement.setString(1, cp.getLocale().toLanguageTag());
+        statement.setString(1, Helper.toLanguageTag(cp.getLocale()));
         statement.setString(2, Helper.resignTimesToJson(cp.getResignTimes()));
         statement.setInt(3, cp.isLeader() ? 1 : 0);
         statement.setString(4, cp.getTag());

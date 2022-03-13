@@ -845,10 +845,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         flags.put("rank", rank == null ? "" : rank);
     }
 
-    public @NotNull Locale getLocale() {
-        if (locale == null) {
-            return SimpleClans.getInstance().getSettingsManager().getLanguage();
-        }
+    public @Nullable Locale getLocale() {
         return locale;
     }
 

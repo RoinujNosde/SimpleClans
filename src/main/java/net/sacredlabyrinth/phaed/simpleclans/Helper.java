@@ -2,9 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -47,6 +47,12 @@ public class Helper {
             return defaultLanguage;
         }
         return Locale.forLanguageTag(languageTag);
+    }
+
+    @Contract("null -> null")
+    @Nullable
+    public static String toLanguageTag(@Nullable Locale locale) {
+        return locale != null ? locale.toLanguageTag() : null;
     }
 
     public static @Nullable JSONObject parseJson(String json) {
