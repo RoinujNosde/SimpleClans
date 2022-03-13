@@ -93,7 +93,7 @@ public final class ChatManager {
 
         for (ChatHandler ch : handlers) {
             if (ch.canHandle(source)) {
-                ch.sendMessage(scMessage);
+                ch.sendMessage(scMessage.clone());
             }
         }
     }

@@ -19,6 +19,7 @@ import static org.bukkit.Bukkit.getPluginManager;
 /**
  * Handles delivering messages from {@link Source#SPIGOT} and {@link Source#DISCORD} to internal spy chat.
  */
+@SuppressWarnings("unused")
 public class SpyChatHandler implements ChatHandler {
 
     @Override
@@ -26,8 +27,9 @@ public class SpyChatHandler implements ChatHandler {
         ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_SPYFORMAT",
                 message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
         String format = settingsManager.getString(configField);
+        message.setContent(ChatUtils.stripColors(message.getContent()));
 
-        String formattedMessage = ChatUtils.stripColors(chatManager.parseChatFormat(format, message));
+        String formattedMessage = chatManager.parseChatFormat(format, message);
 
         List<ClanPlayer> onlinePlayers = getOnlineClanPlayers().stream()
                 .filter(player -> plugin.getPermissionsManager().has(player.toPlayer(), "simpleclans.admin.all-seeing-eye"))

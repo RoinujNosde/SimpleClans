@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SCMessage {
+public class SCMessage implements Cloneable {
 
     private final Source source;
     private final ClanPlayer.Channel channel;
@@ -66,6 +66,15 @@ public class SCMessage {
 
     public void setReceivers(@NotNull List<ClanPlayer> receivers) {
         this.receivers = receivers;
+    }
+
+    @Override
+    public SCMessage clone() {
+        try {
+            return (SCMessage) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new Error(); //never thrown
+        }
     }
 
     /**

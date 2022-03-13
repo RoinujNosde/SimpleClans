@@ -266,7 +266,7 @@ public final class PermissionsManager {
      * @param perm   the permission
      * @return whether he has the permission
      */
-    public boolean has(Player player, String perm) {
+    public boolean has(@Nullable Player player, String perm) {
         if (player == null) {
             SimpleClans.debug("null player");
             return false;
