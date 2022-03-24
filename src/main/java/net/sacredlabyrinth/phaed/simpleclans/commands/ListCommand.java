@@ -119,7 +119,7 @@ public class ListCommand {
         	cm.sortClansByFounded(clans, asc.equalsIgnoreCase(order));
         }
         if (type.equalsIgnoreCase(sm.getListKdr())) {
-        	cm.sortClansByKDR(clans, asc.equalsIgnoreCase(order));
+        	cm.killManager.sortClansByKDR(clans, asc.equalsIgnoreCase(order));
         }
         if (type.equalsIgnoreCase(sm.getListName())) {
         	if (order == null) {
