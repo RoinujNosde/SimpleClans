@@ -126,4 +126,18 @@ public class KillManager {
             return o2.compareTo(o1);
         });
     }
+
+    /**
+     * Reset a player's KDR
+     * @param clanPlayer
+     * @param clanManager
+     */
+    public void resetKdr(ClanPlayer clanPlayer, ClanManager clanManager) {
+        clanPlayer.setCivilianKills(0);
+        clanPlayer.setNeutralKills(0);
+        clanPlayer.setRivalKills(0);
+        clanPlayer.setAllyKills(0);
+        clanPlayer.setDeaths(0);
+        getPlugin().getStorageManager().updateClanPlayer(clanPlayer);
+    }
 }

@@ -35,7 +35,7 @@ public final class ClanManager {
 
     private final HashMap<String, Clan> clans = new HashMap<>();
     private final HashMap<String, ClanPlayer> clanPlayers = new HashMap<>();
-    private final KillManager killManager = new KillManager();
+    public final KillManager killManager = new KillManager();
     private final DiamondSword diamondSword = new DiamondSword();
     private final GoldSword goldSword = new GoldSword();
     private final IronSword ironSword = new IronSword();
@@ -111,18 +111,6 @@ public final class ClanManager {
         killManager.getPlugin().getRequestManager().deny(clanPlayer); //denies any previous invitation
         SimpleClans.getInstance().getPermissionsManager().updateClanPermissions(clan);
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new CreateClanEvent(clan));
-    }
-
-    /**
-     * Reset a player's KDR
-     */
-    public void resetKdr(ClanPlayer clanPlayer) {
-        clanPlayer.setCivilianKills(0);
-        clanPlayer.setNeutralKills(0);
-        clanPlayer.setRivalKills(0);
-        clanPlayer.setAllyKills(0);
-        clanPlayer.setDeaths(0);
-        killManager.getPlugin().getStorageManager().updateClanPlayer(clanPlayer);
     }
 
     /**
@@ -668,6 +656,16 @@ public final class ClanManager {
             player = (Player) holder;
         }
 
+        double count = getFoodCount(inv);
+
+        if (count == 0) {
+            return lang("none", player);
+        } else {
+            return ((int) count) + "" + ChatColor.GOLD + "p";
+        }
+    }
+
+    private double getFoodCount(PlayerInventory inv) {
         double count = getFoodPoints(inv, XMaterial.APPLE, 4, 2.4);
         count += getFoodPoints(inv, XMaterial.BAKED_POTATO, 5, 6);
         count += getFoodPoints(inv, XMaterial.BEETROOT, 1, 1.2);
@@ -703,12 +701,7 @@ public final class ClanManager {
         count += getFoodPoints(inv, XMaterial.ROTTEN_FLESH, 4, .8);
         count += getFoodPoints(inv, XMaterial.SPIDER_EYE, 2, 3.2);
         count += getFoodPoints(inv, XMaterial.COOKED_BEEF, 8, 12.8);
-
-        if (count == 0) {
-            return lang("none", player);
-        } else {
-            return ((int) count) + "" + ChatColor.GOLD + "p";
-        }
+        return count;
     }
 
     /**

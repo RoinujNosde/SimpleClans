@@ -326,7 +326,7 @@ public class StaffCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr.everyone}")
     public void resetKdr(CommandSender sender) {
         for (ClanPlayer cp : cm.getAllClanPlayers()) {
-            cm.resetKdr(cp);
+            cm.killManager.resetKdr(cp, cm);
         }
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.kdr.of.all.players", sender));
     }
@@ -337,7 +337,7 @@ public class StaffCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr.player}")
     public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput player) {
         ClanPlayer cp = player.getClanPlayer();
-        cm.resetKdr(cp);
+        cm.killManager.resetKdr(cp, cm);
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));
     }
 

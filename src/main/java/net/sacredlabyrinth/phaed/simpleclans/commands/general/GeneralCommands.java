@@ -166,7 +166,7 @@ public class GeneralCommands extends BaseCommand {
             return;
         }
         if (cm.purchaseResetKdr(player)) {
-            cm.resetKdr(cp);
+            cm.killManager.resetKdr(cp, cm);
             ChatBlock.sendMessage(player, RED + lang("you.have.reseted.your.kdr", player));
         }
     }
