@@ -34,7 +34,8 @@ public enum RankPermission {
 	VITALS("simpleclans.member.vitals", PermissionLevel.TRUSTED),
 	KILLS("simpleclans.member.kills", PermissionLevel.TRUSTED),
 	DESCRIPTION("simpleclans.leader.description", PermissionLevel.LEADER),
-	MOSTKILLED("simpleclans.mod.mostkilled", PermissionLevel.TRUSTED);
+	MOSTKILLED("simpleclans.mod.mostkilled", PermissionLevel.TRUSTED),
+	FRIENDLYFIRE("simpleclans.leader.ff", PermissionLevel.LEADER);
 
 	private final String bukkitPermission;
 	private final PermissionLevel permissionLevel;

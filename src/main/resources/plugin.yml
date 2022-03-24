@@ -3,6 +3,10 @@ main: net.sacredlabyrinth.phaed.simpleclans.SimpleClans
 version: '${project.version}'
 softdepend: [VanishNoPacket, Permissions, PermissionsBukkit, Vault, PermissionsEx, mChat, mChatSuite, PlaceholderAPI]
 api-version: '1.13'
+authors:
+  - Phaed
+  - RoinujNosde
+website: https://www.spigotmc.org/resources/simpleclans.71242/
 permissions:
   simpleclans.admin.permissions:
     description: Can grant clans permissions
@@ -85,7 +89,7 @@ permissions:
     description: Can join clans
   simpleclans.member.home:
     description: Can tp to home base
-  simpleclans.member.resetkdr:
+  simpleclans.vip.resetkdr:
     description: Can reset his kdr
   simpleclans.leader.create:
     description: Can create simpleclans
@@ -226,7 +230,6 @@ permissions:
       simpleclans.member.home: true
       simpleclans.member.kills: true
       simpleclans.member.bank: true
-      simpleclans.member.resetkdr: true
       simpleclans.member.fee-check: true
   simpleclans.leader.*:
     description: Permissions for those who can be clan leaders

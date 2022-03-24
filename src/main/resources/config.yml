@@ -117,6 +117,7 @@ clan:
     percentage-online-to-demote: 100.0
     ff-on-by-default: false
     min-length: 2
+    max-alliances: -1
     min-size-to-set-ally: 3
 tasks:
     collect-upkeep:

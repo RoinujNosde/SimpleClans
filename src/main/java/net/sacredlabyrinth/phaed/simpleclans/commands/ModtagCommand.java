@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 /**
  * @author phaed
  */
@@ -58,6 +60,11 @@ public class ModtagCommand {
 
         String newtag = arg[0];
         String cleantag = Helper.cleanTag(newtag);
+
+        if (newtag.length() > 25) {
+            ChatBlock.sendMessage(player, lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 25));
+            return;
+        }
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.coloredtag") && newtag.contains("&")) {
             ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("your.tag.cannot.contain.color.codes"));

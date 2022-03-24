@@ -105,6 +105,7 @@ public final class SettingsManager {
     private int clanMinSizeToAlly;
     private int clanMinSizeToRival;
     private int clanMinLength;
+    private int clanMaxAlliances;
     private int clanMaxLength;
     private int clanMaxDescriptionLength;
     private int clanMinDescriptionLength;
@@ -314,6 +315,7 @@ public final class SettingsManager {
         clanMinSizeToAlly = getConfig().getInt("clan.min-size-to-set-ally");
         clanMinSizeToRival = getConfig().getInt("clan.min-size-to-set-rival");
         clanMinLength = getConfig().getInt("clan.min-length");
+        clanMaxAlliances = getConfig().getInt("clan.max-alliances");
         clanMaxLength = getConfig().getInt("clan.max-length");
         clanMaxDescriptionLength = getConfig().getInt("clan.max-description-length");
         clanMinDescriptionLength = getConfig().getInt("clan.min-description-length");
@@ -1014,6 +1016,14 @@ public final class SettingsManager {
      */
     public int getClanMinLength() {
         return clanMinLength;
+    }
+
+    /**
+     *
+     * @return the max number of alliances a clan can have
+     */
+    public int getClanMaxAlliances() {
+        return clanMaxAlliances;
     }
 
     /**

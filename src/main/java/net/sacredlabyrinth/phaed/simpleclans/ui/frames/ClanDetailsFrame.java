@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,11 +21,12 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 public class ClanDetailsFrame extends SCFrame {
 	private final Clan clan;
 	private final ClanPlayer cp;
+	private final SimpleClans plugin;
 
 	public ClanDetailsFrame(@Nullable SCFrame parent, @NotNull Player viewer, @NotNull Clan clan) {
 		super(parent, viewer);
 		this.clan = clan;
-		SimpleClans plugin = SimpleClans.getInstance();
+		plugin = SimpleClans.getInstance();
 		cp = plugin.getClanManager().getClanPlayer(getViewer());
 	}
 
@@ -56,24 +58,13 @@ public class ClanDetailsFrame extends SCFrame {
 	}
 
 	private void addChat() {
-		String joined = lang("chat.joined");
-		String notJoined = lang("chat.not.joined");
-
 		Channel cpChannel = cp.getChannel();
-		boolean clan = Channel.CLAN.equals(cpChannel);
-		boolean ally = Channel.ALLY.equals(cpChannel);
+		boolean clanEnabled = Channel.CLAN.equals(cpChannel);
+		boolean allyEnabled = Channel.ALLY.equals(cpChannel);
 
-		String clanStatus = clan ? joined : notJoined;
-		String allyStatus = ally ? joined : notJoined;
-
-		SCComponent chat = new SCComponentImpl(lang("gui.clandetails.chat.title"),
-				Arrays.asList(lang("gui.clandetails.chat.clan.status.lore", clanStatus),
-						lang("gui.clandetails.chat.ally.status.lore", allyStatus),
-						lang("gui.clandetails.chat.clan.toggle.lore"),
-						lang("gui.clandetails.chat.ally.toggle.lore")),
-				Material.KNOWLEDGE_BOOK, 43);
+		SCComponent chat = createChatComponent(clanEnabled, allyEnabled);
 		chat.setListener(ClickType.LEFT, () -> {
-			if (clan) {
+			if (clanEnabled) {
 				cp.setChannel(Channel.NONE);
 			} else {
 				cp.setChannel(Channel.CLAN);
@@ -82,7 +73,7 @@ public class ClanDetailsFrame extends SCFrame {
 		});
 		chat.setPermission(ClickType.LEFT, "simpleclans.member.chat");
 		chat.setListener(ClickType.RIGHT, () -> {
-			if (ally) {
+			if (allyEnabled) {
 				cp.setChannel(Channel.NONE);
 			} else {
 				cp.setChannel(Channel.ALLY);
@@ -91,6 +82,31 @@ public class ClanDetailsFrame extends SCFrame {
 		});
 		chat.setPermission(ClickType.RIGHT, RankPermission.ALLY_CHAT);
 		add(chat);
+	}
+
+	@NotNull
+	private SCComponent createChatComponent(boolean clanEnabled, boolean allyEnabled) {
+		String joined = lang("chat.joined");
+		String notJoined = lang("chat.not.joined");
+
+		String clanStatus = clanEnabled ? joined : notJoined;
+		String allyStatus = allyEnabled ? joined : notJoined;
+
+		SettingsManager sm = plugin.getSettingsManager();
+		String chatCommand = sm.isTagBasedClanChat() ? clan.getTag() : sm.getCommandClanChat();
+		String joinArg = lang("join");
+		String leaveArg = lang("leave");
+		return new SCComponentImpl(lang("gui.clandetails.chat.title"),
+				Arrays.asList(
+						lang("gui.clandetails.chat.clan.chat.lore", chatCommand),
+						lang("gui.clandetails.chat.clan.join.leave.lore", chatCommand, joinArg, leaveArg),
+						lang("gui.clandetails.chat.ally.chat.lore", sm.getCommandAlly()),
+						lang("gui.clandetails.chat.ally.join.leave.lore", sm.getCommandAlly(), joinArg, leaveArg),
+						lang("gui.clandetails.chat.clan.status.lore", clanStatus),
+						lang("gui.clandetails.chat.ally.status.lore", allyStatus),
+						lang("gui.clandetails.chat.clan.toggle.lore"),
+						lang("gui.clandetails.chat.ally.toggle.lore")),
+				Material.KNOWLEDGE_BOOK, 43);
 	}
 
 	private void addRank() {
@@ -178,7 +194,7 @@ public class ClanDetailsFrame extends SCFrame {
 		ff.setListener(ClickType.LEFT, this::togglePersonalFf);
 		ff.setPermission(ClickType.LEFT, "simpleclans.member.ff");
 		ff.setListener(ClickType.RIGHT, this::toggleClanFf);
-		ff.setPermission(ClickType.RIGHT, "simpleclans.leader.ff");
+		ff.setPermission(ClickType.RIGHT, RankPermission.FRIENDLYFIRE);
 		add(ff);
 	}
 

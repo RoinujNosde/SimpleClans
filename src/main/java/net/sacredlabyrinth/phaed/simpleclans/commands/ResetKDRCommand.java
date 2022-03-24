@@ -32,7 +32,7 @@ public class ResetKDRCommand {
                                 plugin.getSettingsManager().getCommandClan()));
                 return;
             }
-            if (!plugin.getPermissionsManager().has(player, "simpleclans.member.resetkdr")) {
+            if (!plugin.getPermissionsManager().has(player, "simpleclans.vip.resetkdr")) {
                 ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("insufficient.permissions"));
                 return;
             }

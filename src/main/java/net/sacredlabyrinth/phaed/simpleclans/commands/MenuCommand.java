@@ -10,6 +10,8 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 /**
  * @author phaed
  */
@@ -53,6 +55,12 @@ public class MenuCommand {
         if (clan != null && plugin.getPermissionsManager().has(player, "simpleclans.member.chat")) {
         	String chatCommand = plugin.getSettingsManager().isTagBasedClanChat() ? clan.getTag() : plugin.getSettingsManager().getCommandClanChat();
         	chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.message.1.send.a.message.to.clan.chat"), chatCommand, ChatColor.WHITE));
+            chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.join.leave.3.join.leave.the.clan.chat"), chatCommand, lang("join", player), lang("leave", player), ChatColor.WHITE));
+        }
+        if (clan != null && plugin.getPermissionsManager().has(player, "simpleclans.member.ally")) {
+            String allyCommand = plugin.getSettingsManager().getCommandAlly();
+            chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.message.1.send.a.message.to.ally.chat"), allyCommand, ChatColor.WHITE));
+            chatBlock.addRow(ChatColor.AQUA + "  " + MessageFormat.format(plugin.getLang("0.join.leave.3.join.leave.the.ally.chat"), allyCommand, lang("join", player), lang("leave", player), ChatColor.WHITE));
         }
         if (isNonVerified && plugin.getSettingsManager().isRequireVerification() && plugin.getSettingsManager().isePurchaseVerification()) {
             chatBlock.addRow(ChatColor.DARK_RED + "  " + MessageFormat.format(plugin.getLang("0.verify.1.purchase.verification.of.your.clan"), clanCommand, ChatColor.WHITE));

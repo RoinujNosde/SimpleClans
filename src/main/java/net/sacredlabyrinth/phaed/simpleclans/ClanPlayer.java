@@ -34,7 +34,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     private long lastSeen;
     private long joinDate;
     private Set<String> pastClans = new HashSet<>();
-    private Map<String, Long> resignTimes = new HashMap<>();
+    private final Map<String, Long> resignTimes = new HashMap<>();
     private VoteResult vote;
     private Channel channel;
 
@@ -77,19 +77,19 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer>
     }
 
     /**
-     * @param playerUniqueId
+     * @param uuid the Player's UUID
      */
-    public ClanPlayer(UUID playerUniqueId)
+    public ClanPlayer(UUID uuid)
     {
-        this.uniqueId = playerUniqueId;
-        Player OnlinePlayer = SimpleClans.getInstance().getServer().getPlayer(playerUniqueId);
-        if (OnlinePlayer != null)
+        this.uniqueId = uuid;
+        Player onlinePlayer = SimpleClans.getInstance().getServer().getPlayer(uuid);
+        if (onlinePlayer != null)
         {
-            this.displayName = OnlinePlayer.getName();
+            this.displayName = onlinePlayer.getName();
         } else
         {
-            OfflinePlayer OfflinePlayer = SimpleClans.getInstance().getServer().getOfflinePlayer(playerUniqueId);
-            this.displayName = OfflinePlayer.getName();
+            OfflinePlayer offlinePlayer = SimpleClans.getInstance().getServer().getOfflinePlayer(uuid);
+            this.displayName = offlinePlayer.getName() != null ? offlinePlayer.getName() : "null";
         }
         this.lastSeen = (new Date()).getTime();
         this.joinDate = (new Date()).getTime();
