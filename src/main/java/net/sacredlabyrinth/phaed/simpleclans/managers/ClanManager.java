@@ -1,6 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.managers.chatcontrol.ChatControlDisabled;
+import net.sacredlabyrinth.phaed.simpleclans.managers.chatcontrol.ChatControlEnabled;
+import net.sacredlabyrinth.phaed.simpleclans.managers.chatcontrol.ChatControlJoined;
+import net.sacredlabyrinth.phaed.simpleclans.managers.chatcontrol.ChatControlLeft;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
 import org.bukkit.ChatColor;
@@ -27,6 +31,10 @@ public final class ClanManager {
     public final KillManager killManager = new KillManager(this);
     private final HashMap<String, Clan> clans = new HashMap<>();
     private final HashMap<String, ClanPlayer> clanPlayers = new HashMap<>();
+    private final ChatControlEnabled chatControlEnabled = new ChatControlEnabled(this);
+    private final ChatControlDisabled chatControlDisabled = new ChatControlDisabled(this);
+    private final ChatControlJoined chatControlJoined = new ChatControlJoined(this);
+    private final ChatControlLeft chatControlLeft = new ChatControlLeft(this);
 
     /**
      *
@@ -1138,21 +1146,13 @@ public final class ClanManager {
         String command = split[0];
 
         if (command.equals(plugin.getLang("on"))) {
-            clanPlayer.setClanChat(true);
-            plugin.getStorageManager().updateClanPlayer(clanPlayer);
-            ChatBlock.sendMessage(player, lang("enabled.clan.chat", player));
+            chatControlEnabled.chatcontrol(player, clanPlayer);
         } else if (command.equals(plugin.getLang("off"))) {
-            clanPlayer.setClanChat(false);
-            plugin.getStorageManager().updateClanPlayer(clanPlayer);
-            ChatBlock.sendMessage(player, lang("disabled.clan.chat", player));
+            chatControlDisabled.chatcontrol(player, clanPlayer);
         } else if (command.equals(plugin.getLang("join"))) {
-            clanPlayer.setChannel(ClanPlayer.Channel.CLAN);
-            plugin.getStorageManager().updateClanPlayer(clanPlayer);
-            ChatBlock.sendMessage(player, lang("joined.clan.chat", player));
+            chatControlJoined.chatcontrol(player, clanPlayer);
         } else if (command.equals(plugin.getLang("leave"))) {
-            clanPlayer.setChannel(ClanPlayer.Channel.NONE);
-            plugin.getStorageManager().updateClanPlayer(clanPlayer);
-            ChatBlock.sendMessage(player, lang("left.clan.chat", player));
+            chatControlLeft.chatcontrol(player, clanPlayer);
         } else if (command.equals(plugin.getLang("mute"))) {
             if (clanPlayer.isMuted()) {
                 clanPlayer.setMuted(true);
@@ -1168,6 +1168,10 @@ public final class ClanManager {
                     receivers.add(p);
                 }
             }
+
+
+
+
 
             new BukkitRunnable() {
                 @Override
@@ -1192,6 +1196,7 @@ public final class ClanManager {
             }.runTask(plugin);
         }
     }
+
 
     public void sendToAllSeeing(String msg, List<ClanPlayer> clanPlayerList) {
         Collection<Player> players = Helper.getOnlinePlayers();
