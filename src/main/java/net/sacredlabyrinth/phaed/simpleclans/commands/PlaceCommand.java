@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,6 +52,11 @@ public class PlaceCommand {
 
         if (oldCp != null) {
             Clan oldClan = oldCp.getClan();
+
+            if (oldClan.equals(newClan)) {
+                ChatBlock.sendMessage(sender, plugin.getLang("player.already.in.this.clan"));
+                return;
+            }
 
             if (oldClan.isLeader(player) && oldClan.getLeaders().size() <= 1) {
                 oldClan.clanAnnounce(player.getName(), ChatColor.AQUA + MessageFormat.format(plugin.getLang("clan.has.been.disbanded"), oldClan.getName()));

@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -37,16 +39,28 @@ public class MainFrame extends SCFrame {
 		clanList.setPermission(ClickType.LEFT, "simpleclans.anyone.list");
 		add(clanList);
 
-		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title"),
-				Collections.singletonList(lang("gui.main.reset.kdr.lore")), Material.ANVIL, 6);
-		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
-		resetKdr.setPermission(ClickType.LEFT, "simpleclans.member.resetkdr");
-		add(resetKdr);
+		addResetKdr();
 
 		SCComponent otherCommands = new SCComponentImpl(lang("gui.main.other.commands.title"),
 				Collections.singletonList(lang("gui.main.other.commands.lore")), Material.BOOK, 8);
 		otherCommands.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "help", false));
 		add(otherCommands);
+	}
+
+	public void addResetKdr() {
+		List<String> resetKrLore;
+		if (plugin.getSettingsManager().isePurchaseResetKdr()) {
+			resetKrLore = Arrays.asList(
+					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().geteResetKdr()),
+					lang("gui.main.reset.kdr.lore", getViewer()));
+		} else {
+			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore"));
+		}
+		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title"),
+				resetKrLore, Material.ANVIL, 6);
+		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
+		resetKdr.setPermission(ClickType.LEFT, "simpleclans.vip.resetkdr");
+		add(resetKdr);
 	}
 
 	@Override

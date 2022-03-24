@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -845,10 +846,26 @@ public final class StorageManager {
      * @param victimTag
      * @param type
      */
+    @Deprecated
     public void insertKill(Player attacker, String attackerTag, Player victim, String victimTag, String type) {
     	String query = "INSERT INTO `sc_kills` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, `victim`, `victim_tag`, `kill_type`) ";
     	String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attackerTag + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victimTag + "','" + type + "');";
     	core.insert(query + values);       
+    }
+
+    /**
+     * Insert a kill into the database
+     *
+     * @param attacker the attacker
+     * @param victim the victim
+     * @param type the kill type
+     */
+    public void insertKill(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim, @NotNull String type) {
+        String query = "INSERT INTO `sc_kills` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, " +
+                "`victim`, `victim_tag`, `kill_type`) ";
+        String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attacker.getTag()
+                + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victim.getTag() + "','" + type + "');";
+        core.insert(query + values);
     }
 
     /**

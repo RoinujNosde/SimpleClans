@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import java.text.MessageFormat;
 import java.util.List;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 /**
  * @author phaed
  */
@@ -73,6 +75,18 @@ public class AllyCommand {
             if (clan.isAlly(ally.getTag())) {
                 ChatBlock.sendMessage(player, ChatColor.RED + plugin.getLang("your.clans.are.already.allies"));
                 return;
+            }
+
+            int maxAlliances = plugin.getSettingsManager().getClanMaxAlliances();
+            if (maxAlliances != -1) {
+                if (clan.getAllies().size() >= maxAlliances) {
+                    ChatBlock.sendMessage(player, lang("your.clan.reached.max.alliances"));
+                    return;
+                }
+                if (ally.getAllies().size() >= maxAlliances) {
+                    ChatBlock.sendMessage(player, lang("other.clan.reached.max.alliances"));
+                    return;
+                }
             }
 
             List<ClanPlayer> onlineLeaders = Helper.stripOffLinePlayers(clan.getLeaders());
