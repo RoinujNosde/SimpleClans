@@ -15,23 +15,16 @@ import java.util.List;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.KDR_DELAY_BETWEEN_KILLS;
 
 public class KillManager {
-    SimpleClans plugin;
 
-    public SimpleClans getPlugin() {
-        return plugin;
-    }
-
-    public void setPlugin(SimpleClans plugin) {
-        this.plugin = plugin;
-    }
 
     final HashMap<ClanPlayer, List<Kill>> kills = new HashMap<ClanPlayer, List<Kill>>();
-
+    SimpleClans plugin;
     public HashMap<ClanPlayer, List<Kill>> getKills() {
         return kills;
     }
 
-    public KillManager() {
+    public KillManager(SimpleClans plugin) {
+        this.plugin = plugin;
     }
 
     /**
@@ -138,6 +131,6 @@ public class KillManager {
         clanPlayer.setRivalKills(0);
         clanPlayer.setAllyKills(0);
         clanPlayer.setDeaths(0);
-        getPlugin().getStorageManager().updateClanPlayer(clanPlayer);
+        plugin.getStorageManager().updateClanPlayer(clanPlayer);
     }
 }
