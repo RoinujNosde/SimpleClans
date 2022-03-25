@@ -1,15 +1,17 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
+import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PAGE_LEADER_COLOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class ClanProfile extends Sendable {
 
@@ -55,4 +57,5 @@ public class ClanProfile extends Sendable {
         return clan.getDescription() != null && !clan.getDescription().isEmpty() ? clan.getDescription() :
                 lang("no.description", sender);
     }
+
 }

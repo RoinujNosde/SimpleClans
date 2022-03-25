@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
 import org.bukkit.command.CommandSender;
@@ -102,5 +103,18 @@ public class ClanList extends Sendable {
         String kdr = clan.isVerified() ? YELLOW + "" + KDRFormat.format(clan.getTotalKDR()) : "";
 
         chatBlock.addRow("  " + ranking.getRankingNumber(clan), fullname, kdr, size);
+    }
+
+    protected void sendBlock() {
+        SettingsManager sm = plugin.getSettingsManager();
+        boolean more = chatBlock.sendBlock(sender, sm.getInt(PAGE_SIZE));
+
+        if (more) {
+            plugin.getStorageManager().addChatBlock(sender, chatBlock);
+            ChatBlock.sendBlank(sender);
+            ChatBlock.sendMessage(sender, sm.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", sender,
+                    sm.getString(COMMANDS_MORE)));
+        }
+        ChatBlock.sendBlank(sender);
     }
 }

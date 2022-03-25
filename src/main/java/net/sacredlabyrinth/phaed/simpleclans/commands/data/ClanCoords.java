@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -72,5 +73,18 @@ public class ClanCoords extends Sendable {
         populateRows();
 
         sendBlock();
+    }
+
+    protected void sendBlock() {
+        SettingsManager sm = plugin.getSettingsManager();
+        boolean more = chatBlock.sendBlock(sender, sm.getInt(PAGE_SIZE));
+
+        if (more) {
+            plugin.getStorageManager().addChatBlock(sender, chatBlock);
+            ChatBlock.sendBlank(sender);
+            ChatBlock.sendMessage(sender, sm.getColored(PAGE_HEADINGS_COLOR) + lang("view.next.page", sender,
+                    sm.getString(COMMANDS_MORE)));
+        }
+        ChatBlock.sendBlank(sender);
     }
 }

@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.data;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import org.bukkit.command.CommandSender;
@@ -129,4 +130,5 @@ public class Lookup extends Sendable {
     private Player getPlayer() {
         return (Player) sender;
     }
+
 }
