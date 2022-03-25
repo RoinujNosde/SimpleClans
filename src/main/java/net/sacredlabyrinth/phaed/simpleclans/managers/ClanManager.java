@@ -566,49 +566,35 @@ public final class ClanManager {
             player = (Player) holder;
         }
 
+        //diamondSword
         int count = getItemCount(inv, XMaterial.DIAMOND_SWORD);
+        out = diamondSword.weaponSpecification(headColor, out, player, count);
 
-        if (count > 0) {
-            out = diamondSword.weaponSpecification(headColor, out, player, count);
-        }
-
+        //goldenSword
         count = getItemCount(inv, XMaterial.GOLDEN_SWORD);
+        out = goldSword.weaponSpecification(headColor, out, player, count);
 
-        if (count > 0) {
-            out = goldSword.weaponSpecification(headColor, out, player, count);
-        }
-
+        //ironsword
         count = getItemCount(inv, XMaterial.IRON_SWORD);
+        out = ironSword.weaponSpecification(headColor, out, player, count);
 
-        if (count > 0) {
-            out = ironSword.weaponSpecification(headColor, out, player, count);
-        }
-
+        //StoneSword
         count = getItemCount(inv, XMaterial.STONE_SWORD);
+        out = stoneSword.weaponSpecification(headColor, out, player, count);
 
-        if (count > 0) {
-            out = stoneSword.weaponSpecification(headColor, out, player, count);
-        }
-
+        //WoodenSword
         count = getItemCount(inv, XMaterial.WOODEN_SWORD);
+        out = woodenSword.weaponSpecification(headColor, out, player, count);
 
-        if (count > 0) {
-            out = woodenSword.weaponSpecification(headColor, out, player, count);
-        }
-
+        //bow
         count = getItemCount(inv, XMaterial.BOW);
+        out = bow.weaponSpecification(headColor, out, player, count);
 
-        if (count > 0) {
-            out = bow.weaponSpecification(headColor, out, player, count);
-        }
-
+        //arrow
         count = getItemCount(inv, XMaterial.ARROW);
         count += getItemCount(inv, XMaterial.SPECTRAL_ARROW);
         count += getItemCount(inv, XMaterial.TIPPED_ARROW);
-
-        if (count > 0) {
-            out = arrow.weaponSpecification(headColor, out, player, count);
-        }
+        out = arrow.weaponSpecification(headColor, out, player, count);
 
         if (out.length() == 0) {
             out = lang("none", player);

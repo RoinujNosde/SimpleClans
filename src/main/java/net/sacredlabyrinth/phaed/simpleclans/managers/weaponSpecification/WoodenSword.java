@@ -11,8 +11,13 @@ public class WoodenSword extends AbstractWeaponSpecification{
 
     @NotNull
     public String weaponSpecification(String headColor, String out, Player player, int count) {
+        if(count > 0) {
         String countString = count > 1 ? count + "" : "";
         out += ChatColor.GOLD + SimpleClans.lang("weapon.S", player) + headColor + countString;
         return out;
+    }
+        else{
+            return out;
+        }
     }
 }
