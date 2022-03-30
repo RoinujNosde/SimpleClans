@@ -14,6 +14,7 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,13 +131,26 @@ public final class ChatManager {
                 .replace("%rank%", rankFormat)
                 .replace("%message%", message.getContent());
 
-        return getPluginManager().getPlugin("PlaceholderAPI") != null ?
-                PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(message.getSender().getUniqueId()), parsedFormat)
-                : parsedFormat;
+        return parseWithPapi(message.getSender(), parsedFormat);
     }
 
     public boolean isDiscordHookEnabled() {
         return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
+    }
+
+    private String parseWithPapi(ClanPlayer cp, String message) {
+        if (getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            return message;
+        }
+        OfflinePlayer sender = Bukkit.getOfflinePlayer(cp.getUniqueId());
+        message = PlaceholderAPI.setPlaceholders(sender, message);
+
+        // If there are still placeholders left, try to parse them
+        // E.g. if the user has a placeholder as LuckPerms prefix/suffix
+        if (message.contains("%")) {
+            message = PlaceholderAPI.setPlaceholders(sender, message);
+        }
+        return message;
     }
 
     private void registerHandlers() {
@@ -148,7 +162,7 @@ public final class ChatManager {
             try {
                 handlers.add(handler.getConstructor().newInstance());
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to register {0} handler: " +
+                plugin.getLogger().log(Level.SEVERE, "Error while trying to register {0}: " +
                         ex.getMessage(), handler.getSimpleName());
             }
         }
