@@ -127,34 +127,6 @@ depend:
     - SimpleClans
 ```
 {% endtab %}
-
-{% tab title="Example.class" %}
-```java
-public class Example {
-
-    public void doClanStuff(Player player) {
-        SimpleClans sc = SimpleClans.getInstance();
-        UUID playerUuid = player.getUniqueId();
-        
-        // Get a player's clan
-        ClanPlayer cp = sc.getClanManager().getClanPlayer(playerUuid);
-            
-        if (cp != null) {
-            Clan clan = cp.getClan();
-        } else {
-            // Player is not in a clan
-        }
-    
-        // Get a clan from a clan tag
-        Clan clan = sc.getClanManager().getClan("staff");
-        
-        if (clan != null) {
-            // Clan exists
-        }
-    }
-}
-```
-{% endtab %}
 {% endtabs %}
 
 ## Step 3. Continue your learning

@@ -1,8 +1,4 @@
----
-description: null
----
-
-# Clan Upkeep
+# 💲 Clan Upkeep
 
 ## How does it work?
 
@@ -10,7 +6,7 @@ If enabled, clans will have to pay an amount everyday to keep their clans. The v
 
 Ex. fee based on the clan size:
 
-```text
+```
 upkeep base    = 20.0
 clan size      = 10
 final upkeep   = 200.0
@@ -21,7 +17,7 @@ final upkeep   = 200.0
 * `upkeep` - The base upkeep.
 * `upkeep-enabled` - Enable or disable the feature.
 * `multiply-upkeep-by-clan-size` - This works as explained above
-* `charge-upkeep-only-if-member-fee-enabled` - Enable upkeep if [member fee](https://github.com/RoinujNosde/SimpleClans/wiki/Member-Fee) is enabled.
+* `charge-upkeep-only-if-member-fee-enabled` - Enable upkeep if member fee is enabled.
 
 #### Exemple
 
@@ -32,4 +28,3 @@ economy:
     multiply-upkeep-by-clan-size: false
     charge-upkeep-only-if-member-fee-enabled: true
 ```
-

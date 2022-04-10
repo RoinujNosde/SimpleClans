@@ -1,15 +1,11 @@
----
-description: null
----
-
-# Translation
+# 🍕 Translation
 
 ## Editing the plugin's messages
 
 ### Requirements:
 
-* A ZIP explorer program \(such as [WinRAR](https://www.win-rar.com/download.html?&L=0) or [7-Zip](https://www.7-zip.org/download.html)\)
-* A Text editor like [NotePad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com/) or [Sublime Text](https://www.sublimetext.com/).
+* A ZIP explorer program (such as [WinRAR](https://www.win-rar.com/download.html?\&L=0) or [7-Zip](https://www.7-zip.org/download.html))
+* A Text editor like [Notepad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com) or [Sublime Text](https://www.sublimetext.com).
 
 ### Step by step
 
@@ -20,9 +16,15 @@ description: null
 4. Change `language` in config.yml to your language code;
 5. Reload the plugin using /clan reload.
 
-### A little trick
+### Overriding specific messages
 
-If you like the current translation, but want to change only a few lines: 1. Copy the file to the plugin's folder; 2. Delete all messages except the ones you would like to edit; 3. Edit them and save.
+If you like the current translation, but want to change only a few lines:&#x20;
+
+1\. Copy the file to the plugin's folder;&#x20;
+
+2\. Delete all messages except the ones you would like to edit;&#x20;
+
+3\. Edit them and save.
 
 > **Note**: Please note that your custom `messages.properties` does not automatically update when new messages are added.
 
@@ -31,4 +33,3 @@ If you like the current translation, but want to change only a few lines: 1. Cop
 SimpleClans has a project on [Crowdin](https://crowdin.com/project/simpleclans). There you can translate the messages and suggest corrections!
 
 > **Note**: if you have an old `language.yml` file for SimpleClans that you translated to your language, [open an issue here](https://github.com/RoinujNosde/SimpleClans/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), I will convert the file and add it to the plugin.
-
