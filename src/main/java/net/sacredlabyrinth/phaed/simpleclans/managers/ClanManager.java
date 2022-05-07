@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
@@ -1070,9 +1071,10 @@ public final class ClanManager {
                 }
             }
         } else {
-            switch (clan.withdraw(player, ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
+            double money = plugin.getPermissionsManager().playerGetMoney(player);
+            switch (clan.withdraw(new BankOperator(player, money), ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
                 case SUCCESS:
-                    if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, price)) {
+                    if (plugin.getPermissionsManager().playerGrantMoney(player, price)) {
                         player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
                         clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", price));
                         return true;

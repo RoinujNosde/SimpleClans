@@ -1,8 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -48,8 +50,10 @@ public class CollectFeeTask extends BukkitRunnable {
 					boolean success = plugin.getPermissionsManager()
                             .playerChargeMoney(Bukkit.getOfflinePlayer(cp.getUniqueId()), memberFee);
                     if (success) {
-                        ChatBlock.sendMessage(cp.toPlayer(), AQUA + lang("fee.collected", cp, memberFee));
-                        clan.deposit(cp.toPlayer(), Cause.MEMBER_FEE, memberFee);
+                        Player player = cp.toPlayer();
+                        ChatBlock.sendMessage(player, AQUA + lang("fee.collected", cp, memberFee));
+
+                        clan.deposit(new BankOperator(cp, plugin.getPermissionsManager().playerGetMoney(player)), Cause.MEMBER_FEE, memberFee);
                         plugin.getStorageManager().updateClan(clan);
                     } else {
                         clan.removePlayerFromClan(cp.getUniqueId());
