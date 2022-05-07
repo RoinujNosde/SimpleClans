@@ -9,6 +9,7 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -34,9 +35,8 @@ public class ClanPlayerInputContextResolver extends AbstractInputOnlyContextReso
 
         ClanPlayer cp = clanManager.getAnyClanPlayer(arg);
         if (cp == null) {
-            @SuppressWarnings("deprecation")
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(arg);
-            if (offlinePlayer.getPlayer() == null && !offlinePlayer.hasPlayedBefore()) {
+            OfflinePlayer offlinePlayer = getOfflinePlayer(arg);
+            if (offlinePlayer == null) {
                 throw new InvalidCommandArgument(lang("user.hasnt.played.before", context.getSender()));
             }
             cp = clanManager.getCreateClanPlayer(offlinePlayer.getUniqueId());
@@ -48,5 +48,14 @@ public class ClanPlayerInputContextResolver extends AbstractInputOnlyContextReso
     @Override
     public Class<ClanPlayerInput> getType() {
         return ClanPlayerInput.class;
+    }
+
+    private @Nullable OfflinePlayer getOfflinePlayer(String name) {
+        for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
+            if (name.equalsIgnoreCase(offlinePlayer.getName())) {
+                return offlinePlayer;
+            }
+        }
+        return null;
     }
 }

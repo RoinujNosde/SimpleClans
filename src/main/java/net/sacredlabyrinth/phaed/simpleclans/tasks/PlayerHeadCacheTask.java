@@ -1,9 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerHeadCacheTask extends BukkitRunnable {
 
@@ -42,8 +43,8 @@ public class PlayerHeadCacheTask extends BukkitRunnable {
                 plugin.getLogger().info("Player heads caching task cancelled!");
                 return;
             }
-            ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
+            ItemStack itemStack = XMaterial.PLAYER_HEAD.parseItem();
+            SkullMeta itemMeta = (SkullMeta) Objects.requireNonNull(itemStack).getItemMeta();
             if (itemMeta != null) {
                 itemMeta.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()));
             }

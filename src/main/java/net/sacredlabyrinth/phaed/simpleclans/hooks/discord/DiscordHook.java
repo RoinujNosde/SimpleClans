@@ -176,7 +176,7 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Clan clan = clanPlayer.getClan();
+        Clan clan = event.getClan();
         Member member = getMember(clanPlayer);
         if (member == null || clan == null) {
             return;
@@ -189,7 +189,7 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Clan clan = clanPlayer.getClan();
+        Clan clan = event.getClan();
         Member member = getMember(clanPlayer);
         if (member == null || clan == null) {
             return;
@@ -374,7 +374,7 @@ public class DiscordHook implements Listener {
             throw new CategoriesLimitException("Discord reached the categories limit", "discord.reached.category.limit");
         }
 
-        TextChannel textChannel = availableCategory.createTextChannel(clanTag).complete();
+        availableCategory.createTextChannel(clanTag).complete();
 
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
             // The map is formed from clan#getMembers (so the clan exists)
@@ -554,10 +554,8 @@ public class DiscordHook implements Listener {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void sendPrivateMessage(TextChannel textChannel, Message eventMessage, String message) {
         RestAction<PrivateChannel> privateChannelAction = eventMessage.getAuthor().openPrivateChannel();
-        textChannel.deleteMessageById(eventMessage.getId()).queue(unused -> {
-            String channelLink = "<#" + textChannel.getId() + ">";
-            privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message));
-        });
+        textChannel.deleteMessageById(eventMessage.getId()).queue(unused ->
+                privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message)));
     }
 
     private void validateChannel(@NotNull String clanTag)

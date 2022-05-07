@@ -2,7 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.events.ClanPlayerTeleportEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -179,6 +181,12 @@ public final class TeleportManager {
     private void teleport(TeleportState state) {
         Player player = state.getPlayer();
         if (player == null) {
+            return;
+        }
+        ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(player.getUniqueId());
+        ClanPlayerTeleportEvent event = new ClanPlayerTeleportEvent(cp, state.getLocation(), state.getDestination());
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return;
         }
         Location loc = state.getDestination();

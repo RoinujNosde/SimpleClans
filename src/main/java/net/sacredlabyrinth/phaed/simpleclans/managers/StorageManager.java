@@ -297,7 +297,7 @@ public final class StorageManager {
                 tm.importMember(cp);
             }
             plugin.getClanManager().importClanPlayer(cp);
-            
+
             plugin.getLogger().info("ClanPlayer Reloaded: " + player.getName() + ", UUID: " + player.getUniqueId().toString());
         }
     }
@@ -695,23 +695,23 @@ public final class StorageManager {
         String values = "VALUES ( '"
                                     + Helper.escapeQuotes(YAMLSerializer.serialize(clan.getBanner())) + "','"
         							+ Helper.escapeQuotes(Helper.ranksToJson(clan.getRanks(), clan.getDefaultRank())) + "','"
-        							+ Helper.escapeQuotes(clan.getDescription())+ "'," 
+        							+ Helper.escapeQuotes(clan.getDescription())+ "',"
         							+ (clan.isMemberFeeEnabled() ? 1 : 0) +","
-        							+ Helper.escapeQuotes(String.valueOf(clan.getMemberFee())) + "," 
-        							+ (clan.isVerified() ? 1 : 0) + ",'" 
-        							+ Helper.escapeQuotes(clan.getTag()) + "','" 
-        							+ Helper.escapeQuotes(clan.getColorTag()) + "','" 
-        							+ Helper.escapeQuotes(clan.getName()) + "'," 
-        							+ (clan.isFriendlyFire() ? 1 : 0) + ",'" 
-        							+ clan.getFounded() + "','" 
-        							+ clan.getLastUsed() + "','" 
-        							+ Helper.escapeQuotes(clan.getPackedAllies()) + "','" 
-        							+ Helper.escapeQuotes(clan.getPackedRivals()) + "','" 
-        							+ Helper.escapeQuotes(clan.getPackedBb()) + "','" 
-        							+ Helper.escapeQuotes(clan.getCapeUrl()) + "','" 
-        							+ Helper.escapeQuotes(clan.getFlags()) + "','" 
+        							+ Helper.escapeQuotes(String.valueOf(clan.getMemberFee())) + ","
+        							+ (clan.isVerified() ? 1 : 0) + ",'"
+        							+ Helper.escapeQuotes(clan.getTag()) + "','"
+        							+ Helper.escapeQuotes(clan.getColorTag()) + "','"
+        							+ Helper.escapeQuotes(clan.getName()) + "',"
+        							+ (clan.isFriendlyFire() ? 1 : 0) + ",'"
+        							+ clan.getFounded() + "','"
+        							+ clan.getLastUsed() + "','"
+        							+ Helper.escapeQuotes(clan.getPackedAllies()) + "','"
+        							+ Helper.escapeQuotes(clan.getPackedRivals()) + "','"
+        							+ Helper.escapeQuotes(clan.getPackedBb()) + "','"
+        							+ Helper.escapeQuotes(clan.getCapeUrl()) + "','"
+        							+ Helper.escapeQuotes(clan.getFlags()) + "','"
         							+ Helper.escapeQuotes(String.valueOf(clan.getBalance())) + "');";
-        core.insert(query + values);
+        core.executeUpdate(query + values);
     }
 
     /**
@@ -749,7 +749,7 @@ public final class StorageManager {
      */
     public void updatePlayerName(final @NotNull ClanPlayer cp) {
         String query = "UPDATE `sc_players` SET `name` = '" + cp.getName() + "' WHERE uuid = '" + cp.getUniqueId() + "';";
-        core.update(query);
+        core.executeUpdate(query);
     }
 
     /**
@@ -759,7 +759,7 @@ public final class StorageManager {
     public void updateClan(Clan clan) {
         updateClan(clan, true);
     }
-    
+
     /**
      * Update a clan to the database
      *
@@ -816,7 +816,7 @@ public final class StorageManager {
      */
     public void deleteClan(Clan clan) {
         String query = "DELETE FROM `sc_clans` WHERE tag = '" + clan.getTag() + "';";
-        core.delete(query);
+        core.executeUpdate(query);
     }
 
     /**
@@ -824,9 +824,9 @@ public final class StorageManager {
      *
      */
     public void insertClanPlayer(ClanPlayer cp) {
-    	String query = "INSERT INTO `sc_players` (`locale`, `resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
-        String values = "VALUES ('"+cp.getLocale().toLanguageTag()+"', '"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
-        core.insert(query + values);
+    	String query = "INSERT INTO `sc_players` (`resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
+        String values = "VALUES ('"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
+        core.executeUpdate(query + values);
     }
 
     /**
@@ -869,7 +869,7 @@ public final class StorageManager {
     }
 
     private void setValues(PreparedStatement statement, ClanPlayer cp) throws SQLException {
-        statement.setString(1, cp.getLocale().toLanguageTag());
+        statement.setString(1, Helper.toLanguageTag(cp.getLocale()));
         statement.setString(2, Helper.resignTimesToJson(cp.getResignTimes()));
         statement.setInt(3, cp.isLeader() ? 1 : 0);
         statement.setString(4, cp.getTag());
@@ -897,7 +897,7 @@ public final class StorageManager {
             updateClan(clan, false);
         }
         String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
-        core.delete(query);
+        core.executeUpdate(query);
         deleteKills(cp.getUniqueId());
     }
 
@@ -909,7 +909,7 @@ public final class StorageManager {
     public void insertKill(Player attacker, String attackerTag, Player victim, String victimTag, String type) {
     	String query = "INSERT INTO `sc_kills` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, `victim`, `victim_tag`, `kill_type`) ";
     	String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attackerTag + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victimTag + "','" + type + "');";
-    	core.insert(query + values);       
+    	core.executeUpdate(query + values);
     }
 
     /**
@@ -924,7 +924,7 @@ public final class StorageManager {
                 "`victim`, `victim_tag`, `kill_type`) ";
         String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attacker.getTag()
                 + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victim.getTag() + "','" + type + "');";
-        core.insert(query + values);
+        core.executeUpdate(query + values);
     }
 
     /**
@@ -934,7 +934,7 @@ public final class StorageManager {
     @Deprecated
     public void deleteKills(String playerName) {
         String query = "DELETE FROM `sc_kills` WHERE `attacker` = '" + playerName + "'";
-        core.delete(query);
+        core.executeUpdate(query);
     }
 
     /**
@@ -943,7 +943,7 @@ public final class StorageManager {
      */
     public void deleteKills(UUID playerUniqueId) {
         String query = "DELETE FROM `sc_kills` WHERE `attacker_uuid` = '" + playerUniqueId + "'";
-        core.delete(query);
+        core.executeUpdate(query);
     }
 
     /**
@@ -1023,14 +1023,14 @@ public final class StorageManager {
      */
     public void getMostKilled(DataCallback<Map<String, Integer>> callback) {
     	new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				callback.onResultReady(getMostKilled());
 			}
 		}.runTaskAsynchronously(plugin);
     }
-    
+
     /**
      * Gets, asynchronously, a map of victim-{@literal >}count of all kills that specific player did and notifies via callback when it's ready
      *
@@ -1043,21 +1043,21 @@ public final class StorageManager {
 			}
 		}.runTaskAsynchronously(plugin);
     }
-    
+
     /**
      * Callback that returns some data
-     * 
+     *
      * @author roinujnosde
      *
      */
     public interface DataCallback<T> {
     	/**
     	 * Notifies when the result is ready
-    	 * 
+    	 *
     	 */
     	void onResultReady(T data);
     }
-    
+
     /**
      * Updates the database to the latest version
      *
@@ -1168,7 +1168,7 @@ public final class StorageManager {
      * Updates the database to the latest version
      *
      */
-    
+
 	private void updatePlayersToUUID() {
 		plugin.getLogger().log(Level.WARNING, "Starting Migration to UUID Players !");
 		plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DONT STOP BUKKIT ! ==================== ");
@@ -1187,13 +1187,13 @@ public final class StorageManager {
                     uuidPlayer = UUID.nameUUIDFromBytes(("OfflinePlayer:" + cp.getName()).getBytes(Charsets.UTF_8));
                 }
                 String query = "UPDATE `sc_players` SET uuid = '" + uuidPlayer.toString() + "' WHERE name = '" + cp.getName() + "';";
-                core.update(query);
+                core.executeUpdate(query);
 
-                String query2 = "UPDATE `sc_kills` SET attacker_uuid = '" + uuidPlayer.toString() + "' WHERE attacker = '" + cp.getName() + "';";
-                core.update(query2);
+                String query2 = "UPDATE `sc_kills` SET attacker_uuid = '" + uuidPlayer + "' WHERE attacker = '" + cp.getName() + "';";
+                core.executeUpdate(query2);
 
-                String query3 = "UPDATE `sc_kills` SET victim_uuid = '" + uuidPlayer.toString() + "' WHERE victim = '" + cp.getName() + "';";
-                core.update(query3);
+                String query3 = "UPDATE `sc_kills` SET victim_uuid = '" + uuidPlayer + "' WHERE victim = '" + cp.getName() + "';";
+                core.executeUpdate(query3);
                 plugin.getLogger().info("[" + i + " / " + cps.size() + "] Success: " + cp.getName() + "; UUID: " + uuidPlayer.toString());
             } catch (Exception ex) {
             	plugin.getLogger().log(Level.WARNING, "[" + i + " / " + cps.size() + "] Failed [ERRO]: " + cp.getName() + "; UUID: ???");
@@ -1211,10 +1211,10 @@ public final class StorageManager {
         SimpleClans.getInstance().setUUID(true);
     }
 
-	
+
 	/**
 	 * Saves modified Clans and ClanPlayers to the database
-	 * 
+	 *
 	 * @author RoinujNosde
 	 * @since 2.10.2
 	 */
