@@ -6,7 +6,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ClanBalanceUpdateEvent extends Event implements Cancellable {
 
@@ -34,7 +33,7 @@ public class ClanBalanceUpdateEvent extends Event implements Cancellable {
     /**
      * @return the balance updater
      */
-    public @Nullable BankOperator getUpdater() {
+    public @NotNull BankOperator getUpdater() {
         return updater;
     }
 
