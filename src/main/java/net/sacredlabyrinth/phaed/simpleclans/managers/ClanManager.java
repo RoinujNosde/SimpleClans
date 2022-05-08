@@ -347,16 +347,19 @@ public final class ClanManager {
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      */
-    public ClanPlayer getCreateClanPlayer(UUID playerUniqueId) {
-        Objects.requireNonNull(playerUniqueId, "UUID must not be null");
-        if (clanPlayers.containsKey(playerUniqueId.toString())) {
-            return clanPlayers.get(playerUniqueId.toString());
+    public ClanPlayer getCreateClanPlayer(UUID uuid) {
+        Objects.requireNonNull(uuid, "UUID must not be null");
+        if (clanPlayers.containsKey(uuid.toString())) {
+            return clanPlayers.get(uuid.toString());
         }
 
-        ClanPlayer cp = new ClanPlayer(playerUniqueId);
-
-        plugin.getStorageManager().insertClanPlayer(cp);
-        importClanPlayer(cp);
+        ClanPlayer cp = new ClanPlayer(uuid);
+        if (Bukkit.getOfflinePlayer(uuid).getName() != null) {
+            plugin.getStorageManager().insertClanPlayer(cp);
+            importClanPlayer(cp);
+        } else {
+            SimpleClans.debug(String.format("%s has a null name, not importing", uuid));
+        }
 
         return cp;
     }
