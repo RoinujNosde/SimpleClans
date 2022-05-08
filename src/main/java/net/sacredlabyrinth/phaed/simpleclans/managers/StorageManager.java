@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.storage.DBCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.MySQLCore;
 import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
@@ -406,7 +407,7 @@ public final class StorageManager {
                         clan.setPackedBb(packed_bb);
                         clan.setFounded(founded);
                         clan.setLastUsed(last_used);
-                        clan.setBalance(null, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
+                        clan.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
@@ -480,7 +481,7 @@ public final class StorageManager {
                         clan.setPackedBb(packed_bb);
                         clan.setFounded(founded);
                         clan.setLastUsed(last_used);
-                        clan.setBalance(null, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
+                        clan.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
                         clan.setRanks(Helper.ranksFromJson(ranks));
@@ -660,7 +661,7 @@ public final class StorageManager {
                                 clanReSync.setPackedBb(clanDB.getPackedBb());
                                 clanReSync.setFounded(clanDB.getFounded());
                                 clanReSync.setLastUsed(clanDB.getLastUsed());
-                                clanReSync.setBalance(null, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, clanDB.getBalance());
+                                clanReSync.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, clanDB.getBalance());
                                 cp.setClan(clanReSync);
                             } else {
                                 plugin.getClanManager().importClan(clanDB);

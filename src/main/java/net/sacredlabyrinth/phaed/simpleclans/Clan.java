@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLog;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
@@ -128,7 +129,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Deposits money to the clan
      */
-    public EconomyResponse deposit(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
+    public EconomyResponse deposit(@NotNull BankOperator sender, @NotNull Cause cause, double amount) {
         EconomyResponse response = null;
 
         if (amount < 0) {
@@ -162,7 +163,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Withdraws money from the clan
      */
-    public EconomyResponse withdraw(@Nullable CommandSender sender, @NotNull Cause cause, double amount) {
+    public EconomyResponse withdraw(@NotNull BankOperator sender, @NotNull Cause cause, double amount) {
         EconomyResponse response = null;
 
         if (amount < 0) {
@@ -250,14 +251,15 @@ public class Clan implements Serializable, Comparable<Clan> {
      *
      * @param balance the balance to set
      */
-    public void setBalance(double balance) {
-        setBalance(null, Cause.API, SET, balance);
+    private void setBalance(double balance) {
+        setBalance(BankOperator.INTERNAL, Cause.INTERNAL, SET, balance);
     }
 
-    public EconomyResponse setBalance(@Nullable CommandSender updater, @NotNull Cause cause, @NotNull BankLogger.Operation operation, double balance) {
+    public EconomyResponse setBalance(@NotNull BankOperator operator, @NotNull Cause cause,
+                                      @NotNull BankLogger.Operation operation, double balance) {
         EconomyResponse response = SUCCESS;
 
-        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(updater, this, getBalance(), balance, cause);
+        ClanBalanceUpdateEvent event = new ClanBalanceUpdateEvent(operator, this, getBalance(), balance, cause);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             response = CANCELLED;
@@ -266,7 +268,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.balance = event.getNewBalance();
         if (cause != Cause.LOADING) {
             if (operation == SET) {
-                SimpleClans.getInstance().getBankLogger().log(new BankLog(updater, this, response, SET, cause, balance));
+                SimpleClans.getInstance().getBankLogger().log(new BankLog(operator, this, response, SET, cause, balance));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);
         }
