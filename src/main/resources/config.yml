@@ -61,7 +61,6 @@ war-and-protection:
     protection-providers:
         - WorldGuardProvider
         - WorldGuard6Provider
-        - PlotSquared3Provider
         - GriefPreventionProvider
     listeners:
         priority: HIGHEST
