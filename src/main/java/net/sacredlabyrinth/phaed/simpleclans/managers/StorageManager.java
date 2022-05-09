@@ -825,8 +825,14 @@ public final class StorageManager {
      *
      */
     public void insertClanPlayer(ClanPlayer cp) {
-    	String query = "INSERT INTO `sc_players` (`resign_times`, `uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, `rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
-        String values = "VALUES ('"+ Helper.escapeQuotes(Helper.resignTimesToJson(cp.getResignTimes()))+ "', '" + cp.getUniqueId().toString() + "', '" + cp.getName() + "'," + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "'," + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills() + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' " + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','" + Helper.escapeQuotes(cp.getFlags()) + "');";
+    	String query = "INSERT INTO `sc_players` (`uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, " +
+                "`rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
+        String values = "VALUES ('" + cp.getUniqueId().toString() + "', '" + cp.getName() + "',"
+                + (cp.isLeader() ? 1 : 0) + ",'" + Helper.escapeQuotes(cp.getTag()) + "',"
+                + (cp.isFriendlyFire() ? 1 : 0) + "," + cp.getNeutralKills() + "," + cp.getRivalKills()
+                + "," + cp.getCivilianKills() + "," + cp.getDeaths() + ",'" + cp.getLastSeen() + "',' "
+                + cp.getJoinDate() + "','" + Helper.escapeQuotes(cp.getPackedPastClans()) + "','"
+                + Helper.escapeQuotes(cp.getFlags()) + "');";
         core.executeUpdate(query + values);
     }
 

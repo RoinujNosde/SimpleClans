@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -354,11 +355,20 @@ public final class ClanManager {
         }
 
         ClanPlayer cp = new ClanPlayer(uuid);
-        if (Bukkit.getOfflinePlayer(uuid).getName() != null) {
+
+        boolean save = true;
+        for (ClanPlayer other : getAllClanPlayers()) {
+            if (other.getName().equals(cp.getName())) {
+                save = false;
+                break;
+            }
+        }
+        if (save) {
             plugin.getStorageManager().insertClanPlayer(cp);
             importClanPlayer(cp);
-        } else {
-            SimpleClans.debug(String.format("%s has a null name, not importing", uuid));
+        } else if (plugin.getSettingsManager().is(DEBUG)) {
+            plugin.getLogger().log(Level.WARNING, String.format("There already is a ClanPlayer with the name %s",
+                    cp.getName()), new Exception());
         }
 
         return cp;

@@ -215,7 +215,7 @@ public class Helper {
      * @return a map
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, Long> resignTimesFromJson(String json) {
+    public static @Nullable Map<String, Long> resignTimesFromJson(String json) {
         if (json != null) {
             try {
                 return (Map<String, Long>) new JSONParser().parse(json);
