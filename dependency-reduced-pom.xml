@@ -168,10 +168,6 @@
       <url>https://maven.enginehub.org/repo/</url>
     </repository>
     <repository>
-      <id>plotsquared</id>
-      <url>https://plotsquared.com/mvn/</url>
-    </repository>
-    <repository>
       <id>Scarsz-Nexus</id>
       <url>https://nexus.scarsz.me/content/groups/public/</url>
     </repository>
@@ -298,54 +294,6 @@
       <artifactId>GriefPrevention</artifactId>
       <version>16.17.1</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.plotsquared</groupId>
-      <artifactId>plotsquared-api</artifactId>
-      <version>3.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>com.sk89q.worldedit</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.plotsquared</groupId>
-      <artifactId>plotsquared-bukkitapi</artifactId>
-      <version>3.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>com.sk89q.worldedit</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>Core</artifactId>
-          <groupId>PlotSquared</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>VaultAPI</artifactId>
-          <groupId>net.milkbowl.vault</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.discordsrv</groupId>
