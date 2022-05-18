@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
@@ -20,6 +19,7 @@ import java.util.Map;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERMISSIONS_AUTO_GROUP_GROUPNAME;
 
 /**
  * @author phaed
@@ -63,7 +63,8 @@ public final class PermissionsManager {
     public void loadPermissions() {
         permissions.clear();
         for (Clan clan : plugin.getClanManager().getClans()) {
-            permissions.put(clan.getTag(), SimpleClans.getInstance().getSettingsManager().getConfig().getStringList("permissions." + clan.getTag()));
+            permissions.put(clan.getTag(), SimpleClans.getInstance().getSettingsManager().getConfig().
+                    getStringList("permissions." + clan.getTag()));
         }
     }
 
@@ -110,7 +111,7 @@ public final class PermissionsManager {
                 for (String perm : getPermissions(clan)) {
                     permAttaches.get(player).setPermission(perm, true);
                 }
-                if (plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
+                if (plugin.getSettingsManager().is(PERMISSIONS_AUTO_GROUP_GROUPNAME)) {
                     permAttaches.get(player).setPermission("group." + clan.getTag(), true);
                 }
                 player.recalculatePermissions();
