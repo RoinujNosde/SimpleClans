@@ -153,10 +153,10 @@ public final class PermissionsManager {
         }
 
         if (permission != null && cp.toPlayer() != null) {
-            permission.playerRemoveGroup(cp.toPlayer(), "clan_" + cp.getTag());
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_trusted");
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_leader");
+            permission.playerRemoveGroup(null, cp.toPlayer(), "clan_" + cp.getTag());
+            permission.playerRemoveGroup(null, cp.toPlayer(), "sc_untrusted");
+            permission.playerRemoveGroup(null, cp.toPlayer(), "sc_trusted");
+            permission.playerRemoveGroup(null, cp.toPlayer(), "sc_leader");
         }
     }
 
@@ -410,21 +410,21 @@ public final class PermissionsManager {
             return;
         }
 
-        permission.playerRemoveGroup(player, "sc_leader");
-        permission.playerRemoveGroup(player, "sc_trusted");
-        permission.playerRemoveGroup(player, "sc_untrusted");
+        permission.playerRemoveGroup(null, player, "sc_leader");
+        permission.playerRemoveGroup(null, player, "sc_trusted");
+        permission.playerRemoveGroup(null, player, "sc_untrusted");
 
         if (cp.getClan() != null) {
-            permission.playerAddGroup(player, "clan_" + cp.getTag());
+            permission.playerAddGroup(null, player, "clan_" + cp.getTag());
             if (cp.isLeader()) {
-                permission.playerAddGroup(player, "sc_leader");
+                permission.playerAddGroup(null, player, "sc_leader");
                 return;
             }
             if (cp.isTrusted()) {
-                permission.playerAddGroup(player, "sc_trusted");
+                permission.playerAddGroup(null, player, "sc_trusted");
                 return;
             }
-            permission.playerAddGroup(player, "sc_untrusted");
+            permission.playerAddGroup(null, player, "sc_untrusted");
         }
     }
 
