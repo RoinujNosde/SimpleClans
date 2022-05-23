@@ -9,6 +9,8 @@ import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.Response;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
@@ -374,8 +376,14 @@ public class DiscordHook implements Listener {
             throw new CategoriesLimitException("Discord reached the categories limit", "discord.reached.category.limit");
         }
 
-        availableCategory.createTextChannel(clanTag).complete();
-
+        try {
+            availableCategory.createTextChannel(clanTag).complete();
+        } catch (ErrorResponseException ex) {
+            Response response = ex.getResponse();
+            plugin.getLogger().warning(String.format("Could not create a channel for clan %s, error %d - %s",
+                    clanTag, response.code, response.message));
+            return;
+        }
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
             // The map is formed from clan#getMembers (so the clan exists)
             //noinspection ConstantConditions
