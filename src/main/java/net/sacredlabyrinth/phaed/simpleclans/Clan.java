@@ -778,8 +778,10 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @return the fee payers
      */
     public Set<ClanPlayer> getFeePayers() {
-        PermissionsManager permissions = SimpleClans.getInstance().getPermissionsManager();
-        return getNonLeaders().stream().filter(cp -> !permissions.has(cp.toPlayer(), "simpleclans.member.bypass-fee")).collect(Collectors.toSet());
+        return getMembers().stream().filter(cp -> !cp.isLeader()).filter(cp -> {
+            Rank rank = getRank(cp.getRankId());
+            return rank == null || !rank.getPermissions().contains(RankPermission.FEE_BYPASS.toString());
+        }).collect(Collectors.toSet());
     }
 
     /**

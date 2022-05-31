@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
@@ -168,52 +167,11 @@ public final class PermissionsManager {
     }
 
     /**
-     * @return the PermissionsAttachments for every player
-     */
-    public Map<Player, PermissionAttachment> getPermAttaches() {
-        return permAttaches;
-    }
-
-    /**
-     * Charge a player some money
-     *
-     */
-    @Deprecated
-    public boolean playerChargeMoney(String player, double money) {
-        return economy.withdrawPlayer(player, money).transactionSuccess();
-    }
-
-    /**
      * Charge a player some money
      *
      */
     public boolean playerChargeMoney(OfflinePlayer player, double money) {
         return economy.withdrawPlayer(player, money).transactionSuccess();
-    }
-
-    /**
-     * Charge a player some money
-     *
-     */
-    public boolean playerChargeMoney(Player player, double money) {
-        return playerChargeMoney((OfflinePlayer) player, money);
-    }
-
-    /**
-     * Grants a player some money
-     *
-     */
-    public boolean playerGrantMoney(Player player, double money) {
-        return economy.depositPlayer(player, money).transactionSuccess();
-    }
-
-    /**
-     * Grants a player some money
-     *
-     */
-    @Deprecated
-    public boolean playerGrantMoney(String player, double money) {
-        return economy.depositPlayer(player, money).transactionSuccess();
     }
 
     /**
@@ -229,7 +187,7 @@ public final class PermissionsManager {
      *
      * @return whether he has the money
      */
-    public boolean playerHasMoney(Player player, double money) {
+    public boolean playerHasMoney(OfflinePlayer player, double money) {
         return economy.has(player, money);
     }
 
@@ -238,26 +196,8 @@ public final class PermissionsManager {
      *
      * @return the players money
      */
-    public double playerGetMoney(Player player) {
+    public double playerGetMoney(OfflinePlayer player) {
         return economy.getBalance(player);
-    }
-
-    /**
-     * Check if a player has permissions
-     *
-     * @param world the world
-     * @param player the player
-     * @param perm the permission
-     * @return whether he has the permission
-     *
-     * @deprecated use {@link PermissionsManager#has(Player, RankPermission, boolean)} or {@link PermissionsManager#has(Player, String)}
-     */
-    public boolean has(@Nullable String world, OfflinePlayer player, String perm) {
-        if (player != null && permission != null) {
-            return permission.playerHas(world, player, perm);
-        }
-
-        return false;
     }
 
     /**
