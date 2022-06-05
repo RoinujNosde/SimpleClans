@@ -343,7 +343,7 @@ public final class RequestManager {
                                List<String> denies) {
         if (requestClan != null && targetClan != null) {
             if (!accepts.isEmpty()) {
-                War war = plugin.getProtectionManager().getWar(requestClan, requestClan);
+                War war = plugin.getProtectionManager().getWar(requestClan, targetClan);
                 plugin.getProtectionManager().removeWar(war, WarEndEvent.Reason.REQUEST);
                 requestClan.removeWarringClan(targetClan);
                 targetClan.removeWarringClan(requestClan);
