@@ -1,9 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Coordinate;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
 import org.bukkit.Location;
@@ -16,9 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class WorldGuard6Provider implements ProtectionProvider {
@@ -56,7 +56,12 @@ public class WorldGuard6Provider implements ProtectionProvider {
 
     @NotNull
     private Land getLand(ProtectedRegion region) {
-        return new Land(getIdPrefix() + region.getId(), region.getOwners().getUniqueIds());
+        //noinspection DuplicatedCode - TODO Extract to common WorldGuard interface?
+        List<Coordinate> coordinates = new ArrayList<>();
+        for (BlockVector2 point : region.getPoints()) {
+            coordinates.add(new Coordinate(point.getX(), point.getZ()));
+        }
+        return new Land(getIdPrefix() + region.getId(), region.getOwners().getUniqueIds(), coordinates);
     }
 
     @Override
