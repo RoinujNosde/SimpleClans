@@ -616,7 +616,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     /**
      * Sets the resign times (does not update to db)
      */
-    public void setResignTimes(Map<String, Long> resignTimes) {
+    public void setResignTimes(@Nullable Map<String, Long> resignTimes) {
         if (resignTimes != null) {
             final int cooldown = SimpleClans.getInstance().getSettingsManager().getInt(REJOIN_COOLDOWN);
             resignTimes.forEach((k, v) -> {
@@ -845,10 +845,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         flags.put("rank", rank == null ? "" : rank);
     }
 
-    public @NotNull Locale getLocale() {
-        if (locale == null) {
-            return SimpleClans.getInstance().getSettingsManager().getLanguage();
-        }
+    public @Nullable Locale getLocale() {
         return locale;
     }
 

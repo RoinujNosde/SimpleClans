@@ -21,6 +21,7 @@ public enum RankPermission {
 	COORDS("simpleclans.member.coords", PermissionLevel.TRUSTED),
 	FEE_ENABLE("simpleclans.leader.fee", PermissionLevel.LEADER),
 	FEE_SET("simpleclans.leader.fee", PermissionLevel.LEADER),
+	FEE_BYPASS("", PermissionLevel.LEADER),
 	REGROUP_HOME("simpleclans.leader.regroup.home", PermissionLevel.LEADER),
 	REGROUP_ME("simpleclans.leader.regroup.me", PermissionLevel.LEADER),
 	HOME_SET("simpleclans.leader.home-set", PermissionLevel.LEADER),

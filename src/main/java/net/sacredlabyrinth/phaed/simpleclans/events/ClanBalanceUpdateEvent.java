@@ -1,25 +1,24 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import org.bukkit.command.CommandSender;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ClanBalanceUpdateEvent extends Event implements Cancellable {
 
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    private final CommandSender updater;
+    private final BankOperator updater;
     private final Clan clan;
     private final Cause cause;
     private final double balance;
     private double newBalance;
     private boolean cancelled;
 
-    public ClanBalanceUpdateEvent(@Nullable CommandSender updater,
+    public ClanBalanceUpdateEvent(@NotNull BankOperator updater,
                                   @NotNull Clan clan,
                                   double balance,
                                   double newBalance,
@@ -32,9 +31,9 @@ public class ClanBalanceUpdateEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return the balance updater, may be null
+     * @return the balance updater
      */
-    public @Nullable CommandSender getUpdater() {
+    public @NotNull BankOperator getUpdater() {
         return updater;
     }
 
@@ -115,6 +114,10 @@ public class ClanBalanceUpdateEvent extends Event implements Cancellable {
          * When the balance is updated via API methods
          */
         API,
+        /**
+         * WHen the balance is updated via Internal methods
+         */
+        INTERNAL,
         /**
          * When the clan data is being loaded and the balance is set, usually on server start up or plugin reload
          */

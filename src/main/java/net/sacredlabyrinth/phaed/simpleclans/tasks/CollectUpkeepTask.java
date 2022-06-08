@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -54,7 +55,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
                 upkeep = upkeep * clan.getSize();
             }
 
-            EconomyResponse response = clan.withdraw(null, ClanBalanceUpdateEvent.Cause.UPKEEP, upkeep);
+            EconomyResponse response = clan.withdraw(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.UPKEEP, upkeep);
             if (response == EconomyResponse.NOT_ENOUGH_BALANCE) {
                 clan.disband(null, true, false);
             }

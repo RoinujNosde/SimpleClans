@@ -8,7 +8,10 @@ import net.sacredlabyrinth.phaed.simpleclans.EconomyResponse;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import static net.md_5.bungee.api.ChatColor.RED;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -18,6 +21,9 @@ import static org.bukkit.ChatColor.AQUA;
 @Conditions("%basic_conditions")
 @Subcommand("%admin %bank")
 public class BankCommand extends BaseCommand {
+
+    @Dependency
+    private PermissionsManager permissions;
 
     @Subcommand("%status")
     @CommandPermission("simpleclans.admin.bank.status")
@@ -35,8 +41,9 @@ public class BankCommand extends BaseCommand {
     public void take(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
         amount = Math.abs(amount);
+        BankOperator operator = new BankOperator(sender, sender instanceof Player ? permissions.playerGetMoney((Player) sender) : 0);
 
-        EconomyResponse economyResponse = clan.withdraw(sender, ClanBalanceUpdateEvent.Cause.COMMAND, amount);
+        EconomyResponse economyResponse = clan.withdraw(operator, ClanBalanceUpdateEvent.Cause.COMMAND, amount);
         switch (economyResponse) {
             case SUCCESS:
                 ChatBlock.sendMessage(sender, AQUA + lang("clan.admin.take", sender, amount, clan.getName()));
@@ -55,8 +62,9 @@ public class BankCommand extends BaseCommand {
     public void give(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
         amount = Math.abs(amount);
+        BankOperator operator = new BankOperator(sender, sender instanceof Player ? permissions.playerGetMoney((Player) sender) : 0);
 
-        EconomyResponse economyResponse = clan.deposit(sender, ClanBalanceUpdateEvent.Cause.COMMAND, amount);
+        EconomyResponse economyResponse = clan.deposit(operator, ClanBalanceUpdateEvent.Cause.COMMAND, amount);
         if (economyResponse == EconomyResponse.SUCCESS) {
             ChatBlock.sendMessage(sender, AQUA + lang("clan.admin.give", sender, amount, clan.getName()));
             clan.addBb(sender.getName(), AQUA + lang("bb.clan.give", sender, amount, sender.getName()));
@@ -70,8 +78,9 @@ public class BankCommand extends BaseCommand {
     public void set(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("amount") double amount) {
         Clan clan = clanInput.getClan();
         amount = Math.abs(amount);
+        BankOperator operator = new BankOperator(sender, sender instanceof Player ? permissions.playerGetMoney((Player) sender) : 0);
 
-        EconomyResponse response = clan.setBalance(sender, ClanBalanceUpdateEvent.Cause.COMMAND, BankLogger.Operation.SET, amount);
+        EconomyResponse response = clan.setBalance(operator, ClanBalanceUpdateEvent.Cause.COMMAND, BankLogger.Operation.SET, amount);
         if (response == EconomyResponse.SUCCESS) {
             ChatBlock.sendMessage(sender, AQUA + lang("clan.admin.set", sender, clan.getName(), amount));
             clan.addBb(sender.getName(), AQUA + lang("bb.clan.set", sender, amount, sender.getName()));

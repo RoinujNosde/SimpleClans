@@ -6,14 +6,15 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
-import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_FORMAT_TO;
 import static org.bukkit.Bukkit.getPluginManager;
@@ -30,7 +31,7 @@ public class DiscordChatHandler implements ChatHandler {
         }
 
         String format = settingsManager.getString(DISCORDCHAT_FORMAT_TO);
-        String formattedMessage = chatManager.parseChatFormat(format, message);
+        String formattedMessage = ChatUtils.stripColors(chatManager.parseChatFormat(format, message));
 
         Clan clan = message.getSender().getClan();
         if (clan == null) {

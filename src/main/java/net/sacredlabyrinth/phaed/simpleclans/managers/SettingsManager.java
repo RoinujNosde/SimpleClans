@@ -296,6 +296,7 @@ public final class SettingsManager {
         LORE_LENGTH("settings.lore-length", 36),
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
         PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
+        USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
         /*
         ================
         > Tag Settings

@@ -17,7 +17,6 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,8 +48,8 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@players @clans")
     @HelpSearchTags("move put")
     @Description("{@@command.description.place}")
-    public void place(CommandSender sender, @Name("player") OfflinePlayer offlinePlayer, @Name("clan") ClanInput clanInput) {
-        UUID uuid = offlinePlayer.getUniqueId();
+    public void place(CommandSender sender, @Name("player") ClanPlayerInput cpInput, @Name("clan") ClanInput clanInput) {
+        UUID uuid = cpInput.getClanPlayer().getUniqueId();
         ClanPlayer oldCp = cm.getClanPlayer(uuid);
         Clan newClan = clanInput.getClan();
 
@@ -155,8 +154,8 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.ban")
     @CommandCompletion("@players")
     @Description("{@@command.description.ban}")
-    public void ban(CommandSender sender, @Name("player") OfflinePlayer player) {
-        UUID uuid = player.getUniqueId();
+    public void ban(CommandSender sender, @Name("player") ClanPlayerInput player) {
+        UUID uuid = player.getClanPlayer().getUniqueId();
         if (settings.isBanned(uuid)) {
             ChatBlock.sendMessage(sender, RED + lang("this.player.is.already.banned", sender));
             return;
@@ -175,8 +174,8 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.ban")
     @CommandCompletion("@players")
     @Description("{@@command.description.unban}")
-    public void unban(CommandSender sender, @Name("player") OfflinePlayer player) {
-        UUID uuid = player.getUniqueId();
+    public void unban(CommandSender sender, @Name("player") ClanPlayerInput player) {
+        UUID uuid = player.getClanPlayer().getUniqueId();
         if (!settings.isBanned(uuid)) {
             ChatBlock.sendMessage(sender, RED + lang("this.player.is.not.banned", sender));
             return;

@@ -37,7 +37,11 @@ public class LanguageSelectorFrame extends SCFrame {
 
     @Override
     public @NotNull String getTitle() {
-        return lang("gui.languageselector.title", getViewer(), clanPlayer.getLocale().toLanguageTag());
+        Locale locale = clanPlayer.getLocale();
+        if (locale == null) {
+            locale = plugin.getSettingsManager().getLanguage();
+        }
+        return lang("gui.languageselector.title", getViewer(), locale.toLanguageTag());
     }
 
     @Override

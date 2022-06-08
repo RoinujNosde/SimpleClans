@@ -42,6 +42,7 @@ settings:
     user-language-selector: true
     disallowed-tag-colors:
     - '4'
+    - 'k'
     server-name: '&4SimpleClans'
     new-clan-verification-required: true
     allow-regroup-command: true
@@ -53,13 +54,13 @@ settings:
     list-default-order-by: kdr
     lore-length: 36
     past-clans-limit: 10
+    username-regex: '^\**[a-zA-Z0-9_$]{1,16}$'
 war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
         - WorldGuardProvider
         - WorldGuard6Provider
-        - PlotSquared3Provider
         - GriefPreventionProvider
     listeners:
         priority: HIGHEST

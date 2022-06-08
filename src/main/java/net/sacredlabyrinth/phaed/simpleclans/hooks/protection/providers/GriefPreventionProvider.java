@@ -4,6 +4,7 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.events.ClaimCreatedEvent;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Coordinate;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
 import org.bukkit.Bukkit;
@@ -15,10 +16,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class GriefPreventionProvider implements ProtectionProvider {
@@ -91,8 +89,10 @@ public class GriefPreventionProvider implements ProtectionProvider {
         if (claim == null) {
             return null;
         }
+        List<Coordinate> coords = Arrays.asList(new Coordinate(claim.getLesserBoundaryCorner()),
+                new Coordinate(claim.getGreaterBoundaryCorner()));
 
-        return new Land(getIdPrefix() + claim.getID().toString(), Collections.singleton(getOwnerID(claim)));
+        return new Land(getIdPrefix() + claim.getID().toString(), Collections.singleton(getOwnerID(claim)), coords);
     }
 
     @SuppressWarnings("deprecation")

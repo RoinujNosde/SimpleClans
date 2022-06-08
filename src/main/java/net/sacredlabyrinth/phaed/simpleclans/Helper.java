@@ -2,9 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
@@ -47,6 +47,12 @@ public class Helper {
             return defaultLanguage;
         }
         return Locale.forLanguageTag(languageTag);
+    }
+
+    @Contract("null -> null")
+    @Nullable
+    public static String toLanguageTag(@Nullable Locale locale) {
+        return locale != null ? locale.toLanguageTag() : null;
     }
 
     public static @Nullable JSONObject parseJson(String json) {
@@ -209,7 +215,7 @@ public class Helper {
      * @return a map
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, Long> resignTimesFromJson(String json) {
+    public static @Nullable Map<String, Long> resignTimesFromJson(String json) {
         if (json != null) {
             try {
                 return (Map<String, Long>) new JSONParser().parse(json);
@@ -417,20 +423,5 @@ public class Helper {
             statuses.add(lang("unverified", sender));
         }
         return String.join(", ", statuses);
-    }
-
-    /**
-     * Checks if all passed materials are some kind of AIR
-     *
-     * @param materials materials to test
-     * @return true if all materials are AIR
-     */
-    public static boolean isAir(@NotNull Material... materials) {
-        for (Material m : materials) {
-            if (!m.name().contains("AIR")) {
-                return false;
-            }
-        }
-        return true;
     }
 }

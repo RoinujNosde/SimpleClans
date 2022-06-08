@@ -9,6 +9,8 @@ import github.scarsz.discordsrv.dependencies.commons.lang3.StringUtils;
 import github.scarsz.discordsrv.dependencies.emoji.EmojiParser;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
+import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
+import github.scarsz.discordsrv.dependencies.jda.api.requests.Response;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.RestAction;
 import github.scarsz.discordsrv.dependencies.kyori.adventure.text.Component;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
@@ -34,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import static github.scarsz.discordsrv.dependencies.jda.api.Permission.MANAGE_CHANNEL;
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHANNEL;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -163,7 +166,9 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onClanCreate(CreateClanEvent event) {
         try {
-            createChannel(event.getClan().getTag());
+            if (settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
+                createChannel(event.getClan().getTag());
+            }
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
             SimpleClans.debug(ex.getMessage());
@@ -173,7 +178,7 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Clan clan = clanPlayer.getClan();
+        Clan clan = event.getClan();
         Member member = getMember(clanPlayer);
         if (member == null || clan == null) {
             return;
@@ -186,7 +191,7 @@ public class DiscordHook implements Listener {
     @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Clan clan = clanPlayer.getClan();
+        Clan clan = event.getClan();
         Member member = getMember(clanPlayer);
         if (member == null || clan == null) {
             return;
@@ -324,6 +329,9 @@ public class DiscordHook implements Listener {
                             guild.getPublicRole().getIdLong(),
                             Collections.emptyList(),
                             Collections.singletonList(VIEW_CHANNEL)).
+                    addMemberPermissionOverride(guild.getSelfMember().getIdLong(),
+                            Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL),
+                            Collections.emptyList()).
                     submit().get();
 
             textCategories.add(category.getId());
@@ -368,8 +376,14 @@ public class DiscordHook implements Listener {
             throw new CategoriesLimitException("Discord reached the categories limit", "discord.reached.category.limit");
         }
 
-        TextChannel textChannel = availableCategory.createTextChannel(clanTag).complete();
-
+        try {
+            availableCategory.createTextChannel(clanTag).complete();
+        } catch (ErrorResponseException ex) {
+            Response response = ex.getResponse();
+            plugin.getLogger().warning(String.format("Could not create a channel for clan %s, error %d - %s",
+                    clanTag, response.code, response.message));
+            return;
+        }
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
             // The map is formed from clan#getMembers (so the clan exists)
             //noinspection ConstantConditions
@@ -513,6 +527,7 @@ public class DiscordHook implements Listener {
                 map(TextChannel::getMemberPermissionOverrides).
                 flatMap(Collection::stream).
                 filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
+                filter(permissionOverride -> !Objects.equals(permissionOverride.getMember(), guild.getSelfMember())).
                 forEach(permissionOverride -> permissionOverride.delete().queue());
 
         clanTags.stream().map(clanManager::getClan).
@@ -547,10 +562,8 @@ public class DiscordHook implements Listener {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void sendPrivateMessage(TextChannel textChannel, Message eventMessage, String message) {
         RestAction<PrivateChannel> privateChannelAction = eventMessage.getAuthor().openPrivateChannel();
-        textChannel.deleteMessageById(eventMessage.getId()).queue(unused -> {
-            String channelLink = "<#" + textChannel.getId() + ">";
-            privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message));
-        });
+        textChannel.deleteMessageById(eventMessage.getId()).queue(unused ->
+                privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message)));
     }
 
     private void validateChannel(@NotNull String clanTag)
