@@ -4,7 +4,7 @@
   <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
   <artifactId>SimpleClans</artifactId>
   <name>SimpleClans</name>
-  <version>2.16.0</version>
+  <version>2.16.2</version>
   <url>https://www.spigotmc.org/resources/simpleclans.71242/</url>
   <build>
     <resources>
@@ -84,6 +84,62 @@
           </artifactSet>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>copy-installed</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${project.version}</version>
+                  <type>${project.packaging}</type>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${env.TEST_SERVER}\plugins</outputDirectory>
+              <silent>true</silent>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.3.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <source>8</source>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <repositories>
@@ -110,10 +166,6 @@
     <repository>
       <id>sk89q-repo</id>
       <url>https://maven.enginehub.org/repo/</url>
-    </repository>
-    <repository>
-      <id>plotsquared</id>
-      <url>https://plotsquared.com/mvn/</url>
     </repository>
     <repository>
       <id>Scarsz-Nexus</id>
@@ -244,54 +296,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.plotsquared</groupId>
-      <artifactId>plotsquared-api</artifactId>
-      <version>3.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>com.sk89q.worldedit</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.plotsquared</groupId>
-      <artifactId>plotsquared-bukkitapi</artifactId>
-      <version>3.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>com.sk89q.worldedit</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>Core</artifactId>
-          <groupId>PlotSquared</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>VaultAPI</artifactId>
-          <groupId>net.milkbowl.vault</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>com.discordsrv</groupId>
       <artifactId>discordsrv</artifactId>
       <version>1.24.1-SNAPSHOT</version>
@@ -406,13 +410,9 @@
   </dependencies>
   <distributionManagement>
     <repository>
-      <id>codemc-releases</id>
-      <url>https://repo.codemc.io/repository/maven-releases/</url>
+      <id>reposilite</id>
+      <url>https://repo.roinujnosde.me/releases/</url>
     </repository>
-    <snapshotRepository>
-      <id>codemc-snapshots</id>
-      <url>https://repo.codemc.io/repository/maven-snapshots/</url>
-    </snapshotRepository>
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

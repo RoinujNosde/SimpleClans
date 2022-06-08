@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
@@ -30,6 +31,7 @@ public class SpigotChatHandler implements ChatHandler {
                 if (event.isCancelled()) {
                     return;
                 }
+                message.setContent(event.getMessage());
 
                 ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
                         message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
@@ -37,7 +39,7 @@ public class SpigotChatHandler implements ChatHandler {
                 String format = settingsManager.getString(configField);
                 String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
 
-                plugin.getLogger().info(formattedMessage);
+                plugin.getLogger().info(ChatUtils.stripColors(formattedMessage));
 
                 for (ClanPlayer cp : message.getReceivers()) {
                     ChatBlock.sendMessage(cp, formattedMessage);

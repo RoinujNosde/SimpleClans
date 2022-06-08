@@ -15,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERMISSIONS_AUTO_GROUP_GROUPNAME;
 
 /**
  * @author phaed
@@ -62,7 +62,8 @@ public final class PermissionsManager {
     public void loadPermissions() {
         permissions.clear();
         for (Clan clan : plugin.getClanManager().getClans()) {
-            permissions.put(clan.getTag(), SimpleClans.getInstance().getSettingsManager().getConfig().getStringList("permissions." + clan.getTag()));
+            permissions.put(clan.getTag(), SimpleClans.getInstance().getSettingsManager().getConfig().
+                    getStringList("permissions." + clan.getTag()));
         }
     }
 
@@ -109,7 +110,7 @@ public final class PermissionsManager {
                 for (String perm : getPermissions(clan)) {
                     permAttaches.get(player).setPermission(perm, true);
                 }
-                if (plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS)) {
+                if (plugin.getSettingsManager().is(PERMISSIONS_AUTO_GROUP_GROUPNAME)) {
                     permAttaches.get(player).setPermission("group." + clan.getTag(), true);
                 }
                 player.recalculatePermissions();
@@ -151,10 +152,10 @@ public final class PermissionsManager {
         }
 
         if (permission != null && cp.toPlayer() != null) {
-            permission.playerRemoveGroup(cp.toPlayer(), "clan_" + cp.getTag());
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_untrusted");
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_trusted");
-            permission.playerRemoveGroup(cp.toPlayer(), "sc_leader");
+            permission.playerRemoveGroup(null, cp.toPlayer(), "clan_" + cp.getTag());
+            permission.playerRemoveGroup(null, cp.toPlayer(), "sc_untrusted");
+            permission.playerRemoveGroup(null, cp.toPlayer(), "sc_trusted");
+            permission.playerRemoveGroup(null, cp.toPlayer(), "sc_leader");
         }
     }
 
@@ -166,52 +167,11 @@ public final class PermissionsManager {
     }
 
     /**
-     * @return the PermissionsAttachments for every player
-     */
-    public Map<Player, PermissionAttachment> getPermAttaches() {
-        return permAttaches;
-    }
-
-    /**
-     * Charge a player some money
-     *
-     */
-    @Deprecated
-    public boolean playerChargeMoney(String player, double money) {
-        return economy.withdrawPlayer(player, money).transactionSuccess();
-    }
-
-    /**
      * Charge a player some money
      *
      */
     public boolean playerChargeMoney(OfflinePlayer player, double money) {
         return economy.withdrawPlayer(player, money).transactionSuccess();
-    }
-
-    /**
-     * Charge a player some money
-     *
-     */
-    public boolean playerChargeMoney(Player player, double money) {
-        return playerChargeMoney((OfflinePlayer) player, money);
-    }
-
-    /**
-     * Grants a player some money
-     *
-     */
-    public boolean playerGrantMoney(Player player, double money) {
-        return economy.depositPlayer(player, money).transactionSuccess();
-    }
-
-    /**
-     * Grants a player some money
-     *
-     */
-    @Deprecated
-    public boolean playerGrantMoney(String player, double money) {
-        return economy.depositPlayer(player, money).transactionSuccess();
     }
 
     /**
@@ -227,7 +187,7 @@ public final class PermissionsManager {
      *
      * @return whether he has the money
      */
-    public boolean playerHasMoney(Player player, double money) {
+    public boolean playerHasMoney(OfflinePlayer player, double money) {
         return economy.has(player, money);
     }
 
@@ -236,26 +196,8 @@ public final class PermissionsManager {
      *
      * @return the players money
      */
-    public double playerGetMoney(Player player) {
+    public double playerGetMoney(OfflinePlayer player) {
         return economy.getBalance(player);
-    }
-
-    /**
-     * Check if a player has permissions
-     *
-     * @param world the world
-     * @param player the player
-     * @param perm the permission
-     * @return whether he has the permission
-     *
-     * @deprecated use {@link PermissionsManager#has(Player, RankPermission, boolean)} or {@link PermissionsManager#has(Player, String)}
-     */
-    public boolean has(@Nullable String world, OfflinePlayer player, String perm) {
-        if (player != null && permission != null) {
-            return permission.playerHas(world, player, perm);
-        }
-
-        return false;
     }
 
     /**
@@ -265,7 +207,7 @@ public final class PermissionsManager {
      * @param perm   the permission
      * @return whether he has the permission
      */
-    public boolean has(Player player, String perm) {
+    public boolean has(@Nullable Player player, String perm) {
         if (player == null) {
             SimpleClans.debug("null player");
             return false;
@@ -408,21 +350,21 @@ public final class PermissionsManager {
             return;
         }
 
-        permission.playerRemoveGroup(player, "sc_leader");
-        permission.playerRemoveGroup(player, "sc_trusted");
-        permission.playerRemoveGroup(player, "sc_untrusted");
+        permission.playerRemoveGroup(null, player, "sc_leader");
+        permission.playerRemoveGroup(null, player, "sc_trusted");
+        permission.playerRemoveGroup(null, player, "sc_untrusted");
 
         if (cp.getClan() != null) {
-            permission.playerAddGroup(player, "clan_" + cp.getTag());
+            permission.playerAddGroup(null, player, "clan_" + cp.getTag());
             if (cp.isLeader()) {
-                permission.playerAddGroup(player, "sc_leader");
+                permission.playerAddGroup(null, player, "sc_leader");
                 return;
             }
             if (cp.isTrusted()) {
-                permission.playerAddGroup(player, "sc_trusted");
+                permission.playerAddGroup(null, player, "sc_trusted");
                 return;
             }
-            permission.playerAddGroup(player, "sc_untrusted");
+            permission.playerAddGroup(null, player, "sc_untrusted");
         }
     }
 

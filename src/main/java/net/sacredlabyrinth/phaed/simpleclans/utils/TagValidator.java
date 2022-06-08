@@ -57,8 +57,8 @@ public class TagValidator {
                         lang("your.tag.cannot.contain.the.following.colors", player,
                                 plugin.getSettingsManager().getDisallowedColorString());
             }
-            checkAlphabet();
         }
+        checkAlphabet();
 
         return error;
     }
@@ -68,7 +68,7 @@ public class TagValidator {
         String alphabetError = RED + lang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes", player);
         if (plugin.getSettingsManager().is(ACCEPT_OTHER_ALPHABETS_LETTERS)) {
             for (char c : cleanTag.toCharArray()) {
-                if (!Character.isLetterOrDigit(c)) {
+                if (!Character.isLetterOrDigit(c) || Character.isSpaceChar(c)) {
                     error = alphabetError;
                     return;
                 }

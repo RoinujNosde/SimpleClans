@@ -137,9 +137,8 @@ public class ClanDetailsFrame extends SCFrame {
 		SCComponent disband = new SCComponentImpl(lang("gui.clandetails.disband.title", getViewer()),
 				Collections.singletonList(lang("gui.clandetails.disband.lore", getViewer())), XMaterial.BARRIER,
 				50);
-		disband.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
-		disband.setConfirmationRequired(ClickType.MIDDLE);
-		disband.setPermission(ClickType.MIDDLE, "simpleclans.leader.disband");
+		disband.setListener(ClickType.DROP, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
+		disband.setPermission(ClickType.DROP, "simpleclans.leader.disband");
 		add(disband);
 	}
 
@@ -185,10 +184,10 @@ public class ClanDetailsFrame extends SCFrame {
 						lang("gui.clandetails.bank.deposit.toggle.lore", getViewer())),
 				XMaterial.GOLD_INGOT, 34);
 		bank.setLorePermission(RankPermission.BANK_BALANCE);
-		bank.setVerifiedOnly(ClickType.MIDDLE);
-		bank.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "toggle withdraw", true));
-		bank.setConfirmationRequired(ClickType.MIDDLE);
-		bank.setPermission(ClickType.MIDDLE, "simpleclans.leader.withdraw-toggle");
+		bank.setVerifiedOnly(ClickType.DROP);
+		bank.setListener(ClickType.DROP, () -> InventoryController.runSubcommand(getViewer(), "toggle withdraw", true));
+		bank.setConfirmationRequired(ClickType.DROP);
+		bank.setPermission(ClickType.DROP, "simpleclans.leader.withdraw-toggle");
 		bank.setVerifiedOnly(ClickType.RIGHT);
 		bank.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "toggle deposit", true));
 		bank.setPermission(ClickType.RIGHT, "simpleclans.leader.deposit-toggle");
@@ -280,10 +279,10 @@ public class ClanDetailsFrame extends SCFrame {
 		home.setListener(ClickType.RIGHT, () -> InventoryController.runSubcommand(getViewer(), "home set", false));
 		home.setPermission(ClickType.RIGHT, RankPermission.HOME_SET);
 		home.setConfirmationRequired(ClickType.RIGHT);
-		home.setVerifiedOnly(ClickType.MIDDLE);
-		home.setListener(ClickType.MIDDLE, () -> InventoryController.runSubcommand(getViewer(), "home clear", false));
-		home.setPermission(ClickType.MIDDLE, RankPermission.HOME_SET);
-		home.setConfirmationRequired(ClickType.MIDDLE);
+		home.setVerifiedOnly(ClickType.DROP);
+		home.setListener(ClickType.DROP, () -> InventoryController.runSubcommand(getViewer(), "home clear", false));
+		home.setPermission(ClickType.DROP, RankPermission.HOME_SET);
+		home.setConfirmationRequired(ClickType.DROP);
 		add(home);
 	}
 

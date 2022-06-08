@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import static org.bukkit.Bukkit.getPluginManager;
 /**
  * Handles delivering messages from {@link Source#SPIGOT} and {@link Source#DISCORD} to internal spy chat.
  */
+@SuppressWarnings("unused")
 public class SpyChatHandler implements ChatHandler {
 
     @Override
@@ -25,6 +27,7 @@ public class SpyChatHandler implements ChatHandler {
         ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_SPYFORMAT",
                 message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
         String format = settingsManager.getString(configField);
+        message.setContent(ChatUtils.stripColors(message.getContent()));
 
         String formattedMessage = chatManager.parseChatFormat(format, message);
 

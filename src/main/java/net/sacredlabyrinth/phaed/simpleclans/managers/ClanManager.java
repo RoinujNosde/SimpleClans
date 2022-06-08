@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
@@ -23,6 +24,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -287,8 +289,9 @@ public final class ClanManager {
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan
      */
-    public @Nullable ClanPlayer getClanPlayerName(String playerDisplayName) {
-        UUID uuid = UUIDMigration.getForcedPlayerUUID(playerDisplayName);
+    @Deprecated
+    public @Nullable ClanPlayer getClanPlayerName(String playerName) {
+        UUID uuid = UUIDMigration.getForcedPlayerUUID(playerName);
 
         if (uuid == null) {
             return null;
@@ -315,8 +318,8 @@ public final class ClanManager {
      */
 
     @Nullable
-    public ClanPlayer getAnyClanPlayer(UUID playerUniqueId) {
-        return clanPlayers.get(playerUniqueId.toString());
+    public ClanPlayer getAnyClanPlayer(UUID uuid) {
+        return clanPlayers.get(uuid.toString());
     }
 
     @SuppressWarnings("deprecation")
@@ -333,8 +336,8 @@ public final class ClanManager {
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      */
-    public @Nullable ClanPlayer getCreateClanPlayerUUID(String playerDisplayName) {
-        UUID playerUniqueId = UUIDMigration.getForcedPlayerUUID(playerDisplayName);
+    public @Nullable ClanPlayer getCreateClanPlayerUUID(String playerName) {
+        UUID playerUniqueId = UUIDMigration.getForcedPlayerUUID(playerName);
         if (playerUniqueId != null) {
             return getCreateClanPlayer(playerUniqueId);
         } else {
@@ -345,16 +348,28 @@ public final class ClanManager {
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      */
-    public ClanPlayer getCreateClanPlayer(UUID playerUniqueId) {
-        Objects.requireNonNull(playerUniqueId, "UUID must not be null");
-        if (clanPlayers.containsKey(playerUniqueId.toString())) {
-            return clanPlayers.get(playerUniqueId.toString());
+    public ClanPlayer getCreateClanPlayer(UUID uuid) {
+        Objects.requireNonNull(uuid, "UUID must not be null");
+        if (clanPlayers.containsKey(uuid.toString())) {
+            return clanPlayers.get(uuid.toString());
         }
 
-        ClanPlayer cp = new ClanPlayer(playerUniqueId);
+        ClanPlayer cp = new ClanPlayer(uuid);
 
-        plugin.getStorageManager().insertClanPlayer(cp);
-        importClanPlayer(cp);
+        boolean save = true;
+        for (ClanPlayer other : getAllClanPlayers()) {
+            if (other.getName().equals(cp.getName())) {
+                save = false;
+                break;
+            }
+        }
+        if (save) {
+            plugin.getStorageManager().insertClanPlayer(cp);
+            importClanPlayer(cp);
+        } else if (plugin.getSettingsManager().is(DEBUG)) {
+            plugin.getLogger().log(Level.WARNING, String.format("There already is a ClanPlayer with the name %s",
+                    cp.getName()), new Exception());
+        }
 
         return cp;
     }
@@ -748,41 +763,20 @@ public final class ClanManager {
     }
 
     /**
-     * Returns a formatted string detailing the players health
+     * Returns a colored bar based on the length
      */
-    public String getHealthString(double health) {
+    public String getBar(double length) {
         StringBuilder out = new StringBuilder();
 
-        if (health >= 16) {
+        if (length >= 16) {
             out.append(ChatColor.GREEN);
-        } else if (health >= 8) {
+        } else if (length >= 8) {
             out.append(ChatColor.GOLD);
         } else {
             out.append(RED);
         }
 
-        for (int i = 0; i < health; i++) {
-            out.append('|');
-        }
-
-        return out.toString();
-    }
-
-    /**
-     * Returns a formatted string detailing the players hunger
-     */
-    public String getHungerString(int health) {
-        StringBuilder out = new StringBuilder();
-
-        if (health >= 16) {
-            out.append(ChatColor.GREEN);
-        } else if (health >= 8) {
-            out.append(ChatColor.GOLD);
-        } else {
-            out.append(RED);
-        }
-
-        for (int i = 0; i < health; i++) {
+        for (int i = 0; i < length; i++) {
             out.append('|');
         }
 
@@ -1090,9 +1084,10 @@ public final class ClanManager {
                 }
             }
         } else {
-            switch (clan.withdraw(player, ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
+            double money = plugin.getPermissionsManager().playerGetMoney(player);
+            switch (clan.withdraw(new BankOperator(player, money), ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
                 case SUCCESS:
-                    if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, price)) {
+                    if (plugin.getPermissionsManager().playerGrantMoney(player, price)) {
                         player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
                         clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", price));
                         return true;

@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_MAX_MEMBERS;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUEST_FREQUENCY;
 import static org.bukkit.ChatColor.RED;
 
@@ -194,24 +195,30 @@ public final class RequestManager {
     }
 
     public void processInvite(Request req, VoteResult vote) {
-        Clan clan = req.getClan();
-        String invited = req.getTarget();
+        requests.remove(req.getTarget().toLowerCase());
 
-        if (vote.equals(VoteResult.ACCEPT)) {
-            ClanPlayer cp = plugin.getClanManager().getCreateClanPlayerUUID(invited);
-            if (cp == null) {
-                return;
-            }
-            ChatBlock.sendMessageKey(Bukkit.getPlayerExact(invited), "accepted.invitation", clan.getName());
-            clan.addBb(ChatColor.AQUA + lang("joined.the.clan", invited));
-            plugin.getClanManager().serverAnnounce(lang("has.joined", invited, clan.getName()));
-            clan.addPlayerToClan(cp);
-        } else {
-            ChatBlock.sendMessageKey(Bukkit.getPlayerExact(invited), "denied.invitation", clan.getName());
-            clan.leaderAnnounce(RED + lang("membership.invitation", invited));
+        Clan clan = req.getClan();
+        Player invited = Bukkit.getPlayerExact(req.getTarget());
+        if (invited == null) {
+            return;
         }
 
-        requests.remove(req.getTarget().toLowerCase());
+        if (vote.equals(VoteResult.ACCEPT)) {
+            ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(invited.getUniqueId());
+            int maxMembers = plugin.getSettingsManager().getInt(CLAN_MAX_MEMBERS);
+
+            if (maxMembers > 0 && maxMembers > clan.getSize()) {
+                ChatBlock.sendMessageKey(invited, "accepted.invitation", clan.getName());
+                clan.addBb(ChatColor.AQUA + lang("joined.the.clan", invited.getName()));
+                plugin.getClanManager().serverAnnounce(lang("has.joined", invited.getName(), clan.getName()));
+                clan.addPlayerToClan(cp);
+            } else {
+                ChatBlock.sendMessageKey(invited, "this.clan.has.reached.the.member.limit");
+            }
+        } else {
+            ChatBlock.sendMessageKey(invited, "denied.invitation", clan.getName());
+            clan.leaderAnnounce(RED + lang("membership.invitation", invited.getName()));
+        }
     }
 
     public void processResults(Request req) {
@@ -291,78 +298,78 @@ public final class RequestManager {
 	}
 
 	private void processDemote(Request req, Clan requestClan, UUID targetPlayer, List<String> denies) {
-		String demotedName = req.getTarget();
-		if (denies.isEmpty()) {
-			requestClan.addBb(lang("leaders"), ChatColor.AQUA
-					+ lang("demoted.back.to.member", demotedName));
-			requestClan.demote(targetPlayer);
-		} else {
-			String deniers = String.join(", ", denies);
-			requestClan.leaderAnnounce(
-					RED + lang("denied.demotion", deniers, demotedName));
-		}
-	}
+        String demotedName = req.getTarget();
+        if (denies.isEmpty()) {
+            requestClan.addBb(lang("leaders"), ChatColor.AQUA
+                    + lang("demoted.back.to.member", demotedName));
+            requestClan.demote(targetPlayer);
+        } else {
+            String deniers = String.join(", ", denies);
+            requestClan.leaderAnnounce(
+                    RED + lang("denied.demotion", deniers, demotedName));
+        }
+    }
 
-	private void processBreakRivalry(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
-			List<String> denies) {
-		if (targetClan != null && requestClan != null) {
-		    if (!accepts.isEmpty()) {
-		    	requestClan.removeRival(targetClan);
-		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("broken.the.rivalry", accepts.get(0), requestClan.getName()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("broken.the.rivalry.with", requester.getName(), targetClan.getName()));
-		    } else {
-		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.to.make.peace", denies.get(0), requestClan.getName()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("peace.agreement.denied", targetClan.getName()));
-		    }
-		}
-	}
+    private void processBreakRivalry(ClanPlayer requester, Clan requestClan, @Nullable Clan targetClan,
+                                     List<String> accepts, List<String> denies) {
+        if (targetClan != null && requestClan != null) {
+            if (!accepts.isEmpty()) {
+                requestClan.removeRival(targetClan);
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("broken.the.rivalry", accepts.get(0), requestClan.getName()));
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("broken.the.rivalry.with", requester.getName(), targetClan.getName()));
+            } else {
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.to.make.peace", denies.get(0), requestClan.getName()));
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("peace.agreement.denied", targetClan.getName()));
+            }
+        }
+    }
 
-	private void processCreateAlly(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
-			List<String> denies) {
-		if (targetClan != null && requestClan != null) {
-		    if (!accepts.isEmpty()) {
-		        requestClan.addAlly(targetClan);
+    private void processCreateAlly(ClanPlayer requester, Clan requestClan, @Nullable Clan targetClan,
+                                   List<String> accepts, List<String> denies) {
+        if (targetClan != null && requestClan != null) {
+            if (!accepts.isEmpty()) {
+                requestClan.addAlly(targetClan);
 
-		        targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("accepted.an.alliance", accepts.get(0), requestClan.getName()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("created.an.alliance", requester.getName(), targetClan.getName()));
-		    } else {
-		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.an.alliance", denies.get(0), requestClan.getName()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("the.alliance.was.denied", targetClan.getName()));
-		    }
-		}
-	}
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("accepted.an.alliance", accepts.get(0), requestClan.getName()));
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("created.an.alliance", requester.getName(), targetClan.getName()));
+            } else {
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.an.alliance", denies.get(0), requestClan.getName()));
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("the.alliance.was.denied", targetClan.getName()));
+            }
+        }
+    }
 
-	private void processEndWar(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
+    private void processEndWar(ClanPlayer requester, Clan requestClan, @Nullable Clan targetClan, List<String> accepts,
                                List<String> denies) {
-		if (requestClan != null && targetClan != null) {
-		    if (!accepts.isEmpty()) {
-                War war = plugin.getProtectionManager().getWar(requestClan, requestClan);
+        if (requestClan != null && targetClan != null) {
+            if (!accepts.isEmpty()) {
+                War war = plugin.getProtectionManager().getWar(requestClan, targetClan);
                 plugin.getProtectionManager().removeWar(war, WarEndEvent.Reason.REQUEST);
-		    	requestClan.removeWarringClan(targetClan);
-		    	targetClan.removeWarringClan(requestClan);
+                requestClan.removeWarringClan(targetClan);
+                targetClan.removeWarringClan(requestClan);
 
-		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", accepts.get(0), requestClan.getColorTag()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", requestClan.getName(), targetClan.getColorTag()));
-		    } else {
-		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.war.end", denies.get(0), requestClan.getName()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
-		    }
-		}
-	}
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", accepts.get(0), requestClan.getColorTag()));
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("you.are.no.longer.at.war", requestClan.getName(), targetClan.getColorTag()));
+            } else {
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.war.end", denies.get(0), requestClan.getName()));
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("end.war.denied", targetClan.getName()));
+            }
+        }
+    }
 
-	private void processStartWar(ClanPlayer requester, Clan requestClan, Clan targetClan, List<String> accepts,
-			List<String> denies) {
-		if (requestClan != null && targetClan != null) {
-		    if (!accepts.isEmpty()) {
-		        plugin.getProtectionManager().addWar(requester, requestClan, targetClan);
-		    } else {
-		    	targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0),
+    private void processStartWar(ClanPlayer requester, Clan requestClan, @Nullable Clan targetClan,
+                                 List<String> accepts, List<String> denies) {
+        if (requestClan != null && targetClan != null) {
+            if (!accepts.isEmpty()) {
+                plugin.getProtectionManager().addWar(requester, requestClan, targetClan);
+            } else {
+                targetClan.addBb(requester.getName(), ChatColor.AQUA + lang("denied.war.req", denies.get(0),
                         requestClan.getName()));
-		        requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("end.war.denied",
+                requestClan.addBb(requester.getName(), ChatColor.AQUA + lang("end.war.denied",
                         targetClan.getName()));
-		    }
-		}
-	}
+            }
+        }
+    }
 
     /**
      * End a pending request prematurely

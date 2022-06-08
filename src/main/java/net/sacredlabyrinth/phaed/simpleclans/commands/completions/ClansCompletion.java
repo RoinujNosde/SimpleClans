@@ -24,7 +24,7 @@ public class ClansCompletion extends AbstractSyncCompletion {
             clans.removeIf(clan -> clan.getHomeLocation() == null);
         }
         if (c.hasConfig("unverified")) {
-            clans.removeIf(clan -> clan.isVerified());
+            clans.removeIf(Clan::isVerified);
         }
         if (c.hasConfig("hide_own")) {
             Clan clan = getClan(c.getIssuer());

@@ -1,7 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.storage;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import org.bukkit.scheduler.BukkitRunnable;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,11 +12,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author phaed
  */
-public interface DBCore
-{
+public interface DBCore {
+
+    SimpleClans plugin = SimpleClans.getInstance();
+    Logger log = plugin.getLogger();
 
     /**
      * @return connection
@@ -24,7 +27,9 @@ public interface DBCore
     /**
      * @return whether connection can be established
      */
-    Boolean checkConnection();
+    default boolean checkConnection() {
+        return getConnection() != null;
+    }
 
     /**
      * Close connection
@@ -33,69 +38,83 @@ public interface DBCore
 
     /**
      * Execute a select statement
-     * @param query
-     * @return
+     * @param query the query
+     * @return the result set or null if the query failed
      */
-    ResultSet select(String query);
-
-    /**
-     * Execute an insert statement
-     * @param query
-     */
-    void insert(String query);
-
-    /**
-     * Execute an update statement
-     * @param query
-     */
-    void update(String query);
-
-    /**
-     * Execute a delete statement
-     * @param query
-     */
-    void delete(String query);
+    default @Nullable ResultSet select(String query) {
+        try {
+            return getConnection().createStatement().executeQuery(query);
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, String.format("Error executing query: %s", query), ex);
+        }
+        return null;
+    }
 
     /**
      * Execute a statement
-     * @param query
-     * @return
+     * @param query the query
+     * @return true if the statement was executed
      */
-    Boolean execute(String query);
+    default boolean execute(String query) {
+        try {
+            getConnection().createStatement().execute(query);
+            return true;
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, String.format("Error executing query: %s", query), ex);
+            return false;
+        }
+    }
 
     /**
      * Check whether a table exists
-     * @param table
-     * @return
+     * @param table the table
+     * @return true if the table exists
      */
-    Boolean existsTable(String table);
-    
-    /**
-     * Check whether a colum exists
-     *
-     * @param tabell
-     * @param colum
-     * @return
-     */
-    Boolean existsColumn(String tabell, String colum);
+    default boolean existsTable(String table) {
+        try {
+            ResultSet tables = getConnection().getMetaData().getTables(null, null, table, null);
+            return tables.next();
+        } catch (SQLException ex) {
+            log.log(Level.SEVERE, String.format("Error checking if table %s exists", table), ex);
+            return false;
+        }
+    }
 
-    default void executeAsync(String query, String sqlType) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+    /**
+     * Check whether a column exists
+     *
+     * @param table the table
+     * @param column the column
+     * @return true if the column exists
+     */
+    default boolean existsColumn(String table, String column) {
+        try {
+            ResultSet col = getConnection().getMetaData().getColumns(null, null, table, column);
+            return col.next();
+        } catch (Exception ex) {
+            log.log(Level.SEVERE, String.format("Error checking if column %s exists in table %s", column, table), ex);
+            return false;
+        }
+    }
+
+    default void executeUpdate(String query) {
+        final Exception exception = new Exception(); // Stores a reference to the caller's stack trace for async tasks
+        Runnable executeUpdate = () -> {
+            if (getConnection() != null) {
                 try {
-                    if (getConnection() != null) {
-                        getConnection().createStatement().executeUpdate(query);
-                    }
-                }
-                catch (SQLException ex) {
-                    if (!ex.toString().contains("not return ResultSet")) {
-                        Logger.getLogger("SimpleClans")
-                                .log(Level.SEVERE, String.format("Error at SQL %s query: %s", sqlType, query), ex);
+                    getConnection().createStatement().executeUpdate(query);
+                } catch (SQLException ex) {
+                    log.log(Level.SEVERE, String.format("Error executing query: %s", query), ex);
+                    if (!Bukkit.isPrimaryThread()) {
+                        log.log(Level.SEVERE, "Caller's stack trace:", exception);
                     }
                 }
             }
-        }.runTaskAsynchronously(SimpleClans.getInstance());
-
+        };
+        if (plugin.getSettingsManager().is(ConfigField.PERFORMANCE_USE_THREADS)) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, executeUpdate);
+        } else {
+            executeUpdate.run();
+        }
     }
 }

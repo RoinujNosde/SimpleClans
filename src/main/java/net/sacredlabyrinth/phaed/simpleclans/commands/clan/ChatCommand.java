@@ -22,8 +22,6 @@ public class ChatCommand extends BaseCommand {
     @Dependency
     private ChatManager chatManager;
     @Dependency
-    private SettingsManager settingsManager;
-    @Dependency
     private StorageManager storageManager;
 
     @Default

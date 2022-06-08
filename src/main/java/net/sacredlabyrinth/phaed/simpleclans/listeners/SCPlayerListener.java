@@ -94,15 +94,13 @@ public class SCPlayerListener extends SCListener {
             cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
         }
 
-        plugin.getStorageManager().updatePlayerNameAsync(player);
+        updatePlayerName(player);
         plugin.getClanManager().updateLastSeen(player);
         plugin.getClanManager().updateDisplayName(player);
 
         if (cp == null) {
             return;
         }
-        cp.setName(player.getName());
-
         plugin.getPermissionsManager().addPlayerPermissions(cp);
 
         if (settingsManager.is(BB_SHOW_ON_LOGIN) && cp.isBbEnabled() && cp.getClan() != null) {
@@ -120,11 +118,9 @@ public class SCPlayerListener extends SCListener {
         }
 
         Clan clan = plugin.getClanManager().getClanByPlayerUniqueId(player.getUniqueId());
-        if (clan != null) {
-            Location home = clan.getHomeLocation();
-            if (home != null) {
-                event.setRespawnLocation(home);
-            }
+        Location home;
+        if (clan != null && (home = clan.getHomeLocation()) != null) {
+            event.setRespawnLocation(plugin.getTeleportManager().getSafe(home));
         }
     }
 
@@ -184,6 +180,29 @@ public class SCPlayerListener extends SCListener {
                 event.setCancelled(true);
             }
         }, plugin, true);
+    }
+
+    private void updatePlayerName(@NotNull final Player player) {
+        final ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
+
+        ClanPlayer duplicate = null;
+        for (ClanPlayer other : plugin.getClanManager().getAllClanPlayers()) {
+            if (other.getName().equals(player.getName()) && !other.getUniqueId().equals(player.getUniqueId())) {
+                duplicate = other;
+                break;
+            }
+        }
+
+        if (duplicate != null) {
+            plugin.getLogger().warning(String.format("Found duplicate for %s, UUIDs: %s, %s", player.getName(),
+                    player.getUniqueId(), duplicate.getUniqueId()));
+            duplicate.setName(duplicate.getName() + "_duplicate");
+            plugin.getStorageManager().updatePlayerName(duplicate);
+        }
+        if (cp != null) {
+            cp.setName(player.getName());
+            plugin.getStorageManager().updatePlayerName(cp);
+        }
     }
 
 }
