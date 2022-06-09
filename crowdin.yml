@@ -1,3 +1,7 @@
+pull_request_title: "feat(lang): new crowdin updates"
+pull_request_labels: ["l10n"]
+commit_message: "feat(lang): new translations for %language%"
+append_commit_message: false
 files:
   - source: src/main/resources/messages.properties
     translation: /src/main/resources/%file_name%_%locale_with_underscore%.%file_extension%

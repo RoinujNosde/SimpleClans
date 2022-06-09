@@ -1,16 +1,16 @@
 name: Publish to Reposilite
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -18,10 +18,9 @@ jobs:
           server-id: reposilite # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
-
+          cache: 'maven'
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-
       - name: Publish to Reposilite
         run: mvn -B deploy
         env:
