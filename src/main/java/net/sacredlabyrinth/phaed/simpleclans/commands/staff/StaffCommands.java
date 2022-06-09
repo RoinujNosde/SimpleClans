@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
@@ -127,11 +128,18 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.home")
     @CommandCompletion("@clans")
     @Description("{@@command.description.mod.home.set}")
-    public void homeSet(Player player, @Name("clan") ClanInput clan) {
+    public void homeSet(Player player, ClanPlayer cp, @Name("clan") ClanInput clanInput) {
         Location loc = player.getLocation();
+        Clan clan = clanInput.getClan();
 
-        clan.getClan().setHomeLocation(loc);
-        ChatBlock.sendMessage(player, AQUA + lang("hombase.mod.set", player, clan.getClan().getName()) + " " +
+        PlayerHomeSetEvent event = new PlayerHomeSetEvent(clan, cp, loc);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+
+        clan.setHomeLocation(loc);
+        ChatBlock.sendMessage(player, AQUA + lang("hombase.mod.set", player, clan.getName()) + " " +
                 ChatColor.YELLOW + Helper.toLocationString(loc));
     }
 

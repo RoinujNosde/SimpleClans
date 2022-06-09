@@ -4,12 +4,14 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.HomeRegroupEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeClearEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -94,10 +96,16 @@ public class HomeCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.home-set")
     @Conditions("rank:name=HOME_SET")
     @Description("{@@command.description.home.clear}")
-    public void clear(Player player, Clan clan) {
+    public void clear(Player player, ClanPlayer cp, Clan clan) {
         if (settings.is(CLAN_HOMEBASE_CAN_BE_SET_ONLY_ONCE) && clan.getHomeLocation() != null &&
                 !permissions.has(player, "simpleclans.mod.home")) {
             ChatBlock.sendMessage(player, RED + lang("home.base.only.once", player));
+            return;
+        }
+
+        PlayerHomeClearEvent event = new PlayerHomeClearEvent(clan, cp);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
             return;
         }
 
