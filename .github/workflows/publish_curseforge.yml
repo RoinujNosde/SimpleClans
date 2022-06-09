@@ -13,6 +13,7 @@ jobs:
       with:
         java-version: 1.8
         cache: 'maven'
+        distribution: 'adopt'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Upload artifact

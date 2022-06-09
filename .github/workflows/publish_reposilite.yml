@@ -19,6 +19,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           cache: 'maven'
+          distribution: 'adopt'
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Publish to Reposilite
