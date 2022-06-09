@@ -299,5 +299,9 @@
             <id>reposilite</id>
             <url>https://repo.roinujnosde.me/releases/</url>
         </repository>
+        <snapshotRepository>
+            <id>reposilite</id>
+            <url>https://repo.roinujnosde.me/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 </project>
