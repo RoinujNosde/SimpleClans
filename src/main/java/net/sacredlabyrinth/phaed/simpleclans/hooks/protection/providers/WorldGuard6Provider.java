@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.protection.providers;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -26,14 +25,20 @@ public class WorldGuard6Provider implements ProtectionProvider {
     private WorldGuardPlugin worldGuard;
     private Method getRegionManager;
     private Method getApplicableRegions;
+    private Method getPoints;
+    private Method getX;
+    private Method getZ;
 
+    @SuppressWarnings("JavaReflectionMemberAccess")
     @Override
-    public void setup() throws NoSuchMethodException {
+    public void setup() throws NoSuchMethodException, ClassNotFoundException {
         worldGuard = WorldGuardPlugin.inst();
         getRegionManager = worldGuard.getClass().getMethod("getRegionManager", World.class);
-        //noinspection JavaReflectionMemberAccess
         getApplicableRegions = RegionManager.class.getMethod("getApplicableRegions", Location.class);
-
+        getPoints = ProtectedRegion.class.getMethod("getPoints");
+        Class<?> blockVector = Class.forName("com.sk89q.worldedit.BlockVector2");
+        getX = blockVector.getMethod("getX");
+        getZ = blockVector.getMethod("getZ");
     }
 
     private @Nullable RegionManager getRegionManager(@Nullable World world) {
@@ -56,12 +61,25 @@ public class WorldGuard6Provider implements ProtectionProvider {
 
     @NotNull
     private Land getLand(ProtectedRegion region) {
-        //noinspection DuplicatedCode - TODO Extract to common WorldGuard interface?
-        List<Coordinate> coordinates = new ArrayList<>();
-        for (BlockVector2 point : region.getPoints()) {
-            coordinates.add(new Coordinate(point.getX(), point.getZ()));
-        }
+        List<Coordinate> coordinates = getCoordinates(region);
+
         return new Land(getIdPrefix() + region.getId(), region.getOwners().getUniqueIds(), coordinates);
+    }
+
+    @NotNull
+    private List<Coordinate> getCoordinates(ProtectedRegion region) {
+        List<Coordinate> coordinates = new ArrayList<>();
+        try {
+            List<?> points = (List<?>) getPoints.invoke(region);
+            for (Object point : points) {
+                double x = (double) getX.invoke(point);
+                double z = (double) getZ.invoke(point);
+                coordinates.add(new Coordinate(x, z));
+            }
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+        }
+        return coordinates;
     }
 
     @Override
