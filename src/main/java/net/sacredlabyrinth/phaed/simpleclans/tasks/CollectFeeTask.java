@@ -2,9 +2,10 @@ package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -42,24 +43,24 @@ public class CollectFeeTask extends BukkitRunnable {
      */
     @Override
     public void run() {
+        PermissionsManager pm = plugin.getPermissionsManager();
         for (Clan clan : plugin.getClanManager().getClans()) {
             final double memberFee = clan.getMemberFee();
-            
-            if (clan.isMemberFeeEnabled() && memberFee > 0) {
-                for (ClanPlayer cp : clan.getFeePayers()) {
-					boolean success = plugin.getPermissionsManager()
-                            .playerChargeMoney(Bukkit.getOfflinePlayer(cp.getUniqueId()), memberFee);
-                    if (success) {
-                        Player player = cp.toPlayer();
-                        ChatBlock.sendMessage(player, AQUA + lang("fee.collected", cp, memberFee));
+            if (!clan.isMemberFeeEnabled() || memberFee <= 0) {
+                continue;
+            }
 
-                        clan.deposit(new BankOperator(cp, plugin.getPermissionsManager().playerGetMoney(player)), Cause.MEMBER_FEE, memberFee);
-                        plugin.getStorageManager().updateClan(clan);
-                    } else {
-                        clan.removePlayerFromClan(cp.getUniqueId());
-                        clan.addBb(AQUA + lang("bb.fee.player.kicked", cp.getName()));
-                    }
+            for (ClanPlayer cp : clan.getFeePayers()) {
+                OfflinePlayer player = Bukkit.getOfflinePlayer(cp.getUniqueId());
+                boolean success = pm.playerChargeMoney(player, memberFee);
+                if (success) {
+                    ChatBlock.sendMessage(cp, AQUA + lang("fee.collected", cp, memberFee));
 
+                    clan.deposit(new BankOperator(cp, pm.playerGetMoney(player)), Cause.MEMBER_FEE, memberFee);
+                    plugin.getStorageManager().updateClan(clan);
+                } else {
+                    clan.removePlayerFromClan(cp.getUniqueId());
+                    clan.addBb(AQUA + lang("bb.fee.player.kicked", cp.getName()));
                 }
             }
         } 
