@@ -12,3 +12,4 @@ jobs:
           release-type: maven
           package-name: SimpleClans
           token: ${{ secrets.PAT_TOKEN }}
+          fork: true
