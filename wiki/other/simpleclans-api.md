@@ -60,11 +60,11 @@ Return to the project structure, then go to Project Settings - > Modules, set th
 
 #### What do you need to know?
 
-* **ClanPlayer** is a class that represents a player object. This class contains information about the player, his clan, etc.
-* **Clan** is a class that presents a clan object. It has methods for getting clan players, clan tag, allies, leaders, etc.
-* **ClanManager** is a class that allows you to retrieve **Clan** and **ClanPlayer**.
+* ****[**ClanPlayer**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/ClanPlayer.html) **** is a class that represents a player object. This class contains information about the player, his clan, etc.
+* ****[**Clan**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/Clan.html) **** is a class that presents a clan object. It has methods for getting clan players, clan tag, allies, leaders, etc.
+* ****[**ClanManager**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/managers/ClanManager.html) **** is a class that allows you to retrieve **Clan** and **ClanPlayer**.
 
-#### Example of using SimpleClans
+#### Example of using SimpleClans API
 
 You can hook into SimpleClans plugin like so:
 
@@ -72,19 +72,25 @@ You can hook into SimpleClans plugin like so:
 {% tab title="MyPlugin.class" %}
 ```java
 public class MyPlugin extends JavaPlugin {
-    private static SimpleClans sc;
+    private static MyPlugin instance;
+    private SimpleClans sc;
      
     @Override   
     public void onEnable() {
-      Plugin plug = getServer().getPluginManager().getPlugin("SimpleClans");
+      instance = this;
       
+      Plugin plug = getServer().getPluginManager().getPlugin("SimpleClans");
       if (plug != null) {
           sc = (SimpleClans) plug;
       }
     }
     
-    public static getSimpleClans() {
+    public SimpleClans getSCPlugin() {
         return sc;
+    }
+    
+    public static getInstance() {
+        return instance;
     }
 }
 ```
@@ -97,8 +103,11 @@ public class Example {
     public void doClanStuff(Player player) {
         UUID playerUuid = player.getUniqueId();
         
-        // Get a player's clan
-        ClanPlayer cp = MyPlugin.getSimpleClans().getClanManager().getClanPlayer(playerUuid);
+        // Get a ClanManager object
+        ClanManager cm = MyPlugin.getInstance().getSCPlugin().getClanManager();
+        
+        // Get a ClanPlayer object
+        ClanPlayer cp = cm.getClanPlayer(playerUuid);
             
         if (cp != null) {
             Clan clan = cp.getClan();
@@ -107,7 +116,7 @@ public class Example {
         }
     
         // Get a clan from a clan tag
-        Clan clan = MyPlugin.getSimpleClans().getClanManager().getClan("staff");
+        Clan clan = cm.getClan("staff");
     
         if (clan != null) {
             // Clan exists
