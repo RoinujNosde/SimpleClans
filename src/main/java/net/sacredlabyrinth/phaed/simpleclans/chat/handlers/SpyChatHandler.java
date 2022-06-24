@@ -8,6 +8,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
@@ -42,8 +43,10 @@ public class SpyChatHandler implements ChatHandler {
 
     private List<ClanPlayer> getOnlineSpies() {
         return Bukkit.getOnlinePlayers().stream().
+                filter(Objects::nonNull).
                 filter(player -> plugin.getPermissionsManager().has(player, "simpleclans.admin.all-seeing-eye")).
                 map(player -> plugin.getClanManager().getCreateClanPlayer(player.getUniqueId())).
+                filter(Objects::nonNull).
                 filter(clanPlayer -> !clanPlayer.isMuted()).
                 collect(Collectors.toList());
     }
