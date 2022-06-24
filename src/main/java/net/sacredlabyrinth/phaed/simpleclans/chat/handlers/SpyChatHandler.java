@@ -37,7 +37,7 @@ public class SpyChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT || (source == DISCORD && plugin.getChatManager().isDiscordHookEnabled());
+        return source == SPIGOT || (source == DISCORD && chatManager.isDiscordHookEnabled());
     }
 
     private List<ClanPlayer> getOnlineSpies() {

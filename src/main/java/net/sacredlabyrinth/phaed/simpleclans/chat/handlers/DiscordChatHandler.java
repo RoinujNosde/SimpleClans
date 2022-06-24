@@ -43,6 +43,6 @@ public class DiscordChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT && plugin.getChatManager().isDiscordHookEnabled();
+        return source == SPIGOT && chatManager.isDiscordHookEnabled();
     }
 }
