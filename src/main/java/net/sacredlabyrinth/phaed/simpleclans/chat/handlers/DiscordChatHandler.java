@@ -15,9 +15,7 @@ import java.util.Optional;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_ENABLE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_FORMAT_TO;
-import static org.bukkit.Bukkit.getPluginManager;
 
 /**
  * Handles delivering messages from {@link Source#SPIGOT} to {@link Source#DISCORD}.
@@ -37,7 +35,7 @@ public class DiscordChatHandler implements ChatHandler {
         if (clan == null) {
             return;
         }
-        
+
         DiscordHook discordHook = Objects.requireNonNull(chatManager.getDiscordHook(), "DiscordHook cannot be null");
         Optional<TextChannel> channel = discordHook.getCachedChannel(clan.getTag());
         channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
@@ -45,7 +43,6 @@ public class DiscordChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT && settingsManager.is(DISCORDCHAT_ENABLE) &&
-                getPluginManager().getPlugin("DiscordSRV") != null;
+        return source == SPIGOT && plugin.getChatManager().isDiscordHookEnabled();
     }
 }

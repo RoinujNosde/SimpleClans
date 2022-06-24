@@ -23,7 +23,8 @@ public class SCMessage implements Cloneable {
      * @param content   The content of message
      * @param receivers The clan players, who will receive the content
      */
-    public SCMessage(@NotNull Source source, @NotNull ClanPlayer.Channel channel, @NotNull ClanPlayer sender, String content, @NotNull List<ClanPlayer> receivers) {
+    public SCMessage(@NotNull Source source, @NotNull ClanPlayer.Channel channel,
+                     @NotNull ClanPlayer sender, String content, @NotNull List<ClanPlayer> receivers) {
         this.source = source;
         this.channel = channel;
         this.sender = sender;
@@ -84,6 +85,6 @@ public class SCMessage implements Cloneable {
      * @see ChatHandler initiate the handler
      */
     public enum Source {
-        SPIGOT, DISCORD, BUNGEE
+        SPIGOT, DISCORD
     }
 }
