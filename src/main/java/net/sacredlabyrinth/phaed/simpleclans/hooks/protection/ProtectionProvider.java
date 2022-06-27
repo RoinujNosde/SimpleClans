@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.protection;
 
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -11,6 +12,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public interface ProtectionProvider {
+
+    default void register() {
+        SimpleClans.getInstance().getProtectionManager().registerProvider(this);
+    }
 
     void setup() throws LinkageError, Exception;
 
