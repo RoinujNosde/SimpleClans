@@ -24,19 +24,19 @@ public class UUIDMigration {
         }
     }
 
-    public static UUID getForcedPlayerUUID(String playerDisplayName) {
-        Player onlinePlayer = SimpleClans.getInstance().getServer().getPlayerExact(playerDisplayName);
-        @SuppressWarnings("deprecation")
-		OfflinePlayer offlinePlayer = SimpleClans.getInstance().getServer().getOfflinePlayer(playerDisplayName);
+    public static UUID getForcedPlayerUUID(String playerName) {
+        Player player = Bukkit.getPlayerExact(playerName);
 
-        if (onlinePlayer != null) {
-        	return onlinePlayer.getUniqueId();
+        if (player != null) {
+        	return player.getUniqueId();
         } else {
         	for (ClanPlayer cp : SimpleClans.getInstance().getClanManager().getAllClanPlayers()) {
-        		if (cp.getName().equalsIgnoreCase(playerDisplayName)) {
+        		if (cp.getName().equalsIgnoreCase(playerName)) {
         			return cp.getUniqueId();
         		}
         	}
+            @SuppressWarnings("deprecation")
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
             return offlinePlayer.getUniqueId();
         }
     }
