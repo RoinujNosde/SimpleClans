@@ -34,3 +34,21 @@ collation-server=utf8mb4_unicode_ci
 
 **Решение:** ваша локальная машина настроена на русский язык из-за чего появляется подобный казус. Решить это можно, добавив следующую строку в параметры запуска сервера:\
 `-Duser.country=US -Duser.language=en`
+
+### Geyser | Ошибка при загрузке текстуры головы
+
+Поскольку SimpleClans использует головы игроков в меню, то вы можете столкнуться с [ограничением Geyser](https://wiki.geysermc.org/geyser/current-limitations/).\
+\
+При попытке открыть меню (`/clan`) вылетает ошибка в консоли.\
+Эту ошибку можно определить по стектрейсу:
+
+```
+Caused by: java.lang.IllegalArgumentException: Name and ID cannot both be blank
+```
+
+**Решение:**\
+Поставьте следующее значение на `false` в конфигурации Geyser:
+
+```yaml
+allow-custom-skulls: false
+```
