@@ -37,7 +37,7 @@ public final class ClanManager {
 
     private final SimpleClans plugin;
     private final HashMap<String, Clan> clans = new HashMap<>();
-    private final HashMap<String, ClanPlayer> clanPlayers = new HashMap<>();
+    private final HashMap<UUID, ClanPlayer> clanPlayers = new HashMap<>();
     private final HashMap<ClanPlayer, List<Kill>> kills = new HashMap<>();
 
     /**
@@ -123,7 +123,7 @@ public final class ClanManager {
      */
     public void importClanPlayer(ClanPlayer cp) {
         if (cp.getUniqueId() != null) {
-            this.clanPlayers.put(cp.getUniqueId().toString(), cp);
+            this.clanPlayers.put(cp.getUniqueId(), cp);
         }
     }
 
@@ -133,7 +133,8 @@ public final class ClanManager {
     public void createClan(Player player, String colorTag, String name) {
         ClanPlayer cp = getCreateClanPlayer(player.getUniqueId());
 
-        boolean verified = !plugin.getSettingsManager().is(REQUIRE_VERIFICATION) || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
+        boolean verified = !plugin.getSettingsManager().is(REQUIRE_VERIFICATION)
+                || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
 
         Clan clan = new Clan(colorTag, name, verified);
         clan.addPlayerToClan(cp);
@@ -168,7 +169,7 @@ public final class ClanManager {
         if (clan != null) {
             clan.removePlayerFromClan(cp.getUniqueId());
         }
-        clanPlayers.remove(cp.getUniqueId().toString());
+        clanPlayers.remove(cp.getUniqueId());
         plugin.getStorageManager().deleteClanPlayer(cp);
     }
 
@@ -176,7 +177,7 @@ public final class ClanManager {
      * Delete a player data from memory
      */
     public void deleteClanPlayerFromMemory(UUID playerUniqueId) {
-        clanPlayers.remove(playerUniqueId.toString());
+        clanPlayers.remove(playerUniqueId);
     }
 
     /**
@@ -266,7 +267,7 @@ public final class ClanManager {
      * if he's not in a clan
      */
     public @Nullable ClanPlayer getClanPlayer(UUID playerUniqueId) {
-        ClanPlayer cp = clanPlayers.get(playerUniqueId.toString());
+        ClanPlayer cp = clanPlayers.get(playerUniqueId);
 
         if (cp == null) {
             return null;
@@ -297,7 +298,7 @@ public final class ClanManager {
             return null;
         }
 
-        ClanPlayer cp = clanPlayers.get(uuid.toString());
+        ClanPlayer cp = clanPlayers.get(uuid);
 
         if (cp == null) {
             return null;
@@ -319,7 +320,7 @@ public final class ClanManager {
 
     @Nullable
     public ClanPlayer getAnyClanPlayer(UUID uuid) {
-        return clanPlayers.get(uuid.toString());
+        return clanPlayers.get(uuid);
     }
 
     @SuppressWarnings("deprecation")
@@ -350,8 +351,8 @@ public final class ClanManager {
      */
     public ClanPlayer getCreateClanPlayer(UUID uuid) {
         Objects.requireNonNull(uuid, "UUID must not be null");
-        if (clanPlayers.containsKey(uuid.toString())) {
-            return clanPlayers.get(uuid.toString());
+        if (clanPlayers.containsKey(uuid)) {
+            return clanPlayers.get(uuid);
         }
 
         ClanPlayer cp = new ClanPlayer(uuid);
