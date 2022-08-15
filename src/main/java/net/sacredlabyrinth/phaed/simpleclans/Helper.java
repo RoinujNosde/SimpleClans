@@ -283,6 +283,7 @@ public class Helper {
      * @param values
      * @return
      */
+    @Deprecated
     public static Set<String> fromArrayToSet(String... values) {
         HashSet<String> results = new HashSet<>();
         Collections.addAll(results, values);

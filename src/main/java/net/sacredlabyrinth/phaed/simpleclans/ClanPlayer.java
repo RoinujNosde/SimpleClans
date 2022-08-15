@@ -38,7 +38,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     private int deaths;
     private long lastSeen;
     private long joinDate;
-    private Set<String> pastClans = new HashSet<>();
+    private Set<String> pastClans = new LinkedHashSet<>();
     private final Map<String, Long> resignTimes = new HashMap<>();
     private @Nullable VoteResult vote;
     private Flags flags = new Flags(null);
@@ -537,10 +537,11 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     /**
      * (used internally)
      *
-     * @param PackedPastClans the PackedPastClans to set
+     * @param packedPastClans the packedPastClans to set
      */
-    public void setPackedPastClans(String PackedPastClans) {
-        pastClans = Helper.fromArrayToSet(PackedPastClans.split("[|]"));
+    public void setPackedPastClans(String packedPastClans) {
+        String[] clans = packedPastClans.split("\\|");
+        Collections.addAll(pastClans, clans);
     }
 
     /**
