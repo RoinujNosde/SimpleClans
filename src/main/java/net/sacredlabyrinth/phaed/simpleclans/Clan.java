@@ -1394,7 +1394,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         for (ClanPlayer cp : clanPlayers) {
             if (cp.getTag().equals(getTag())) {
                 cp.setClan(null);
-
+                cp.setJoinDate(0);
+                cp.setRank(null);
                 if (isVerified()) {
                     cp.addPastClan(getColorTag() + (cp.isLeader() ? DARK_RED + "*" : ""));
                 }
