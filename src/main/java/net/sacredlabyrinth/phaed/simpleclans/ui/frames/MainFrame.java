@@ -110,7 +110,7 @@ public class MainFrame extends SCFrame {
 
 	@Override
 	public int getSize() {
-		return 9;
+		return 3 * 9;
 	}
 
 }

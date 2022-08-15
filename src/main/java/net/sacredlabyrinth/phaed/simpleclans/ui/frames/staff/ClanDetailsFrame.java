@@ -126,7 +126,7 @@ public class ClanDetailsFrame extends SCFrame {
 
     @Override
     public int getSize() {
-        return 5 * 9;
+        return 6 * 9;
     }
 
 }

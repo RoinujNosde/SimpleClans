@@ -26,7 +26,6 @@ public class PermissionsFrame extends SCFrame {
 
 	@Override
 	public void createComponents() {
-
 		for (int slot = 0; slot < 9; slot++) {
 			if (slot == 2 || slot == 4 || slot == 6 || slot == 7)
 				continue;
@@ -82,7 +81,7 @@ public class PermissionsFrame extends SCFrame {
 
 	@Override
 	public int getSize() {
-		return 4 * 9;
+		return 3 * 9;
 	}
 
 }

@@ -120,7 +120,7 @@ public class PlayerDetailsFrame extends SCFrame {
 	public int getSize() {
 		int size = 3;
 		if (isSameClan()) {
-			size = 5;
+			size = 6;
 		}
 		return size * 9;
 	}

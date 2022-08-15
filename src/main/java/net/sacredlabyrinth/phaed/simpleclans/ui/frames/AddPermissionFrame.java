@@ -81,7 +81,7 @@ public class AddPermissionFrame extends SCFrame {
 
 	@Override
 	public int getSize() {
-		return 4 * 9;
+		return 3 * 9;
 	}
 
 }

@@ -27,7 +27,7 @@ public class StaffFrame extends SCFrame {
 
     @Override
     public int getSize() {
-        return 2 * 9;
+        return 3 * 9;
     }
 
     @Override

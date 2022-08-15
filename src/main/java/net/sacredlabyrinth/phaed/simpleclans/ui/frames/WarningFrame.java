@@ -75,7 +75,7 @@ public class WarningFrame extends SCFrame {
 
 	@Override
 	public int getSize() {
-		return 4 * 9;
+		return 6 * 9;
 	}
 
 }
