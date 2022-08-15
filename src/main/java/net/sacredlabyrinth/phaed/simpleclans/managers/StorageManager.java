@@ -536,11 +536,7 @@ public final class StorageManager {
 
                         if (last_seen == 0) {
                             last_seen = (new Date()).getTime();
-                        }
-
-                        if (join_date == 0) {
-                            join_date = (new Date()).getTime();
-                        }
+                        }           
 
                         ClanPlayer cp = new ClanPlayer();
                         if (uuid != null) {
@@ -618,10 +614,6 @@ public final class StorageManager {
 
                         if (last_seen == 0) {
                             last_seen = (new Date()).getTime();
-                        }
-
-                        if (join_date == 0) {
-                            join_date = (new Date()).getTime();
                         }
 
                         ClanPlayer cp = new ClanPlayer();
