@@ -980,6 +980,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         cp.removePastClan(getColorTag());
         cp.setClan(this);
         cp.setLeader(false);
+        cp.setJoinDate(new Date().getTime());
         cp.setTrusted(SimpleClans.getInstance().getSettingsManager().is(CLAN_TRUST_MEMBERS_BY_DEFAULT));
         if (defaultRank != null) {
             cp.setRank(defaultRank);
