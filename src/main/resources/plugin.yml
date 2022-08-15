@@ -109,6 +109,8 @@ permissions:
     description: Can tp to home base
   simpleclans.vip.resetkdr:
     description: Can reset his kdr
+  simpleclans.vip.teleport-delay:
+    description: Bypasses the teleport delay
   simpleclans.leader.create:
     description: Can create simpleclans
   simpleclans.leader.verify:

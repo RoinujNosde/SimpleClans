@@ -46,15 +46,16 @@ public final class TeleportManager {
      * @param clanName    the Clan name
      */
     public void addPlayer(Player player, Location destination, String clanName) {
+        PermissionsManager pm = plugin.getPermissionsManager();
+
         int secs = SimpleClans.getInstance().getSettingsManager().getInt(CLAN_TELEPORT_DELAY);
-        if (plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
+        if (pm.has(player, "simpleclans.mod.bypass") || pm.has(player, "simpleclans.vip.teleport-delay")) {
             secs = 0;
         }
         waitingPlayers.put(player.getUniqueId().toString(), new TeleportState(player, destination, clanName, secs));
 
         if (secs > 0) {
-            ChatBlock.sendMessage(player, AQUA
-                    + MessageFormat.format(lang("waiting.for.teleport.stand.still.for.0.seconds", player), secs));
+            ChatBlock.sendMessage(player, AQUA + lang("waiting.for.teleport.stand.still.for.0.seconds", player, secs));
         }
     }
 
