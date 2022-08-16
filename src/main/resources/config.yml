@@ -155,6 +155,17 @@ clan:
     max-alliances: -1
     min-size-to-set-ally: 3
     min-to-verify: 1
+    starter-ranks:
+        recruit:
+            display-name: "&7Recruit"
+            permissions: [ stats, kills, mostkilled, rank.list ]
+        ambassador:
+            display-name: "&bAmbassador"
+            permissions: [ ally.chat, ally.add, ally.remove, rival.add, rival.remove, war.end, war.start ]
+        treasurer:
+            display-name: "&6Treasurer"
+            permissions: [ bank.balance, bank.deposit, bank.withdraw ]
+
 tasks:
     collect-upkeep:
         hour: 1

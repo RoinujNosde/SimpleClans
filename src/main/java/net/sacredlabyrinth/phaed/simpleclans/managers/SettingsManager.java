@@ -1,9 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.cryptomorin.xseries.XMaterial;
+import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -248,6 +250,19 @@ public final class SettingsManager {
         } catch (IllegalArgumentException ex) {
             return RankingType.DENSE;
         }
+    }
+
+    public @NotNull Collection<Rank> getStarterRanks() {
+        List<Rank> ranks = new ArrayList<>();
+        ConfigurationSection section = config.getConfigurationSection("clan.starter-ranks");
+        if (section != null) {
+            for (String name : section.getKeys(false)) {
+                String displayName = section.getString(name + ".display-name");
+                List<String> permissions = section.getStringList(name + ".permissions");
+                ranks.add(new Rank(name, displayName, new HashSet<>(permissions)));
+            }
+        }
+        return ranks;
     }
 
     public FileConfiguration getConfig() {

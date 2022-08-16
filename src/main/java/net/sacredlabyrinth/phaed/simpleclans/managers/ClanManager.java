@@ -139,6 +139,7 @@ public final class ClanManager {
         Clan clan = new Clan(colorTag, name, verified);
         clan.addPlayerToClan(cp);
         cp.setLeader(true);
+        clan.getRanks().addAll(plugin.getSettingsManager().getStarterRanks());
 
         plugin.getStorageManager().insertClan(clan);
         importClan(clan);

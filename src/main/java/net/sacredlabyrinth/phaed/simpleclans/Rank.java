@@ -15,7 +15,7 @@ public class Rank implements Comparable<Rank> {
 	
 	public Rank(String name) {
 		setName(name);
-		permissions = new HashSet<String>();
+		permissions = new HashSet<>();
 		setDisplayName(displayName);
 	}
 	
@@ -41,7 +41,7 @@ public class Rank implements Comparable<Rank> {
 	
 	public void setPermissions(Set<String> permissions) {
 		if (permissions == null) {
-			permissions = new HashSet<String>();
+			permissions = new HashSet<>();
 		}
 		this.permissions = permissions;
 	}
