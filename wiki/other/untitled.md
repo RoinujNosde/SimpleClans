@@ -5,7 +5,7 @@ description: >-
   function.
 ---
 
-# Logging server economy
+# 💸 Logging server economy
 
 ## Configuration
 
@@ -23,12 +23,11 @@ economy:
 
 ## Feature description
 
-This feature will create a one per day CSV file in `/SimpleClans/logs/bank/`.  
+This feature will create a one per day CSV file in `/SimpleClans/logs/bank/`.\
 
 
-![How does log file looks like](../.gitbook/assets/izobrazhenie%20%283%29.png)
+![How does log file looks like](<../.gitbook/assets/изображение (2).png>)
 
 ## For developers
 
 If you want to add another format of logging, you can see how it's [implemented](https://github.com/RoinujNosde/SimpleClans/tree/master/src/main/java/net/sacredlabyrinth/phaed/simpleclans/loggers).
-

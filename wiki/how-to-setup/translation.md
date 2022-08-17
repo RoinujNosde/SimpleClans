@@ -5,7 +5,7 @@
 ### Requirements:
 
 * A ZIP explorer program (such as [WinRAR](https://www.win-rar.com/download.html?\&L=0) or [7-Zip](https://www.7-zip.org/download.html))
-* A Text editor like [Notepad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com) or [Sublime Text](https://www.sublimetext.com).
+* A Text editor like [Notepad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com/) or [Sublime Text](https://www.sublimetext.com/).
 
 ### Step by step
 

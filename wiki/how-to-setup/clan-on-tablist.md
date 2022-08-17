@@ -1,7 +1,3 @@
----
-description: null
----
-
 # 👆 Clan on Tablist
 
 ## Plugins needed
@@ -26,4 +22,4 @@ _DEFAULT_:
 
 ## Screenshot
 
-![](../../.gitbook/assets/clans-tablist.png)
+![](../.gitbook/assets/clans-tablist.png)

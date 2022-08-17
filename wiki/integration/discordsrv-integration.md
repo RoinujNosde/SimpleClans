@@ -28,7 +28,7 @@ discordchat:
 
 At the beginning of the launch of your server, SimpleClans will create categories for the number of your clans, inside the categories, there will be a separate text channel for each clan:
 
-![](<../../.gitbook/assets/izobrazhenie (6).png>)
+![](<../.gitbook/assets/изображение (1).png>)
 
 {% hint style="warning" %}
 **Notice**\
@@ -121,12 +121,12 @@ So when the category will be filled with 50 channels, SimpleClans will create a 
 &#x20;Some of DiscordSRV configurations won't work on SC channels.\
 &#x20;There is the small __ list:
 
-* `DiscordChatChannelDiscordToMinecraft` – Do you really need to disable it in DiscordSRV's config, when you may disable it in SC config?![thinking](https://github.githubassets.com/images/icons/emoji/unicode/1f914.png)
+* `DiscordChatChannelDiscordToMinecraft` – Do you really need to disable it in DiscordSRV's config, when you may disable it in SC config?<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f914.png" alt="thinking" data-size="line">
 * `DiscordChatChannelRequireLinkedAccount` _–_ Our implementation requires only linked players.
-* `DiscordChatChannelBlockBots` – We're all robots, now you know the truth![robot](https://github.githubassets.com/images/icons/emoji/unicode/1f916.png)
+* `DiscordChatChannelBlockBots` – We're all robots, now you know the truth<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f916.png" alt="robot" data-size="line">
 * `DiscordChatChannelBlockedIds` – Where is an option to block my IP?
 * `DiscordChatChannelBroadcastDiscordMessagesToConsole` – You have spy chat for admins for that.
 * `DiscordChatChannelTruncateLength` – Does anyone know what `truncate` is?
 * `DiscordChatChannelRolesAllowedToUseColorCodesInChat` – No.
 
-&#x20;At least, `DiscordChatChannelEmojiBehavior` will work.![smiley](https://github.githubassets.com/images/icons/emoji/unicode/1f603.png)
+&#x20;At least, `DiscordChatChannelEmojiBehavior` will work.<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f603.png" alt="smiley" data-size="line">
