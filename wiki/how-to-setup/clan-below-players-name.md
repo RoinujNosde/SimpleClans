@@ -7,7 +7,7 @@ description: null
 ## Plugins needed
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [TAB](https://github.com/NEZNAMY/TAB/releases) \(you can use a different tablist plugin, as long as it supports PlaceholderAPI\)
+* [TAB](https://www.spigotmc.org/resources/tab-1-5-x-1-15-x-free-version.57806/) \(you can use a different tablist plugin, as long as it supports PlaceholderAPI\)
 
 ## Step by step
 

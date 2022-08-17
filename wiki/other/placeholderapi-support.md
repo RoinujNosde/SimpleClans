@@ -1,96 +1,100 @@
----
-description: null
----
-
-# Placeholders
+# 🪜 Placeholders
 
 ## Available placeholders
 
-| Placeholder | Description |
-| :--- | :--- |
-| %simpleclans\_neutral\_kills% |  |
-| %simpleclans\_rival\_kills% |  |
-| %simpleclans\_civilian\_kills% |  |
-| %simpleclans\_total\_kills% |  |
-| %simpleclans\_weighted\_kills% |  |
-| %simpleclans\_deaths% |  |
-| %simpleclans\_kdr% |  |
-| %simpleclans\_in\_clan% |  |
-| %simpleclans\_is\_leader% |  |
-| %simpleclans\_is\_trusted% |  |
-| %simpleclans\_is\_member% |  |
-| %simpleclans\_is\_bb\_enabled% |  |
-| %simpleclans\_is\_usechatshortcut% |  |
-| %simpleclans\_is\_allychat% |  |
-| %simpleclans\_is\_clanchat% |  |
-| %simpleclans\_is\_globalchat% |  |
-| %simpleclans\_is\_cape\_enabled% |  |
-| %simpleclans\_is\_tag\_enabled% |  |
-| %simpleclans\_is\_friendlyfire\_on% |  |
-| %simpleclans\_is\_muted% |  |
-| %simpleclans\_is\_mutedally% |  |
-| %simpleclans\_join\_date% | Month, Day, Year, Hour |
-| %simpleclans\_inactive\_days% |  |
-| %simpleclans\_lastseen% |  |
-| %simpleclans\_lastseendays% |  |
-| %simpleclans\_tag% | lowerscored Clan tag without color |
-| %simpleclans\_tag\_label% | Clan tag with correct mayus, color and at the end &c |
-| %simpleclans\_rank% |  |
-| %simpleclans\_rank\_displayname% |  |
-| %simpleclans\_clanchat\_player\_color% |  |
-| %simpleclans\_allychat\_player\_color% |  |
-| %simpleclans\_clan\_total\_neutral% |  |
-| %simpleclans\_clan\_total\_civilian% |  |
-| %simpleclans\_clan\_total\_rival% |  |
-| %simpleclans\_clan\_total\_kills% |  |
-| %simpleclans\_clan\_total\_deaths% |  |
-| %simpleclans\_clan\_total\_kdr% |  |
-| %simpleclans\_clan\_average\_wk% |  |
-| %simpleclans\_clan\_leader\_size% |  |
-| %simpleclans\_clan\_balance% |  |
-| %simpleclans\_clan\_allow\_withdraw% |  |
-| %simpleclans\_clan\_allow\_deposit% |  |
-| %simpleclans\_clan\_size% |  |
-| %simpleclans\_clan\_name% |  |
-| %simpleclans\_clan\_color\_tag% |  |
-| %simpleclans\_clan\_tag% |  |
-| %simpleclans\_clan\_founded% |  |
-| %simpleclans\_clan\_friendly\_fire% |  |
-| %simpleclans\_clan\_is\_unrivable% |  |
-| %simpleclans\_clan\_is\_anyonline% |  |
-| %simpleclans\_clan\_is\_verified% |  |
-| %simpleclans\_clan\_capeurl% |  |
-| %simpleclans\_clan\_inactivedays% |  |
-| %simpleclans\_clan\_onlinemembers\_count% |  |
-| %simpleclans\_clan\_allies\_count% |  |
-| %simpleclans\_clan\_rivals\_count% |  |
+| Placeholder                                                                                                                                                             | Description                                                                                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| %simpleclans\_name%                                                                                                                                                     | Displays the clan members name, returns name.                                                                                                          |
+| %simpleclans\_clean\_name%                                                                                                                                              | Displays the clan members name in all Lowercase, returns name.                                                                                         |
+| %simpleclans\_is\_muted%                                                                                                                                                | Has the clan member Muted the clan chat ? relates to /. mute, returns yes/no.                                                                          |
+| %simpleclans\_is\_mutedally%                                                                                                                                            | Has the clan member Muted ally chat ? relates to /ally mute, returns yes/no.                                                                           |
+| %simpleclans\_in\_clan%                                                                                                                                                 | Is the player in a clan ? returns yes/no.                                                                                                              |
+| %simpleclans\_join\_date%                                                                                                                                               | Displays the date the clan member joined the clan, returns Month, Day, Year, Hour.                                                                     |
+| %simpleclans\_lastseen%                                                                                                                                                 | Displays when a clan member was last logged into server, returns Month, Day, Year, Hour, or if active returns Online.                                  |
+| %simpleclans\_lastseendays%                                                                                                                                             | Displays when a clan member was last logged into server, returns number or Today if active the same day.                                               |
+| %simpleclans\_inactive\_days%                                                                                                                                           | Displays how many days a clan member has not been active, returns number                                                                               |
+| %simpleclans\_is\_member%                                                                                                                                               | Is the clan member a standard  member of the clan ? returns yes/no.                                                                                    |
+| %simpleclans\_is\_trusted%                                                                                                                                              | Is the clan member a trusted member of the clan ? returns yes/no.                                                                                      |
+| %simpleclans\_is\_leader%                                                                                                                                               | <p>Is the clan member the leader of the clan ?</p><p>returns yes/no.</p>                                                                               |
+| %simpleclans\_rank%                                                                                                                                                     | Displays the clan members current Rank, returns name of the rank.                                                                                      |
+| %simpleclans\_rank\_displayname%                                                                                                                                        | Displays the clan members current Rank displayname, related to /clan rank setdisplayname, returns custom display name of the rank                      |
+| %simpleclans\_neutral\_kills%                                                                                                                                           | Total kills of players in clans that are not a ally or rival clan, returns number.                                                                     |
+| %simpleclans\_rival\_kills%                                                                                                                                             | Total kills of players that are in a Rival clan, returns number.                                                                                       |
+| %simpleclans\_civilian\_kills%                                                                                                                                          | Total kills of players that are not in a clan, returns number.                                                                                         |
+| %simpleclans\_ally\_kills%                                                                                                                                              | Total kills of players that are in a allied clan, returns number.                                                                                      |
+| %simpleclans\_total\_kills%                                                                                                                                             | Total kills in all, civilians, rivals, allies and neutrals, returns number.                                                                            |
+| %simpleclans\_weighted\_kills%[#kill-weights](../how-to-setup/configuration.md#kill-weights "mention")                                                                  | Displays the clan members weighted kill points, this is based off set points for each type of kill, see Config for settings, returns number.           |
+| %simpleclans\_deaths%                                                                                                                                                   | Total times the clan member has died, returns number.                                                                                                  |
+| %simpleclans\_kdr%                                                                                                                                                      | Kill Death Ratio, the balance between clan members Kills and Deaths, returns number.                                                                   |
+| %simpleclans\_is\_bb\_enabled%                                                                                                                                          | Bulletin board toggle, relates to /clan toggle returns yes/no                                                                                          |
+| %simpleclans\_is\_tag\_enabled%                                                                                                                                         | Clan tag toggle, relates to /clan toggle returns yes/no.                                                                                               |
+| %simpleclans\_is\_friendlyfire\_on%                                                                                                                                     | Has the clan member got Friendly Fire Enabled, relates to /clan ff, returns yes/no.                                                                    |
+| %simpleclans\_tag%                                                                                                                                                      | Returns the clans Tag in lowercase and unformatted.                                                                                                    |
+| %simpleclans\_tag\_label%                                                                                                                                               | Returns the clan Tag with correct mayus, color and at the end \&c relates to /clan modtag                                                              |
+| %simpleclans\_clanchat\_player\_color%chat[#clan-chat](../how-to-setup/configuration.md#clan-chat "mention")                                                            | Gives other plugins Clan chat colors as set in config, returns \&c format                                                                              |
+| %simpleclans\_allychat\_player\_color%[#ally-chat](../how-to-setup/configuration.md#ally-chat "mention")                                                                | Gives other plugins Ally chat colors as set in config, returns \&c format                                                                              |
+| %simpleclans\_clan\_total\_neutral%                                                                                                                                     | Total kills of players in clans that are not a ally or rival clan, by all clan members, returns number.                                                |
+| %simpleclans\_clan\_total\_civilian%                                                                                                                                    | Total kills of players that are not in a clan, by all clan members, returns number.                                                                    |
+| %simpleclans\_clan\_total\_rival%                                                                                                                                       | Total kills of players that are in a Rival clan, by all clan members, returns number.                                                                  |
+| %simpleclans\_clan\_total\_ally%                                                                                                                                        | Total kills of players that are in a Allied clan, by all clan members, returns number.                                                                 |
+| %simpleclans\_clan\_total\_kills%                                                                                                                                       | Total kills in all, civilians, rivals, allies and neutrals, by all clan members, returns number.                                                       |
+| %simpleclans\_clan\_total\_deaths%                                                                                                                                      | Total times all clan members have died, combined, returns number.                                                                                      |
+| %simpleclans\_clan\_total\_kdr%                                                                                                                                         | Kill Death Ratio, the balance between clan members Kills and Deaths, combined, returns number.                                                         |
+| %simpleclans\_clan\_average\_wk%[#kill-weights](../how-to-setup/configuration.md#kill-weights "mention")                                                                | Displays the clan members weighted kill points, this is based off set points for each type of kill, combined, see Config for settings, returns number. |
+| %simpleclans\_clan\_leader\_size%                                                                                                                                       | Displays how many leaders the clan has, returns number.                                                                                                |
+| %simpleclans\_clan\_balance%                                                                                                                                            | Displays the current balance of the clan using the economy system, returns number.                                                                     |
+| %simpleclans\_clan\_allow\_withdraw%[#available-permissions-for-ranks](../commands-and-permissions/ranks-with-permissions.md#available-permissions-for-ranks "mention") | Can clan members withdraw currency from the clan bank, related to ranks, returns yes/no.                                                               |
+| %simpleclans\_clan\_allow\_deposit%[#available-permissions-for-ranks](../commands-and-permissions/ranks-with-permissions.md#available-permissions-for-ranks "mention")  | Can clan members deposit currency from the clan bank, related to ranks, returns yes/no.                                                                |
+| %simpleclans\_clan\_size%                                                                                                                                               | Displays the amount of current clan members in the clan, returns number.                                                                               |
+| %simpleclans\_clan\_name%                                                                                                                                               | Displays the clan name, returns name.                                                                                                                  |
+| %simpleclans\_clan\_color\_tag%                                                                                                                                         | Returns the clan Tag with correct mayus, color and at the end \&c relates to /clan modtag                                                              |
+| %simpleclans\_clan\_tag%                                                                                                                                                | Returns the clans Tag in lowercase and unformatted.                                                                                                    |
+| %simpleclans\_clan\_founded%                                                                                                                                            | Displays the date the clan was created, returns Month, Day, Year, Hour.                                                                                |
+| %simpleclans\_clan\_friendly\_fire%                                                                                                                                     | Has the clan member got Friendly Fire Enabled, relates to /clan globalff, returns yes/no.                                                              |
+| %simpleclans\_clan\_is\_unrivable%[#general-settings](../how-to-setup/configuration.md#general-settings "mention")                                                      | Displays if the clan can be rivalled, related to unrivable-clans in config, returns yes/no.                                                            |
+| %simpleclans\_clan\_is\_anyonline%                                                                                                                                      | Displays if any members of the clan are online, returns yes/no.                                                                                        |
+| %simpleclans\_clan\_is\_verified%[#what-is-it](../commands-and-permissions/verified-clan.md#what-is-it "mention")                                                       | Displays if the clan has Verified Status, returns yes/no.                                                                                              |
+| %simpleclans\_clan\_inactivedays%                                                                                                                                       | Displays how many days no clan members have been active, returns number.                                                                               |
+| %simpleclans\_clan\_onlinemembers\_count%                                                                                                                               | Displays how many clan members are currently online, returns number.                                                                                   |
+| %simpleclans\_clan\_allies\_count%                                                                                                                                      | Displays how many other clans the clan is allied with, returns number.                                                                                 |
+| %simpleclans\_clan\_rivals\_count%                                                                                                                                      | Displays how many other clans the clan is rivalled with, returns number.                                                                               |
+| %simpleclans\_clan\_is\_permanent%[#what-is-it](../commands-and-permissions/permanent-clan.md#what-is-it "mention")                                                     | Displays if the clan is permanent and protected from auto delete, returns yes/no.                                                                      |
 
 #### Top Clans Placeholders
 
-The top clans is a group of placeholders that helps you create leaderboards.  
-You can put `_topclans_#_` in any existing clan placeholder to get the value for the clan in a specific rank position.  
-Ex.:  
+The top clans is a group of placeholders that helps you create leaderboards.\
+You can put `_topclans_#_` in any existing clan placeholder to get the value for the clan in a specific rank position.\
+Ex.:\
 `%simpleclans_topclans_1_clan_name%` - this will return the name of the Clan in the first position.
 
 #### Top Players Placeholders
 
-This one is another group of placeholders to create leaderboards. As the name suggests, it's about players and not clans, but they work similarly.  
-Adding `_topplayers_#_` to existing player placeholders will get the value for the Player in the specified rank.  
-Ex.:  
+This one is another group of placeholders to create leaderboards. As the name suggests, it's about players and not clans, but they work similarly.\
+Adding `_topplayers_#_` to existing player placeholders will get the value for the Player in the specified rank.\
+Ex.:\
 `%simpleclans_topplayers_2_tag_label%` - this will return the tag label for the Player in the second position.
 
 #### Relational placeholders
 
-Relational placeholders return values based on the relation between 2 players. One example is the tab, there is the player viewing it and the players listed there  
-Currently the only relational placeholder available on SimpleClans is: `%rel_simpleclans_color%`   
-This returns a color based on rivalries/alliances.  
-Allies: aqua  
-Rivals: red  
+Relational placeholders return values based on the relation between 2 players. One example is the tab, there is the player viewing it and the players listed there\
+Currently the only relational placeholder available on SimpleClans is: `%rel_simpleclans_color%`\
+This returns a color based on rivalries/alliances.\
+Allies: aqua\
+Rivals: red\
 Same clan: green
 
 The colors above can be changed in PlaceholderAPI's config.
 
+**Example**
+
+`belowname-objective:`
+
+`enabled: true`
+
+`clan: "%rel_simpleclans_color%%simpleclans_tag%"`
+
+This will add the clans tag below the players name, to members of your clan the tag will show green, to members of allied clans the tag will show aqua, to members of rivalled clans tag will show red, same for when your clan members see allies and rivals.
+
 #### HolographicDisplays
 
 If you intend to use these placeholders with HolographicDisplays, remember to [download ](https://www.spigotmc.org/resources/18461/)the extension.
-
