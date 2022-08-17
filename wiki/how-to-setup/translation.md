@@ -1,7 +1,3 @@
----
-description: null
----
-
 # 🍕 Перевод
 
 ## Редактирование сообщений плагина
@@ -9,7 +5,7 @@ description: null
 ### Необходимые программы:
 
 * Архиватор ZIP (например, [WinRAR](https://www.win-rar.com/download.html?\&L=0) или [7-Zip](https://www.7-zip.org/download.html))
-* Текстовый редактор, например: [NotePad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com) или [Sublime Text](https://www.sublimetext.com).
+* Текстовый редактор, например: [NotePad++](https://notepad-plus-plus.org/downloads/), [Visual Studio Code](https://code.visualstudio.com/) или [Sublime Text](https://www.sublimetext.com/).
 
 ### Пошагово
 

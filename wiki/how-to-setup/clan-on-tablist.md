@@ -1,7 +1,3 @@
----
-description: null
----
-
 # ☝ Клан в табе
 
 ## Необходимые плагины
@@ -26,4 +22,4 @@ _DEFAULT_:
 
 ## Скриншот
 
-![](../../.gitbook/assets/clans-tablist.png)
+![](../.gitbook/assets/clans-tablist.png)

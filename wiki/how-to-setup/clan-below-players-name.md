@@ -1,7 +1,3 @@
----
-description: null
----
-
 # 👇 Клан под ником игрока
 
 ## Необходимые плагины
@@ -34,4 +30,4 @@ _OTHER_:
 
 ## Скриншот
 
-![](../../.gitbook/assets/clans-below-name.png)
+![](../.gitbook/assets/clans-below-name.png)
