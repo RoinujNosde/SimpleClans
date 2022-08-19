@@ -86,13 +86,7 @@ public class SCPlayerListener extends SCListener {
         if (isBlacklistedWorld(player)) {
             return;
         }
-
-        ClanPlayer cp;
-        if (settingsManager.is(PERFORMANCE_USE_BUNGEECORD)) {
-            cp = plugin.getClanManager().getClanPlayerJoinEvent(player);
-        } else {
-            cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
-        }
+        ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
 
         updatePlayerName(player);
         plugin.getClanManager().updateLastSeen(player);

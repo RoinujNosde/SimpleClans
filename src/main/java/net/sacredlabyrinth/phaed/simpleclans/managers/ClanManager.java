@@ -242,6 +242,7 @@ public final class ClanManager {
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan Used for BungeeCord Reload ClanPlayer and your Clan
      */
+    @Deprecated
     public @Nullable ClanPlayer getClanPlayerJoinEvent(Player player) {
         SimpleClans.getInstance().getStorageManager().importFromDatabaseOnePlayer(player);
         return getClanPlayer(player.getUniqueId());
