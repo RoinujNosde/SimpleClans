@@ -8,17 +8,21 @@ import com.google.gson.stream.JsonWriter;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
-public class BungeeManager implements PluginMessageListener {
+public final class BungeeManager {
 
     private static final String UPDATE_CLAN_CHANNEL = "sc:update_clan";
     private static final String UPDATE_CLANPLAYER_CHANNEL = "sc:update_clanplayer";
@@ -27,78 +31,147 @@ public class BungeeManager implements PluginMessageListener {
 
     private final Gson clanPlayerGson = new GsonBuilder().registerTypeAdapter(Clan.class, new ClanAdapter()).create();
     private final Gson clanGson = new GsonBuilder().registerTypeAdapter(ClanPlayer.class, new ClanPlayerAdapter()).create();
-
     // TODO Replace usage of JsonSimple in pom.xml
+    private final SimpleClans plugin;
 
-    private final SimpleClans plugin = SimpleClans.getInstance();
-
-    public BungeeManager() {
-        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, UPDATE_CLAN_CHANNEL, this);
-        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, UPDATE_CLANPLAYER_CHANNEL, this);
+    public BungeeManager(SimpleClans plugin) {
+        this.plugin = plugin;
+        if (!plugin.getSettingsManager().is(ConfigField.PERFORMANCE_USE_BUNGEECORD)) {
+            return;
+        }
+        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, UPDATE_CLAN_CHANNEL, this::updateClan);
+        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, UPDATE_CLANPLAYER_CHANNEL, this::updateClanPlayer);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, UPDATE_CLAN_CHANNEL);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, UPDATE_CLANPLAYER_CHANNEL);
-        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, INSERT_CLAN_CHANNEL, this);
-        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, INSERT_CLANPLAYER_CHANNEL, this);
+        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, INSERT_CLAN_CHANNEL, this::insertClan);
+        Bukkit.getMessenger().registerIncomingPluginChannel(plugin, INSERT_CLANPLAYER_CHANNEL, this::insertClanPlayer);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, INSERT_CLAN_CHANNEL);
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, INSERT_CLANPLAYER_CHANNEL);
     }
 
     public void sendUpdate(Clan clan) {
-        byte[] message = clanGson.toJson(clan).getBytes(StandardCharsets.UTF_8); //todo extract
+        if (isChannelUnregistered(UPDATE_CLAN_CHANNEL)) {
+            return;
+        }
+        byte[] message = getBytes(clan); //todo extract
         plugin.getServer().sendPluginMessage(plugin, UPDATE_CLAN_CHANNEL, message);
     }
 
     public void sendUpdate(ClanPlayer cp) {
-        byte[] message = clanPlayerGson.toJson(cp).getBytes(StandardCharsets.UTF_8);
+        if (isChannelUnregistered(UPDATE_CLANPLAYER_CHANNEL)) {
+            return;
+        }
+        byte[] message = getBytes(cp);
         plugin.getServer().sendPluginMessage(plugin, UPDATE_CLANPLAYER_CHANNEL, message);
     }
 
     public void sendInsert(Clan clan) {
-        byte[] message = clanGson.toJson(clan).getBytes(StandardCharsets.UTF_8);
+        if (isChannelUnregistered(INSERT_CLAN_CHANNEL)) {
+            return;
+        }
+        byte[] message = getBytes(clan);
         plugin.getServer().sendPluginMessage(plugin, INSERT_CLAN_CHANNEL, message);
     }
 
     public void sendInsert(ClanPlayer cp) {
-        byte[] message = clanPlayerGson.toJson(cp).getBytes(StandardCharsets.UTF_8);
+        if (isChannelUnregistered(INSERT_CLANPLAYER_CHANNEL)) {
+            return;
+        }
+        byte[] message = getBytes(cp);
         plugin.getServer().sendPluginMessage(plugin, INSERT_CLANPLAYER_CHANNEL, message);
     }
 
-    @Override
-    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte @NotNull [] message) {
-        switch (channel) {
-            case INSERT_CLAN_CHANNEL:
-                insertClan(message);
-                break;
-            case INSERT_CLANPLAYER_CHANNEL:
-                insertClanPlayer(message);
-                break;
-            case UPDATE_CLAN_CHANNEL:
-                updateClan(message);
-                break;
-            case UPDATE_CLANPLAYER_CHANNEL:
-                updateClanPlayer(message);
-                break;
-        }
+    private boolean isChannelUnregistered(String channel) {
+        return !Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, channel);
     }
 
-    private void insertClan(byte[] message) {
-        String json = new String(message, StandardCharsets.UTF_8); //todo extract
-        Clan clan = clanGson.fromJson(json, Clan.class);
+    private void insertClan(String channel, Player player, byte[] message) {
+        Clan clan = clanFromBytes(message);
         plugin.getClanManager().importClan(clan);
     }
 
-    private void insertClanPlayer(byte[] message) {
-        String json = new String(message, StandardCharsets.UTF_8);
-        ClanPlayer cp = clanPlayerGson.fromJson(json, ClanPlayer.class);
+    private void insertClanPlayer(String channel, Player player, byte[] message) {
+        ClanPlayer cp = clanPlayerFromBytes(message);
         plugin.getClanManager().importClanPlayer(cp);
     }
 
-    private void updateClan(byte[] message) {
-        // todo Find Clan object with the same tag, copy field **values** to it, so the reference remains the same
+    private void updateClan(String channel, Player player, byte[] message) {
+        Clan bungeeClan = clanFromBytes(message);
+        Clan clan = plugin.getClanManager().getClan(bungeeClan.getTag());
+        if (clan == null) {
+            insertClan(channel, player, message);
+            return;
+        }
+        try {
+            updateFields(bungeeClan, clan);
+        } catch (IllegalAccessException e) {
+            plugin.getLogger().log(Level.SEVERE, String.format("An error happened while update the clan %s",
+                    clan.getTag()), e);
+        }
     }
 
-    private void updateClanPlayer(byte[] message) {
-        // todo implement in a similar way as updateClan()
+    private void updateClanPlayer(String channel, Player player, byte[] message) {
+        ClanPlayer bungeeCp = clanPlayerFromBytes(message);
+        ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(bungeeCp.getUniqueId());
+        if (cp == null) {
+            insertClanPlayer(channel, player, message);
+            return;
+        }
+        try {
+            updateFields(bungeeCp, cp);
+        } catch (IllegalAccessException e) {
+            plugin.getLogger().log(Level.SEVERE, String.format("Error while updating ClanPlayer %s", cp.getUniqueId()), e);
+        }
+    }
+
+    private void updateFields(Object origin, Object destination) throws IllegalAccessException {
+        if (origin.getClass() != destination.getClass()) {
+            throw new IllegalArgumentException("origin and destination must be of the same type");
+        }
+        Field[] fields = origin.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (Modifier.isFinal(field.getModifiers())) {
+                updateCollectionOrMap(field.get(origin), field.get(destination));
+                continue;
+            }
+            field.set(destination, field.get(origin));
+        }
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void updateCollectionOrMap(Object originValue, Object destValue) {
+        if (originValue instanceof Collection) {
+            Collection<?> destColl = (Collection<?>) destValue;
+            destColl.clear();
+            destColl.addAll((Collection) originValue);
+            return;
+        }
+        if (originValue instanceof Map) {
+            Map<?, ?> destMap = (Map<?, ?>) destValue;
+            destMap.clear();
+            destMap.putAll((Map) originValue);
+            return;
+        }
+        throw new UnsupportedOperationException(String.format("unknown field type: %s", originValue.getClass()));
+    }
+
+    private ClanPlayer clanPlayerFromBytes(byte[] message) {
+        String json = new String(message, StandardCharsets.UTF_8);
+        return clanPlayerGson.fromJson(json, ClanPlayer.class);
+    }
+
+    private Clan clanFromBytes(byte[] message) {
+        String json = new String(message, StandardCharsets.UTF_8);
+        return clanGson.fromJson(json, Clan.class);
+    }
+
+    private byte[] getBytes(ClanPlayer cp) {
+        return clanPlayerGson.toJson(cp).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private byte[] getBytes(Clan clan) {
+        return clanGson.toJson(clan).getBytes(StandardCharsets.UTF_8);
     }
 
     class ClanAdapter extends TypeAdapter<Clan> {
@@ -138,6 +211,5 @@ public class BungeeManager implements PluginMessageListener {
             return plugin.getClanManager().getAnyClanPlayer(uuid);
         }
     }
-
 
 }

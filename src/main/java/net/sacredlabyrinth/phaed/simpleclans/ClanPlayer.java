@@ -38,7 +38,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     private int deaths;
     private long lastSeen;
     private long joinDate;
-    private Set<String> pastClans = new LinkedHashSet<>();
+    private final Set<String> pastClans = new LinkedHashSet<>();
     private final Map<String, Long> resignTimes = new HashMap<>();
     private @Nullable VoteResult vote;
     private Flags flags = new Flags(null);

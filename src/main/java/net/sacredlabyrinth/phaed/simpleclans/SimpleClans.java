@@ -55,6 +55,7 @@ public class SimpleClans extends JavaPlugin {
     private TeleportManager teleportManager;
     private ProtectionManager protectionManager;
     private ChatManager chatManager;
+    private BungeeManager bungeeManager;
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
@@ -110,6 +111,7 @@ public class SimpleClans extends JavaPlugin {
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
+        bungeeManager = new BungeeManager(this);
         bankLogger = new CSVBankLogger(this);
 
         logStatus();
@@ -246,6 +248,10 @@ public class SimpleClans extends JavaPlugin {
 
     public ChatManager getChatManager() {
         return chatManager;
+    }
+
+    public BungeeManager getBungeeManager() {
+        return bungeeManager;
     }
 
     public BankLogger getBankLogger() {
