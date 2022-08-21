@@ -132,11 +132,19 @@ public final class BungeeManager {
         for (Field field : fields) {
             field.setAccessible(true);
             if (Modifier.isFinal(field.getModifiers())) {
+                if (isPrimitive(field)) {
+                    continue;
+                }
                 updateCollectionOrMap(field.get(origin), field.get(destination));
                 continue;
             }
             field.set(destination, field.get(origin));
         }
+    }
+
+    private static boolean isPrimitive(Field field) {
+        Class<?> type = field.getType();
+        return type.isPrimitive() || Number.class.isAssignableFrom(type) || type == String.class;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
