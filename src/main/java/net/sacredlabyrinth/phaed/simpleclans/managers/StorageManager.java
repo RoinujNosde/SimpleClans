@@ -812,6 +812,7 @@ public final class StorageManager {
      * Delete a clan from the database
      */
     public void deleteClan(Clan clan) {
+        plugin.getBungeeManager().sendDelete(clan);
         String query = "DELETE FROM `sc_clans` WHERE tag = '" + clan.getTag() + "';";
         core.executeUpdate(query);
     }
@@ -902,6 +903,7 @@ public final class StorageManager {
             clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(lang("has.been.purged"), cp.getName()));
             updateClan(clan, false);
         }
+        plugin.getBungeeManager().sendDelete(cp);
         String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
         core.executeUpdate(query);
         deleteKills(cp.getUniqueId());
