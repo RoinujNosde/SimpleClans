@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
+
 public final class BungeeManager {
 
     private static final String UPDATE_CLAN_CHANNEL = "sc:update_clan";
@@ -62,6 +64,7 @@ public final class BungeeManager {
             return;
         }
         plugin.getServer().sendPluginMessage(plugin, DELETE_CLAN_CHANNEL, clan.getTag().getBytes(StandardCharsets.UTF_8));
+        debug(String.format("Sent delete clan %s", clan.getTag()));
     }
 
     public void sendDelete(ClanPlayer cp) {
@@ -70,6 +73,7 @@ public final class BungeeManager {
         }
         plugin.getServer().sendPluginMessage(plugin, DELETE_CLANPLAYER_CHANNEL,
                 cp.getUniqueId().toString().getBytes(StandardCharsets.UTF_8));
+        debug(String.format("Sent delete cp %s", cp.getName()));
     }
 
     public void sendUpdate(Clan clan) {
@@ -78,6 +82,7 @@ public final class BungeeManager {
         }
         byte[] message = getBytes(clan);
         plugin.getServer().sendPluginMessage(plugin, UPDATE_CLAN_CHANNEL, message);
+        debug(String.format("Sent update clan %s", clan.getTag()));
     }
 
     public void sendUpdate(ClanPlayer cp) {
@@ -86,6 +91,7 @@ public final class BungeeManager {
         }
         byte[] message = getBytes(cp);
         plugin.getServer().sendPluginMessage(plugin, UPDATE_CLANPLAYER_CHANNEL, message);
+        debug(String.format("Sent update cp %s", cp.getName()));
     }
 
     public void sendInsert(Clan clan) {
@@ -94,6 +100,7 @@ public final class BungeeManager {
         }
         byte[] message = getBytes(clan);
         plugin.getServer().sendPluginMessage(plugin, INSERT_CLAN_CHANNEL, message);
+        debug(String.format("Sent insert clan %s", clan.getTag()));
     }
 
     public void sendInsert(ClanPlayer cp) {
@@ -102,6 +109,7 @@ public final class BungeeManager {
         }
         byte[] message = getBytes(cp);
         plugin.getServer().sendPluginMessage(plugin, INSERT_CLANPLAYER_CHANNEL, message);
+        debug(String.format("Sent insert cp %s", cp.getName()));
     }
 
     private boolean isChannelUnregistered(String channel) {
@@ -111,11 +119,13 @@ public final class BungeeManager {
     private void insertClan(String channel, Player player, byte[] message) {
         Clan clan = clanFromBytes(message);
         plugin.getClanManager().importClan(clan);
+        debug(String.format("Inserted clan %s", clan.getTag()));
     }
 
     private void insertClanPlayer(String channel, Player player, byte[] message) {
         ClanPlayer cp = clanPlayerFromBytes(message);
         plugin.getClanManager().importClanPlayer(cp);
+        debug(String.format("Inserted cp %s", cp.getName()));
     }
 
     private void updateClan(String channel, Player player, byte[] message) {
@@ -131,6 +141,7 @@ public final class BungeeManager {
             plugin.getLogger().log(Level.SEVERE, String.format("An error happened while update the clan %s",
                     clan.getTag()), e);
         }
+        debug(String.format("Updated clan %s", clan.getTag()));
     }
 
     private void updateClanPlayer(String channel, Player player, byte[] message) {
@@ -145,16 +156,19 @@ public final class BungeeManager {
         } catch (IllegalAccessException e) {
             plugin.getLogger().log(Level.SEVERE, String.format("Error while updating ClanPlayer %s", cp.getUniqueId()), e);
         }
+        debug(String.format("Updated cp %s", cp.getName()));
     }
 
     private void deleteClan(String channel, Player player, byte[] message) {
         String tag = new String(message, StandardCharsets.UTF_8);
         plugin.getClanManager().removeClan(tag);
+        debug(String.format("Deleted clan %s", tag));
     }
 
     private void deleteClanPlayer(String channel, Player player, byte[] message) {
         UUID uuid = UUID.fromString(new String(message, StandardCharsets.UTF_8));
         plugin.getClanManager().deleteClanPlayerFromMemory(uuid);
+        debug(String.format("Deleted cp %s", uuid));
     }
 
     static void updateFields(Object origin, Object destination) throws IllegalAccessException {
