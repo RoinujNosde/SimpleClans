@@ -53,7 +53,7 @@ public final class BungeeManager {
         if (isChannelUnregistered(UPDATE_CLAN_CHANNEL)) {
             return;
         }
-        byte[] message = getBytes(clan); //todo extract
+        byte[] message = getBytes(clan);
         plugin.getServer().sendPluginMessage(plugin, UPDATE_CLAN_CHANNEL, message);
     }
 
@@ -124,7 +124,7 @@ public final class BungeeManager {
         }
     }
 
-    private void updateFields(Object origin, Object destination) throws IllegalAccessException {
+    static void updateFields(Object origin, Object destination) throws IllegalAccessException {
         if (origin.getClass() != destination.getClass()) {
             throw new IllegalArgumentException("origin and destination must be of the same type");
         }
@@ -140,7 +140,7 @@ public final class BungeeManager {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void updateCollectionOrMap(Object originValue, Object destValue) {
+    private static void updateCollectionOrMap(Object originValue, Object destValue) {
         if (originValue instanceof Collection) {
             Collection<?> destColl = (Collection<?>) destValue;
             destColl.clear();
