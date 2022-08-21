@@ -132,10 +132,7 @@ public final class BungeeManager {
         for (Field field : fields) {
             field.setAccessible(true);
             if (Modifier.isFinal(field.getModifiers())) {
-                if (isPrimitive(field)) {
-                    continue;
-                }
-                updateCollectionOrMap(field.get(origin), field.get(destination));
+                copyValues(field, field.get(origin), field.get(destination));
                 continue;
             }
             field.set(destination, field.get(origin));
@@ -148,7 +145,10 @@ public final class BungeeManager {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void updateCollectionOrMap(Object originValue, Object destValue) {
+    private static void copyValues(Field field, Object originValue, Object destValue) {
+        if (isPrimitive(field)) {
+            return;
+        }
         if (originValue instanceof Collection) {
             Collection<?> destColl = (Collection<?>) destValue;
             destColl.clear();
