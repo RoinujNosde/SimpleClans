@@ -221,15 +221,19 @@ public final class BungeeManager {
         public void write(JsonWriter out, Clan clan) throws IOException {
             out.beginObject();
             out.name("tag");
-            out.value(clan.getTag());
+            String tag = clan == null ? "" : clan.getTag();
+            out.value(tag);
             out.endObject();
         }
 
         @Override
-        public Clan read(JsonReader in) throws IOException {
+        public @Nullable Clan read(JsonReader in) throws IOException {
             in.beginObject();
             in.nextName();
             String tag = in.nextString();
+            if (tag.isEmpty()) {
+                return null;
+            }
             return plugin.getClanManager().getClan(tag);
         }
     }
