@@ -289,7 +289,7 @@
     </repositories>
 
     <properties>
-        <project.build.sourcfeEncoding>UTF-8</project.build.sourcfeEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <!-- Upstream Distribution -->

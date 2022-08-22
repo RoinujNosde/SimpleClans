@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.managers;
+package net.sacredlabyrinth.phaed.simpleclans.proxy;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;

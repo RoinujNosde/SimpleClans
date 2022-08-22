@@ -413,8 +413,13 @@
       <id>reposilite</id>
       <url>https://repo.roinujnosde.me/releases/</url>
     </repository>
+    <snapshotRepository>
+      <id>reposilite</id>
+      <url>https://repo.roinujnosde.me/snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
+
