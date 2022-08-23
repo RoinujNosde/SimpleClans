@@ -12,9 +12,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
-import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
-import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.*;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERFORMANCE_USE_BUNGEECORD;
 
 /**
  * Handles delivering messages from {@link Source#SPIGOT} or {@link Source#DISCORD} to internal spy chat.
@@ -24,7 +24,7 @@ public class SpyChatHandler implements ChatHandler {
     @Override
     public void sendMessage(SCMessage message) {
         ConfigField formatField = ConfigField.valueOf(String.format("%sCHAT_SPYFORMAT",
-                message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
+                message.getSource() == DISCORD ? "DISCORD" : message.getChannel()));
         String format = settingsManager.getString(formatField);
         message.setContent(ChatUtils.stripColors(message.getContent()));
         String formattedMessage = chatManager.parseChatFormat(format, message);
@@ -38,7 +38,8 @@ public class SpyChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT || (source == DISCORD && chatManager.isDiscordHookEnabled());
+        return source == SPIGOT || (source == PROXY && settingsManager.is(PERFORMANCE_USE_BUNGEECORD))
+                || (source == DISCORD && chatManager.isDiscordHookEnabled());
     }
 
     private List<ClanPlayer> getOnlineSpies() {

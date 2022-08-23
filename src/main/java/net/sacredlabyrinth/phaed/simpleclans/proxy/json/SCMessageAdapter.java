@@ -28,7 +28,7 @@ public class SCMessageAdapter extends TypeAdapter<SCMessage> {
         out.name("sender");
         out.value(value.getSender().getUniqueId().toString());
         out.name("content");
-        out.name(value.getContent());
+        out.value(value.getContent());
         out.endObject();
     }
 
