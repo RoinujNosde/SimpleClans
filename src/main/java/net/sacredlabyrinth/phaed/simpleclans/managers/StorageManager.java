@@ -683,7 +683,7 @@ public final class StorageManager {
      *
      */
     public void insertClan(Clan clan) {
-        plugin.getBungeeManager().sendInsert(clan);
+        plugin.getProxyManager().sendInsert(clan);
 
         String query = "INSERT INTO `sc_clans` (`banner`, `ranks`, `description`, `fee_enabled`, `fee_value`, `verified`, `tag`," +
                 " `color_tag`, `name`, `friendly_fire`, `founded`, `last_used`, `packed_allies`, `packed_rivals`, " +
@@ -767,7 +767,7 @@ public final class StorageManager {
         if (updateLastUsed) {
             clan.updateLastUsed();
         }
-        plugin.getBungeeManager().sendUpdate(clan);
+        plugin.getProxyManager().sendUpdate(clan);
         if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClans.add(clan);
             return;
@@ -812,7 +812,7 @@ public final class StorageManager {
      * Delete a clan from the database
      */
     public void deleteClan(Clan clan) {
-        plugin.getBungeeManager().sendDelete(clan);
+        plugin.getProxyManager().sendDelete(clan);
         String query = "DELETE FROM `sc_clans` WHERE tag = '" + clan.getTag() + "';";
         core.executeUpdate(query);
     }
@@ -822,7 +822,7 @@ public final class StorageManager {
      *
      */
     public void insertClanPlayer(ClanPlayer cp) {
-        plugin.getBungeeManager().sendInsert(cp);
+        plugin.getProxyManager().sendInsert(cp);
 
     	String query = "INSERT INTO `sc_players` (`uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, " +
                 "`rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
@@ -855,7 +855,7 @@ public final class StorageManager {
      */
     public void updateClanPlayer(ClanPlayer cp) {
         cp.updateLastSeen();
-        plugin.getBungeeManager().sendUpdate(cp);
+        plugin.getProxyManager().sendUpdate(cp);
         if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClanPlayers.add(cp);
             return;
@@ -903,7 +903,7 @@ public final class StorageManager {
             clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(lang("has.been.purged"), cp.getName()));
             updateClan(clan, false);
         }
-        plugin.getBungeeManager().sendDelete(cp);
+        plugin.getProxyManager().sendDelete(cp);
         String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
         core.executeUpdate(query);
         deleteKills(cp.getUniqueId());

@@ -5,30 +5,26 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.json.ClanPlayerListAdapter;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.json.ClanPlayerTypeAdapterFactory;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.json.SCMessageAdapter;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
 
-public final class BungeeManager implements PluginMessageListener {
+public final class BungeeManager implements ProxyManager, PluginMessageListener {
 
     private static final String UPDATE_CLAN_CHANNEL = "sc:update_clan";
     private static final String UPDATE_CLANPLAYER_CHANNEL = "sc:update_clanplayer";
@@ -37,12 +33,15 @@ public final class BungeeManager implements PluginMessageListener {
     private static final String DELETE_CLAN_CHANNEL = "sc:delete_clan";
     private static final String DELETE_CLANPLAYER_CHANNEL = "sc:delete_clanplayer";
 
-    private final Gson clanPlayerGson = new GsonBuilder().registerTypeAdapter(Clan.class, new ClanAdapter()).create();
-    private final Gson clanGson = new GsonBuilder().registerTypeAdapter(ClanPlayer.class, new ClanPlayerAdapter()).create();
     private final SimpleClans plugin;
+    private final Gson gson;
 
     public BungeeManager(SimpleClans plugin) {
         this.plugin = plugin;
+        gson = new GsonBuilder().registerTypeAdapterFactory(new ClanPlayerTypeAdapterFactory(plugin))
+                .registerTypeAdapter(ClanPlayerListAdapter.getType(), new ClanPlayerListAdapter(plugin))
+                .registerTypeAdapter(SCMessage.class, new SCMessageAdapter(plugin)).setExclusionStrategies()
+                .create();
         if (!plugin.getSettingsManager().is(ConfigField.PERFORMANCE_USE_BUNGEECORD)) {
             return;
         }
@@ -54,6 +53,9 @@ public final class BungeeManager implements PluginMessageListener {
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] data) {
         ByteArrayDataInput input = ByteStreams.newDataInput(data);
         String subChannel = input.readUTF();
+        if (!subChannel.startsWith("sc:")) {
+            return;
+        }
         String message = input.readUTF();
         switch (subChannel) {
             case DELETE_CLAN_CHANNEL:
@@ -77,13 +79,18 @@ public final class BungeeManager implements PluginMessageListener {
         }
     }
 
+    @Override
+    public void sendMessage(SCMessage message) {
+        // TODO Implement
+    }
+
     public void sendDelete(Clan clan) {
-        sendMessage(DELETE_CLAN_CHANNEL, clan.getTag());
+        sendPluginMessage(DELETE_CLAN_CHANNEL, clan.getTag());
         debug(String.format("Sent delete clan %s", clan.getTag()));
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private void sendMessage(String subChannel, String message) {
+    private void sendPluginMessage(String subChannel, String message) {
         if (!Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord")) {
             return;
         }
@@ -93,55 +100,56 @@ public final class BungeeManager implements PluginMessageListener {
         output.writeUTF(subChannel);
         output.writeUTF(message);
 
-        plugin.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
+        Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player ->
+                player.getServer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray()));
     }
 
     public void sendDelete(ClanPlayer cp) {
-        sendMessage(DELETE_CLANPLAYER_CHANNEL, cp.getUniqueId().toString());
+        sendPluginMessage(DELETE_CLANPLAYER_CHANNEL, cp.getUniqueId().toString());
         debug(String.format("Sent delete cp %s", cp.getName()));
     }
 
     public void sendUpdate(Clan clan) {
-        sendMessage(UPDATE_CLAN_CHANNEL,  toJson(clan));
+        sendPluginMessage(UPDATE_CLAN_CHANNEL, gson.toJson(clan));
         debug(String.format("Sent update clan %s", clan.getTag()));
     }
 
     public void sendUpdate(ClanPlayer cp) {
-        sendMessage(UPDATE_CLANPLAYER_CHANNEL, toJson(cp));
+        sendPluginMessage(UPDATE_CLANPLAYER_CHANNEL, gson.toJson(cp));
         debug(String.format("Sent update cp %s", cp.getName()));
     }
 
     public void sendInsert(Clan clan) {
-        sendMessage(INSERT_CLAN_CHANNEL, toJson(clan));
+        sendPluginMessage(INSERT_CLAN_CHANNEL, gson.toJson(clan));
         debug(String.format("Sent insert clan %s", clan.getTag()));
     }
 
     public void sendInsert(ClanPlayer cp) {
-        sendMessage(INSERT_CLANPLAYER_CHANNEL, toJson(cp));
+        sendPluginMessage(INSERT_CLANPLAYER_CHANNEL, gson.toJson(cp));
         debug(String.format("Sent insert cp %s", cp.getName()));
     }
 
     private void insertClan(String message) {
-        Clan clan = clanFromJson(message);
+        Clan clan = gson.fromJson(message, Clan.class);
         plugin.getClanManager().importClan(clan);
         debug(String.format("Inserted clan %s", clan.getTag()));
     }
 
     private void insertClanPlayer(String message) {
-        ClanPlayer cp = clanPlayerFromJson(message);
+        ClanPlayer cp = gson.fromJson(message, ClanPlayer.class);
         plugin.getClanManager().importClanPlayer(cp);
         debug(String.format("Inserted cp %s", cp.getName()));
     }
 
     private void updateClan(String message) {
-        Clan bungeeClan = clanFromJson(message);
+        Clan bungeeClan = gson.fromJson(message, Clan.class);
         Clan clan = plugin.getClanManager().getClan(bungeeClan.getTag());
         if (clan == null) {
             insertClan(message);
             return;
         }
         try {
-            updateFields(bungeeClan, clan);
+            ObjectUtils.updateFields(bungeeClan, clan);
         } catch (IllegalAccessException e) {
             plugin.getLogger().log(Level.SEVERE, String.format("An error happened while update the clan %s",
                     clan.getTag()), e);
@@ -150,14 +158,14 @@ public final class BungeeManager implements PluginMessageListener {
     }
 
     private void updateClanPlayer(String message) {
-        ClanPlayer bungeeCp = clanPlayerFromJson(message);
+        ClanPlayer bungeeCp = gson.fromJson(message, ClanPlayer.class);
         ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(bungeeCp.getUniqueId());
         if (cp == null) {
             insertClanPlayer(message);
             return;
         }
         try {
-            updateFields(bungeeCp, cp);
+            ObjectUtils.updateFields(bungeeCp, cp);
         } catch (IllegalAccessException e) {
             plugin.getLogger().log(Level.SEVERE, String.format("Error while updating ClanPlayer %s", cp.getUniqueId()), e);
         }
@@ -173,106 +181,6 @@ public final class BungeeManager implements PluginMessageListener {
         UUID uuid = UUID.fromString(message);
         plugin.getClanManager().deleteClanPlayerFromMemory(uuid);
         debug(String.format("Deleted cp %s", uuid));
-    }
-
-    static void updateFields(Object origin, Object destination) throws IllegalAccessException {
-        if (origin.getClass() != destination.getClass()) {
-            throw new IllegalArgumentException("origin and destination must be of the same type");
-        }
-        Field[] fields = origin.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            if (Modifier.isFinal(field.getModifiers())) {
-                copyValues(field, field.get(origin), field.get(destination));
-                continue;
-            }
-            field.set(destination, field.get(origin));
-        }
-    }
-
-    private static boolean isPrimitive(Field field) {
-        Class<?> type = field.getType();
-        return type.isPrimitive() || Number.class.isAssignableFrom(type) || type == String.class;
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void copyValues(Field field, Object originValue, Object destValue) {
-        if (isPrimitive(field)) {
-            return;
-        }
-        if (originValue instanceof Collection) {
-            Collection<?> destColl = (Collection<?>) destValue;
-            destColl.clear();
-            destColl.addAll((Collection) originValue);
-            return;
-        }
-        if (originValue instanceof Map) {
-            Map<?, ?> destMap = (Map<?, ?>) destValue;
-            destMap.clear();
-            destMap.putAll((Map) originValue);
-            return;
-        }
-        throw new UnsupportedOperationException(String.format("unknown field type: %s", originValue.getClass()));
-    }
-
-    private ClanPlayer clanPlayerFromJson(String json) {
-        return clanPlayerGson.fromJson(json, ClanPlayer.class);
-    }
-
-    private Clan clanFromJson(String json) {
-        return clanGson.fromJson(json, Clan.class);
-    }
-
-    private String toJson(ClanPlayer cp) {
-        return clanPlayerGson.toJson(cp);
-    }
-
-    private String toJson(Clan clan) {
-        return clanGson.toJson(clan);
-    }
-
-    class ClanAdapter extends TypeAdapter<Clan> {
-
-        @Override
-        public void write(JsonWriter out, Clan clan) throws IOException {
-            out.beginObject();
-            out.name("tag");
-            String tag = clan == null ? "" : clan.getTag();
-            out.value(tag);
-            out.endObject();
-        }
-
-        @Override
-        public @Nullable Clan read(JsonReader in) throws IOException {
-            in.beginObject();
-            in.nextName();
-            String tag = in.nextString();
-            in.endObject();
-            if (tag.isEmpty()) {
-                return null;
-            }
-            return plugin.getClanManager().getClan(tag);
-        }
-    }
-
-    class ClanPlayerAdapter extends TypeAdapter<ClanPlayer> {
-
-        @Override
-        public void write(JsonWriter out, ClanPlayer value) throws IOException {
-            out.beginObject();
-            out.name("uuid");
-            out.value(value.getUniqueId().toString());
-            out.endObject();
-        }
-
-        @Override
-        public @Nullable ClanPlayer read(JsonReader in) throws IOException {
-            in.beginObject();
-            in.nextName();
-            UUID uuid = UUID.fromString(in.nextString());
-            in.endObject();
-            return plugin.getClanManager().getAnyClanPlayer(uuid);
-        }
     }
 
 }
