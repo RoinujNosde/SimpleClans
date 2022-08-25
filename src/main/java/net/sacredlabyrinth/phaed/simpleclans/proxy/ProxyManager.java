@@ -6,18 +6,15 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 
 public interface ProxyManager {
 
+    boolean isOnline(ClanPlayer cp);
+
     void sendMessage(SCMessage message);
-
-    void sendDelete(Clan clan);
-
-    void sendDelete(ClanPlayer cp);
 
     void sendUpdate(Clan clan);
 
     void sendUpdate(ClanPlayer cp);
 
-    void sendInsert(Clan clan);
+    void sendDelete(Clan clan);
 
-    void sendInsert(ClanPlayer cp);
-
+    void sendDelete(ClanPlayer cp);
 }

@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.proxy.json;
+package net.sacredlabyrinth.phaed.simpleclans.proxy.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

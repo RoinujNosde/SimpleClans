@@ -683,7 +683,7 @@ public final class StorageManager {
      *
      */
     public void insertClan(Clan clan) {
-        plugin.getProxyManager().sendInsert(clan);
+        plugin.getProxyManager().sendUpdate(clan);
 
         String query = "INSERT INTO `sc_clans` (`banner`, `ranks`, `description`, `fee_enabled`, `fee_value`, `verified`, `tag`," +
                 " `color_tag`, `name`, `friendly_fire`, `founded`, `last_used`, `packed_allies`, `packed_rivals`, " +
@@ -822,7 +822,7 @@ public final class StorageManager {
      *
      */
     public void insertClanPlayer(ClanPlayer cp) {
-        plugin.getProxyManager().sendInsert(cp);
+        plugin.getProxyManager().sendUpdate(cp);
 
     	String query = "INSERT INTO `sc_players` (`uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, " +
                 "`rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
