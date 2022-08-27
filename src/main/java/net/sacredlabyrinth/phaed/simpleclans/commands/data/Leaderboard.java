@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver;
+import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +38,7 @@ public class Leaderboard extends Sendable {
 
     private void addLines() {
         for (ClanPlayer cp : clanPlayers) {
-            boolean online = cp.toPlayer() != null;
+            boolean online = !VanishUtils.isVanished(cp);
 
             String name = (cp.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) :
                     sm.getColored(PAGE_UNTRUSTED_COLOR))) + cp.getName();

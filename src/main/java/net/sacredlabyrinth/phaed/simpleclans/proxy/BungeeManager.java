@@ -68,11 +68,11 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     }
 
     @Override
-    public boolean isOnline(ClanPlayer cp) {
-        if (Bukkit.getOnlinePlayers().stream().anyMatch(player -> player.getUniqueId().equals(cp.getUniqueId()))) {
+    public boolean isOnline(String playerName) {
+        if (Bukkit.getOnlinePlayers().stream().anyMatch(player -> player.getName().equals(playerName))) {
             return true;
         }
-        return onlinePlayers.stream().anyMatch(player -> player.equals(cp.getName()));
+        return onlinePlayers.contains(playerName);
     }
 
     public void setOnlinePlayers(@NotNull List<String> onlinePlayers) {
@@ -122,8 +122,10 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         output.writeUTF("PlayerList");
         output.writeUTF("ALL");
 
-        Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player ->
-                player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray()));
+        Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player -> {
+            player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
+            debug("Requested player list");
+        });
     }
 
     private void forwardPluginMessage(final String subChannel, final String message) {

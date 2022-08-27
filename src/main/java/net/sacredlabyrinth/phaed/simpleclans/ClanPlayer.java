@@ -509,8 +509,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     public String getLastSeenString(@Nullable CommandSender sender) {
-        Player player = toPlayer();
-        if (player != null && player.isOnline() && !VanishUtils.isVanished(sender, player)) {
+        if (!VanishUtils.isVanished(sender, this)) {
             return lang("online", sender);
         }
         return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(lastSeen));

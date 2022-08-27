@@ -6,7 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 
 public interface ProxyManager {
 
-    boolean isOnline(ClanPlayer cp);
+    boolean isOnline(String playerName);
 
     void sendMessage(SCMessage message);
 
