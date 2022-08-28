@@ -1544,6 +1544,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         flags.put("homeYaw", home != null ? home.getYaw() : 0);
         String world = home != null && home.getWorld() != null ? home.getWorld().getName() : "";
         flags.put("homeWorld", world);
+        String name = SimpleClans.getInstance().getProxyManager().getServerName();
+        flags.put("homeServer", name);
 
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }

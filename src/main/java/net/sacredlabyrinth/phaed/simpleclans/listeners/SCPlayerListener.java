@@ -1,10 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.listeners;
 
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.Bukkit;
@@ -114,7 +111,10 @@ public class SCPlayerListener extends SCListener {
         Clan clan = plugin.getClanManager().getClanByPlayerUniqueId(player.getUniqueId());
         Location home;
         if (clan != null && (home = clan.getHomeLocation()) != null) {
-            event.setRespawnLocation(plugin.getTeleportManager().getSafe(home));
+            String homeServer = new Flags(clan.getFlags()).getString("homeServer", "");
+            if (homeServer.isEmpty() || plugin.getProxyManager().getServerName().equals(homeServer)) {
+                event.setRespawnLocation(plugin.getTeleportManager().getSafe(home));
+            }
         }
     }
 

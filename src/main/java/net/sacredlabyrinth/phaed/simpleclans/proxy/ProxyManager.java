@@ -6,6 +6,8 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 
 public interface ProxyManager {
 
+    String getServerName();
+
     boolean isOnline(String playerName);
 
     void sendMessage(SCMessage message);

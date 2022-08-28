@@ -16,6 +16,9 @@ import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.SCMessageAdapter;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.listeners.MessageListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +39,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     private final SimpleClans plugin;
     private final Gson gson;
     private final List<String> onlinePlayers = new ArrayList<>();
+    private String serverName = "";
 
     public BungeeManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -49,6 +53,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", this);
         Bukkit.getScheduler().runTaskTimer(plugin, this::requestPlayerList, 0, 60 * 20);
+        requestServerName();
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -78,6 +83,15 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     public void setOnlinePlayers(@NotNull List<String> onlinePlayers) {
         this.onlinePlayers.clear();
         this.onlinePlayers.addAll(onlinePlayers);
+    }
+
+    @Override
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(@NotNull String name) {
+        this.serverName = name;
     }
 
     @Override
@@ -126,6 +140,21 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
             player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
             debug("Requested player list");
         });
+    }
+
+    private void requestServerName() {
+        Listener listener = new Listener() {
+            @SuppressWarnings("UnstableApiUsage")
+            @EventHandler
+            void on(PlayerJoinEvent event) {
+                ByteArrayDataOutput output = ByteStreams.newDataOutput();
+                output.writeUTF("GetServer");
+
+                event.getPlayer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
+                PlayerJoinEvent.getHandlerList().unregister(this); //only needed once
+            }
+        };
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
     }
 
     private void forwardPluginMessage(final String subChannel, final String message) {

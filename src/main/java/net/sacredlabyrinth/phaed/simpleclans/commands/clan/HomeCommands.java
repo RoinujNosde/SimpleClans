@@ -61,17 +61,12 @@ public class HomeCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.regroup.home")
     @Conditions("rank:name=REGROUP_HOME")
     @Description("{@@command.description.regroup.home}")
-    public void regroupHome(Player player, ClanPlayer cp, Clan clan) {
+    public void regroupHome(Player player, ClanPlayer cp, @Conditions("can_teleport") Clan clan) {
         if (!settings.is(ALLOW_REGROUP)) {
             ChatBlock.sendMessage(player, RED + lang("insufficient.permissions", player));
             return;
         }
         Location location = clan.getHomeLocation();
-        if (location == null) {
-            ChatBlock.sendMessage(player, RED + lang("hombase.not.set", player));
-            return;
-        }
-
         processRegroup(player, cp, clan, location);
     }
 
@@ -79,13 +74,8 @@ public class HomeCommands extends BaseCommand {
     @CommandPermission("simpleclans.member.home")
     @Conditions("rank:name=HOME_TP")
     @Description("{@@command.description.home.tp}")
-    public void teleport(Player player, Clan clan, ClanPlayer cp) {
+    public void teleport(Player player, @Conditions("can_teleport") Clan clan, ClanPlayer cp) {
         Location homeLocation = clan.getHomeLocation();
-
-        if (homeLocation == null) {
-            ChatBlock.sendMessage(player, RED + lang("hombase.not.set", player));
-            return;
-        }
 
         if (cm.purchaseHomeTeleport(player)) {
             plugin.getTeleportManager().addPlayer(player, homeLocation, clan.getName());
