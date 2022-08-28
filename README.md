@@ -60,7 +60,7 @@ Including SimpleClans with Maven:
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.16.2</version> <!-- You can find the latest version at the bottom -->
+        <version>2.17.0</version> <!-- You can find the latest version at the bottom -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -74,10 +74,11 @@ repositories {
     }
 }
 dependencies {
-    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.16.2"
+    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.17.0"
 }
 ```
 
+Feel free to learn our [Javadoc](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/).
 ##### Latest version:
 [![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.roinujnosde.me%2Freleases%2Fnet%2Fsacredlabyrinth%2Fphaed%2Fsimpleclans%2FSimpleClans%2Fmaven-metadata.xml)](https://repo.roinujnosde.me/#/releases/net/sacredlabyrinth/phaed/simpleclans/SimpleClans)
 ##### API Examples
