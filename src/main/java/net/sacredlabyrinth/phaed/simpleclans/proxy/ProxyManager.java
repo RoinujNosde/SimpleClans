@@ -12,6 +12,8 @@ public interface ProxyManager {
 
     void sendMessage(SCMessage message);
 
+    void sendMessage(String target, String message);
+
     void sendUpdate(Clan clan);
 
     void sendUpdate(ClanPlayer cp);

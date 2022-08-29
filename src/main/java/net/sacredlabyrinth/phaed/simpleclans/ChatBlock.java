@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -554,12 +553,7 @@ public class ChatBlock {
             return;
         }
 
-        Player player = receiver.toPlayer();
-        if (player == null) {
-            return;
-        }
-
-        player.sendMessage(ChatUtils.parseColors(msg));
+        SimpleClans.getInstance().getProxyManager().sendMessage(receiver.getName(), ChatUtils.parseColors(msg));
     }
 
     // ClanCommands#setbanner, LandCommands#Allow/BlockCommand/verify, StaffCommands#kick, etc

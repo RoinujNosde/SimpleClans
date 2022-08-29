@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
-
 public final class BungeeManager implements ProxyManager, PluginMessageListener {
 
     private static final String UPDATE_CLAN_CHANNEL = "UpdateClan";
@@ -99,6 +97,28 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         forwardPluginMessage(CHAT_CHANNEL, gson.toJson(message), false);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
+    @Override
+    public void sendMessage(@NotNull String target, @NotNull String message) {
+        if (isChannelRegistered()) {
+            ByteArrayDataOutput output = ByteStreams.newDataOutput();
+            output.writeUTF("Message");
+            output.writeUTF(target);
+            output.writeUTF(message);
+
+            sendOnBungeeChannel(output);
+            return;
+        }
+        if ("ALL".equals(target)) {
+            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+        } else {
+            Player player = Bukkit.getPlayer(target);
+            if (player != null) {
+                player.sendMessage(message);
+            }
+        }
+    }
+
     @Override
     public void sendDelete(Clan clan) {
         forwardPluginMessage(DELETE_CLAN_CHANNEL, clan.getTag());
@@ -129,17 +149,14 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
 
     @SuppressWarnings("UnstableApiUsage")
     private void requestPlayerList() {
-        if (!Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord")) {
+        if (!isChannelRegistered()) {
             return;
         }
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("PlayerList");
         output.writeUTF("ALL");
 
-        Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player -> {
-            player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
-            debug("Requested player list");
-        });
+        sendOnBungeeChannel(output);
     }
 
     private void requestServerName() {
@@ -163,7 +180,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
 
     @SuppressWarnings("UnstableApiUsage")
     private void forwardPluginMessage(final String subChannel, final String message, final boolean all) {
-        if (!Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord")) {
+        if (!isChannelRegistered()) {
             return;
         }
         String target = all ? "ALL" : "ONLINE";
@@ -173,10 +190,16 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         output.writeUTF(subChannel);
         output.writeUTF(message);
 
-        Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player -> {
-            player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
-            debug(String.format("Sent message on channel %s", subChannel));
-        });
+        sendOnBungeeChannel(output);
+    }
+
+    private void sendOnBungeeChannel(ByteArrayDataOutput output) {
+        Bukkit.getOnlinePlayers().stream().findAny().ifPresent(player ->
+                player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray()));
+    }
+
+    private boolean isChannelRegistered() {
+        return Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord");
     }
 
 }

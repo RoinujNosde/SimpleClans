@@ -1252,14 +1252,10 @@ public class Clan implements Serializable, Comparable<Clan> {
         String message = SimpleClans.getInstance().getSettingsManager().getColored(CLANCHAT_ANNOUNCEMENT_COLOR) + msg;
 
         for (ClanPlayer cp : getMembers()) {
-            Player pl = cp.toPlayer();
-
-            if (pl != null) {
-                ChatBlock.sendMessage(pl, message);
-            }
+            ChatBlock.sendMessage(cp, message);
         }
 
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(AQUA + "[" + lang("clan.announce") + AQUA + "] " + AQUA + "[" + Helper.getColorName(playerName) + WHITE + "] " + message);
+        Bukkit.getConsoleSender().sendMessage(AQUA + "[" + lang("clan.announce") + AQUA + "] " + AQUA + "[" + Helper.getColorName(playerName) + WHITE + "] " + message);
     }
 
     /**
@@ -1271,13 +1267,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<ClanPlayer> leaders = getLeaders();
 
         for (ClanPlayer cp : leaders) {
-            Player pl = cp.toPlayer();
-
-            if (pl != null) {
-                ChatBlock.sendMessage(pl, message);
-            }
+            ChatBlock.sendMessage(cp, message);
         }
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(AQUA + "[" + lang("leader.announce") + AQUA + "] " + WHITE + message);
+        Bukkit.getConsoleSender().sendMessage(AQUA + "[" + lang("leader.announce") + AQUA + "] " + WHITE + message);
     }
 
     /**
