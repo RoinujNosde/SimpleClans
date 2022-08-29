@@ -14,7 +14,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.16-R0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.26" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.MilkBowl:VaultAPI:1.7" level="project" />
@@ -141,5 +140,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.zaxxer:HikariCP:4.0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.github.bananapuncher714:nbteditor:7.16.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: de.eldoria:eldo-util:1.9.1" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.9.1" level="project" />
   </component>
 </module>

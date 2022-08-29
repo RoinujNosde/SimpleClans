@@ -55,6 +55,7 @@
           </execution>
         </executions>
         <configuration>
+          <minimizeJar>true</minimizeJar>
           <relocations>
             <relocation>
               <pattern>org.bstats</pattern>
@@ -75,6 +76,10 @@
             <relocation>
               <pattern>com.cryptomorin.xseries</pattern>
               <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.xseries</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.google.gson</pattern>
+              <shadedPattern>net.sacredlabyrinth.phaed.simpleclans.gson</shadedPattern>
             </relocation>
           </relocations>
           <artifactSet>
@@ -196,10 +201,6 @@
           <groupId>com.google.guava</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>bungeecord-chat</artifactId>
           <groupId>net.md-5</groupId>
         </exclusion>
@@ -218,18 +219,6 @@
         <exclusion>
           <artifactId>bukkit</artifactId>
           <groupId>org.bukkit</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.json-simple</groupId>
-      <artifactId>json-simple</artifactId>
-      <version>1.1.1</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>junit</artifactId>
-          <groupId>junit</groupId>
         </exclusion>
       </exclusions>
     </dependency>
