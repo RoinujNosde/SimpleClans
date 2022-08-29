@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
 
 import java.sql.*;
 import java.text.MessageFormat;
@@ -379,7 +378,7 @@ public final class StorageManager {
                         String packed_rivals = res.getString("packed_rivals");
                         String packed_bb = res.getString("packed_bb");
                         String flags = res.getString("flags");
-                        JSONObject ranks = Helper.parseJson(res.getString("ranks"));
+                        String ranksJson = res.getString("ranks");
                         long founded = res.getLong("founded");
                         long last_used = res.getLong("last_used");
                         double balance = res.getDouble("balance");
@@ -411,8 +410,8 @@ public final class StorageManager {
                         clan.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
-                        clan.setRanks(Helper.ranksFromJson(ranks));
-                        clan.setDefaultRank(Helper.defaultRankFromJson(ranks));
+                        clan.setRanks(Helper.ranksFromJson(ranksJson));
+                        clan.setDefaultRank(Helper.defaultRankFromJson(ranksJson));
                         clan.setBanner(banner);
 
                         out.add(clan);
@@ -453,7 +452,7 @@ public final class StorageManager {
                         String packed_rivals = res.getString("packed_rivals");
                         String packed_bb = res.getString("packed_bb");
                         String flags = res.getString("flags");
-                        JSONObject ranks = Helper.parseJson(res.getString("ranks"));
+                        String ranksJson = res.getString("ranks");
                         long founded = res.getLong("founded");
                         long last_used = res.getLong("last_used");
                         double balance = res.getDouble("balance");
@@ -485,8 +484,8 @@ public final class StorageManager {
                         clan.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
-                        clan.setRanks(Helper.ranksFromJson(ranks));
-                        clan.setDefaultRank(Helper.defaultRankFromJson(ranks));
+                        clan.setRanks(Helper.ranksFromJson(ranksJson));
+                        clan.setDefaultRank(Helper.defaultRankFromJson(ranksJson));
                         clan.setBanner(banner);
 
                         out = clan;

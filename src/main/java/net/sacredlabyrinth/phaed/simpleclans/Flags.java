@@ -1,36 +1,34 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Flags {
 
-    private final JSONObject flags;
+    private static final Gson gson = new Gson();
+    private final JsonObject flags;
 
     public Flags(@Nullable String json) {
-        JSONObject flags = null;
         if (json != null && !json.isEmpty()) {
-            flags = (JSONObject) JSONValue.parse(json);
+            flags = gson.fromJson(json, JsonObject.class);
+        } else {
+            flags = new JsonObject();
         }
-        if (flags == null) {
-            flags = new JSONObject();
-        }
-        this.flags = flags;
     }
 
     @NotNull
     public List<String> getStringList(@NotNull String key) {
-        Object object = flags.get(key);
+        JsonElement object = flags.get(key);
         ArrayList<String> list = new ArrayList<>();
-        if (object instanceof JSONArray) {
-            for (Object o : ((JSONArray) object)) {
-                list.add(String.valueOf(o));
+        if (object.isJsonArray()) {
+            for (JsonElement element : object.getAsJsonArray()) {
+                list.add(element.getAsString());
             }
         }
         return list;
@@ -38,11 +36,11 @@ public class Flags {
 
     @Nullable
     public String getString(@NotNull String key) {
-        Object object = flags.get(key);
-        if (object == null) {
+        JsonElement element = flags.get(key);
+        if (element == null) {
             return null;
         }
-        return String.valueOf(object);
+        return element.getAsString();
     }
 
     @NotNull
@@ -56,11 +54,11 @@ public class Flags {
 
     @NotNull
     public Number getNumber(@NotNull String key) {
-        Object object = flags.get(key);
-        if (object instanceof Number) {
-            return (Number) object;
+        JsonElement element = flags.get(key);
+        if (element == null) {
+            return 0;
         }
-        return 0;
+        return element.getAsNumber();
     }
 
     public boolean getBoolean(@NotNull String key) {
@@ -68,26 +66,22 @@ public class Flags {
     }
 
     public boolean getBoolean(@NotNull String key, boolean def) {
-        Object object = flags.get(key);
-        if (object instanceof Boolean) {
-            return (Boolean) object;
+        JsonElement element = flags.get(key);
+        if (element == null) {
+            return def;
         }
-        return def;
+        return element.getAsBoolean();
     }
 
-    @SuppressWarnings("unchecked")
     public void put(@NotNull String key, @NotNull List<?> value) {
-        JSONArray array = new JSONArray();
-        array.addAll(value);
-        flags.put(key, array);
+        flags.add(key, gson.toJsonTree(value));
     }
 
-    @SuppressWarnings("unchecked")
     public void put(@NotNull String key, @NotNull Object object) {
-        flags.put(key, object);
+        flags.add(key, gson.toJsonTree(object));
     }
 
     public String toJSONString() {
-        return flags.toJSONString();
+        return flags.toString();
     }
 }
