@@ -5,7 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
 
-public class ObjectUtils {
+public final class ObjectUtils {
 
     private ObjectUtils() {
     }

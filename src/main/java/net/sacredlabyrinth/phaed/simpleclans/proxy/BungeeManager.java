@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public final class BungeeManager implements ProxyManager, PluginMessageListener {
@@ -107,14 +108,11 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
             output.writeUTF(message);
 
             sendOnBungeeChannel(output);
-            return;
-        }
-        if ("ALL".equals(target)) {
-            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
         } else {
-            Player player = Bukkit.getPlayer(target);
-            if (player != null) {
-                player.sendMessage(message);
+            if ("ALL".equals(target)) {
+                Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+            } else {
+                Optional.ofNullable(Bukkit.getPlayer(target)).ifPresent(p -> p.sendMessage(message));
             }
         }
     }
