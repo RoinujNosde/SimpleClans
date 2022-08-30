@@ -140,7 +140,7 @@ public final class Helper {
         if (json != null && !json.isEmpty()) {
             JsonObject object = GSON.fromJson(json, JsonObject.class);
             JsonElement defaultRank = object.get("defaultRank");
-            if (defaultRank != null) {
+            if (defaultRank != null && !defaultRank.isJsonNull()) {
                 return defaultRank.getAsString();
             }
         }

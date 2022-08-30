@@ -34,6 +34,6 @@ public abstract class Update<T> extends MessageListener {
         } catch (IllegalAccessException e) {
             bungee.getPlugin().getLogger().log(Level.SEVERE, String.format("An error happened while updating %s", t), e);
         }
-        debug(String.format("Updated clan %s", t));
+        debug(String.format("Updated %s", t));
     }
 }
