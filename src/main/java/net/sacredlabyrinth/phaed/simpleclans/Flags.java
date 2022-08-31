@@ -26,7 +26,7 @@ public class Flags {
     public List<String> getStringList(@NotNull String key) {
         JsonElement object = flags.get(key);
         ArrayList<String> list = new ArrayList<>();
-        if (object.isJsonArray()) {
+        if (object != null && object.isJsonArray()) {
             for (JsonElement element : object.getAsJsonArray()) {
                 list.add(element.getAsString());
             }
