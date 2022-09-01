@@ -1,12 +1,10 @@
----
-description: null
----
-
 # 📌 Commands
 
 > Required arguments are marked with `(argument)`&#x20;
 >
 > Optional arguments are marked with `[argument]`
+
+You can check any command description or requirements using: `/clan help [`command`]`
 
 ## Anyone Commands
 
@@ -113,25 +111,25 @@ You can find land commands [here](../integration/land-claiming.md).
 
 ## Mod Commands
 
-| Command                           | Description                             |
-| --------------------------------- | --------------------------------------- |
-| `/clan place (player) (new clan)` | Places a player in a clan               |
-| `/clan home set (tag)`            | Sets a clan's home                      |
-| `/clan home tp (tag)`             | Teleports to a clan's home              |
-| `/clan ban (player)`              | Bans a player from clan commands        |
-| `/clan unban (player)`            | Unbans a player from clan commands      |
-| `/clan globalff (allow\|auto)`    | Toggles the global friendly-fire status |
-| `/clan verify (tag)`              | Verifies a clan                         |
-| `/clan disband (tag)`             | Disbands a clan                         |
+| Command                               | Description                             |
+| ------------------------------------- | --------------------------------------- |
+| `/clan mod place (player) (new clan)` | Places a player in a clan               |
+| `/clan mod home set (tag)`            | Sets a clan's home                      |
+| `/clan mod home tp (tag)`             | Teleports to a clan's home              |
+| `/clan mod ban (player)`              | Bans a player from clan commands        |
+| `/clan mod unban (player)`            | Unbans a player from clan commands      |
+| `/clan mod globalff (allow\|auto)`    | Toggles the global friendly-fire status |
+| `/clan mod verify (tag)`              | Verifies a clan                         |
+| `/clan mod disband (tag)`             | Disbands a clan                         |
 
 ## Admin Commands
 
 | Command                                  | Description                                                                        |
 | ---------------------------------------- | ---------------------------------------------------------------------------------- |
-| `/clan reload`                           | Reloads the plugin and its configuration (some features may need a server restart) |
-| `/clan purge`                            | Purges a player's data                                                             |
-| `/clan resetkdr everyone`                | Resets everyone's KDR                                                              |
-| `/clan resetkdr (player)`                | Resets a player's KDR                                                              |
+| `/clan admin reload`                     | Reloads the plugin and its configuration (some features may need a server restart) |
+| `/clan admin purge`                      | Purges a player's data                                                             |
+| `/clan admin resetkdr everyone`          | Resets everyone's KDR                                                              |
+| `/clan admin resetkdr (player)`          | Resets a player's KDR                                                              |
 | `/clan admin demote (player)`            | Demotes a leader from any clan                                                     |
 | `/clan admin promote (player)`           | Promotes a member from any clan                                                    |
 | `/clan admin permanent (clan)`           | Toggles permanent status of any clan                                               |

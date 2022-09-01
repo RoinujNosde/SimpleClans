@@ -26,7 +26,7 @@ economy:
 This feature will create a one per day CSV file in `/SimpleClans/logs/bank/`.\
 
 
-![How does log file looks like](<../.gitbook/assets/изображение (2).png>)
+![How does log file looks like](<../../.gitbook/assets/izobrazhenie (3).png>)
 
 ## For developers
 

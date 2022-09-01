@@ -24,7 +24,7 @@ There are plenty of variations on how to use this feature. For example:
 
 You can join your players to clans using the menu:
 
-![Joining menu](../.gitbook/assets/2021-08-30\_17.58.13.png)
+![Joining menu](../../.gitbook/assets/2021-08-30\_17.58.13.png)
 
 YAML example:
 
@@ -43,7 +43,7 @@ items:
 
 Alternatively, you may want to join your players by NPC:
 
-![](../.gitbook/assets/2021-08-30\_18.09.22.png)
+![](../../.gitbook/assets/2021-08-30\_18.09.22.png)
 
 To do it, you need to:
 
@@ -54,7 +54,7 @@ To do it, you need to:
 
 You can use `/clan admin permanent [clan]` command to give permanent status to a clan.
 
-![After executing the command to some clan](../.gitbook/assets/изображение.png)
+![After executing the command to some clan](<../../.gitbook/assets/izobrazhenie (2).png>)
 
 {% hint style="danger" %}
 **Warning**\

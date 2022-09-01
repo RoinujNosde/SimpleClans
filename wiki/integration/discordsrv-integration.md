@@ -28,7 +28,7 @@ discordchat:
 
 At the beginning of the launch of your server, SimpleClans will create categories for the number of your clans, inside the categories, there will be a separate text channel for each clan:
 
-![](<../.gitbook/assets/изображение (1).png>)
+![](<../../.gitbook/assets/izobrazhenie (6).png>)
 
 {% hint style="warning" %}
 **Notice**\
