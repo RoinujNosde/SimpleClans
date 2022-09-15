@@ -12,6 +12,7 @@ import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.ClanPlayerListAdapter;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.ClanPlayerTypeAdapterFactory;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.ConfigurationSerializableAdapter;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.SCMessageAdapter;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.listeners.MessageListener;
 import org.bukkit.Bukkit;
@@ -42,6 +43,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     public BungeeManager(SimpleClans plugin) {
         this.plugin = plugin;
         gson = new GsonBuilder().registerTypeAdapterFactory(new ClanPlayerTypeAdapterFactory(plugin))
+                .registerTypeAdapterFactory(new ConfigurationSerializableAdapter())
                 .registerTypeAdapter(ClanPlayerListAdapter.getType(), new ClanPlayerListAdapter(plugin))
                 .registerTypeAdapter(SCMessage.class, new SCMessageAdapter(plugin)).setExclusionStrategies()
                 .create();
