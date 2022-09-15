@@ -36,7 +36,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils.stripColors;
  * @author phaed
  */
 
-public class Helper {
+public final class Helper {
 
     private static final Gson GSON = new Gson();
     private static final Type RANKS_TYPE = TypeToken.getParameterized(List.class, Rank.class).getType();

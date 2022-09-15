@@ -37,7 +37,7 @@ public class Flags {
     @Nullable
     public String getString(@NotNull String key) {
         JsonElement element = flags.get(key);
-        if (element == null) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
         return element.getAsString();
@@ -55,7 +55,7 @@ public class Flags {
     @NotNull
     public Number getNumber(@NotNull String key) {
         JsonElement element = flags.get(key);
-        if (element == null) {
+        if (element == null || element.isJsonNull()) {
             return 0;
         }
         return element.getAsNumber();
@@ -67,7 +67,7 @@ public class Flags {
 
     public boolean getBoolean(@NotNull String key, boolean def) {
         JsonElement element = flags.get(key);
-        if (element == null) {
+        if (element == null || element.isJsonNull()) {
             return def;
         }
         return element.getAsBoolean();
