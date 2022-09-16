@@ -58,6 +58,12 @@ discordchat:
 
 Our congratulations! Now all leaders with a specified permission (`simpleclans.leader.discord.create`) can create their discord channel.
 
+With that permission they are allowed to use a command to create their clan's discord channel:
+
+```
+/clan discord create
+```
+
 Furthermore, if you're using an economy plugin, you can specify a price for clan creation:
 
 ```yaml
