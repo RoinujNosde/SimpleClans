@@ -9,6 +9,8 @@ import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.CSVBankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.BungeeManager;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.ProxyManager;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
@@ -55,6 +57,7 @@ public class SimpleClans extends JavaPlugin {
     private TeleportManager teleportManager;
     private ProtectionManager protectionManager;
     private ChatManager chatManager;
+    private ProxyManager proxyManager;
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
@@ -110,6 +113,7 @@ public class SimpleClans extends JavaPlugin {
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
+        proxyManager = new BungeeManager(this);
         bankLogger = new CSVBankLogger(this);
 
         logStatus();
@@ -246,6 +250,10 @@ public class SimpleClans extends JavaPlugin {
 
     public ChatManager getChatManager() {
         return chatManager;
+    }
+
+    public ProxyManager getProxyManager() {
+        return proxyManager;
     }
 
     public BankLogger getBankLogger() {

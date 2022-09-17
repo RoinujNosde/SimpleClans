@@ -4,7 +4,6 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -35,10 +34,8 @@ public class ClanRoster extends Sendable {
         List<ClanPlayer> members = clan.getNonLeaders();
         plugin.getClanManager().sortClanPlayersByLastSeen(members);
         for (ClanPlayer cp : members) {
-            Player p = cp.toPlayer();
-
             String name = (cp.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) : sm.getColored(PAGE_UNTRUSTED_COLOR)) + cp.getName();
-            String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender) : WHITE + cp.getLastSeenDaysString(sender);
+            String lastSeen = VanishUtils.isVanished(sender, cp) ? WHITE + cp.getLastSeenDaysString(sender) : GREEN + lang("online", sender);
 
             chatBlock.addRow("  " + name, YELLOW + ChatUtils.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
         }
@@ -48,11 +45,9 @@ public class ClanRoster extends Sendable {
         List<ClanPlayer> leaders = clan.getLeaders();
         plugin.getClanManager().sortClanPlayersByLastSeen(leaders);
         for (ClanPlayer cp : leaders) {
-            Player p = cp.toPlayer();
-
             String name = sm.getColored(PAGE_LEADER_COLOR) + cp.getName();
-            String lastSeen = p != null && p.isOnline() && !VanishUtils.isVanished(sender, p) ? GREEN + lang("online", sender)
-                    : WHITE + cp.getLastSeenDaysString(sender);
+            String lastSeen = VanishUtils.isVanished(sender, cp) ? WHITE + cp.getLastSeenDaysString(sender) :
+                    GREEN + lang("online", sender);
 
             chatBlock.addRow("  " + name, YELLOW + ChatUtils.parseColors(cp.getRankDisplayName()) + RESET, lastSeen);
         }

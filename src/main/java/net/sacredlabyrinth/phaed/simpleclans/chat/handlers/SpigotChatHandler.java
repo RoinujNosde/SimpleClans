@@ -8,9 +8,9 @@ import net.sacredlabyrinth.phaed.simpleclans.events.ChatEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
-import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.*;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERFORMANCE_USE_BUNGEECORD;
 import static org.bukkit.Bukkit.getPluginManager;
 
 public class SpigotChatHandler implements ChatHandler {
@@ -33,7 +33,7 @@ public class SpigotChatHandler implements ChatHandler {
                 message.setContent(event.getMessage());
 
                 ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
-                        message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
+                        message.getSource() == DISCORD ? "DISCORD" : message.getChannel()));
 
                 String format = settingsManager.getString(configField);
                 String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
@@ -49,6 +49,7 @@ public class SpigotChatHandler implements ChatHandler {
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT || (source == DISCORD && chatManager.isDiscordHookEnabled());
+        return source == SPIGOT || (source == PROXY && settingsManager.is(PERFORMANCE_USE_BUNGEECORD))
+                || (source == DISCORD && chatManager.isDiscordHookEnabled());
     }
 }

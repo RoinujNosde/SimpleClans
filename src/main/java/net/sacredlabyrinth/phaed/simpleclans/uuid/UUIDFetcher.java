@@ -1,32 +1,34 @@
 package net.sacredlabyrinth.phaed.simpleclans.uuid;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Callable;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @author evilmidget38
  *
- * http://forums.bukkit.org/threads/250926/
+ * <a href="http://forums.bukkit.org/threads/250926/">...</a>
  *
- * https://gist.github.com/evilmidget38/26d70114b834f71fb3b4
+ * <a href="https://gist.github.com/evilmidget38/26d70114b834f71fb3b4">...</a>
  */
 public class UUIDFetcher implements Callable<Map<String, UUID>> {
 
     private static final double PROFILES_PER_REQUEST = 100;
-    private static final String PROFILE_URL = "https://api.mojang.com/users/profiles/minecraft";
-    private final JSONParser jsonParser = new JSONParser();
+    private static final String PROFILE_URL = "https://api.mojang.com/profiles/minecraft";
+    private final Gson gson = new Gson();
     private final List<String> names;
     private final boolean rateLimiting;
 
@@ -39,14 +41,14 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
         this(names, true);
     }
 
-    private static void writeBody(HttpURLConnection connection, String body) throws Exception {
+    private static void writeBody(HttpURLConnection connection, String body) throws IOException {
         OutputStream stream = connection.getOutputStream();
-        stream.write(body.getBytes(StandardCharsets.UTF_8));
+        stream.write(body.getBytes(UTF_8));
         stream.flush();
         stream.close();
     }
 
-    private static HttpURLConnection createConnection() throws Exception {
+    private static HttpURLConnection createConnection() throws IOException {
         URL url = new URL(PROFILE_URL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -78,27 +80,28 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
         return new UUID(mostSignificant, leastSignificant);
     }
 
-    public static UUID getUUIDOf(String name) throws Exception {
-        return new UUIDFetcher(Arrays.asList(name)).call().get(name);
+    public static UUID getUUIDOf(String name) throws IOException, InterruptedException {
+        return new UUIDFetcher(Collections.singletonList(name)).call().get(name);
     }
 
-    public static UUID getUUIDOfThrottled(String name) throws Exception {
-        return new UUIDFetcher(Arrays.asList(name), true).call().get(name);
+    public static UUID getUUIDOfThrottled(String name) throws IOException, InterruptedException {
+        return new UUIDFetcher(Collections.singletonList(name), true).call().get(name);
     }
 
     @Override
-    public Map<String, UUID> call() throws Exception {
+    public Map<String, UUID> call() throws IOException, InterruptedException {
         Map<String, UUID> uuidMap = new HashMap<>();
         int requests = (int) Math.ceil(names.size() / PROFILES_PER_REQUEST);
         for (int i = 0; i < requests; i++) {
             HttpURLConnection connection = createConnection();
-            String body = JSONArray.toJSONString(names.subList(i * 100, Math.min((i + 1) * 100, names.size())));
+            List<String> namesToFetch = names.subList(i * 100, Math.min((i + 1) * 100, names.size()));
+            String body = gson.toJson(namesToFetch);
             writeBody(connection, body);
-            JSONArray array = (JSONArray) jsonParser.parse(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-            for (Object profile : array) {
-                JSONObject jsonProfile = (JSONObject) profile;
-                String id = (String) jsonProfile.get("id");
-                String name = (String) jsonProfile.get("name");
+            JsonArray array = gson.fromJson(new InputStreamReader(connection.getInputStream(), UTF_8), JsonArray.class);
+            for (JsonElement profile : array) {
+                JsonObject jsonProfile = profile.getAsJsonObject();
+                String id = jsonProfile.get("id").getAsString();
+                String name = jsonProfile.get("name").getAsString();
                 UUID uuid = UUIDFetcher.getUUID(id);
                 uuidMap.put(name, uuid);
             }

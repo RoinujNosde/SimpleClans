@@ -242,6 +242,7 @@ public final class ClanManager {
      * Gets the ClanPlayer data object if a player is currently in a clan, null
      * if he's not in a clan Used for BungeeCord Reload ClanPlayer and your Clan
      */
+    @Deprecated
     public @Nullable ClanPlayer getClanPlayerJoinEvent(Player player) {
         SimpleClans.getInstance().getStorageManager().importFromDatabaseOnePlayer(player);
         return getClanPlayer(player.getUniqueId());
@@ -391,13 +392,8 @@ public final class ClanManager {
         if (plugin.getSettingsManager().is(DISABLE_MESSAGES)) {
             return;
         }
-        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
-
-        for (Player player : players) {
-            ChatBlock.sendMessage(player, ChatColor.DARK_GRAY + "* " + ChatColor.AQUA + msg);
-        }
-
-        SimpleClans.getInstance().getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("server.announce") + "] " + ChatColor.WHITE + msg);
+        plugin.getProxyManager().sendMessage("ALL", ChatColor.DARK_GRAY + "* " + ChatColor.AQUA + msg);
+        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("server.announce") + "] " + ChatColor.WHITE + msg);
     }
 
     /**

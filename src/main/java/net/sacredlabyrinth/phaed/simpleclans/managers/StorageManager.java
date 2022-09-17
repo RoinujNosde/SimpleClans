@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
 
 import java.sql.*;
 import java.text.MessageFormat;
@@ -286,6 +285,7 @@ public final class StorageManager {
      * Used for BungeeCord Reload ClanPlayer and your Clan
      *
      */
+    @Deprecated
     public void importFromDatabaseOnePlayer(Player player) {
         plugin.getClanManager().deleteClanPlayerFromMemory(player.getUniqueId());
 
@@ -299,7 +299,7 @@ public final class StorageManager {
             }
             plugin.getClanManager().importClanPlayer(cp);
 
-            plugin.getLogger().info("ClanPlayer Reloaded: " + player.getName() + ", UUID: " + player.getUniqueId().toString());
+            plugin.getLogger().info("ClanPlayer Reloaded: " + player.getName() + ", UUID: " + player.getUniqueId());
         }
     }
 
@@ -378,7 +378,7 @@ public final class StorageManager {
                         String packed_rivals = res.getString("packed_rivals");
                         String packed_bb = res.getString("packed_bb");
                         String flags = res.getString("flags");
-                        JSONObject ranks = Helper.parseJson(res.getString("ranks"));
+                        String ranksJson = res.getString("ranks");
                         long founded = res.getLong("founded");
                         long last_used = res.getLong("last_used");
                         double balance = res.getDouble("balance");
@@ -410,8 +410,8 @@ public final class StorageManager {
                         clan.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
-                        clan.setRanks(Helper.ranksFromJson(ranks));
-                        clan.setDefaultRank(Helper.defaultRankFromJson(ranks));
+                        clan.setRanks(Helper.ranksFromJson(ranksJson));
+                        clan.setDefaultRank(Helper.defaultRankFromJson(ranksJson));
                         clan.setBanner(banner);
 
                         out.add(clan);
@@ -452,7 +452,7 @@ public final class StorageManager {
                         String packed_rivals = res.getString("packed_rivals");
                         String packed_bb = res.getString("packed_bb");
                         String flags = res.getString("flags");
-                        JSONObject ranks = Helper.parseJson(res.getString("ranks"));
+                        String ranksJson = res.getString("ranks");
                         long founded = res.getLong("founded");
                         long last_used = res.getLong("last_used");
                         double balance = res.getDouble("balance");
@@ -484,8 +484,8 @@ public final class StorageManager {
                         clan.setBalance(BankOperator.INTERNAL, ClanBalanceUpdateEvent.Cause.LOADING, BankLogger.Operation.SET, balance);
                         clan.setMemberFee(feeValue);
                         clan.setMemberFeeEnabled(feeEnabled);
-                        clan.setRanks(Helper.ranksFromJson(ranks));
-                        clan.setDefaultRank(Helper.defaultRankFromJson(ranks));
+                        clan.setRanks(Helper.ranksFromJson(ranksJson));
+                        clan.setDefaultRank(Helper.defaultRankFromJson(ranksJson));
                         clan.setBanner(banner);
 
                         out = clan;
@@ -682,6 +682,8 @@ public final class StorageManager {
      *
      */
     public void insertClan(Clan clan) {
+        plugin.getProxyManager().sendUpdate(clan);
+
         String query = "INSERT INTO `sc_clans` (`banner`, `ranks`, `description`, `fee_enabled`, `fee_value`, `verified`, `tag`," +
                 " `color_tag`, `name`, `friendly_fire`, `founded`, `last_used`, `packed_allies`, `packed_rivals`, " +
                 "`packed_bb`, `cape_url`, `flags`, `balance`) ";
@@ -764,6 +766,7 @@ public final class StorageManager {
         if (updateLastUsed) {
             clan.updateLastUsed();
         }
+        plugin.getProxyManager().sendUpdate(clan);
         if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClans.add(clan);
             return;
@@ -808,6 +811,7 @@ public final class StorageManager {
      * Delete a clan from the database
      */
     public void deleteClan(Clan clan) {
+        plugin.getProxyManager().sendDelete(clan);
         String query = "DELETE FROM `sc_clans` WHERE tag = '" + clan.getTag() + "';";
         core.executeUpdate(query);
     }
@@ -817,6 +821,8 @@ public final class StorageManager {
      *
      */
     public void insertClanPlayer(ClanPlayer cp) {
+        plugin.getProxyManager().sendUpdate(cp);
+
     	String query = "INSERT INTO `sc_players` (`uuid`, `name`, `leader`, `tag`, `friendly_fire`, `neutral_kills`, " +
                 "`rival_kills`, `civilian_kills`, `deaths`, `last_seen`, `join_date`, `packed_past_clans`, `flags`) ";
         String values = "VALUES ('" + cp.getUniqueId().toString() + "', '" + cp.getName() + "',"
@@ -848,6 +854,7 @@ public final class StorageManager {
      */
     public void updateClanPlayer(ClanPlayer cp) {
         cp.updateLastSeen();
+        plugin.getProxyManager().sendUpdate(cp);
         if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClanPlayers.add(cp);
             return;
@@ -895,6 +902,7 @@ public final class StorageManager {
             clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(lang("has.been.purged"), cp.getName()));
             updateClan(clan, false);
         }
+        plugin.getProxyManager().sendDelete(cp);
         String query = "DELETE FROM `sc_players` WHERE uuid = '" + cp.getUniqueId() + "';";
         core.executeUpdate(query);
         deleteKills(cp.getUniqueId());

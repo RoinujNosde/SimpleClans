@@ -85,6 +85,6 @@ public class SCMessage implements Cloneable {
      * @see ChatHandler initiate the handler
      */
     public enum Source {
-        SPIGOT, DISCORD
+        SPIGOT, DISCORD, PROXY
     }
 }

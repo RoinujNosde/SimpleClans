@@ -1,5 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -7,12 +11,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
@@ -35,8 +36,11 @@ import static net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils.stripColors;
  * @author phaed
  */
 
-public class Helper {
+public final class Helper {
 
+    private static final Gson GSON = new Gson();
+    private static final Type RANKS_TYPE = TypeToken.getParameterized(List.class, Rank.class).getType();
+    private static final Type RESIGN_TYPE = TypeToken.getParameterized(Map.class, String.class, Long.class).getType();
     private Helper() {
     }
 
@@ -53,17 +57,6 @@ public class Helper {
     @Nullable
     public static String toLanguageTag(@Nullable Locale locale) {
         return locale != null ? locale.toLanguageTag() : null;
-    }
-
-    public static @Nullable JSONObject parseJson(String json) {
-        if (json != null && !json.isEmpty()) {
-            try {
-                return (JSONObject) new JSONParser().parse(json);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     public static Set<Path> getPathsIn(String path, Predicate<? super Path> filter) {
@@ -123,47 +116,32 @@ public class Helper {
     }
 
     /**
-     * Parses a list of ranks from the specified JSONObject
+     * Parses a list of ranks from the specified Json String
      *
-     * @param jo the JSON Object
+     * @param json the Json String
      * @return a list of ranks or null if the JSON String is null/empty
      */
-    public static @Nullable List<Rank> ranksFromJson(@Nullable JSONObject jo) {
-        if (jo != null && !jo.isEmpty()) {
-            Object ranks = jo.get("ranks");
-            if (ranks != null) {
-                JSONArray array = (JSONArray) ranks;
-                List<Rank> rankList = new ArrayList<>();
-                for (Object o : array) {
-                    JSONObject r = (JSONObject) o;
-                    String name = (String) r.get("name");
-                    String displayName = (String) r.get("displayName");
-                    Set<String> permissions = new HashSet<>();
-                    for (Object p : (JSONArray) r.get("permissions")) {
-                        permissions.add((String) p);
-                    }
-                    Rank rank = new Rank(name, displayName, permissions);
-                    rankList.add(rank);
-                }
-
-                return rankList;
-            }
+    public static @Nullable List<Rank> ranksFromJson(@Nullable String json) {
+        if (json != null && !json.isEmpty()) {
+            JsonObject object = GSON.fromJson(json, JsonObject.class);
+            JsonElement ranks = object.get("ranks");
+            return GSON.fromJson(ranks, RANKS_TYPE);
         }
         return null;
     }
 
     /**
-     * Parses the default rank from the specified JSONObject
+     * Parses the default rank from the specified Json String
      *
-     * @param jo the JSON object
+     * @param json the Json String
      * @return the default rank or null if not found and/or it does not exist
      */
-    public static @Nullable String defaultRankFromJson(@Nullable JSONObject jo) {
-        if (jo != null && !jo.isEmpty()) {
-            if (!jo.containsKey("defaultRank")) {
-                return null;
-            } else {
-                return (String) jo.get("defaultRank");
+    public static @Nullable String defaultRankFromJson(@Nullable String json) {
+        if (json != null && !json.isEmpty()) {
+            JsonObject object = GSON.fromJson(json, JsonObject.class);
+            JsonElement defaultRank = object.get("defaultRank");
+            if (defaultRank != null && !defaultRank.isJsonNull()) {
+                return defaultRank.getAsString();
             }
         }
         return null;
@@ -176,36 +154,24 @@ public class Helper {
      * @param defaultRank the default rank
      * @return a JSON String
      */
-    @SuppressWarnings("unchecked")
     public static String ranksToJson(List<Rank> ranks, @Nullable String defaultRank) {
         if (ranks == null)
             ranks = new ArrayList<>();
 
-        JSONArray array = new JSONArray();
-        for (Rank rank : ranks) {
-            JSONObject o = new JSONObject();
-            o.put("name", rank.getName());
-            o.put("displayName", rank.getDisplayName());
-            JSONArray permArray = new JSONArray();
-            permArray.addAll(rank.getPermissions());
-            o.put("permissions", permArray);
-            array.add(o);
-        }
-
-        JSONObject object = new JSONObject();
-        object.put("ranks", array);
-        object.put("defaultRank", defaultRank);
-        return object.toJSONString();
+        JsonObject object = new JsonObject();
+        object.add("ranks", GSON.toJsonTree(ranks));
+        object.addProperty("defaultRank", defaultRank);
+        return object.toString();
     }
 
     /**
      * Converts a resign times map to a JSON String
      *
-     * @param resignTimes
+     * @param resignTimes the resign times
      * @return a JSON String
      */
     public static String resignTimesToJson(Map<String, Long> resignTimes) {
-        return JSONObject.toJSONString(resignTimes);
+        return GSON.toJson(resignTimes);
     }
 
     /**
@@ -214,14 +180,9 @@ public class Helper {
      * @param json JSON String
      * @return a map
      */
-    @SuppressWarnings("unchecked")
     public static @Nullable Map<String, Long> resignTimesFromJson(String json) {
-        if (json != null) {
-            try {
-                return (Map<String, Long>) new JSONParser().parse(json);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        if (json != null && !json.isEmpty()) {
+            return GSON.fromJson(json, RESIGN_TYPE);
         }
         return null;
     }

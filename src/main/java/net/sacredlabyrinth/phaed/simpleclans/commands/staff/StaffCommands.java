@@ -147,14 +147,7 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@clans:has_home")
     @CommandPermission("simpleclans.mod.hometp")
     @Description("{@@command.description.mod.home.tp}")
-    public void homeTp(Player player, @Name("clan") ClanInput clan) {
-        Location loc = clan.getClan().getHomeLocation();
-
-        if (loc == null) {
-            ChatBlock.sendMessage(player, ChatColor.RED + lang("hombase.not.set", player));
-            return;
-        }
-
+    public void homeTp(Player player, @Name("clan") @Conditions("can_teleport") ClanInput clan) {
         plugin.getTeleportManager().teleportToHome(player, clan.getClan());
     }
 

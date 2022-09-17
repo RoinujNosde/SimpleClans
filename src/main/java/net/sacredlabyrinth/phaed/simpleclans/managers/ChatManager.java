@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
-import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.SPIGOT;
+import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.Bukkit.getPluginManager;
@@ -63,12 +63,11 @@ public final class ChatManager {
         return discordHook;
     }
 
-    public void processChat(@NotNull Source source, @NotNull Channel channel,
-                            @NotNull ClanPlayer clanPlayer, String message) {
-        Clan clan = Objects.requireNonNull(clanPlayer.getClan(), "Clan cannot be null");
-        List<ClanPlayer> receivers = new ArrayList<>();
+    public void processChat(@NotNull SCMessage message) {
+        Clan clan = Objects.requireNonNull(message.getSender().getClan(), "Clan cannot be null");
 
-        switch (channel) {
+        List<ClanPlayer> receivers = new ArrayList<>();
+        switch (message.getChannel()) {
             case ALLY:
                 if (!plugin.getSettingsManager().is(ALLYCHAT_ENABLE)) {
                     return;
@@ -84,18 +83,22 @@ public final class ChatManager {
                     return;
                 }
 
-                receivers.addAll(clan.getOnlineMembers().stream().
-                        filter(member -> !member.isMuted()).
+                receivers.addAll(clan.getOnlineMembers().stream().filter(member -> !member.isMuted()).
                         collect(Collectors.toList()));
         }
-
-        SCMessage scMessage = new SCMessage(source, channel, clanPlayer, message, receivers);
+        message.setReceivers(receivers);
 
         for (ChatHandler ch : handlers) {
-            if (ch.canHandle(source)) {
-                ch.sendMessage(scMessage.clone());
+            if (ch.canHandle(message.getSource())) {
+                ch.sendMessage(message.clone());
             }
         }
+    }
+
+    public void processChat(@NotNull Source source, @NotNull Channel channel,
+                            @NotNull ClanPlayer clanPlayer, String message) {
+        Objects.requireNonNull(clanPlayer.getClan(), "Clan cannot be null");
+        processChat(new SCMessage(source, channel, clanPlayer, message));
     }
 
     public String parseChatFormat(String format, SCMessage message) {
@@ -112,7 +115,7 @@ public final class ChatManager {
 
         String rank = sender.getRankId().isEmpty() ? null : ChatUtils.parseColors(sender.getRankDisplayName());
         ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_RANK",
-                message.getSource() == SPIGOT ? message.getChannel() : message.getSource()));
+                message.getSource() == DISCORD ? "DISCORD" : message.getChannel()));
         String rankFormat = (rank != null) ? sm.getColored(configField).replace("%rank%", rank) : "";
 
         if (placeholders != null) {
