@@ -29,7 +29,6 @@
           <target>1.8</target>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
-          <fork>true</fork>
           <compilerArgs>
             <arg>-parameters</arg>
           </compilerArgs>

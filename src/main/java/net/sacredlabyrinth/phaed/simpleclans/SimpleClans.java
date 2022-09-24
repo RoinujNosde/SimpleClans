@@ -104,6 +104,7 @@ public class SimpleClans extends JavaPlugin {
         permissionsManager = new PermissionsManager();
         requestManager = new RequestManager();
         clanManager = new ClanManager();
+        proxyManager = new BungeeManager(this);
         storageManager = new StorageManager();
         teleportManager = new TeleportManager();
         protectionManager = new ProtectionManager();
@@ -113,7 +114,6 @@ public class SimpleClans extends JavaPlugin {
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
-        proxyManager = new BungeeManager(this);
         bankLogger = new CSVBankLogger(this);
 
         logStatus();
