@@ -6,6 +6,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.JsonToken;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
@@ -24,11 +25,19 @@ public class ConfigurationSerializableAdapter implements TypeAdapterFactory {
         return (TypeAdapter<T>) new TypeAdapter<ConfigurationSerializable>() {
             @Override
             public void write(JsonWriter out, ConfigurationSerializable value) throws IOException {
-                adapter.write(out, value.serialize());
+                if (value == null) {
+                    out.nullValue();
+                } else {
+                    adapter.write(out, value.serialize());
+                }
             }
 
             @Override
             public ConfigurationSerializable read(JsonReader in) throws IOException {
+                if (in.peek() == JsonToken.NULL) { //could be replaced with map == null?
+                    in.nextNull();
+                    return null;
+                }
                 Map map = adapter.read(in);
                 return ConfigurationSerialization.deserializeObject(map);
             }
