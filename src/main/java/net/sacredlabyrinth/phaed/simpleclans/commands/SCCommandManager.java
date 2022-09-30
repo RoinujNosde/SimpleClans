@@ -53,6 +53,7 @@ public class SCCommandManager extends PaperCommandManager {
         registerCommands();
         registerConditions();
         registerCompletions();
+        defaultHelpPerPage = plugin.getSettingsManager().getInt(HELP_SIZE);
     }
 
     private void registerDependencies() {

@@ -474,6 +474,7 @@ public final class SettingsManager {
         PAGE_HEADINGS_COLOR("page.headings-color", "8"),
         PAGE_SEPARATOR("page.separator", "-"),
         PAGE_SIZE("page.size", 100),
+        HELP_SIZE("page.help-size", 10),
         /*
         ================
         > Clan Chat Settings

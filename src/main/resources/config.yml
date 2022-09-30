@@ -185,6 +185,7 @@ page:
     leader-color: '4'
     separator: '-'
     size: 100
+    help-size: 10
 clanchat:
     enable: true
     tag-based-clan-chat: false
