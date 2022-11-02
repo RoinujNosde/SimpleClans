@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -36,8 +37,8 @@ import static org.bukkit.ChatColor.RED;
 public final class ClanManager {
 
     private final SimpleClans plugin;
-    private final HashMap<String, Clan> clans = new HashMap<>();
-    private final HashMap<UUID, ClanPlayer> clanPlayers = new HashMap<>();
+    private final ConcurrentHashMap<String, Clan> clans = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, ClanPlayer> clanPlayers = new ConcurrentHashMap<>();
     private final HashMap<ClanPlayer, List<Kill>> kills = new HashMap<>();
 
     /**
