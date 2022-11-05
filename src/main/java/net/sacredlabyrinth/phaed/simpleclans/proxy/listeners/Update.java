@@ -27,6 +27,7 @@ public abstract class Update<T> extends MessageListener {
         T current = getCurrent(t);
         if (current == null) {
             insert(t);
+            debug(String.format("Inserted %s", t));
             return;
         }
         try {
