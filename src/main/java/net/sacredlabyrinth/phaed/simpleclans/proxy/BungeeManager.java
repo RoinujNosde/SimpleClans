@@ -60,6 +60,9 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] data) {
         ByteArrayDataInput input = ByteStreams.newDataInput(data);
         String subChannel = input.readUTF();
+        if (unknownChannels.contains(subChannel)) {
+            return;
+        }
         SimpleClans.debug("Message received, sub-channel: " + subChannel);
         try {
             Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + subChannel);
@@ -67,9 +70,6 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
             listener.accept(input);
             SimpleClans.debug("Message processed");
         } catch (ClassNotFoundException e) {
-            if (unknownChannels.contains(subChannel)) {
-                return;
-            }
             SimpleClans.debug(String.format("Unknown channel: %s", subChannel));
             unknownChannels.add(subChannel);
         } catch (ReflectiveOperationException ex) {
