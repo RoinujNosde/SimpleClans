@@ -18,7 +18,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 
 @CommandAlias("%clan")
 @Subcommand("%land")
-@Conditions("%basic_conditions|land_sharing|own_land")
+@Conditions("%basic_conditions|clan_member|land_sharing|own_land")
 @CommandPermission("simpleclans.member.land")
 public class LandCommand extends BaseCommand {
 
