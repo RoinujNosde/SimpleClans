@@ -39,7 +39,8 @@ public class ConfigurationSerializableAdapter implements TypeAdapterFactory {
                     return null;
                 }
                 Map map = adapter.read(in);
-                return ConfigurationSerialization.deserializeObject(map);
+                return ConfigurationSerialization.deserializeObject(map,
+                        (Class<? extends ConfigurationSerializable>) type.getRawType());
             }
         };
     }
