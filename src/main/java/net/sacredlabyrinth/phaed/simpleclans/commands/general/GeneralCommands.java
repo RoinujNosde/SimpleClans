@@ -20,7 +20,8 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
-import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.*;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -28,6 +29,7 @@ import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanNamePrompt.NAME_KEY;
@@ -85,6 +87,10 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.anyone.leaderboard")
     @Description("{@@command.description.leaderboard}")
     public void leaderboard(CommandSender sender) {
+        if (settings.is(ENABLE_GUI) && sender instanceof Player) {
+            InventoryDrawer.open(new LeaderboardFrame((Player) sender, null));
+            return;
+        }
         Leaderboard l = new Leaderboard(plugin, sender);
         l.send();
     }
@@ -94,7 +100,12 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.anyone.lookup")
     @Description("{@@command.description.lookup.other}")
     public void lookup(CommandSender sender, @Name("player") ClanPlayerInput player) {
-        Lookup l = new Lookup(plugin, sender, player.getClanPlayer().getUniqueId());
+        UUID uuid = player.getClanPlayer().getUniqueId();
+        if (settings.is(ENABLE_GUI) && sender instanceof Player) {
+            InventoryDrawer.open(new PlayerDetailsFrame((Player) sender, null, Bukkit.getOfflinePlayer(uuid)));
+            return;
+        }
+        Lookup l = new Lookup(plugin, sender, uuid);
         l.send();
     }
 
@@ -102,6 +113,10 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.member.lookup")
     @Description("{@@command.description.lookup}")
     public void lookup(Player sender) {
+        if (settings.is(ENABLE_GUI)) {
+            InventoryDrawer.open(new PlayerDetailsFrame(sender, null, sender));
+            return;
+        }
         Lookup l = new Lookup(plugin, sender, sender.getUniqueId());
         l.send();
     }
@@ -134,6 +149,10 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.anyone.roster")
     @Description("{@@command.description.roster.other}")
     public void roster(CommandSender sender, @Conditions("verified") @Name("clan") ClanInput clan) {
+        if (settings.is(ENABLE_GUI) && sender instanceof Player) {
+            InventoryDrawer.open(new RosterFrame(((Player) sender), null, clan.getClan()));
+            return;
+        }
         ClanRoster r = new ClanRoster(plugin, sender, clan.getClan());
         r.send();
     }
@@ -267,6 +286,10 @@ public class GeneralCommands extends BaseCommand {
     @CommandCompletion("@clan_list_type @order")
     public void list(CommandSender sender, @Optional @Values("@clan_list_type") String type,
                      @Optional @Single @Values("@order") String order) {
+        if (settings.is(ENABLE_GUI) && sender instanceof Player) {
+            InventoryDrawer.open(new ClanListFrame(null, (Player) sender));
+            return;
+        }
         ClanList list = new ClanList(plugin, sender, type, order);
         list.send();
     }

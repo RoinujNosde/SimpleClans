@@ -6,11 +6,16 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.CoordsFrame;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.RosterFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.RED;
 
 @CommandAlias("%clan")
@@ -18,6 +23,8 @@ import static org.bukkit.ChatColor.RED;
 public class DataCommands extends BaseCommand {
     @Dependency
     private SimpleClans plugin;
+    @Dependency
+    private SettingsManager settings;
 
     @Subcommand("%vitals")
     @CommandPermission("simpleclans.member.vitals")
@@ -49,6 +56,10 @@ public class DataCommands extends BaseCommand {
     @CommandPermission("simpleclans.member.roster")
     @Description("{@@command.description.roster}")
     public void roster(Player player, Clan clan) {
+        if (settings.is(ENABLE_GUI)) {
+            InventoryDrawer.open(new RosterFrame(player, null, clan));
+            return;
+        }
         ClanRoster r = new ClanRoster(plugin, player, clan);
         r.send();
     }
@@ -59,6 +70,10 @@ public class DataCommands extends BaseCommand {
     @HelpSearchTags("local location")
     @Description("{@@command.description.coords}")
     public void coords(Player player, Clan clan) {
+        if (settings.is(ENABLE_GUI)) {
+            InventoryDrawer.open(new CoordsFrame(player, null, clan));
+            return;
+        }
         if (VanishUtils.getNonVanished(player, clan).size() == 1) {
             ChatBlock.sendMessage(player, RED + lang("you.are.the.only.member.online", player));
             return;
