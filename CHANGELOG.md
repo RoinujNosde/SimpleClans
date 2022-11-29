@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.18.1](https://github.com/RoinujNosde/SimpleClans/compare/v2.18.0...v2.18.1) (2022-11-29)
+
+
+### Bug Fixes
+
+* added check for clan_member on land commands ([fc81e76](https://github.com/RoinujNosde/SimpleClans/commit/fc81e765211bebe22a7a6aa5d5158754580bbdc5))
+* attempt at fixing NPE on getAllClanPlayers ([26ba9f7](https://github.com/RoinujNosde/SimpleClans/commit/26ba9f73296a772eaa698d2ede6fbc3831da850c))
+* **bungee:** error deserializing clan banners ([56c7908](https://github.com/RoinujNosde/SimpleClans/commit/56c7908c332167cec9cca6a4ea054977d0d68b9f))
+* channel auto creation setting not respected on join/link ([7f9d133](https://github.com/RoinujNosde/SimpleClans/commit/7f9d133051b9011837d0a5114abc6c3637a3f02c))
+* default ranks were getting re-added on config load ([7a37382](https://github.com/RoinujNosde/SimpleClans/commit/7a37382264ff4dd5456f6930045b5102bf491897))
+* missing getHandlerList on HomeRegroupEvent ([#338](https://github.com/RoinujNosde/SimpleClans/issues/338)) ([8fa465d](https://github.com/RoinujNosde/SimpleClans/commit/8fa465da385f36b1fb075031c375ef94df78ea52))
+* money was not given back when channel creation failed ([#336](https://github.com/RoinujNosde/SimpleClans/issues/336)) ([d8cb61b](https://github.com/RoinujNosde/SimpleClans/commit/d8cb61b0fc9584bb58f421faf98596816621053f))
+* wrong path of discord economy section ([#334](https://github.com/RoinujNosde/SimpleClans/issues/334)) ([3f1b06d](https://github.com/RoinujNosde/SimpleClans/commit/3f1b06dcf996e51a878b7fc281069e236ebcbfce))
+
 ## [2.18.0](https://github.com/RoinujNosde/SimpleClans/compare/v2.17.0...v2.18.0) (2022-10-14)
 
 
