@@ -45,7 +45,7 @@ public class SpyChatHandler implements ChatHandler {
     private List<ClanPlayer> getOnlineSpies() {
         return Bukkit.getOnlinePlayers().stream().
                 filter(Objects::nonNull).
-                filter(player -> plugin.getPermissionsManager().has(player, "simpleclans.admin.all-seeing-eye")).
+                filter(player -> permissionsManager.has(player, "simpleclans.admin.all-seeing-eye")).
                 map(player -> plugin.getClanManager().getCreateClanPlayer(player.getUniqueId())).
                 filter(Objects::nonNull).
                 filter(clanPlayer -> !clanPlayer.isMuted()).
