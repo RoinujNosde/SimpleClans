@@ -1,9 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.Subscribe;
-import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
-import github.scarsz.discordsrv.dependencies.jda.api.JDA;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
@@ -11,12 +7,12 @@ import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordProvider;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv.DSRVProvider;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -34,33 +30,21 @@ public final class ChatManager {
 
     private final SimpleClans plugin;
     private final Set<ChatHandler> handlers = new HashSet<>();
-    private DiscordHook discordHook;
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         registerHandlers();
-        if (isDiscordHookEnabled()) {
-            DiscordSRV.api.subscribe(this);
-        }
     }
 
-    @Subscribe
-    public void registerDiscord(DiscordReadyEvent event) {
-        discordHook = new DiscordHook(plugin);
-        DiscordSRV.api.subscribe(discordHook);
-        getPluginManager().registerEvents(discordHook, plugin);
-    }
-
-    @Nullable
-    public DiscordHook getDiscordHook() {
-        if (isDiscordHookEnabled()) {
-            // Manually instantiate, if JDA did load faster than SC
-            if (discordHook == null && DiscordSRV.getPlugin().getJda().getStatus() == JDA.Status.CONNECTED) {
-                registerDiscord(new DiscordReadyEvent());
+    public Optional<? extends DiscordProvider> getDiscordHook() {
+        return findSupportedHook().map(supportedHook -> {
+            try {
+                return supportedHook.provider.getDeclaredConstructor(SimpleClans.class).newInstance(plugin);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
-        }
-
-        return discordHook;
+        });
     }
 
     public void processChat(@NotNull SCMessage message) {
@@ -136,8 +120,13 @@ public final class ChatManager {
         return parseWithPapi(message.getSender(), parsedFormat);
     }
 
-    public boolean isDiscordHookEnabled() {
-        return getPluginManager().getPlugin("DiscordSRV") != null && plugin.getSettingsManager().is(DISCORDCHAT_ENABLE);
+    public Optional<SupportedHook> findSupportedHook() {
+        if (!plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
+            return Optional.empty();
+        }
+
+        return Arrays.stream(SupportedHook.values()).
+                filter(provider -> Objects.nonNull(getPluginManager().getPlugin(provider.pluginName))).findFirst();
     }
 
     private String parseWithPapi(ClanPlayer cp, String message) {
@@ -163,7 +152,8 @@ public final class ChatManager {
         for (Class<? extends ChatHandler> handler : chatHandlers) {
             try {
                 handlers.add(handler.getConstructor().newInstance());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to register {0}: " +
                         ex.getMessage(), handler.getSimpleName());
             }
@@ -174,5 +164,17 @@ public final class ChatManager {
         return clan.getAllAllyMembers().stream().
                 filter(allyPlayer -> allyPlayer.toPlayer() != null).
                 collect(Collectors.toList());
+    }
+
+    enum SupportedHook {
+        DiscordSRV("DiscordSRV", DSRVProvider.class);
+
+        private final Class<? extends DiscordProvider> provider;
+        private String pluginName;
+
+        SupportedHook(String pluginName, Class<? extends DiscordProvider> provider) {
+            this.pluginName = pluginName;
+            this.provider = provider;
+        }
     }
 }

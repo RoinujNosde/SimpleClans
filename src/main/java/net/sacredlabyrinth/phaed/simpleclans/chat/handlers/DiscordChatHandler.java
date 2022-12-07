@@ -1,16 +1,10 @@
 package net.sacredlabyrinth.phaed.simpleclans.chat.handlers;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
-import github.scarsz.discordsrv.util.DiscordUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.Optional;
 
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source;
@@ -36,13 +30,11 @@ public class DiscordChatHandler implements ChatHandler {
             return;
         }
 
-        DiscordHook discordHook = Objects.requireNonNull(chatManager.getDiscordHook(), "DiscordHook cannot be null");
-        Optional<TextChannel> channel = discordHook.getCachedChannel(clan.getTag());
-        channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
+        chatManager.getDiscordHook().ifPresent(discordProvider -> discordProvider.sendMessage(clan.getTag(), formattedMessage));
     }
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT && chatManager.isDiscordHookEnabled();
+        return source == SPIGOT && chatManager.findSupportedHook().isPresent();
     }
 }
