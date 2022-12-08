@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+
 /**
  * 
  * @author RoinujNosde
@@ -25,16 +27,17 @@ public abstract class SCFrame {
 	private final SCFrame parent;
 	private final Player viewer;
 	private final Set<SCComponent> components = ConcurrentHashMap.newKeySet();
-	protected final FileConfiguration config;
+	private FileConfiguration config;
 	
 	public SCFrame(@Nullable SCFrame parent, @NotNull Player viewer) {
 		this.parent = parent;
 		this.viewer = viewer;
-		this.config = readConfig(); //todo async
 	}
 
 	@NotNull
-	public abstract String getTitle();
+	public String getTitle() {
+		return lang(getConfig().getString("title", getClass().getSimpleName()), getViewer());
+	}
 
 	@NotNull
 	public Player getViewer() {
@@ -46,7 +49,9 @@ public abstract class SCFrame {
 		return parent;
 	}
 
-	public abstract int getSize();
+	public int getSize() {
+		return getConfig().getInt("rows", 3) * 9;
+	}
 
 	public abstract void createComponents();
 
@@ -63,7 +68,7 @@ public abstract class SCFrame {
 	public void add(@NotNull SCComponent c) {
 		components.add(c);
 	}
-	
+
 	public void clear() {
 		components.clear();
 	}
@@ -71,6 +76,13 @@ public abstract class SCFrame {
 	@NotNull
 	public Set<SCComponent> getComponents() {
 		return components;
+	}
+
+	protected FileConfiguration getConfig() {
+		if (config == null) {
+			return config = readConfig();
+		}
+		return config;
 	}
 
 	@Override
@@ -99,7 +111,7 @@ public abstract class SCFrame {
 		if (resource != null) {
 			YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(resource));
 			config.setDefaults(defaults);
-			if (!externalFile.exists()) { // TODO Move to startup
+			if (!externalFile.exists()) {
 				try {
 					defaults.save(externalFile);
 				} catch (IOException e) {

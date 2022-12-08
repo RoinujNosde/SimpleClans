@@ -1,53 +1,18 @@
-title: "{@@gui.staff.title}"
+title: "gui.staff.title"
 rows: 3
 components:
   panels:
     slots: [0, 1, 2, 3, 5, 6, 7, 8]
-    display_name: " "
     material: GRAY_STAINED_GLASS_PANE
   clans:
     material: PURPLE_BANNER
     slot: 9
-    display_name: "{@@gui.main.clan.list.title}"
-    lore:
-      - "{@@gui.staff.clan.list.lore.left.click}"
-      - "{@@gui.staff.clan.list.lore.right.click}"
-    actions:
-      left_click:
-        run: "openClansFrame()"
-      right_click:
-        run: "openUnverifiedClansFrame()"
   players:
     material: WHITE_BANNER
     slot: 10
-    display_name: "{@@gui.staff.player.list.title}"
-    lore:
-      - "{@@gui.staff.player.list.lore.left.click}"
-      - "{@@gui.staff.player.list.lore.right.click}"
-    actions:
-      left_click:
-        run: "openPlayersFrame()"
-      right_click:
-        run: "openOnlinePlayersFrame()"
   reload:
     material: SPAWNER
     slot: 17
-    display_name: "{@@gui.staff.reload.title}"
-    lore:
-      - "{@@gui.staff.reload.lore}"
-    actions:
-      left_click:
-        run: "reloadPlugin()"
-        permission: "simpleclans.admin.reload"
-        confirmation_required: true
   global_ff:
     material: DIAMOND_SWORD
     slot: 12
-    display_name: "{@@gui.staff.global.ff.title}"
-    lore:
-      - "{@@gui.staff.global.ff.lore.status}"
-      - "{@@gui.staff.global.ff.lore.toggle}"
-    actions:
-      left_click:
-        run: "toggleGlobalFf()"
-        permission: "simpleclans.mod.globalff"

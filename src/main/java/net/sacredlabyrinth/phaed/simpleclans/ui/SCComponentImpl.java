@@ -2,6 +2,8 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class SCComponentImpl extends SCComponent {
 
@@ -59,31 +64,45 @@ public class SCComponentImpl extends SCComponent {
 	}
 
 	public static class Builder {
-		private final SCComponentImpl component = new SCComponentImpl();
+		private final ItemStack item;
+		private String displayName;
+		private int slot;
 		private @Nullable List<String> lore;
+		private Player viewer;
 
 		public Builder(@NotNull XMaterial material) {
 			this(material.parseItem());
 		}
 
 		public Builder(@NotNull Material material) {
-			component.item = new ItemStack(material);
+			this(new ItemStack(material));
 		}
 
 		public Builder(@Nullable ItemStack item) {
 			if (item == null) {
 				item = new ItemStack(Material.STONE);
 			}
-			component.item = item;
+			this.item = item;
+		}
+
+		public Builder(FileConfiguration config, String id) {
+			String materialName = config.getString("components." + id + ".material", "STONE");
+			item = Objects.requireNonNull(XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE).parseItem());
+			slot = config.getInt("components." + id + ".slot");
+		}
+
+		public Builder withViewer(@NotNull Player player) {
+			this.viewer = player;
+			return this;
 		}
 
 		public Builder withDisplayName(@Nullable String displayName) {
-			ItemMeta itemMeta = component.getItemMeta();
-			if (itemMeta != null) {
-				itemMeta.setDisplayName(displayName);
-				component.setItemMeta(itemMeta);
-			}
+			this.displayName = displayName;
 			return this;
+		}
+
+		public Builder withDisplayNameKey(@NotNull String key, Object... args) {
+			return withDisplayName(lang(key, viewer, args));
 		}
 
 		public Builder withLore(@Nullable List<String> lore) {
@@ -99,17 +118,24 @@ public class SCComponentImpl extends SCComponent {
 			return this;
 		}
 
+		public Builder withLoreKey(@NotNull String key, Object... args) {
+			return withLoreLine(lang(key, viewer, args));
+		}
+
 		public Builder withSlot(int slot) {
-			component.slot = slot;
+			this.slot = slot;
 			return this;
 		}
 
 		public SCComponent build() {
-			ItemMeta itemMeta = component.getItemMeta();
+			SCComponentImpl component = new SCComponentImpl();
+			ItemMeta itemMeta = item.getItemMeta();
 			if (itemMeta != null) {
 				itemMeta.setLore(lore);
+				itemMeta.setDisplayName(displayName);
 				component.setItemMeta(itemMeta);
 			}
+			component.slot = slot;
 			return component;
 		}
 	}
