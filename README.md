@@ -60,7 +60,7 @@ Including SimpleClans with Maven:
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.17.0</version> <!-- You can find the latest version at the bottom -->
+        <version>2.18.1</version> <!-- You can find the latest version at the bottom -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -74,7 +74,7 @@ repositories {
     }
 }
 dependencies {
-    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.17.0"
+    compileOnly "net.sacredlabyrinth.phaed.simpleclans:SimpleClans:2.18.1"
 }
 ```
 
