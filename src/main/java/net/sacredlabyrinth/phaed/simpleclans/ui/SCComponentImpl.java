@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -129,6 +130,7 @@ public class SCComponentImpl extends SCComponent {
 
 		public SCComponent build() {
 			SCComponentImpl component = new SCComponentImpl();
+			component.item = item;
 			ItemMeta itemMeta = item.getItemMeta();
 			if (itemMeta != null) {
 				itemMeta.setLore(lore);
@@ -137,6 +139,57 @@ public class SCComponentImpl extends SCComponent {
 			}
 			component.slot = slot;
 			return component;
+		}
+	}
+
+	public static class ArrayBuilder<T> {
+
+		private final XMaterial material;
+		private final List<Integer> slots;
+		private List<T> elements;
+		private Player viewer;
+		private Function<T, String> displayName = (t) -> null;
+
+		public ArrayBuilder(FileConfiguration config, String id, List<T> elements) {
+			String materialName = config.getString("components." + id + ".material", "STONE");
+			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
+			slots = config.getIntegerList("components." + id + ".slots");
+			this.elements = elements;
+		}
+
+		public ArrayBuilder<T> withViewer(@NotNull Player player) {
+			viewer = player;
+			return this;
+		}
+
+		@SafeVarargs
+		public final ArrayBuilder<T> withDisplayNameKey(@NotNull String key, Function<T, Object>... args) {
+			displayName = (t) -> {
+				Object[] processedArgs = new Object[args.length];
+				for (int i = 0; i < args.length; i++) {
+					processedArgs[i] = args[i].apply(t);
+				}
+				return lang(key, viewer, processedArgs);
+			};
+			return this;
+		}
+
+		public SCComponent[] build() {
+			SCComponent[] components = new SCComponent[slots.size()];
+			for (int i = 0; i < components.length; i++) {
+				T t = elements.get(i);
+				SCComponentImpl component = new SCComponentImpl();
+				component.item = Objects.requireNonNull(material.parseItem());
+				component.slot = slots.get(i);
+				ItemMeta itemMeta = component.getItemMeta();
+				if (itemMeta != null) {
+					itemMeta.setDisplayName(displayName.apply(t));
+					component.setItemMeta(itemMeta);
+				}
+
+				components[i] = component;
+			}
+			return components;
 		}
 	}
 }
