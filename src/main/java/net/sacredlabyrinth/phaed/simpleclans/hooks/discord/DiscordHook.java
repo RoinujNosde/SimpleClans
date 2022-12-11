@@ -639,7 +639,7 @@ public class DiscordHook implements Listener {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean createChannelSilently(ClanPlayer clanPlayer) {
         Clan clan = clanPlayer.getClan();
-        if (clan == null) {
+        if (clan == null || !settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
             return false;
         }
 

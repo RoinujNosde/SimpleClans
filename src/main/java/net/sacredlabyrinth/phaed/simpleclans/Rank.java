@@ -1,5 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +21,7 @@ public class Rank implements Comparable<Rank> {
 		setDisplayName(displayName);
 	}
 	
-	public Rank(String name, String displayName, Set<String> permissions) {
+	public Rank(String name, @Nullable String displayName, Set<String> permissions) {
 		setName(name);
 		setDisplayName(displayName);
 		setPermissions(permissions);
@@ -32,7 +34,7 @@ public class Rank implements Comparable<Rank> {
 		this.name = name;
 	}
 
-	public void setDisplayName(String displayName) {
+	public void setDisplayName(@Nullable String displayName) {
 		if (displayName == null || displayName.isEmpty()) {
 			displayName = name;
 		}

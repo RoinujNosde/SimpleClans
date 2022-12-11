@@ -5,7 +5,6 @@ import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -252,13 +251,16 @@ public final class SettingsManager {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public @NotNull Collection<Rank> getStarterRanks() {
         List<Rank> ranks = new ArrayList<>();
-        ConfigurationSection section = config.getConfigurationSection("clan.starter-ranks");
-        if (section != null) {
-            for (String name : section.getKeys(false)) {
-                String displayName = section.getString(name + ".display-name");
-                List<String> permissions = section.getStringList(name + ".permissions");
+        List<Map<?, ?>> mapList = config.getMapList("clan.starter-ranks");
+        for (Map<?, ?> rankMap : mapList) {
+            Set<String> names = (Set<String>) rankMap.keySet();
+            for (String name : names) {
+                Map<String, Object> rank = (Map<String, Object>) rankMap.get(name);
+                String displayName = (String) rank.get("display-name");
+                List<String> permissions = (List<String>) rank.get("permissions");
                 ranks.add(new Rank(name, displayName, new HashSet<>(permissions)));
             }
         }
@@ -398,8 +400,8 @@ public final class SettingsManager {
         ECONOMY_PURCHASE_HOME_TELEPORT_SET("economy.purchase-home-teleport-set", false),
         ECONOMY_REGROUP_PRICE("economy.home-regroup-price", 5.0),
         ECONOMY_PURCHASE_HOME_REGROUP("economy.purchase-home-regroup", false),
-        ECONOMY_PURCHASE_DISCORD_CREATE("purchase-discord-create", false),
-        ECONOMY_DISCORD_CREATION_PRICE("discord-creation-price", 1000.0),
+        ECONOMY_PURCHASE_DISCORD_CREATE("economy.purchase-discord-create", false),
+        ECONOMY_DISCORD_CREATION_PRICE("economy.discord-creation-price", 1000.0),
         ECONOMY_UNIQUE_TAX_ON_REGROUP("economy.unique-tax-on-regroup", true),
         ECONOMY_ISSUER_PAYS_REGROUP("economy.issuer-pays-regroup", true),
         ECONOMY_MONEY_PER_KILL("economy.money-per-kill", false),
@@ -474,6 +476,7 @@ public final class SettingsManager {
         PAGE_HEADINGS_COLOR("page.headings-color", "8"),
         PAGE_SEPARATOR("page.separator", "-"),
         PAGE_SIZE("page.size", 100),
+        HELP_SIZE("page.help-size", 10),
         /*
         ================
         > Clan Chat Settings

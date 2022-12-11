@@ -52,7 +52,6 @@ public class GeneralCommands extends BaseCommand {
 
     @Default
     @Description("{@@command.description.clan}")
-    @CommandAlias("%clan")
     @HelpSearchTags("menu gui interface ui")
     public void main(CommandSender sender) {
         if (sender instanceof Player && settings.is(ENABLE_GUI)) {
