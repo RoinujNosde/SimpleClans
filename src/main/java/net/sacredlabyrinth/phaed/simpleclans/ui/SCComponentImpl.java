@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -87,7 +88,7 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public Builder(FileConfiguration config, String id) {
-			String materialName = config.getString("components." + id + ".material", "STONE");
+			String materialName = config.getString("components." + id + ".material");
 			item = Objects.requireNonNull(XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE).parseItem());
 			slot = config.getInt("components." + id + ".slot");
 		}
@@ -142,52 +143,83 @@ public class SCComponentImpl extends SCComponent {
 		}
 	}
 
-	public static class ArrayBuilder<T> {
+	public static class ListBuilder<T> {
 
-		private final XMaterial material;
+		private XMaterial material;
+		private Function<T, ItemStack> item;
 		private final List<Integer> slots;
 		private List<T> elements;
 		private Player viewer;
 		private Function<T, String> displayName = (t) -> null;
+		private final List<Function<T, String>> lore = new ArrayList<>();
+		private String lorePermission;
 
-		public ArrayBuilder(FileConfiguration config, String id, List<T> elements) {
-			String materialName = config.getString("components." + id + ".material", "STONE");
+		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id, @NotNull List<T> elements) {
+			String materialName = config.getString("components." + id + ".material");
 			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
+			item = (t) -> Objects.requireNonNull(material.parseItem());
 			slots = config.getIntegerList("components." + id + ".slots");
 			this.elements = elements;
 		}
 
-		public ArrayBuilder<T> withViewer(@NotNull Player player) {
+		public ListBuilder<T> withItem(@NotNull Function<T, ItemStack> item) {
+			this.item = (t) -> {
+				ItemStack result = item.apply(t);
+				if (result == null) {
+					return material.parseItem();
+				}
+				return result;
+			};
+			return this;
+		}
+
+		public ListBuilder<T> withViewer(@NotNull Player player) {
 			viewer = player;
 			return this;
 		}
 
 		@SafeVarargs
-		public final ArrayBuilder<T> withDisplayNameKey(@NotNull String key, Function<T, Object>... args) {
-			displayName = (t) -> {
-				Object[] processedArgs = new Object[args.length];
-				for (int i = 0; i < args.length; i++) {
-					processedArgs[i] = args[i].apply(t);
-				}
-				return lang(key, viewer, processedArgs);
-			};
+		public final ListBuilder<T> withDisplayNameKey(@NotNull String key, Function<T, Object>... args) {
+			displayName = (t) -> processLang(key, t, args);
 			return this;
 		}
 
-		public SCComponent[] build() {
-			SCComponent[] components = new SCComponent[slots.size()];
-			for (int i = 0; i < components.length; i++) {
+		@SafeVarargs
+		public final ListBuilder<T> withLoreKey(@NotNull String key, Function<T, Object>... args) {
+			lore.add((t) -> processLang(key, t, args));
+			return this;
+		}
+
+		@NotNull
+		private String processLang(@NotNull String key, T t, Function<T, Object>[] args) {
+			Object[] processedArgs = new Object[args.length];
+			for (int i = 0; i < args.length; i++) {
+				processedArgs[i] = args[i].apply(t);
+			}
+			return lang(key, viewer, processedArgs);
+		}
+
+		public ListBuilder<T> withLorePermission(@Nullable String permission) {
+			lorePermission = permission;
+			return this;
+		}
+
+		public List<SCComponent> build() {
+			List<SCComponent> components = new ArrayList<>();
+			for (int i = 0; i < elements.size() && i < slots.size(); i++) {
 				T t = elements.get(i);
 				SCComponentImpl component = new SCComponentImpl();
-				component.item = Objects.requireNonNull(material.parseItem());
+				component.item = item.apply(t);
 				component.slot = slots.get(i);
 				ItemMeta itemMeta = component.getItemMeta();
 				if (itemMeta != null) {
 					itemMeta.setDisplayName(displayName.apply(t));
+					List<String> processedLore = lore.stream().map(f -> f.apply(t)).collect(Collectors.toList());
+					itemMeta.setLore(processedLore);
 					component.setItemMeta(itemMeta);
 				}
-
-				components[i] = component;
+				component.setLorePermission(lorePermission);
+				components.add(component);
 			}
 			return components;
 		}

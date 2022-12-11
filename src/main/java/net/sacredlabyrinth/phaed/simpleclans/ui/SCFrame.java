@@ -4,18 +4,19 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 /**
  * 
@@ -35,9 +36,7 @@ public abstract class SCFrame {
 	}
 
 	@NotNull
-	public String getTitle() {
-		return lang(getConfig().getString("title", getClass().getSimpleName()), getViewer());
-	}
+	public abstract String getTitle();
 
 	@NotNull
 	public Player getViewer() {
@@ -50,10 +49,15 @@ public abstract class SCFrame {
 	}
 
 	public int getSize() {
-		return getConfig().getInt("rows", 3) * 9;
+		return getConfig().getInt("rows") * 9;
 	}
 
-	public abstract void createComponents();
+	@OverridingMethodsMustInvokeSuper
+	public void createComponents() {
+		SCComponent back = new SCComponentImpl.Builder(getConfig(), "back").withDisplayNameKey("gui.back.title").build();
+		back.setListener(ClickType.LEFT, () -> InventoryDrawer.open(getParent()));
+		add(back);
+	}
 
 	@Nullable
 	public SCComponent getComponent(int slot) {
@@ -69,8 +73,16 @@ public abstract class SCFrame {
 		components.add(c);
 	}
 
+	public void addAll(@NotNull Collection<SCComponent> collection) {
+		components.addAll(collection);
+	}
+
 	public void clear() {
 		components.clear();
+	}
+
+	public void update() {
+		InventoryDrawer.open(this);
 	}
 
 	@NotNull
