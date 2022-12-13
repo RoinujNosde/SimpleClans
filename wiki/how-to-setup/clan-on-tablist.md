@@ -1,24 +1,22 @@
 # 👆 Clan on Tablist
 
-## Plugins needed
-
-You can use a different tablist plugin, as long as it supports PlaceholderAPI
+## Plugins required
 
 * [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-* [TAB](https://github.com/NEZNAMY/TAB/releases)
+* [TAB](https://github.com/NEZNAMY/TAB/releases) (you can use a different tablist plugin, as long as it supports PlaceholderAPI)
 
 ## Step by step
 
-1\. Open Tab' `groups.yml` file and edit the formats adding `%simpleclans_clan_color_tag%`:
+1\. Open Tab's `groups.yml` file and add `%simpleclans_clan_color_tag%` to `tabprefix`:
 
-{% code title="Example:" %}
+{% code title="/plugins/TAB/groups.yml" %}
 ```yaml
 _DEFAULT_:
     tabprefix: "%simpleclans_clan_color_tag%%vault-prefix% "
 ```
 {% endcode %}
 
-2\. Restart (or reload `/tab reload`) and enjoy!
+2\. Restart (or reload `/tab reload`) your server and enjoy!
 
 ## Screenshot
 
