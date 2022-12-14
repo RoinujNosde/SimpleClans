@@ -113,7 +113,7 @@ public abstract class SCFrame {
 		return getTitle().hashCode() + Integer.hashCode(getSize()) + getComponents().hashCode();
 	}
 
-	protected FileConfiguration readConfig() {
+	private FileConfiguration readConfig() {
 		SimpleClans plugin = SimpleClans.getInstance();
 
 		String configPath = getConfigPath();

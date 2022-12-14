@@ -4,15 +4,14 @@ import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -152,6 +151,8 @@ public class SCComponentImpl extends SCComponent {
 		private Player viewer;
 		private Function<T, String> displayName = (t) -> null;
 		private final List<Function<T, String>> lore = new ArrayList<>();
+		private final Map<ClickType, Function<T, Runnable>> listeners = new HashMap<ClickType, Function<T, Runnable>>();
+		private final Map<ClickType, String> permissions = new HashMap<>();
 		private String lorePermission;
 
 		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id, @NotNull List<T> elements) {
@@ -204,6 +205,12 @@ public class SCComponentImpl extends SCComponent {
 			return this;
 		}
 
+		public ListBuilder<T> withListener(@NotNull ClickType click, @Nullable Function<T, Runnable> runnable, @Nullable String permission) {
+			permissions.put(click, permission);
+			listeners.put(click, runnable);
+			return this;
+		}
+
 		public List<SCComponent> build() {
 			List<SCComponent> components = new ArrayList<>();
 			for (int i = 0; i < elements.size() && i < slots.size(); i++) {
@@ -219,6 +226,8 @@ public class SCComponentImpl extends SCComponent {
 					component.setItemMeta(itemMeta);
 				}
 				component.setLorePermission(lorePermission);
+				listeners.forEach((click, fn) -> component.setListener(click, fn.apply(t)));
+				permissions.forEach(component::setPermission);
 				components.add(component);
 			}
 			return components;

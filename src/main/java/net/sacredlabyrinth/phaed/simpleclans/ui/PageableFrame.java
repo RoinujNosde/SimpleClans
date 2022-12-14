@@ -20,16 +20,20 @@ public abstract class PageableFrame<T> extends SCFrame {
         super.createComponents();
         SCComponent nextPage = new SCComponentImpl.Builder(getConfig(), "next_page")
                 .withDisplayNameKey("gui.next.page.title").build();
-        setOneTimeListener(nextPage, this::nextPage);
+        setOneTimeListener(nextPage, this::nextPage, getPaginator().hasNextPage());
         add(nextPage);
 
         SCComponent previousPage = new SCComponentImpl.Builder(getConfig(), "previous_page")
                 .withDisplayNameKey("gui.previous.page.title").build();
-        setOneTimeListener(previousPage, this::previousPage);
+        setOneTimeListener(previousPage, this::previousPage, getPaginator().hasPreviousPage());
         add(previousPage);
     }
 
     public abstract Paginator<T> getPaginator();
+
+    public int getPageSize() {
+        return getConfig().getIntegerList("components.list.slots").size();
+    }
 
     private void nextPage() {
         if (getPaginator().nextPage()) {
@@ -43,7 +47,10 @@ public abstract class PageableFrame<T> extends SCFrame {
         }
     }
 
-    private void setOneTimeListener(final SCComponent component, final Runnable runnable) {
+    private void setOneTimeListener(final SCComponent component, final Runnable runnable, boolean pageCheck) {
+        if (!pageCheck) {
+            return;
+        }
         component.setListener(ClickType.LEFT, () -> {
             component.setListener(ClickType.LEFT, null);
             if (runnable == null) {

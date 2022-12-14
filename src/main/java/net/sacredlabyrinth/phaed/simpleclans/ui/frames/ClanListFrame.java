@@ -32,7 +32,7 @@ public class ClanListFrame extends PageableFrame<Clan> {
 		clans = plugin.getClanManager().getClans().stream()
 				.filter(clan -> clan.isVerified() || sm.is(SHOW_UNVERIFIED_ON_LIST)).collect(Collectors.toList());
 		plugin.getClanManager().sortClansByKDR(clans);
-		paginator = new Paginator<>(getConfig().getIntegerList("components.list.slots").size(), clans);
+		paginator = new Paginator<>(getPageSize(), clans);
 
 		rankingResolver = new RankingNumberResolver<>(clans, c -> KDRFormat.toBigDecimal(c.getTotalKDR()), false,
 				sm.getRankingType());

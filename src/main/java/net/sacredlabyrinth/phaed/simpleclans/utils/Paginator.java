@@ -29,6 +29,7 @@ public class Paginator<T> {
 		this.totalElements = totalElements;
 	}
 
+	@Deprecated
 	public Paginator(int sizePerPage, @NotNull Collection<T> collection) {
 		this(sizePerPage, new ArrayList<>(collection));
 	}
@@ -38,7 +39,7 @@ public class Paginator<T> {
 			throw new IllegalArgumentException("sizePerPage cannot be less than 1");
 		}
 		this.sizePerPage = sizePerPage;
-		this.collection = new ArrayList<>(list);
+		this.collection = list;
 	}
 	
 	/**
