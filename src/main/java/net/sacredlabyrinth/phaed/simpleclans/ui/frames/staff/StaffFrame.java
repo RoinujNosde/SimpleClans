@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 
-import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
@@ -32,13 +31,13 @@ public class StaffFrame extends SCFrame {
 
     @Override
     public void createComponents() {
+        super.createComponents();
         for (int slot = 0; slot < 9; slot++) {
             if (slot == 4)
                 continue;
             add(Components.getPanelComponent(slot));
         }
 
-        add(Components.getBackComponent(getParent(), 4, getViewer()));
         addClans();
         addPlayers();
         addGlobalFf();
@@ -46,10 +45,10 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addClans() {
-        SCComponent clanList = new SCComponentImpl.Builder(XMaterial.PURPLE_BANNER)
-                .withDisplayName(lang("gui.main.clan.list.title", getViewer())).withSlot(9)
-                .withLoreLine(lang("gui.staff.clan.list.lore.left.click", getViewer()))
-                .withLoreLine(lang("gui.staff.clan.list.lore.right.click", getViewer())).build();
+        SCComponent clanList = new SCComponentImpl.Builder(getConfig(), "clans").withViewer(getViewer())
+                .withDisplayNameKey("gui.main.clan.list.title")
+                .withLoreKey("gui.staff.clan.list.lore.left.click")
+                .withLoreKey("gui.staff.clan.list.lore.right.click").build();
         clanList.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new ClanListFrame(this, getViewer(),
                 Type.ALL, null)));
         clanList.setListener(ClickType.RIGHT, () -> InventoryDrawer.open(new ClanListFrame(this, getViewer(),
@@ -58,19 +57,18 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addPlayers() {
-        SCComponent players = new SCComponentImpl.Builder(XMaterial.WHITE_BANNER)
-                .withDisplayName(lang("gui.staff.player.list.title", getViewer())).withSlot(10)
-                .withLoreLine(lang("gui.staff.player.list.lore.left.click", getViewer()))
-                .withLoreLine(lang("gui.staff.player.list.lore.right.click", getViewer())).build();
+        SCComponent players = new SCComponentImpl.Builder(getConfig(), "players").withViewer(getViewer())
+                .withDisplayNameKey("gui.staff.player.list.title")
+                .withLoreKey("gui.staff.player.list.lore.left.click")
+                .withLoreKey("gui.staff.player.list.lore.right.click").build();
         players.setListener(ClickType.LEFT, () -> InventoryDrawer.open(new PlayerListFrame(getViewer(), this, false)));
         players.setListener(ClickType.RIGHT, () -> InventoryDrawer.open(new PlayerListFrame(getViewer(), this, true)));
         add(players);
     }
 
     private void addReload() {
-        SCComponent reload = new SCComponentImpl.Builder(XMaterial.SPAWNER)
-                .withDisplayName(lang("gui.staff.reload.title", getViewer())).withSlot(17)
-                .withLoreLine(lang("gui.staff.reload.lore", getViewer())).build();
+        SCComponent reload = new SCComponentImpl.Builder(getConfig(), "reload").withViewer(getViewer())
+                .withDisplayNameKey("gui.staff.reload.title").withLoreKey("gui.staff.reload.lore").build();
         reload.setPermission(ClickType.LEFT, "simpleclans.admin.reload");
         reload.setConfirmationRequired(ClickType.LEFT);
         reload.setListener(ClickType.LEFT, () ->
@@ -82,18 +80,14 @@ public class StaffFrame extends SCFrame {
         SettingsManager sm = SimpleClans.getInstance().getSettingsManager();
         boolean globalffAllowed = sm.is(GLOBAL_FRIENDLY_FIRE);
         String status = globalffAllowed ? lang("allowed", getViewer()) : lang("auto", getViewer());
-        SCComponent globalFf = new SCComponentImpl.Builder(XMaterial.DIAMOND_SWORD).withSlot(12)
-                .withDisplayName(lang("gui.staff.global.ff.title", getViewer()))
-                .withLoreLine(lang("gui.staff.global.ff.lore.status", getViewer(), status))
-                .withLoreLine(lang("gui.staff.global.ff.lore.toggle", getViewer())).build();
+
+        SCComponent globalFf = new SCComponentImpl.Builder(getConfig(), "global_ff").withViewer(getViewer())
+                .withDisplayNameKey("gui.staff.global.ff.title")
+                .withLoreKey("gui.staff.global.ff.lore.status", status)
+                .withLoreKey("gui.staff.global.ff.lore.toggle").build();
         globalFf.setPermission(ClickType.LEFT, "simpleclans.mod.globalff");
         globalFf.setListener(ClickType.LEFT, () -> {
-            String arg;
-            if (globalffAllowed) {
-                arg = "auto";
-            } else {
-                arg = "allow";
-            }
+            String arg = globalffAllowed ? "auto" : "allow";
             InventoryController.runSubcommand(getViewer(), "mod globalff", true, arg);
         });
         add(globalFf);

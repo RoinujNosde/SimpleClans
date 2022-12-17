@@ -143,7 +143,7 @@ public class SCComponentImpl extends SCComponent {
 	}
 
 	public static class ListBuilder<T> {
-
+		private final boolean enabled;
 		private XMaterial material;
 		private Function<T, ItemStack> item;
 		private final List<Integer> slots;
@@ -156,11 +156,12 @@ public class SCComponentImpl extends SCComponent {
 		private String lorePermission;
 
 		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id, @NotNull List<T> elements) {
-			String materialName = config.getString("components." + id + ".material");
+			String materialName = Objects.requireNonNull(config.getString("components." + id + ".material"));
 			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
 			item = (t) -> Objects.requireNonNull(material.parseItem());
 			slots = config.getIntegerList("components." + id + ".slots");
 			this.elements = elements;
+			enabled = config.getBoolean("components." + id + ".enabled");
 		}
 
 		public ListBuilder<T> withItem(@NotNull Function<T, ItemStack> item) {
@@ -216,6 +217,7 @@ public class SCComponentImpl extends SCComponent {
 			for (int i = 0; i < elements.size() && i < slots.size(); i++) {
 				T t = elements.get(i);
 				SCComponentImpl component = new SCComponentImpl();
+				component.setEnabled(enabled);
 				component.item = item.apply(t);
 				component.slot = slots.get(i);
 				ItemMeta itemMeta = component.getItemMeta();

@@ -70,11 +70,14 @@ public abstract class SCFrame {
 	}
 	
 	public void add(@NotNull SCComponent c) {
+		if (!c.isEnabled()) {
+			return;
+		}
 		components.add(c);
 	}
 
 	public void addAll(@NotNull Collection<SCComponent> collection) {
-		components.addAll(collection);
+		collection.forEach(this::add);
 	}
 
 	public void clear() {
