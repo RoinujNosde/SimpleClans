@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
-import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -32,12 +31,6 @@ public class StaffFrame extends SCFrame {
     @Override
     public void createComponents() {
         super.createComponents();
-        for (int slot = 0; slot < 9; slot++) {
-            if (slot == 4)
-                continue;
-            add(Components.getPanelComponent(slot));
-        }
-
         addClans();
         addPlayers();
         addGlobalFf();

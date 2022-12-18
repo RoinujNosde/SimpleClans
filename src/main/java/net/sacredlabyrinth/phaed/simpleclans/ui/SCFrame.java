@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -54,9 +55,18 @@ public abstract class SCFrame {
 
 	@OverridingMethodsMustInvokeSuper
 	public void createComponents() {
-		SCComponent back = new SCComponentImpl.Builder(getConfig(), "back").withDisplayNameKey("gui.back.title").build();
+		SCComponent back = new SCComponentImpl.Builder(getConfig(), "back")
+				.withDisplayNameKey("gui.back.title").build();
 		back.setListener(ClickType.LEFT, () -> InventoryDrawer.open(getParent()));
 		add(back);
+
+		ConfigurationSection decorSection = getConfig().getConfigurationSection("components.decorations");
+		if (decorSection != null) {
+			for (String key : decorSection.getKeys(false)) {
+				addAll(new SCComponentImpl.ListBuilder<>(getConfig(), "decorations." + key)
+						.withDisplayNameKey(" ").build());
+			}
+		}
 	}
 
 	@Nullable
@@ -72,6 +82,10 @@ public abstract class SCFrame {
 	public void add(@NotNull SCComponent c) {
 		if (!c.isEnabled()) {
 			return;
+		}
+		SCComponent old = getComponent(c.getSlot());
+		if (old != null) {
+			components.remove(old);
 		}
 		components.add(c);
 	}

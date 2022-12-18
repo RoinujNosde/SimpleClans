@@ -75,6 +75,7 @@ public class SCComponentImpl extends SCComponent {
 			this(material.parseItem());
 		}
 
+		@SuppressWarnings("unused")
 		public Builder(@NotNull Material material) {
 			this(new ItemStack(material));
 		}
@@ -87,7 +88,7 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public Builder(FileConfiguration config, String id) {
-			String materialName = config.getString("components." + id + ".material");
+			String materialName = Objects.requireNonNull(config.getString("components." + id + ".material"));
 			item = Objects.requireNonNull(XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE).parseItem());
 			slot = config.getInt("components." + id + ".slot");
 		}
@@ -144,14 +145,14 @@ public class SCComponentImpl extends SCComponent {
 
 	public static class ListBuilder<T> {
 		private final boolean enabled;
-		private XMaterial material;
+		private final XMaterial material;
 		private Function<T, ItemStack> item;
 		private final List<Integer> slots;
-		private List<T> elements;
+		private final List<T> elements;
 		private Player viewer;
 		private Function<T, String> displayName = (t) -> null;
 		private final List<Function<T, String>> lore = new ArrayList<>();
-		private final Map<ClickType, Function<T, Runnable>> listeners = new HashMap<ClickType, Function<T, Runnable>>();
+		private final Map<ClickType, Function<T, Runnable>> listeners = new HashMap<>();
 		private final Map<ClickType, String> permissions = new HashMap<>();
 		private String lorePermission;
 
@@ -162,6 +163,16 @@ public class SCComponentImpl extends SCComponent {
 			slots = config.getIntegerList("components." + id + ".slots");
 			this.elements = elements;
 			enabled = config.getBoolean("components." + id + ".enabled");
+		}
+
+		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id) {
+			String materialName = Objects.requireNonNull(config.getString("components." + id + ".material"));
+			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
+			item = (t) -> Objects.requireNonNull(material.parseItem());
+			slots = config.getIntegerList("components." + id + ".slots");
+			enabled = config.getBoolean("components." + id + ".enabled");
+			elements = new ArrayList<>();
+			slots.forEach(e -> elements.add(null));
 		}
 
 		public ListBuilder<T> withItem(@NotNull Function<T, ItemStack> item) {
