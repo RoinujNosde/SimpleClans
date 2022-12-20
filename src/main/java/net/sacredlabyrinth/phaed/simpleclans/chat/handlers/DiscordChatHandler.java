@@ -30,11 +30,11 @@ public class DiscordChatHandler implements ChatHandler {
             return;
         }
 
-        chatManager.getDiscordHook().ifPresent(discordProvider -> discordProvider.sendMessage(clan.getTag(), formattedMessage));
+        chatManager.getDiscordProvider().ifPresent(discordProvider -> discordProvider.sendMessage(clan.getTag(), formattedMessage));
     }
 
     @Override
     public boolean canHandle(SCMessage.Source source) {
-        return source == SPIGOT && chatManager.findSupportedHook().isPresent();
+        return source == SPIGOT && chatManager.getDiscordProvider().isPresent();
     }
 }

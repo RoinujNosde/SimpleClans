@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv;
+package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.api.Subscribe;
@@ -18,11 +18,8 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordListener;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DummyListener;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -31,31 +28,21 @@ import java.util.UUID;
 import static net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel.CLAN;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage.Source.DISCORD;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv.DSRVProvider.DiscordAction.ADD;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv.DSRVProvider.DiscordAction.REMOVE;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv.DSRVProvider.DiscordAction.ADD;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv.DSRVProvider.DiscordAction.REMOVE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_AUTO_CREATION;
 
-public class DSRVListener implements DiscordListener {
+public class DSRVListener extends DummyListener<DSRVProvider> {
 
-    private final DSRVProvider hook;
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
-    private final SettingsManager settingsManager;
-    private final ChatManager chatManager;
-    private final ClanManager clanManager;
 
-    public DSRVListener(DSRVProvider hook) {
-        this.hook = hook;
-
-        SimpleClans plugin = hook.getPlugin();
-
-        settingsManager = plugin.getSettingsManager();
-        chatManager = plugin.getChatManager();
-        clanManager = plugin.getClanManager();
+    public DSRVListener(DSRVProvider provider) {
+        super(provider);
     }
 
     @Subscribe
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
-        Optional<TextChannel> channel = hook.getCachedChannel(event.getChannel().getName());
+        Optional<TextChannel> channel = provider.getCachedChannel(event.getChannel().getName());
 
         if (channel.isPresent()) {
             Message eventMessage = event.getMessage();
@@ -64,7 +51,7 @@ public class DSRVListener implements DiscordListener {
             UUID uuid = accountManager.getUuid(Author.getId());
 
             if (uuid == null) {
-                hook.sendPrivateMessage(textChannel, eventMessage, lang("you.did.not.link.your.account"));
+                provider.sendPrivateMessage(textChannel, eventMessage, lang("you.did.not.link.your.account"));
                 return;
             }
 
@@ -80,7 +67,7 @@ public class DSRVListener implements DiscordListener {
 
             if (!Objects.equals(textChannel.getName(), clan.getTag())) {
                 String channelLink = "<#" + textChannel.getId() + ">";
-                hook.sendPrivateMessage(textChannel, eventMessage, lang("cannot.send.discord.message", clanPlayer, channelLink));
+                provider.sendPrivateMessage(textChannel, eventMessage, lang("cannot.send.discord.message", clanPlayer, channelLink));
                 return;
             }
             // DiscordSRV start
@@ -114,7 +101,7 @@ public class DSRVListener implements DiscordListener {
     @Subscribe
     public void onPlayerLinking(AccountLinkedEvent event) {
         ClanPlayer clanPlayer = clanManager.getClanPlayer(event.getPlayer());
-        Member member = hook.getGuildWrapper().getMember(event.getUser());
+        Member member = provider.getGuild().getMember(event.getUser());
         if (clanPlayer == null || member == null) {
             return;
         }
@@ -124,31 +111,31 @@ public class DSRVListener implements DiscordListener {
             return;
         }
 
-        if (!hook.createChannelSilently(clanPlayer)) {
+        if (!provider.createChannelSilently(clanPlayer)) {
             return;
         }
 
-        hook.updateViewPermission(member, clan, ADD);
-        hook.updateLeaderRole(member, clanPlayer, ADD);
+        provider.updateViewPermission(member, clan, ADD);
+        provider.updateLeaderRole(member, clanPlayer, ADD);
     }
 
     @Subscribe
     public void onPlayerUnlinking(AccountUnlinkedEvent event) {
         ClanPlayer clanPlayer = clanManager.getClanPlayer(event.getPlayer());
-        Member member = hook.getGuildWrapper().getMember(event.getDiscordUser());
+        Member member = provider.getGuild().getMember(event.getDiscordUser());
         if (clanPlayer == null || clanPlayer.getClan() == null || member == null) {
             return;
         }
 
-        hook.updateViewPermission(member, clanPlayer.getClan(), REMOVE);
-        hook.updateLeaderRole(member, clanPlayer, REMOVE);
+        provider.updateViewPermission(member, clanPlayer.getClan(), REMOVE);
+        provider.updateLeaderRole(member, clanPlayer, REMOVE);
     }
 
     @Override
     public void onClanCreate(CreateClanEvent event) {
         try {
             if (settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
-                hook.createChannel(event.getClan().getTag());
+                provider.createChannel(event.getClan().getTag());
             }
         } catch (DiscordHookException ex) {
             // Clan is not following the conditions, categories are fulled or discord reaches the limit, nothing to do here.
@@ -158,57 +145,57 @@ public class DSRVListener implements DiscordListener {
 
     @Override
     public void onClanDisband(DisbandClanEvent event) {
-        hook.deleteChannel(event.getClan().getTag());
+        provider.deleteChannel(event.getClan().getTag());
     }
 
     @Override
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
         Clan clan = event.getClan();
-        Member member = hook.getMember(clanPlayer).getMember();
+        Member member = provider.getMember(clanPlayer);
         if (member == null || clan == null) {
             return;
         }
 
-        if (!hook.createChannelSilently(clanPlayer)) {
+        if (!provider.createChannelSilently(clanPlayer)) {
             return;
         }
 
-        hook.updateViewPermission(member, clan, ADD);
+        provider.updateViewPermission(member, clan, ADD);
     }
 
     @Override
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
         Clan clan = event.getClan();
-        Member member = hook.getMember(clanPlayer).getMember();
+        Member member = provider.getMember(clanPlayer);
         if (member == null || clan == null) {
             return;
         }
 
-        hook.updateViewPermission(member, clan, REMOVE);
-        hook.updateLeaderRole(member, clanPlayer, REMOVE);
+        provider.updateViewPermission(member, clan, REMOVE);
+        provider.updateLeaderRole(member, clanPlayer, REMOVE);
     }
 
     @Override
     public void onPlayerPromote(PlayerPromoteEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Member member = hook.getMember(clanPlayer).getMember();
+        Member member = provider.getMember(clanPlayer);
         if (member == null) {
             return;
         }
 
-        hook.updateLeaderRole(member, clanPlayer, ADD);
+        provider.updateLeaderRole(member, clanPlayer, ADD);
     }
 
     @Override
     public void onPlayerDemote(PlayerDemoteEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
-        Member member = hook.getMember(clanPlayer).getMember();
+        Member member = provider.getMember(clanPlayer);
         if (member == null) {
             return;
         }
 
-        hook.updateLeaderRole(member, clanPlayer, REMOVE);
+        provider.updateLeaderRole(member, clanPlayer, REMOVE);
     }
 }

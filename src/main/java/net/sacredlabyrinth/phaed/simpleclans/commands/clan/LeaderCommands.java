@@ -9,17 +9,19 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.DisbandPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordProvider;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions|leader")
@@ -192,8 +194,9 @@ public class LeaderCommands extends BaseCommand {
     @Description("{@@command.description.discord.create}")
     @Conditions("verified")
     public void discord(Player player, Clan clan) {
-        DiscordHook discordHook = chatManager.getDiscordHook();
-        if (discordHook == null) {
+        Optional<DiscordProvider> discordProvider = chatManager.getDiscordProvider();
+
+        if (!discordProvider.isPresent()) {
             ChatBlock.sendMessageKey(player, "discordhook.is.disabled");
             return;
         }
@@ -211,7 +214,7 @@ public class LeaderCommands extends BaseCommand {
         }
 
         try {
-            discordHook.createChannel(clan.getTag());
+            discordProvider.get().createChannel(clan.getTag());
             ChatBlock.sendMessageKey(player, "discord.created.successfully");
         } catch (DiscordHookException ex) {
             // Return player's money if clan creation went wrong

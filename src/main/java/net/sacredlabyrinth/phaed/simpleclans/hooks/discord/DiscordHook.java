@@ -4,21 +4,18 @@ import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv.DSRVProvider;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.*;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.wrappers.SCCategory;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.wrappers.SCChannel;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv.DSRVProvider;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.CategoriesLimitException;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.ChannelExistsException;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.ChannelsLimitException;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.InvalidChannelException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook.DiscordAction.ADD;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook.DiscordAction.REMOVE;
+import java.util.Optional;
 
 /**
  * @deprecated use {@link DSRVProvider}
@@ -31,7 +28,7 @@ public class DiscordHook extends DSRVProvider {
 
     @NotNull
     public Guild getGuild() {
-        return super.getGuildWrapper().getGuild();
+        return super.getGuild();
     }
 
     /**
@@ -39,7 +36,7 @@ public class DiscordHook extends DSRVProvider {
      */
     @NotNull
     public Role getLeaderRole() {
-        return super.getLeaderRole().getRole();
+        return super.getLeaderRole();
     }
 
     /**
@@ -56,7 +53,7 @@ public class DiscordHook extends DSRVProvider {
      */
     @Nullable
     public Category createCategory() {
-        return super.createCategory().getCategory();
+        return super.createCategory();
     }
 
     /**
@@ -100,7 +97,7 @@ public class DiscordHook extends DSRVProvider {
      *
      * @return true if the category exists
      */
-    public boolean categoryExists(String categoryId) {
+    public boolean categoryExists(@NotNull String categoryId) {
         return super.categoryExists(categoryId);
     }
 
@@ -109,7 +106,7 @@ public class DiscordHook extends DSRVProvider {
      *
      * @see #categoryExists(String)
      */
-    public boolean channelExists(String clanTag) {
+    public boolean channelExists(@NotNull String clanTag) {
         return super.channelExists(clanTag);
     }
 
@@ -139,7 +136,7 @@ public class DiscordHook extends DSRVProvider {
      * @return categories from guild
      */
     public List<Category> getCategories() {
-        return super.getCategories().stream().map(SCCategory::getCategory).collect(Collectors.toList());
+        return new ArrayList<>(super.getCategories());
     }
 
     /**
@@ -148,7 +145,7 @@ public class DiscordHook extends DSRVProvider {
      * @return all channels from guild
      */
     public List<TextChannel> getChannels() {
-        return super.getChannels().stream().map(SCChannel::getTextChannel).collect(Collectors.toList());;
+        return new ArrayList<>(super.getChannels());
     }
 
     /**
@@ -160,6 +157,6 @@ public class DiscordHook extends DSRVProvider {
 
     @Nullable
     public Member getMember(@NotNull ClanPlayer clanPlayer) {
-        return super.getMember(clanPlayer).getMember();
+        return super.getMember(clanPlayer);
     }
 }

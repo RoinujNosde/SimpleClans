@@ -69,6 +69,6 @@ public class SpigotChatHandler implements ChatHandler {
     @Override
     public boolean canHandle(SCMessage.Source source) {
         return source == SPIGOT || (source == PROXY && settingsManager.is(PERFORMANCE_USE_BUNGEECORD))
-                || (source == DISCORD && chatManager.isDiscordHookEnabled());
+                || (source == DISCORD && chatManager.getDiscordProvider().isPresent());
     }
 }

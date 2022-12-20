@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv;
+package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
@@ -11,12 +11,8 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordProvider;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.wrappers.*;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DummyProvider;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.*;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.MANAGE_CHANNEL;
 import static github.scarsz.discordsrv.dependencies.jda.api.Permission.VIEW_CHANNEL;
-import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv.DSRVProvider.DiscordAction.ADD;
+import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv.DSRVProvider.DiscordAction.ADD;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.Bukkit.getPluginManager;
 
@@ -54,42 +50,24 @@ import static org.bukkit.Bukkit.getPluginManager;
  * <p>
  * Currently, works with clan chat only.
  */
-public class DSRVProvider implements DiscordProvider {
+public class DSRVProvider extends DummyProvider {
 
-    private static final int MAX_CHANNELS_PER_CATEGORY = 50;
-    private static final int MAX_CHANNELS_PER_GUILD = 500;
-    public static DSRVProvider hook;
-    private final SimpleClans plugin;
-    private final SettingsManager settingsManager;
-    private final ChatManager chatManager;
-    private final ClanManager clanManager;
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
-    private final List<String> textCategories;
+
     private final List<String> discordClanTags;
-    private final List<String> clanTags;
     private final Role leaderRole;
-    private final List<String> whitelist;
 
     public DSRVProvider(@NotNull SimpleClans plugin) {
-        this.plugin = plugin;
+        super(plugin);
 
-        DSRVListener listener = new DSRVListener(hook);
+        DSRVListener listener = new DSRVListener(this);
 
         DiscordSRV.api.subscribe(listener);
         getPluginManager().registerEvents(listener, plugin);
 
-        settingsManager = plugin.getSettingsManager();
-        chatManager = plugin.getChatManager();
-        clanManager = plugin.getClanManager();
-
-        whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
-        clanTags = clanManager.getClans().stream().map(Clan::getTag).collect(Collectors.toList());
         discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
-        textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).
-                stream().filter(this::categoryExists).collect(Collectors.toList());
-
-        leaderRole = getLeaderRole().getRole();
+        leaderRole = getLeaderRole();
 
         setupDiscord();
     }
@@ -100,21 +78,15 @@ public class DSRVProvider implements DiscordProvider {
         createChannels();
     }
 
-    @Override
-    public SCGuild getGuildWrapper() {
-        return new SCGuild(guild);
-    }
-
-    public SimpleClans getPlugin() {
-        return plugin;
+    public Guild getGuild() {
+        return guild;
     }
 
     /**
      * @return A leader role from guild, otherwise creates one.
      */
     @NotNull
-    @Override
-    public SCRole getLeaderRole() {
+    public Role getLeaderRole() {
         Role role = guild.getRoleById(settingsManager.getString(DISCORDCHAT_LEADER_ID));
 
         if (role == null || !role.getName().equals(settingsManager.getString(DISCORDCHAT_LEADER_ROLE))) {
@@ -128,13 +100,13 @@ public class DSRVProvider implements DiscordProvider {
             settingsManager.save();
         }
 
-        return new SCRole(role);
+        return role;
     }
 
     @Override
-    public void sendMessage(String clanTag, String formattedMessage) {
+    public void sendMessage(String clanTag, String message) {
         Optional<TextChannel> channel = getCachedChannel(clanTag);
-        channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, formattedMessage));
+        channel.ifPresent(textChannel -> DiscordUtil.sendMessage(textChannel, message));
     }
 
     /**
@@ -162,8 +134,7 @@ public class DSRVProvider implements DiscordProvider {
      * @return Category or null, if reached the limit
      */
     @Nullable
-    @Override
-    public SCCategory createCategory() {
+    public Category createCategory() {
         if (guild.getChannels().size() >= MAX_CHANNELS_PER_GUILD) {
             return null;
         }
@@ -189,7 +160,7 @@ public class DSRVProvider implements DiscordProvider {
                     ex.getMessage(), categoryName);
         }
 
-        return new SCCategory(category);
+        return category;
     }
 
     /**
@@ -217,7 +188,7 @@ public class DSRVProvider implements DiscordProvider {
 
         Category availableCategory = getCachedCategories().stream().
                 filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY).
-                findAny().orElseGet(() -> createCategory().getCategory());
+                findAny().orElseGet(this::createCategory);
 
         if (availableCategory == null) {
             throw new CategoriesLimitException("Discord reached the categories limit", "discord.reached.category.limit");
@@ -257,7 +228,6 @@ public class DSRVProvider implements DiscordProvider {
      * @return true if the category exists
      * @see #channelExists(String)
      */
-    @Override
     public boolean categoryExists(@NotNull String categoryId) {
         return guild.getCategoryById(categoryId) != null;
     }
@@ -267,9 +237,8 @@ public class DSRVProvider implements DiscordProvider {
      *
      * @see #categoryExists(String)
      */
-    @Override
     public boolean channelExists(@NotNull String clanTag) {
-        return getChannels().stream().map(scChannel -> scChannel.getTextChannel()).anyMatch(name -> name.equals(clanTag));
+        return getChannels().stream().map(TextChannel::getName).anyMatch(name -> name.equals(clanTag));
     }
 
     /**
@@ -279,7 +248,6 @@ public class DSRVProvider implements DiscordProvider {
      * @param channelName the channel name
      * @return true, if channel was deleted and false if not.
      */
-    @Override
     @SuppressWarnings("UnusedReturnValue")
     public boolean deleteChannel(@NotNull String channelName) {
         if (channelExists(channelName)) {
@@ -320,10 +288,8 @@ public class DSRVProvider implements DiscordProvider {
      *
      * @return categories from guild
      */
-    public List<SCCategory> getCategories() {
-        return guild.getCategoriesByName(settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT), false)
-                .stream().map(SCCategory::new)
-                .collect(Collectors.toList());
+    public List<Category> getCategories() {
+        return new ArrayList<>(guild.getCategoriesByName(settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT), false));
     }
 
     /**
@@ -331,9 +297,10 @@ public class DSRVProvider implements DiscordProvider {
      *
      * @return all channels from guild
      */
-    @Override
-    public List<SCChannel> getChannels() {
-        return getCategories().stream().map(scCategory -> scCategory.getCategory().getTextChannels()).flatMap(Collection::stream).map(SCChannel::new).
+    public List<TextChannel> getChannels() {
+        return getCategories().stream().
+                map(Category::getTextChannels).
+                flatMap(Collection::stream).
                 collect(Collectors.toList());
     }
 
@@ -346,9 +313,9 @@ public class DSRVProvider implements DiscordProvider {
     }
 
     @Nullable
-    public SCMember getMember(@NotNull ClanPlayer clanPlayer) {
+    public Member getMember(@NotNull ClanPlayer clanPlayer) {
         String discordId = accountManager.getDiscordId(clanPlayer.getUniqueId());
-        return new SCMember(DiscordUtil.getMemberById(discordId));
+        return DiscordUtil.getMemberById(discordId);
     }
 
     private void clearChannels() {
@@ -384,7 +351,7 @@ public class DSRVProvider implements DiscordProvider {
                 map(Clan::getMembers).
                 flatMap(Collection::stream).
                 forEach(clanPlayer -> {
-                    Member member = getMember(clanPlayer).getMember();
+                    Member member = getMember(clanPlayer);
                     Clan clan = clanPlayer.getClan();
                     if (member != null && clan != null) {
                         updateViewPermission(member, clan, ADD);
@@ -415,7 +382,7 @@ public class DSRVProvider implements DiscordProvider {
                 privateChannelAction.flatMap(privateChannel -> privateChannel.sendMessage(message)));
     }
 
-    private void validateChannel(@NotNull String clanTag)
+    protected void validateChannel(@NotNull String clanTag)
             throws InvalidChannelException, ChannelExistsException, ChannelsLimitException {
         Clan clan = clanManager.getClan(clanTag);
         if (clan == null) {
@@ -451,7 +418,7 @@ public class DSRVProvider implements DiscordProvider {
     private Map<ClanPlayer, Member> getDiscordPlayers(@NotNull Clan clan) {
         Map<ClanPlayer, Member> discordClanPlayers = new HashMap<>();
         for (ClanPlayer cp : clan.getMembers()) {
-            Member member = getMember(cp).getMember();
+            Member member = getMember(cp);
             if (member != null) {
                 discordClanPlayers.put(cp, member);
             }

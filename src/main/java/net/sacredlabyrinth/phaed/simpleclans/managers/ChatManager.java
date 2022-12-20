@@ -7,8 +7,9 @@ import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.chat.ChatHandler;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordProvider;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.discordsrv.DSRVProvider;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.SupportedProviders;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -16,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -30,21 +33,39 @@ public final class ChatManager {
 
     private final SimpleClans plugin;
     private final Set<ChatHandler> handlers = new HashSet<>();
+    private DiscordProvider discordProvider;
+    private @Deprecated DiscordHook discordHook;
 
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         registerHandlers();
     }
 
-    public Optional<? extends DiscordProvider> getDiscordHook() {
-        return findSupportedHook().map(supportedHook -> {
-            try {
-                return supportedHook.provider.getDeclaredConstructor(SimpleClans.class).newInstance(plugin);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    @Deprecated
+    public DiscordHook getDiscordHook() {
+        return discordHook == null ? new DiscordHook(plugin) : discordHook;
+    }
+
+    public Optional<DiscordProvider> getDiscordProvider() {
+        if (discordProvider == null) {
+            Function<? super SupportedProviders, ? extends DiscordProvider> mapper = supportedProvider -> {
+                try {
+                    return (DiscordProvider) supportedProvider.getProvider().getDeclaredConstructor(SimpleClans.class).newInstance(plugin);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                         NoSuchMethodException ex) {
+                    Object[] args = new Object[]{supportedProvider.getPluginName(), ex.getMessage()};
+                    SimpleClans.getInstance().getLogger().log(Level.SEVERE, "Provider {} can't be loaded: {}", args);
+                }
+
+                return null;
+            };
+
+            discordProvider = findSupportedProvider().map(mapper).orElse(null);
+            return Optional.ofNullable(discordProvider);
+
+        }
+
+        return Optional.of(discordProvider);
     }
 
     public void processChat(@NotNull SCMessage message) {
@@ -120,13 +141,15 @@ public final class ChatManager {
         return parseWithPapi(message.getSender(), parsedFormat);
     }
 
-    public Optional<SupportedHook> findSupportedHook() {
+    public Optional<SupportedProviders> findSupportedProvider() {
         if (!plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
             return Optional.empty();
         }
 
-        return Arrays.stream(SupportedHook.values()).
-                filter(provider -> Objects.nonNull(getPluginManager().getPlugin(provider.pluginName))).findFirst();
+        Predicate<? super SupportedProviders> nonNullProvider =
+                provider -> Objects.nonNull(getPluginManager().getPlugin(provider.getPluginName()));
+
+        return Arrays.stream(SupportedProviders.values()).filter(nonNullProvider).findFirst();
     }
 
     private String parseWithPapi(ClanPlayer cp, String message) {
@@ -164,17 +187,5 @@ public final class ChatManager {
         return clan.getAllAllyMembers().stream().
                 filter(allyPlayer -> allyPlayer.toPlayer() != null).
                 collect(Collectors.toList());
-    }
-
-    enum SupportedHook {
-        DiscordSRV("DiscordSRV", DSRVProvider.class);
-
-        private final Class<? extends DiscordProvider> provider;
-        private String pluginName;
-
-        SupportedHook(String pluginName, Class<? extends DiscordProvider> provider) {
-            this.pluginName = pluginName;
-            this.provider = provider;
-        }
     }
 }
