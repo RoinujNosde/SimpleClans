@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_TEXT_CATEGORY_IDS;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_TEXT_WHITELIST;
 
-public abstract class DummyProvider implements DiscordProvider {
+public abstract class AbstractProvider implements DiscordProvider {
 
     public static final int MAX_CHANNELS_PER_CATEGORY = 50;
     public static final int MAX_CHANNELS_PER_GUILD = 500;
@@ -23,7 +23,7 @@ public abstract class DummyProvider implements DiscordProvider {
     protected final List<String> clanTags;
     protected final List<String> textCategories;
 
-    public DummyProvider(SimpleClans plugin) {
+    public AbstractProvider(SimpleClans plugin) {
         this.plugin = plugin;
 
         settingsManager = plugin.getSettingsManager();
@@ -39,5 +39,5 @@ public abstract class DummyProvider implements DiscordProvider {
         return plugin;
     }
 
-
+    protected abstract void setupDiscord();
 }

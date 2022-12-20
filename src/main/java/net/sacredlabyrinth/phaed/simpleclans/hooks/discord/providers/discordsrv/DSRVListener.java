@@ -18,7 +18,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DummyListener;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.AbstractListener;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 
 import java.util.Objects;
@@ -32,7 +32,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.disc
 import static net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv.DSRVProvider.DiscordAction.REMOVE;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DISCORDCHAT_AUTO_CREATION;
 
-public class DSRVListener extends DummyListener<DSRVProvider> {
+public class DSRVListener extends AbstractListener<DSRVProvider> {
 
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
 

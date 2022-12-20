@@ -11,7 +11,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DummyProvider;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.AbstractProvider;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,7 @@ import static org.bukkit.Bukkit.getPluginManager;
  * <p>
  * Currently, works with clan chat only.
  */
-public class DSRVProvider extends DummyProvider {
+public class DSRVProvider extends AbstractProvider {
 
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
@@ -67,12 +67,12 @@ public class DSRVProvider extends DummyProvider {
         getPluginManager().registerEvents(listener, plugin);
 
         discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
-        leaderRole = getLeaderRole();
+        leaderRole = obtainLeaderRole();
 
         setupDiscord();
     }
 
-    public void setupDiscord() {
+    protected void setupDiscord() {
         clearChannels();
         resetPermissions();
         createChannels();
@@ -86,7 +86,7 @@ public class DSRVProvider extends DummyProvider {
      * @return A leader role from guild, otherwise creates one.
      */
     @NotNull
-    public Role getLeaderRole() {
+    public Role obtainLeaderRole() {
         Role role = guild.getRoleById(settingsManager.getString(DISCORDCHAT_LEADER_ID));
 
         if (role == null || !role.getName().equals(settingsManager.getString(DISCORDCHAT_LEADER_ROLE))) {

@@ -5,13 +5,13 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
-public abstract class DummyListener<P extends DummyProvider> implements DiscordListener {
+public abstract class AbstractListener<P extends AbstractProvider> implements DiscordListener {
     protected final P provider;
     protected final SettingsManager settingsManager;
     protected final ChatManager chatManager;
     protected final ClanManager clanManager;
 
-    public DummyListener(P provider) {
+    public AbstractListener(P provider) {
         this.provider = provider;
 
         SimpleClans plugin = this.provider.getPlugin();
