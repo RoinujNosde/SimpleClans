@@ -141,7 +141,7 @@ public final class ChatManager {
         return parseWithPapi(message.getSender(), parsedFormat);
     }
 
-    public Optional<SupportedProviders> findSupportedProvider() {
+    private Optional<SupportedProviders> findSupportedProvider() {
         if (!plugin.getSettingsManager().is(DISCORDCHAT_ENABLE)) {
             return Optional.empty();
         }
