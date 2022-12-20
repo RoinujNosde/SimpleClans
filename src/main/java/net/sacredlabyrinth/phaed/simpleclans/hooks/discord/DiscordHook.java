@@ -36,7 +36,7 @@ public class DiscordHook extends DSRVProvider {
      */
     @NotNull
     public Role getLeaderRole() {
-        return super.getLeaderRole();
+        return super.obtainLeaderRole();
     }
 
     /**

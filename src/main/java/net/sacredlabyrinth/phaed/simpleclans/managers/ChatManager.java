@@ -43,7 +43,11 @@ public final class ChatManager {
 
     @Deprecated
     public DiscordHook getDiscordHook() {
-        return discordHook == null ? new DiscordHook(plugin) : discordHook;
+        if (discordHook == null) {
+            discordHook = new DiscordHook(plugin);
+        }
+
+        return discordHook;
     }
 
     public Optional<DiscordProvider> getDiscordProvider() {
@@ -175,8 +179,7 @@ public final class ChatManager {
         for (Class<? extends ChatHandler> handler : chatHandlers) {
             try {
                 handlers.add(handler.getConstructor().newInstance());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException ex) {
+            } catch (ReflectiveOperationException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Error while trying to register {0}: " +
                         ex.getMessage(), handler.getSimpleName());
             }
