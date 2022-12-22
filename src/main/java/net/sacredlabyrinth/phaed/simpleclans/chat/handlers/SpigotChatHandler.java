@@ -13,6 +13,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERFORMANCE_USE_BUNGEECORD;
 import static org.bukkit.Bukkit.getPluginManager;
 
+@SuppressWarnings("unused")
 public class SpigotChatHandler implements ChatHandler {
 
     @Override
@@ -30,7 +31,7 @@ public class SpigotChatHandler implements ChatHandler {
                 if (event.isCancelled()) {
                     return;
                 }
-                message.setContent(event.getMessage());
+                message.setContent(stripColorsAndFormatsPerPermission(message.getSender(),event.getMessage()));
 
                 ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
                         message.getSource() == DISCORD ? "DISCORD" : message.getChannel()));
@@ -45,6 +46,24 @@ public class SpigotChatHandler implements ChatHandler {
                 }
             }
         }.runTask(plugin);
+    }
+
+    private String stripColorsAndFormatsPerPermission(ClanPlayer sender, String message) {
+        if (!permissionsManager.has(sender.toPlayer(), "simpleclans.member.chat.color")) {
+            message = stripColors(message);
+        }
+        if (!permissionsManager.has(sender.toPlayer(), "simpleclans.member.chat.format")) {
+            message = stripFormats(message);
+        }
+        return message;
+    }
+
+    private String stripColors(String message) {
+        return message.replaceAll("[§&][0-9a-fA-FxX]", "");
+    }
+
+    private String stripFormats(String message) {
+        return message.replaceAll("[§&][k-orK-OR]", "");
     }
 
     @Override
