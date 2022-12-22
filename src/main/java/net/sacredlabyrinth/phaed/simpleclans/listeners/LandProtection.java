@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -56,6 +57,7 @@ public class LandProtection implements Listener {
         registerInteractEntityListener();
         registerInteractListener();
         registerInventoryOpenListener();
+        registerBedEnterListener();
     }
 
     public void registerCreateLandEvent(ProtectionProvider provider, @Nullable Class<? extends Event> createLandEvent) {
@@ -192,6 +194,19 @@ public class LandProtection implements Listener {
         }, plugin, false);
     }
 
+    private void registerBedEnterListener() {
+        Bukkit.getPluginManager().registerEvent(PlayerBedEnterEvent.class, this, priority, (listener, event) -> {
+            if (!(event instanceof PlayerBedEnterEvent)) {
+                return;
+            }
+            PlayerBedEnterEvent bedEvent = (PlayerBedEnterEvent) event;
+            if (protectionManager.can(INTERACT, bedEvent.getBed().getLocation(), bedEvent.getPlayer())) {
+                bedEvent.setUseBed(Event.Result.ALLOW);
+                bedEvent.setCancelled(false);
+            }
+        }, plugin, false);
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
@@ -254,6 +269,14 @@ public class LandProtection implements Listener {
         if (protectionManager.can(action, event.getClickedBlock().getLocation(), event.getPlayer())) {
             event.setUseItemInHand(Event.Result.DENY);
             event.setUseInteractedBlock(Event.Result.DENY);
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEnterBed(PlayerBedEnterEvent event) {
+        if (protectionManager.can(INTERACT, event.getBed().getLocation(), event.getPlayer())) {
+            event.setUseBed(Event.Result.DENY);
             event.setCancelled(true);
         }
     }
