@@ -53,9 +53,6 @@ public abstract class PageableFrame<T> extends SCFrame {
         }
         component.setListener(ClickType.LEFT, () -> {
             component.setListener(ClickType.LEFT, null);
-            if (runnable == null) {
-                return;
-            }
             runnable.run();
         });
     }

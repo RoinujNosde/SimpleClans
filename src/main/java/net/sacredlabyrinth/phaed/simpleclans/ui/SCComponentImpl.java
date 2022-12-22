@@ -178,10 +178,7 @@ public class SCComponentImpl extends SCComponent {
 		public ListBuilder<T> withItem(@NotNull Function<T, ItemStack> item) {
 			this.item = (t) -> {
 				ItemStack result = item.apply(t);
-				if (result == null) {
-					return material.parseItem();
-				}
-				return result;
+				return result == null ? material.parseItem() : result;
 			};
 			return this;
 		}
