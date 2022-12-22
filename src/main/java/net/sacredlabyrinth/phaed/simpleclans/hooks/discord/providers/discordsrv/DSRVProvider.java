@@ -20,6 +20,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -211,7 +212,7 @@ public class DSRVProvider extends AbstractProvider {
     }
 
     /**
-     * Retrieves channel in SimpleClans categories.
+     * Retrieves the cached channel in SimpleClans categories.
      *
      * @param channelName the channel name
      * @return the channel
@@ -219,6 +220,17 @@ public class DSRVProvider extends AbstractProvider {
      */
     public Optional<TextChannel> getCachedChannel(@NotNull String channelName) {
         return getCachedChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
+    }
+
+    /**
+     * Retrieves the channel in SimpleClans categories.
+     *
+     * @param channelName the channel name
+     * @return the channel
+     * @see #getCachedChannel(String) retreive the <b>cached</b> channel.
+     */
+    public Optional<TextChannel> getChannel(@NotNull String channelName) {
+        return getChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findAny();
     }
 
     /**
@@ -238,7 +250,7 @@ public class DSRVProvider extends AbstractProvider {
      * @see #categoryExists(String)
      */
     public boolean channelExists(@NotNull String clanTag) {
-        return getChannels().stream().map(TextChannel::getName).anyMatch(name -> name.equals(clanTag));
+        return getChannel(clanTag).isPresent();
     }
 
     /**
@@ -250,27 +262,16 @@ public class DSRVProvider extends AbstractProvider {
      */
     @SuppressWarnings("UnusedReturnValue")
     public boolean deleteChannel(@NotNull String channelName) {
-        if (channelExists(channelName)) {
-            for (Category category : getCachedCategories()) {
-                if (category.getTextChannels().size() > 0) {
-                    for (TextChannel textChannel : category.getTextChannels()) {
-                        if (textChannel.getName().equals(channelName)) {
-                            textChannel.delete().complete();
-                            return true;
-                        }
-                    }
+        Predicate<TextChannel> hasParent = channel -> channel.getParent() != null;
+        Predicate<Category> lastChannel = category -> category.getTextChannels().size() == 1;
 
-                    if (category.getTextChannels().size() == 0) {
-                        textCategories.remove(category.getId());
-                        settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
-                        settingsManager.save();
-                        category.delete().complete();
-                    }
-                }
-            }
-        }
+        Optional<TextChannel> channel = getChannel(channelName).filter(hasParent);
+        Optional<Category> parent = channel.map(TextChannel::getParent).filter(lastChannel);
 
-        return false;
+        parent.ifPresent(this::deleteCategory);
+        channel.ifPresent(textChannel -> textChannel.delete().complete());
+
+        return channel.isPresent();
     }
 
     /**
@@ -338,6 +339,13 @@ public class DSRVProvider extends AbstractProvider {
         }
     }
 
+    private void deleteCategory(Category parent) {
+        textCategories.remove(parent.getId());
+        settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
+        settingsManager.save();
+        parent.delete().complete();
+    }
+    
     private void resetPermissions() {
         getCachedChannels().stream().
                 map(TextChannel::getMemberPermissionOverrides).
