@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -66,6 +67,15 @@ public class LandProtection implements Listener {
         });
         registerListener(BlockPlaceEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
+            if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
+                return;
+            }
+            if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(PlayerBucketEmptyEvent.class, (event, cancel) -> {
+            Block block = event.getBlockClicked();
             if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
                 return;
             }
