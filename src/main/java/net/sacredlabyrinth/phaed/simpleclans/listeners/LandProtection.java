@@ -16,7 +16,11 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.Event.Result;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -29,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action.*;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -50,14 +55,76 @@ public class LandProtection implements Listener {
     }
 
     public void registerListeners() {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
-        registerBlockBreakListener();
-        registerBlockPlaceListener();
-        registerEntityDamageListener();
-        registerInteractEntityListener();
-        registerInteractListener();
-        registerInventoryOpenListener();
-        registerBedEnterListener();
+        registerListener(BlockBreakEvent.class, (event, cancel) -> {
+            Block block = event.getBlock();
+            if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
+                return;
+            }
+            if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(BlockPlaceEvent.class, (event, cancel) -> {
+            Block block = event.getBlock();
+            if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
+                return;
+            }
+            if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(EntityDamageByEntityEvent.class, (event, cancel) -> {
+            Player attacker = ((Player) event.getDamager());
+            Player victim = event.getEntity() instanceof Player ? ((Player) event.getEntity()) : null;
+            if (protectionManager.can(DAMAGE, event.getEntity().getLocation(), attacker, victim)) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(PlayerInteractEntityEvent.class, (event, cancel) -> {
+            if (protectionManager.can(INTERACT_ENTITY, event.getRightClicked().getLocation(), event.getPlayer())) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(InventoryOpenEvent.class, (event, cancel) -> {
+            InventoryHolder holder = event.getInventory().getHolder();
+            Location location = getLocation(holder);
+            if (holder instanceof Entity && holder == event.getPlayer()) return;
+            if (location == null) return;
+
+            if (protectionManager.can(CONTAINER, location, ((Player) event.getPlayer()))) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(PlayerInteractEvent.class, (event, cancel) -> {
+            if (event.getClickedBlock() == null) {
+                return;
+            }
+            ProtectionManager.Action action = getInteractEventAction(event);
+            if (protectionManager.can(action, event.getClickedBlock().getLocation(), event.getPlayer())) {
+                event.setUseInteractedBlock(cancel ? Result.DENY : Result.ALLOW);
+                event.setUseItemInHand(cancel ? Result.DENY : Result.ALLOW);
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(PlayerBedEnterEvent.class, (event, cancel) -> {
+            if (protectionManager.can(INTERACT, event.getBed().getLocation(), event.getPlayer())) {
+                event.setUseBed(cancel ? Result.DENY : Result.ALLOW);
+                event.setCancelled(cancel);
+            }
+        });
+    }
+
+    private <T extends Event> void registerListener(Class<T> clazz, BiConsumer<T, Boolean> listener) {
+        Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.LOWEST, (l, event) -> {
+            if (clazz.isInstance(event)) {
+                listener.accept(clazz.cast(event), true);
+            }
+        }, plugin, false);
+        Bukkit.getPluginManager().registerEvent(clazz, this, priority, (l, event) -> {
+            if (clazz.isInstance(event)) {
+                listener.accept(clazz.cast(event), false);
+            }
+        }, plugin, false);
     }
 
     public void registerCreateLandEvent(ProtectionProvider provider, @Nullable Class<? extends Event> createLandEvent) {
@@ -95,190 +162,6 @@ public class LandProtection implements Listener {
         }
         ChatBlock.sendMessageKey(player, messageKey);
         ((Cancellable) event).setCancelled(true);
-    }
-
-    private void registerBlockBreakListener() {
-        Bukkit.getPluginManager().registerEvent(BlockBreakEvent.class, this, priority, (listener, event) -> {
-            if (!(event instanceof BlockBreakEvent)) {
-                return;
-            }
-            BlockBreakEvent blockBreakEvent = (BlockBreakEvent) event;
-            Block block = blockBreakEvent.getBlock();
-            if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
-                return;
-            }
-            if (protectionManager.can(BREAK, block.getLocation(), blockBreakEvent.getPlayer())) {
-                blockBreakEvent.setCancelled(false);
-            }
-        }, plugin, false);
-    }
-
-    private void registerBlockPlaceListener() {
-        Bukkit.getPluginManager().registerEvent(BlockPlaceEvent.class, this, priority, (listener, event) -> {
-            if (!(event instanceof BlockPlaceEvent)) {
-                return;
-            }
-            BlockPlaceEvent blockPlaceEvent = (BlockPlaceEvent) event;
-            Block block = blockPlaceEvent.getBlock();
-            if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
-                return;
-            }
-            if (protectionManager.can(PLACE, block.getLocation(), blockPlaceEvent.getPlayer())) {
-                blockPlaceEvent.setCancelled(false);
-            }
-        }, plugin, false);
-    }
-
-    private void registerEntityDamageListener() {
-        Bukkit.getPluginManager().registerEvent(EntityDamageByEntityEvent.class, this, priority,
-                (listener, event) -> {
-                    if (!(event instanceof EntityDamageByEntityEvent)) {
-                        return;
-                    }
-                    EntityDamageByEntityEvent entityEvent = (EntityDamageByEntityEvent) event;
-                    if (!(entityEvent.getDamager() instanceof Player)) {
-                        return;
-                    }
-                    Player attacker = ((Player) entityEvent.getDamager());
-                    Player victim = entityEvent.getEntity() instanceof Player ? ((Player) entityEvent.getEntity()) : null;
-                    if (protectionManager.can(DAMAGE, entityEvent.getEntity().getLocation(), attacker, victim)) {
-                        entityEvent.setCancelled(false);
-                    }
-                }, plugin, false);
-    }
-
-    private void registerInteractEntityListener() {
-        Bukkit.getPluginManager().registerEvent(PlayerInteractEntityEvent.class, this, priority, (listener, event) -> {
-            if (!(event instanceof PlayerInteractEntityEvent)) {
-                return;
-            }
-            PlayerInteractEntityEvent interactEvent = (PlayerInteractEntityEvent) event;
-            if (protectionManager.can(INTERACT_ENTITY, interactEvent.getRightClicked().getLocation(), interactEvent.getPlayer())) {
-                interactEvent.setCancelled(false);
-            }
-        }, plugin, false);
-    }
-
-    private void registerInventoryOpenListener() {
-        Bukkit.getPluginManager().registerEvent(InventoryOpenEvent.class, this, priority, (l, e) -> {
-            if (!(e instanceof InventoryOpenEvent)) {
-                return;
-            }
-            InventoryOpenEvent event = ((InventoryOpenEvent) e);
-            InventoryHolder holder = event.getInventory().getHolder();
-            Location location = getLocation(holder);
-            if (holder instanceof Entity && holder == event.getPlayer()) return;
-            if (location == null) return;
-
-            if (protectionManager.can(CONTAINER, location, ((Player) event.getPlayer()))) {
-                event.setCancelled(false);
-            }
-        }, plugin, false);
-    }
-
-    private void registerInteractListener() {
-        Bukkit.getPluginManager().registerEvent(PlayerInteractEvent.class, this, priority, (listener, event) -> {
-            if (!(event instanceof PlayerInteractEvent)) {
-                return;
-            }
-            PlayerInteractEvent interactEvent = (PlayerInteractEvent) event;
-            if (interactEvent.getClickedBlock() == null) {
-                return;
-            }
-            ProtectionManager.Action action = getInteractEventAction(interactEvent);
-            if (protectionManager.can(action, interactEvent.getClickedBlock().getLocation(), interactEvent.getPlayer())) {
-                interactEvent.setUseInteractedBlock(Event.Result.ALLOW);
-                interactEvent.setUseItemInHand(Event.Result.ALLOW);
-                interactEvent.setCancelled(false);
-            }
-        }, plugin, false);
-    }
-
-    private void registerBedEnterListener() {
-        Bukkit.getPluginManager().registerEvent(PlayerBedEnterEvent.class, this, priority, (listener, event) -> {
-            if (!(event instanceof PlayerBedEnterEvent)) {
-                return;
-            }
-            PlayerBedEnterEvent bedEvent = (PlayerBedEnterEvent) event;
-            if (protectionManager.can(INTERACT, bedEvent.getBed().getLocation(), bedEvent.getPlayer())) {
-                bedEvent.setUseBed(Event.Result.ALLOW);
-                bedEvent.setCancelled(false);
-            }
-        }, plugin, false);
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
-            return;
-        }
-        if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlace(BlockPlaceEvent event) {
-        Block block = event.getBlock();
-        if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
-            return;
-        }
-        if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onDamage(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        if (!(damager instanceof Player)) {
-            return;
-        }
-        Player victim = event.getEntity() instanceof Player ? ((Player) event.getEntity()) : null;
-        if (protectionManager.can(DAMAGE, event.getEntity().getLocation(), (Player) damager, victim)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onInventoryOpen(InventoryOpenEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
-        Location location = getLocation(holder);
-        if (holder instanceof Entity && holder == event.getPlayer()) return;
-        if (location == null) return;
-
-        if (protectionManager.can(CONTAINER, location, ((Player) event.getPlayer()))) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (protectionManager.can(INTERACT_ENTITY, event.getRightClicked().getLocation(), event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getClickedBlock() == null) {
-            return;
-        }
-        ProtectionManager.Action action = getInteractEventAction(event);
-        if (protectionManager.can(action, event.getClickedBlock().getLocation(), event.getPlayer())) {
-            event.setUseItemInHand(Event.Result.DENY);
-            event.setUseInteractedBlock(Event.Result.DENY);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onEnterBed(PlayerBedEnterEvent event) {
-        if (protectionManager.can(INTERACT, event.getBed().getLocation(), event.getPlayer())) {
-            event.setUseBed(Event.Result.DENY);
-            event.setCancelled(true);
-        }
     }
 
     private @Nullable Location getLocation(@Nullable InventoryHolder holder) {
