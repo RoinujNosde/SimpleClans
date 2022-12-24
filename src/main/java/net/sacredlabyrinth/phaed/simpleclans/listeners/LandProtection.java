@@ -24,11 +24,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,6 +64,24 @@ public class LandProtection implements Listener {
                 event.setCancelled(cancel);
             }
         });
+        registerListener(HangingBreakByEntityEvent.class, (event, cancel) -> {
+            Entity remover = event.getRemover();
+            if (!(remover instanceof Player)) {
+                return;
+            }
+            if (protectionManager.can(BREAK, event.getEntity().getLocation(), ((Player) remover))) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(HangingPlaceEvent.class, (event, cancel) -> {
+            Player player = event.getPlayer();
+            if (player == null) {
+                return;
+            }
+            if (protectionManager.can(PLACE, event.getBlock().getLocation(), player)) {
+                event.setCancelled(cancel);
+            }
+        });
         registerListener(BlockPlaceEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
             if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
@@ -83,10 +100,27 @@ public class LandProtection implements Listener {
                 event.setCancelled(cancel);
             }
         });
+        registerListener(PlayerBucketFillEvent.class, (event, cancel) -> {
+            Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+            if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
+                return;
+            }
+            if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
+                event.setCancelled(cancel);
+            }
+        });
         registerListener(EntityDamageByEntityEvent.class, (event, cancel) -> {
-            Player attacker = ((Player) event.getDamager());
+            Player attacker = Events.getAttacker(event);
+            if (attacker == null) {
+                return;
+            }
             Player victim = event.getEntity() instanceof Player ? ((Player) event.getEntity()) : null;
             if (protectionManager.can(DAMAGE, event.getEntity().getLocation(), attacker, victim)) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(PlayerInteractAtEntityEvent.class, (event, cancel) -> {
+            if (protectionManager.can(INTERACT_ENTITY, event.getRightClicked().getLocation(), event.getPlayer())) {
                 event.setCancelled(cancel);
             }
         });
@@ -118,7 +152,6 @@ public class LandProtection implements Listener {
         });
         registerListener(PlayerBedEnterEvent.class, (event, cancel) -> {
             if (protectionManager.can(INTERACT, event.getBed().getLocation(), event.getPlayer())) {
-                event.setUseBed(cancel ? Result.DENY : Result.ALLOW);
                 event.setCancelled(cancel);
             }
         });
