@@ -65,6 +65,7 @@ public class SCComponentImpl extends SCComponent {
 	}
 
 	public static class Builder {
+		private boolean enabled;
 		private final ItemStack item;
 		private String displayName;
 		private int slot;
@@ -88,9 +89,11 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public Builder(FileConfiguration config, String id) {
-			String materialName = Objects.requireNonNull(config.getString("components." + id + ".material"));
+			String materialName = config.getString("components." + id + ".material");
+			if (materialName == null) materialName = "";
 			item = Objects.requireNonNull(XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE).parseItem());
 			slot = config.getInt("components." + id + ".slot");
+			enabled = config.getBoolean("components." + id + ".enabled");
 		}
 
 		public Builder withViewer(@NotNull Player player) {
@@ -157,7 +160,8 @@ public class SCComponentImpl extends SCComponent {
 		private String lorePermission;
 
 		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id, @NotNull List<T> elements) {
-			String materialName = Objects.requireNonNull(config.getString("components." + id + ".material"));
+			String materialName = config.getString("components." + id + ".material");
+			if (materialName == null) materialName = "";
 			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
 			item = (t) -> Objects.requireNonNull(material.parseItem());
 			slots = config.getIntegerList("components." + id + ".slots");
@@ -166,12 +170,7 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id) {
-			String materialName = Objects.requireNonNull(config.getString("components." + id + ".material"));
-			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
-			item = (t) -> Objects.requireNonNull(material.parseItem());
-			slots = config.getIntegerList("components." + id + ".slots");
-			enabled = config.getBoolean("components." + id + ".enabled");
-			elements = new ArrayList<>();
+			this(config, id, new ArrayList<>());
 			slots.forEach(e -> elements.add(null));
 		}
 

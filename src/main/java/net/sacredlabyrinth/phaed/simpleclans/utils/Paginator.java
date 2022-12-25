@@ -115,11 +115,11 @@ public class Paginator<T> {
 	 * @author RoinujNosde
 	 */
 	public boolean nextPage() {
-		if (!hasNextPage()) {
-			return false;
+		boolean hasNext = hasNextPage();
+		if (hasNext) {
+			currentPage++;
 		}
-		currentPage++;
-		return true;
+		return hasNext;
 	}
 
 	/**
@@ -136,11 +136,11 @@ public class Paginator<T> {
 	 * @author RoinujNosde
 	 */
 	public boolean previousPage() {
-		if (hasPreviousPage()) {
+		boolean hasPrevious = hasPreviousPage();
+		if (hasPrevious) {
 			currentPage--;
-			return true;
 		}
-		return false;
+		return hasPrevious;
 	}
 
 	/**
