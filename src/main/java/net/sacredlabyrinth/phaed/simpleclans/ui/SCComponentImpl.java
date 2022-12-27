@@ -201,10 +201,7 @@ public class SCComponentImpl extends SCComponent {
 
 		@NotNull
 		private String processLang(@NotNull String key, T t, Function<T, Object>[] args) {
-			Object[] processedArgs = new Object[args.length];
-			for (int i = 0; i < args.length; i++) {
-				processedArgs[i] = args[i].apply(t);
-			}
+			Object[] processedArgs = Arrays.stream(args).map(func -> func.apply(t)).toArray();
 			return lang(key, viewer, processedArgs);
 		}
 
