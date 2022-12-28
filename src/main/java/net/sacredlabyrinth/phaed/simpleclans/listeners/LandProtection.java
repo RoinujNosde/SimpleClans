@@ -16,6 +16,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Result;
@@ -28,6 +30,8 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,6 +113,14 @@ public class LandProtection implements Listener {
                 event.setCancelled(cancel);
             }
         });
+        registerListener(VehicleDestroyEvent.class, (event, cancel) -> {
+            if (!(event.getAttacker() instanceof Player)) {
+                return;
+            }
+            if (protectionManager.can(BREAK, event.getVehicle().getLocation(), ((Player) event.getAttacker()))) {
+                event.setCancelled(cancel);
+            }
+        });
         registerListener(EntityDamageByEntityEvent.class, (event, cancel) -> {
             Player attacker = Events.getAttacker(event);
             if (attacker == null) {
@@ -127,6 +139,14 @@ public class LandProtection implements Listener {
         registerListener(PlayerInteractEntityEvent.class, (event, cancel) -> {
             if (protectionManager.can(INTERACT_ENTITY, event.getRightClicked().getLocation(), event.getPlayer())) {
                 event.setCancelled(cancel);
+            }
+        });
+        registerListener(VehicleExitEvent.class, (event, cancel) -> {
+            Vehicle vehicle = event.getVehicle();
+            if (vehicle instanceof Tameable && event.getExited() instanceof Player) {
+                if (protectionManager.can(INTERACT_ENTITY, vehicle.getLocation(), ((Player) event.getExited()))) {
+                    event.setCancelled(cancel);
+                }
             }
         });
         registerListener(InventoryOpenEvent.class, (event, cancel) -> {
