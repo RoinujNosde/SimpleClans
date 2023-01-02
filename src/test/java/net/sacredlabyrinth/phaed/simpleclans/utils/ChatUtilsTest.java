@@ -19,4 +19,19 @@ public class ChatUtilsTest {
         lastColors = ChatUtils.getLastColors("§aa mensagem§ ax termina com");
         assertEquals("§a", lastColors);
     }
+
+    @Test
+    public void parseColors() {
+        assertEquals("Hello", ChatUtils.parseColors("Hello"));
+        assertEquals("§aHello §x§a§a§a§a§a§aWorld", ChatUtils.parseColors("&aHello &#aaaaaaWorld"));
+    }
+
+    @Test
+    public void stripColors() {
+        assertEquals("Hello", ChatUtils.stripColors("Hello"));
+        assertEquals("Hello", ChatUtils.stripColors("&#000000&#000000Hello"));
+        assertEquals("&aHello", ChatUtils.stripColors("&#000000&&#000000aHello"));
+
+    }
+
 }
