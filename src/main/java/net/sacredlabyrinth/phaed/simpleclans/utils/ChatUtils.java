@@ -22,7 +22,8 @@ public class ChatUtils {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("[§&](#[0-9A-Fa-f]{6}|[0-9a-fA-FxXk-orK-OR])");
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("[&§][0-9a-fA-Fk-orK-OR]");
+    private static final Pattern HEX_STRIP_COLOR_PATTERN = Pattern.compile("([&§]#[0-9A-Fa-f]{6})|([&§][0-9a-fA-Fk-orK-OR])|([&§]x([&§][a-fA-F0-9]){6})");
 
     static {
         try {
@@ -56,7 +57,8 @@ public class ChatUtils {
     }
 
     public static String stripColors(String text) {
-        Matcher matcher = STRIP_COLOR_PATTERN.matcher(text);
+        Pattern pattern = HEX_COLOR_SUPPORT ? HEX_STRIP_COLOR_PATTERN : STRIP_COLOR_PATTERN;
+        Matcher matcher = pattern.matcher(text);
         StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {
             matcher.appendReplacement(buffer, "");
