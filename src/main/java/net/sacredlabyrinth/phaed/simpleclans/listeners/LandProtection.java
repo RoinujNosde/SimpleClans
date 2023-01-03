@@ -25,6 +25,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -32,6 +33,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,6 +88,14 @@ public class LandProtection implements Listener {
                 event.setCancelled(cancel);
             }
         });
+        registerListener(StructureGrowEvent.class, (event, cancel) -> {
+            if (event.getPlayer() == null) {
+                return;
+            }
+            if (protectionManager.can(PLACE, event.getLocation(), event.getPlayer())) {
+                event.setCancelled(cancel);
+            }
+        });
         registerListener(BlockPlaceEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
             if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
@@ -118,6 +128,14 @@ public class LandProtection implements Listener {
                 return;
             }
             if (protectionManager.can(BREAK, event.getVehicle().getLocation(), ((Player) event.getAttacker()))) {
+                event.setCancelled(cancel);
+            }
+        });
+        registerListener(EntityChangeBlockEvent.class, (event, cancel) -> {
+            if (!(event.getEntity() instanceof Player)) {
+                return;
+            }
+            if (protectionManager.can(BREAK, event.getBlock().getLocation(), ((Player) event.getEntity()))) {
                 event.setCancelled(cancel);
             }
         });
