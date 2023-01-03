@@ -29,6 +29,7 @@ public class ChatUtilsTest {
     @Test
     public void stripColors() {
         assertEquals("Hello", ChatUtils.stripColors("Hello"));
+        assertEquals("&xHello", ChatUtils.stripColors("&xHello"));
         assertEquals("Hello", ChatUtils.stripColors("&#000000&#000000Hello"));
         assertEquals("&aHello", ChatUtils.stripColors("&#000000&&#000000aHello"));
 
