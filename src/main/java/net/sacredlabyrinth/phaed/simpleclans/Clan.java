@@ -316,7 +316,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("initial")
     public String getInitial() {
-        return tag.substring(0, 1).toUpper();
+        return tag.substring(0, 1).toUpperCase();
     }
 
     /**
