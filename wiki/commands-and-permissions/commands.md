@@ -111,7 +111,7 @@ You can find land commands [here](../integration/land-claiming.md).
 
 ## Mod Commands
 
-| Command                               | Description                             |
+| `/clan mod modtag (clan) (tag)`       | Changes colors or case of a clan's tag  |
 | ------------------------------------- | --------------------------------------- |
 | `/clan mod place (player) (new clan)` | Places a player in a clan               |
 | `/clan mod home set (tag)`            | Sets a clan's home                      |
