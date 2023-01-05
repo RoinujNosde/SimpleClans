@@ -308,6 +308,16 @@ public class Clan implements Serializable, Comparable<Clan> {
             return "";
         }
     }
+    
+    /**
+     * Returns the first letter in the clan's tag
+     *
+     * @return the first letter
+     */
+    @Placeholder("initial")
+    public String getInitial() {
+        return tag.substring(0, 1).toUpper();
+    }
 
     /**
      * Returns the last used date in milliseconds
