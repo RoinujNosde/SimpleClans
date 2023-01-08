@@ -48,6 +48,7 @@ public class PlayerDeath extends SCListener {
         // record death for victim
         victimCp.addDeath();
         plugin.getStorageManager().updateClanPlayer(victimCp);
+        plugin.getStorageManager().updateClanPlayer(attackerCp);
     }
 
     @EventHandler
