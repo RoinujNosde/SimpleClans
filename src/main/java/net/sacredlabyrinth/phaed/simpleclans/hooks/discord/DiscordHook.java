@@ -423,7 +423,18 @@ public class DiscordHook implements Listener {
      * @see #categoryExists(String)
      */
     public boolean channelExists(String clanTag) {
-        return getChannels().stream().map(TextChannel::getName).anyMatch(name -> name.equals(clanTag));
+        return getChannel(clanTag).isPresent();
+    }
+
+    /**
+     * Retrieves the channel in SimpleClans categories.
+     *
+     * @param channelName the channel name
+     * @return the channel
+     * @see #getCachedChannel(String) retreive the <b>cached</b> channel.
+     */
+    public Optional<TextChannel> getChannel(@NotNull String channelName) {
+        return getChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findAny();
     }
 
     /**
@@ -623,7 +634,8 @@ public class DiscordHook implements Listener {
     }
 
     private void updateViewPermission(@NotNull Member member, @NotNull Clan clan, DiscordAction action) {
-        Optional<TextChannel> channel = getCachedChannel(clan.getTag());
+        String tag = clan.getTag();
+        Optional<TextChannel> channel = getCachedChannel(tag).map(Optional::of).orElse(getChannel(tag));
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
 
