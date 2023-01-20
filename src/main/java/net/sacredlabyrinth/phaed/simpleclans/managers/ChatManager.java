@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -55,8 +54,7 @@ public final class ChatManager {
             Function<? super SupportedProviders, ? extends DiscordProvider> mapper = supportedProvider -> {
                 try {
                     return (DiscordProvider) supportedProvider.getProvider().getDeclaredConstructor(SimpleClans.class).newInstance(plugin);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                         NoSuchMethodException ex) {
+                } catch (ReflectiveOperationException ex) {
                     Object[] args = new Object[]{supportedProvider.getPluginName(), ex.getMessage()};
                     SimpleClans.getInstance().getLogger().log(Level.SEVERE, "Provider {} can't be loaded: {}", args);
                 }
