@@ -70,13 +70,11 @@ public class DiscordHook implements Listener {
 
     private static final int MAX_CHANNELS_PER_CATEGORY = 50;
     private static final int MAX_CHANNELS_PER_GUILD = 500;
-
     private final SimpleClans plugin;
     private final SettingsManager settingsManager;
     private final ChatManager chatManager;
     private final ClanManager clanManager;
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
-
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
     private final List<String> textCategories;
     private final List<String> discordClanTags;
@@ -352,7 +350,6 @@ public class DiscordHook implements Listener {
      * <p>Sets positive {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
      *
      * @param clanTag the clan tag
-     *
      * @throws InvalidChannelException  clan is not verified or permanent,
      *                                  no one member is linked or clan is not in the whitelist.
      * @throws ChannelExistsException   if channel is already exist
@@ -396,10 +393,8 @@ public class DiscordHook implements Listener {
      * Retrieves channel in SimpleClans categories.
      *
      * @param channelName the channel name
-     *
-     * @see #getCachedCategories() retreive categories.
-     *
      * @return the channel
+     * @see #getCachedCategories() retreive categories.
      */
     public Optional<TextChannel> getCachedChannel(@NotNull String channelName) {
         return getCachedChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
@@ -409,9 +404,8 @@ public class DiscordHook implements Listener {
      * Checks if a category can be obtained by id.
      *
      * @param categoryId the category id
-     * @see #channelExists(String)
-     *
      * @return true if the category exists
+     * @see #channelExists(String)
      */
     public boolean categoryExists(String categoryId) {
         return guild.getCategoryById(categoryId) != null;
@@ -442,18 +436,20 @@ public class DiscordHook implements Listener {
      * If there are no channels, removes category as well.
      *
      * @param channelName the channel name
-     *
      * @return true, if channel was deleted and false if not.
      */
     @SuppressWarnings("UnusedReturnValue")
     public boolean deleteChannel(@NotNull String channelName) {
+        boolean deleted = false;
+
         if (channelExists(channelName)) {
             for (Category category : getCachedCategories()) {
                 if (category.getTextChannels().size() > 0) {
                     for (TextChannel textChannel : category.getTextChannels()) {
                         if (textChannel.getName().equals(channelName)) {
                             textChannel.delete().complete();
-                            return true;
+                            deleted = true;
+                            break;
                         }
                     }
 
@@ -463,6 +459,8 @@ public class DiscordHook implements Listener {
                         settingsManager.save();
                         category.delete().complete();
                     }
+
+                    return deleted;
                 }
             }
         }
