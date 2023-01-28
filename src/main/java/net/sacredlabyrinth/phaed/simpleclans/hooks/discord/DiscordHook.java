@@ -514,9 +514,12 @@ public class DiscordHook implements Listener {
         List<String> discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
 
         // Removes abandoned channels
-        List<String> clansToDelete = new ArrayList<>(discordClanTags);
+        ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
         clansToDelete.removeAll(clanTags);
-        clansToDelete.forEach(this::deleteChannel);
+        clansToDelete.forEach(channelName -> {
+            deleteChannel(channelName);
+            discordClanTags.remove(channelName);
+        });
 
         // Removes invalid channels
         for (String clanTag : discordClanTags) {
