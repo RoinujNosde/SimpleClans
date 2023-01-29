@@ -523,13 +523,15 @@ public class DiscordHook implements Listener {
         });
 
         // Removes invalid channels
-        for (String clanChannel : discordClanChannels.keySet()) {
+        Iterator<String> iterator = discordClanChannels.keySet().iterator();
+        while (iterator.hasNext()) {
+            String clanChannel = iterator.next();
             try {
                 validateChannel(clanChannel);
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
                 deleteChannel(clanChannel);
-                discordClanChannels.remove(clanChannel);
+                iterator.remove();
             } catch (ChannelExistsException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
             }
