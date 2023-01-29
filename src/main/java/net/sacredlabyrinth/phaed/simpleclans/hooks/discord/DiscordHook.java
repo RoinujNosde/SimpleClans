@@ -33,7 +33,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -81,6 +80,7 @@ public class DiscordHook implements Listener {
     private final List<String> clanTags;
     private final Role leaderRole;
     private final List<String> whitelist;
+    private final Map<String, TextChannel> discordClanChannels;
 
     public DiscordHook(SimpleClans plugin) {
         this.plugin = plugin;
@@ -92,8 +92,11 @@ public class DiscordHook implements Listener {
         whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
 
         clanTags = clanManager.getClans().stream().map(Clan::getTag).collect(Collectors.toList());
+        discordClanChannels = getCachedChannels().stream().
+                collect(Collectors.toMap(TextChannel::getName, textChannel -> textChannel));
 
         leaderRole = getLeaderRole();
+
         setupDiscord();
     }
 
@@ -511,23 +514,24 @@ public class DiscordHook implements Listener {
     }
 
     private void clearChannels() {
-        List<String> discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
-
         // Removes abandoned channels
-        ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
+        ArrayList<String> clansToDelete = new ArrayList<>(discordClanChannels.keySet());
         clansToDelete.removeAll(clanTags);
-        clansToDelete.forEach(channelName -> {
-            deleteChannel(channelName);
-            discordClanTags.remove(channelName);
+        clansToDelete.forEach(clanChannel -> {
+            deleteChannel(clanChannel);
+            discordClanChannels.remove(clanChannel);
         });
 
         // Removes invalid channels
-        for (String clanTag : discordClanTags) {
+        Iterator<String> iterator = discordClanChannels.keySet().iterator();
+        while (iterator.hasNext()) {
+            String clanChannel = iterator.next();
             try {
-                validateChannel(clanTag);
+                validateChannel(clanChannel);
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
-                deleteChannel(clanTag);
+                deleteChannel(clanChannel);
+                iterator.remove();
             } catch (ChannelExistsException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
             }
@@ -535,17 +539,18 @@ public class DiscordHook implements Listener {
     }
 
     private void resetPermissions() {
-        Predicate<PermissionOverride> isNotBot = permissionOverride ->
-                !Objects.equals(permissionOverride.getMember(), guild.getSelfMember());
+        for (Map.Entry<String, TextChannel> channelEntry : discordClanChannels.entrySet()) {
+            TextChannel channel = channelEntry.getValue();
+            Clan clan = clanManager.getClan(channelEntry.getKey());
+            Map<ClanPlayer, Member> discordPlayers = getDiscordPlayers(clan);
 
-        getCachedChannels().stream().
-                map(TextChannel::getMemberPermissionOverrides).
-                flatMap(Collection::stream).
-                filter(isNotBot).forEach(permission -> {
-                    Member member = permission.getMember();
-                    GuildChannel channel = permission.getChannel();
-                    permission.delete().queue(afterSuccess -> updateViewPermission(member, channel, ADD));
-                });
+            for (Member member : discordPlayers.values()) {
+                PermissionOverride override = channel.getPermissionOverride(member);
+                if (override != null) {
+                    override.delete().queue(afterSuccess -> updateViewPermission(member, channel, ADD));
+                }
+            }
+        }
     }
 
     private void createChannels() {
