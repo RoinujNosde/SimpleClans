@@ -55,8 +55,7 @@ public class DSRVProvider extends AbstractProvider {
 
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
     private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
-
-    private final List<String> discordClanTags;
+    private final Map<String, TextChannel> discordClanChannels;
     private final Role leaderRole;
 
     public DSRVProvider(@NotNull SimpleClans plugin) {
@@ -67,7 +66,9 @@ public class DSRVProvider extends AbstractProvider {
         DiscordSRV.api.subscribe(listener);
         getPluginManager().registerEvents(listener, plugin);
 
-        discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
+        discordClanChannels = getCachedChannels().stream().
+                collect(Collectors.toMap(TextChannel::getName, textChannel -> textChannel));
+
         leaderRole = obtainLeaderRole();
 
         setupDiscord();
@@ -321,18 +322,23 @@ public class DSRVProvider extends AbstractProvider {
 
     private void clearChannels() {
         // Removes abandoned channels
-        ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
+        ArrayList<String> clansToDelete = new ArrayList<>(discordClanChannels.keySet());
         clansToDelete.removeAll(clanTags);
-        clansToDelete.forEach(this::deleteChannel);
+        clansToDelete.forEach(clanChannel -> {
+            deleteChannel(clanChannel);
+            discordClanChannels.remove(clanChannel);
+        });
 
         // Removes invalid channels
-        for (String clanTag : clanTags) {
+        Iterator<String> iterator = discordClanChannels.keySet().iterator();
+        while (iterator.hasNext()) {
+            String clanChannel = iterator.next();
             try {
-                validateChannel(clanTag);
+                validateChannel(clanChannel);
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
-                deleteChannel(clanTag);
-
+                deleteChannel(clanChannel);
+                iterator.remove();
             } catch (ChannelExistsException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
             }
@@ -345,26 +351,20 @@ public class DSRVProvider extends AbstractProvider {
         settingsManager.save();
         parent.delete().complete();
     }
-    
-    private void resetPermissions() {
-        getCachedChannels().stream().
-                map(TextChannel::getMemberPermissionOverrides).
-                flatMap(Collection::stream).
-                filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
-                filter(permissionOverride -> !Objects.equals(permissionOverride.getMember(), guild.getSelfMember())).
-                forEach(permissionOverride -> permissionOverride.delete().queue());
 
-        clanTags.stream().map(clanManager::getClan).
-                filter(Objects::nonNull).
-                map(Clan::getMembers).
-                flatMap(Collection::stream).
-                forEach(clanPlayer -> {
-                    Member member = getMember(clanPlayer);
-                    Clan clan = clanPlayer.getClan();
-                    if (member != null && clan != null) {
-                        updateViewPermission(member, clan, ADD);
-                    }
-                });
+    private void resetPermissions() {
+        for (Map.Entry<String, TextChannel> channelEntry : discordClanChannels.entrySet()) {
+            TextChannel channel = channelEntry.getValue();
+            Clan clan = clanManager.getClan(channelEntry.getKey());
+            Map<ClanPlayer, Member> discordPlayers = getDiscordPlayers(clan);
+
+            for (Member member : discordPlayers.values()) {
+                PermissionOverride override = channel.getPermissionOverride(member);
+                if (override != null) {
+                    override.delete().queue(afterSuccess -> updateViewPermission(member, channel, ADD));
+                }
+            }
+        }
     }
 
     private void createChannels() {
@@ -446,17 +446,25 @@ public class DSRVProvider extends AbstractProvider {
         }
     }
 
+    private void updateViewPermission(@Nullable Member member, @NotNull GuildChannel channel, @NotNull DiscordAction action) {
+        if (member == null) {
+            return;
+        }
+
+        if (action == ADD) {
+            channel.upsertPermissionOverride(member).
+                    setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
+        } else {
+            channel.getManager().removePermissionOverride(member).queue();
+        }
+    }
+
     void updateViewPermission(@NotNull Member member, @NotNull Clan clan, DiscordAction action) {
-        Optional<TextChannel> channel = getCachedChannel(clan.getTag());
+        String tag = clan.getTag();
+        Optional<TextChannel> channel = getCachedChannel(tag).map(Optional::of).orElse(getChannel(tag));
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
-
-            if (action == ADD) {
-                textChannel.upsertPermissionOverride(member).
-                        setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
-            } else {
-                textChannel.getManager().removePermissionOverride(member).queue();
-            }
+            updateViewPermission(member, textChannel, action);
         }
     }
 
