@@ -1,6 +1,8 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.Subscribe;
+import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.*;
 import github.scarsz.discordsrv.dependencies.jda.api.exceptions.ErrorResponseException;
@@ -53,18 +55,29 @@ import static org.bukkit.Bukkit.getPluginManager;
  */
 public class DSRVProvider extends AbstractProvider {
 
-    private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
-    private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
-    private final Map<String, TextChannel> discordClanChannels;
-    private final Role leaderRole;
+    private List<String> textCategories;
+    private AccountLinkManager accountManager;
+    private Guild guild;
+    private Map<String, TextChannel> discordClanChannels;
+    private Role leaderRole;
+    private DSRVListener listener;
 
     public DSRVProvider(@NotNull SimpleClans plugin) {
         super(plugin);
+        DiscordSRV.api.subscribe(this);
+    }
 
-        DSRVListener listener = new DSRVListener(this);
+    @Subscribe
+    public void registerDiscord(DiscordReadyEvent event) {
+        DSRVListener dsrvListener = new DSRVListener(this);
+        getPluginManager().registerEvents(dsrvListener, plugin);
+        DiscordSRV.api.subscribe(dsrvListener);
 
-        DiscordSRV.api.subscribe(listener);
-        getPluginManager().registerEvents(listener, plugin);
+        guild = DiscordSRV.getPlugin().getMainGuild();
+        accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
+
+        textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).
+                stream().filter(this::categoryExists).collect(Collectors.toList());
 
         discordClanChannels = getCachedChannels().stream().
                 collect(Collectors.toMap(TextChannel::getName, textChannel -> textChannel));

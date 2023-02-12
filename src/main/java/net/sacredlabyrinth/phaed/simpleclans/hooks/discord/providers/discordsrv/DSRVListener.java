@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.api.ListenerPriority;
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
 import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
@@ -20,6 +21,7 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.AbstractListener;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
+import org.bukkit.event.EventHandler;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -40,7 +42,7 @@ public class DSRVListener extends AbstractListener<DSRVProvider> {
         super(provider);
     }
 
-    @Subscribe
+    @Subscribe(priority = ListenerPriority.MONITOR)
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
         Optional<TextChannel> channel = provider.getCachedChannel(event.getChannel().getName());
 
@@ -132,6 +134,7 @@ public class DSRVListener extends AbstractListener<DSRVProvider> {
     }
 
     @Override
+    @EventHandler
     public void onClanCreate(CreateClanEvent event) {
         try {
             if (settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
@@ -144,11 +147,13 @@ public class DSRVListener extends AbstractListener<DSRVProvider> {
     }
 
     @Override
+    @EventHandler
     public void onClanDisband(DisbandClanEvent event) {
         provider.deleteChannel(event.getClan().getTag());
     }
 
     @Override
+    @EventHandler
     public void onPlayerClanJoin(PlayerJoinedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
         Clan clan = event.getClan();
@@ -165,6 +170,7 @@ public class DSRVListener extends AbstractListener<DSRVProvider> {
     }
 
     @Override
+    @EventHandler
     public void onPlayerClanLeave(PlayerKickedClanEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
         Clan clan = event.getClan();
@@ -178,6 +184,7 @@ public class DSRVListener extends AbstractListener<DSRVProvider> {
     }
 
     @Override
+    @EventHandler
     public void onPlayerPromote(PlayerPromoteEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
         Member member = provider.getMember(clanPlayer);
@@ -189,6 +196,7 @@ public class DSRVListener extends AbstractListener<DSRVProvider> {
     }
 
     @Override
+    @EventHandler
     public void onPlayerDemote(PlayerDemoteEvent event) {
         ClanPlayer clanPlayer = event.getClanPlayer();
         Member member = provider.getMember(clanPlayer);

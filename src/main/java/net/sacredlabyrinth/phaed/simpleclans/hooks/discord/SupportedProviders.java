@@ -3,7 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.hooks.discord;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.providers.discordsrv.DSRVProvider;
 
 public enum SupportedProviders {
-    DiscordSRV("DiscordSRV", DSRVProvider.class);
+    DSRV("DiscordSRV", DSRVProvider.class);
 
     private final Class<?> provider;
 

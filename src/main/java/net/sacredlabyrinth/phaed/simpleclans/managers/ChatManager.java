@@ -38,6 +38,7 @@ public final class ChatManager {
     public ChatManager(SimpleClans plugin) {
         this.plugin = plugin;
         registerHandlers();
+        getDiscordProvider();
     }
 
     @Deprecated
@@ -53,18 +54,16 @@ public final class ChatManager {
         if (discordProvider == null) {
             Function<? super SupportedProviders, ? extends DiscordProvider> mapper = supportedProvider -> {
                 try {
-                    return (DiscordProvider) supportedProvider.getProvider().getDeclaredConstructor(SimpleClans.class).newInstance(plugin);
+                    discordProvider = (DiscordProvider) supportedProvider.getProvider().getDeclaredConstructor(SimpleClans.class).newInstance(plugin);
                 } catch (ReflectiveOperationException ex) {
-                    Object[] args = new Object[]{supportedProvider.getPluginName(), ex.getMessage()};
-                    SimpleClans.getInstance().getLogger().log(Level.SEVERE, "Provider {} can't be loaded: {}", args);
+                    SimpleClans.getInstance().getLogger().
+                            log(Level.SEVERE, String.format("Provider %s can't be loaded!", supportedProvider.getPluginName()), ex);
                 }
 
                 return null;
             };
 
-            discordProvider = findSupportedProvider().map(mapper).orElse(null);
-            return Optional.ofNullable(discordProvider);
-
+            return findSupportedProvider().map(mapper);
         }
 
         return Optional.of(discordProvider);
