@@ -161,7 +161,7 @@ public class Components {
         return new SCComponentImpl(" ", null, XMaterial.GRAY_STAINED_GLASS_PANE, slot);
     }
 
-    public static @NotNull SCComponent getPreviousPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator paginator, @NotNull Player viewer) {
+    public static @NotNull SCComponent getPreviousPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator<?> paginator, @NotNull Player viewer) {
         if (!paginator.hasPreviousPage()) {
             return getPanelComponent(slot);
         }
@@ -171,7 +171,7 @@ public class Components {
         return c;
     }
 
-    public static @NotNull SCComponent getNextPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator paginator, @NotNull Player viewer) {
+    public static @NotNull SCComponent getNextPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator<?> paginator, @NotNull Player viewer) {
         if (!paginator.hasNextPage()) {
             return getPanelComponent(slot);
         }
