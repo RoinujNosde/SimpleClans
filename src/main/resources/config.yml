@@ -202,8 +202,7 @@ request:
     ask-frequency-secs: 60
     max-asks-per-request: 1440
 bb:
-    color: e
-    accent-color: '8'
+    prefix: "&8* &e"
     show-on-login: true
     size: 6
     login-size: 6

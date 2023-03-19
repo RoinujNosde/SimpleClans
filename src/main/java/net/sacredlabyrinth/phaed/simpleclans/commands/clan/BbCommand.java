@@ -12,8 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.RED;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions|verified")
@@ -50,7 +49,7 @@ public class BbCommand extends BaseCommand {
     @Description("{@@command.description.bb.post}")
     public void postMessage(Player player, @Name("message") String msg) {
         Clan clan = Objects.requireNonNull(cm.getClanByPlayerUniqueId(player.getUniqueId()));
-        clan.addBb(lang("bulletin.board.message", settings.getColored(BB_ACCENT_COLOR), settings.getColored(BB_COLOR), player.getName(), msg));
+        clan.addBb(lang("bulletin.board.message", player.getName(), msg));
         clan.displayBb(player);
         storage.updateClan(clan);
     }

@@ -1,16 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.migrations;
 
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
-import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BB_ACCENT_COLOR;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BB_COLOR;
 
 /**
  * Class responsible to migrate from old bb format,
@@ -28,48 +18,19 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 public class BbMigration implements Migration {
 
     private final SettingsManager settingsManager;
-    private final StorageManager storageManager;
-    private final ClanManager clanManager;
 
-    public BbMigration(ClanManager clanManager, SettingsManager settingsManager, StorageManager storageManager) {
-        this.clanManager = clanManager;
+    public BbMigration(SettingsManager settingsManager) {
         this.settingsManager = settingsManager;
-        this.storageManager = storageManager;
     }
 
     @Override
     public void migrate() {
-        String bbAccentColor = settingsManager.getColored(BB_ACCENT_COLOR);
-        String bbColor = settingsManager.getColored(BB_COLOR);
-
-        for (Clan clan : clanManager.getClans()) {
-            ArrayList<String> bb = new ArrayList<>();
-
-            for (String msg : clan.getBb()) {
-                msg = fromOldBb(msg, bbAccentColor, bbColor);
-                if (msg == null) continue;
-
-                bb.add(msg);
-            }
-
-            clan.clearBb();
-            clan.setBb(bb);
-            storageManager.updateClan(clan, false);
-        }
-    }
-
-    @Nullable
-    public static String fromOldBb(String msg, String bbAccentColor, String bbColor) {
-        if (!msg.matches("^.+_§.\\*.+$")) {
-
-            int index = msg.indexOf("_");
-            if (index < 1) {
-                return null;
-            }
-
-            msg = msg.substring(0, ++index) + bbAccentColor + "* " + bbColor + ChatUtils.stripColors(msg.substring(index));
+        if (settingsManager.getConfig().contains("bb.accent-color")) {
+            settingsManager.getConfig().set("bb.accent-color", null);
         }
 
-        return msg;
+        if (settingsManager.getConfig().contains("bb.color")) {
+            settingsManager.getConfig().set("bb.color", null);
+        }
     }
 }

@@ -514,8 +514,7 @@ public final class SettingsManager {
         > BB Settings
         ================
          */
-        BB_COLOR("bb.color", "e"),
-        BB_ACCENT_COLOR("bb.accent-color", "8"),
+        BB_PREFIX("bb.prefix", "&8* &e"),
         BB_SHOW_ON_LOGIN("bb.show-on-login", true),
         BB_SIZE("bb.size", 6),
         BB_LOGIN_SIZE("bb.login-size", 6),
