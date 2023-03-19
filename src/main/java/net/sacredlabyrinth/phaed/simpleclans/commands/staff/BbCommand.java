@@ -59,6 +59,7 @@ public class BbCommand extends BaseCommand {
     public void postMessage(Player player, @Name("clan") ClanInput input, @Name("message") String msg) {
         Clan clan = input.getClan();
         clan.addBb(lang("bulletin.board.message", settings.getColored(BB_ACCENT_COLOR), settings.getColored(BB_COLOR), player.getName(), msg));
+        clan.displayBb(player);
         storage.updateClan(clan);
     }
 
