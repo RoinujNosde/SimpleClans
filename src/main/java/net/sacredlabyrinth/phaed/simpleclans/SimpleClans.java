@@ -3,7 +3,8 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import co.aikar.commands.BukkitCommandIssuer;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
-import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.BbMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
@@ -111,6 +112,7 @@ public class SimpleClans extends JavaPlugin {
         protectionManager.registerListeners();
         chatManager = new ChatManager(this);
         migrateChatFormat();
+        new BbMigration(clanManager, settingsManager, storageManager).migrate();
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);

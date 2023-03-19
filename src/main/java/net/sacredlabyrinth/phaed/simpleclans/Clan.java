@@ -492,6 +492,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
+    public void setBb(List<String> bb) {
+        this.bb = Collections.unmodifiableList(bb);
+    }
 
     /**
      * Adds a bulletin board message without saving it to the database
@@ -1305,31 +1308,37 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param maxSize amount of lines to display
      */
     public void displayBb(Player player, int maxSize) {
-        if (isVerified()) {
-            ChatBlock.sendBlank(player);
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
-            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getColored(PAGE_HEADINGS_COLOR);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
-
-            List<String> localBb;
-            if (maxSize == -1) {
-                localBb = bb;
-                maxSize = SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE);
-            } else {
-                localBb = new ArrayList<>(bb);
-            }
-            while (localBb.size() > maxSize) {
-                localBb.remove(0);
-            }
-
-            for (String msg : localBb) {
-                if (!sendBbTime(player, msg)) {
-                    String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
-                    ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
-                }
-            }
-            ChatBlock.sendBlank(player);
+        if (!isVerified()) {
+            return;
         }
+
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+
+        ChatBlock.sendBlank(player);
+        String bbAccentColor = settings.getColored(BB_ACCENT_COLOR);
+        String pageHeadingsColor = settings.getColored(PAGE_HEADINGS_COLOR);
+        ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
+
+        List<String> localBb;
+        if (maxSize == -1) {
+            localBb = bb;
+            maxSize = settings.getInt(BB_SIZE);
+        } else {
+            localBb = new ArrayList<>(bb);
+        }
+
+        while (localBb.size() > maxSize) {
+            localBb.remove(0);
+        }
+
+        for (String msg : localBb) {
+            if (!sendBbTime(player, msg)) {
+                String bbColor = settings.getColored(BB_COLOR);
+                ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
+            }
+        }
+
+        ChatBlock.sendBlank(player);
     }
 
     /**
@@ -1345,10 +1354,10 @@ public class Clan implements Serializable, Comparable<Clan> {
             if (index < 1) {
                 return false;
             }
+
             long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
-            String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
-            msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
+            msg = ChatUtils.parseColors(msg.substring(++index));
+
             TextComponent textComponent = new TextComponent(msg);
             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
                     Dates.formatTime(time, 1) + lang("bb.ago"))));
@@ -1371,7 +1380,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<Clan> clans = SimpleClans.getInstance().getClanManager().getClans();
 
         if (isPermanent() && !force) {
-            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent"));
+            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent", sender));
             return;
         }
 

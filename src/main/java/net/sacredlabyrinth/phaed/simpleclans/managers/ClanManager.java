@@ -393,6 +393,7 @@ public final class ClanManager {
         if (plugin.getSettingsManager().is(DISABLE_MESSAGES)) {
             return;
         }
+
         plugin.getProxyManager().sendMessage("ALL", ChatColor.DARK_GRAY + "* " + ChatColor.AQUA + msg);
         Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("server.announce") + "] " + ChatColor.WHITE + msg);
     }
