@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.staff;
 
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.Player;
 
 import co.aikar.commands.BaseCommand;
@@ -17,6 +18,8 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BB_ACCENT_COLOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.BB_COLOR;
 import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.WHITE;
@@ -31,7 +34,10 @@ public class BbCommand extends BaseCommand {
     private StorageManager storage;
     @Dependency
     private ClanManager cm;
-    
+
+    @Dependency
+    private SettingsManager settings;
+
     @Default
     @CommandPermission("simpleclans.mod.bb")
     @Description("{@@command.description.mod.bb.display}")
@@ -52,7 +58,7 @@ public class BbCommand extends BaseCommand {
     @Description("{@@command.description.mod.bb.post}")
     public void postMessage(Player player, @Name("clan") ClanInput input, @Name("message") String msg) {
         Clan clan = input.getClan();
-        clan.addBb(player.getName(), AQUA + player.getName() + ": " + WHITE + msg);
+        clan.addBb(lang("bulletin.board.message", settings.getColored(BB_ACCENT_COLOR), settings.getColored(BB_COLOR), player.getName(), msg));
         storage.updateClan(clan);
     }
 
