@@ -493,7 +493,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     public void setBb(List<String> bb) {
-        this.bb = Collections.unmodifiableList(bb);
+        this.bb = new ArrayList<>(bb);
     }
 
     /**
@@ -1280,8 +1280,9 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
+            msg = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg);
+            addBb(msg);
+            clanAnnounce(announcerName, msg);
         }
     }
 
@@ -1290,8 +1291,9 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
+            msg = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg);
             addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg, updateLastUsed);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
+            clanAnnounce(announcerName, msg);
         }
     }
 
