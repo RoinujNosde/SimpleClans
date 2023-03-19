@@ -65,7 +65,7 @@ public class StaffCommands extends BaseCommand {
                 ChatBlock.sendMessage(sender, RED + lang("you.cannot.move.the.last.leader", sender));
                 return;
             } else {
-                oldClan.addBb(oldCp.getName(), AQUA + lang("0.has.resigned", oldCp.getName()));
+                oldClan.addBb(oldCp.getName(), lang("0.has.resigned", oldCp.getName()));
                 oldClan.removePlayerFromClan(uuid);
             }
         }
@@ -102,7 +102,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
+        clan.addBb(player.getName(), lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
         clan.changeClanTag(tag);
         player.sendMessage(lang("0.tag.changed.to.1", player, clan.getTag(), tag));
     }
@@ -226,7 +226,7 @@ public class StaffCommands extends BaseCommand {
 
         if (!clanInput.isVerified()) {
             clanInput.verifyClan();
-            clanInput.addBb(sender.getName(), AQUA + lang("clan.0.has.been.verified", clanInput.getName()));
+            clanInput.addBb(sender.getName(), lang("clan.0.has.been.verified", clanInput.getName()));
             ChatBlock.sendMessage(sender, AQUA + lang("the.clan.has.been.verified", sender));
         } else {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.is.already.verified", sender));
@@ -263,7 +263,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(sender.getName(), AQUA + lang("has.been.kicked.by", clanPlayer.getName(),
+        clan.addBb(sender.getName(), lang("has.been.kicked.by", clanPlayer.getName(),
                 sender.getName(), sender));
         clan.removePlayerFromClan(clanPlayer.getUniqueId());
     }
@@ -294,7 +294,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(sender.getName(), AQUA + lang("promoted.to.leader", promotePl.getName()));
+        clan.addBb(sender.getName(), lang("promoted.to.leader", promotePl.getName()));
         clan.promote(promotePl.getUniqueId());
         ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.promoted", sender));
     }
@@ -317,7 +317,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
         clan.demote(otherCp.getUniqueId());
-        clan.addBb(sender.getName(), AQUA + lang("demoted.back.to.member", otherCp.getName()));
+        clan.addBb(sender.getName(), lang("demoted.back.to.member", otherCp.getName()));
         ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.demoted", sender));
     }
 

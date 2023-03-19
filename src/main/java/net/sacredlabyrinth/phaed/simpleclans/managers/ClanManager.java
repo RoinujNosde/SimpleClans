@@ -1089,7 +1089,7 @@ public final class ClanManager {
                 case SUCCESS:
                     if (plugin.getPermissionsManager().playerGrantMoney(player, price)) {
                         player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
-                        clan.addBb(player.getName(), ChatColor.AQUA + lang("bb.clan.withdraw", price));
+                        clan.addBb(player.getName(), lang("bb.clan.withdraw", price));
                         return true;
                     }
                     break;

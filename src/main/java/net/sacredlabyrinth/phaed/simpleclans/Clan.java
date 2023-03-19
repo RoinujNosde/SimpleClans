@@ -114,7 +114,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
-                addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
+                addBb(player.getName(), lang("bb.clan.deposit", amount));
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
@@ -151,7 +151,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
-                addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
+                addBb(player.getName(), lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
             }
         } else {
@@ -1415,15 +1415,15 @@ public class Clan implements Serializable, Comparable<Clan> {
             String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
+                c.addBb(disbanded, lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
+                c.addBb(disbanded, lang("has.been.disbanded.rivalry.ended", getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, AQUA + lang("has.been.disbanded.alliance.ended", getName()));
+                c.addBb(disbanded, lang("has.been.disbanded.alliance.ended", getName()));
             }
         }
         SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
@@ -1473,7 +1473,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
             if (requestPlayer != null) {
-                addBb(requestPlayer.getName(), AQUA + lang("you.are.at.war",
+                addBb(requestPlayer.getName(), lang("you.are.at.war",
                         getName(), targetClan.getColorTag()));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);

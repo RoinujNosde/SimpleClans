@@ -63,7 +63,7 @@ public class LeaderCommands extends BaseCommand {
                     player));
             return;
         }
-        clan.addBb(player.getName(), AQUA + lang("demoted.back.to.member", otherCp.getName()));
+        clan.addBb(player.getName(), lang("demoted.back.to.member", otherCp.getName()));
         clan.demote(otherCp.getUniqueId());
     }
 
@@ -96,7 +96,7 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("promoted.to.leader", otherPl.getName()));
+        clan.addBb(player.getName(), lang("promoted.to.leader", otherPl.getName()));
         clan.promote(otherPl.getUniqueId());
     }
 
@@ -133,7 +133,7 @@ public class LeaderCommands extends BaseCommand {
         }
         if (cm.purchaseVerification(player)) {
             clan.verifyClan();
-            clan.addBb(player.getName(), AQUA + lang("clan.0.has.been.verified", clan.getName()));
+            clan.addBb(player.getName(), lang("clan.0.has.been.verified", clan.getName()));
             ChatBlock.sendMessage(player, AQUA + lang("the.clan.has.been.verified", player));
         }
     }
@@ -156,7 +156,7 @@ public class LeaderCommands extends BaseCommand {
             ChatBlock.sendMessage(player, ChatColor.RED + lang("this.player.is.already.trusted", player));
             return;
         }
-        clan.addBb(player.getName(), AQUA + lang("has.been.given.trusted.status.by", trustedInput.getName(),
+        clan.addBb(player.getName(), lang("has.been.given.trusted.status.by", trustedInput.getName(),
                 player.getName()));
         trustedInput.setTrusted(true);
         storage.updateClanPlayer(trustedInput);
@@ -181,7 +181,7 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("has.been.given.untrusted.status.by", trustedInput.getName(),
+        clan.addBb(player.getName(), lang("has.been.given.untrusted.status.by", trustedInput.getName(),
                 player.getName()));
         trustedInput.setTrusted(false);
         storage.updateClanPlayer(trustedInput);
