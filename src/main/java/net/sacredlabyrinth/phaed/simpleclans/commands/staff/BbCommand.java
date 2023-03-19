@@ -52,7 +52,7 @@ public class BbCommand extends BaseCommand {
 
     @Subcommand("%add")
     @CommandPermission("simpleclans.mod.bb-add")
-    @CommandCompletion("@clans")
+    @CommandCompletion("@clans @nothing")
     @Description("{@@command.description.mod.bb.post}")
     public void postMessage(Player player, @Name("clan") ClanInput input, @Name("message") String msg) {
         Clan clan = input.getClan();
