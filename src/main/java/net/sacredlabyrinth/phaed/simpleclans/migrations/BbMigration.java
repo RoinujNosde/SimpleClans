@@ -3,15 +3,10 @@ package net.sacredlabyrinth.phaed.simpleclans.migrations;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 
 /**
- * Class responsible to migrate from old bb format,
- * where prefix sign (`*`) wasn't printed in bb.
- *
- * <pre>
- * Example:
- * `1679069633622_§e§bpandas is no longer at war with turtles`
- * to
- * `1679069633622_§8* §bpandas is no longer at war with turtles`
- * </pre>
+ * Class responsible to migrate from old bb format to new one.
+ * <p>
+ * `bb.accent-color` and `bb.color` replaced to `bb.prefix`.
+ * </p>
  *
  * @since 2.19.0
  */
