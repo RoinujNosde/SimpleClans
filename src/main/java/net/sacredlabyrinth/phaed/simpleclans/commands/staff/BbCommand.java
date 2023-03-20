@@ -28,6 +28,7 @@ public class BbCommand extends BaseCommand {
 
     @Default
     @CommandPermission("simpleclans.mod.bb")
+    @CommandCompletion("@clans")
     @Description("{@@command.description.mod.bb.display}")
     public void display(Player sender, @Name("clan") ClanInput input) {
         input.getClan().displayBb(sender);
@@ -35,6 +36,7 @@ public class BbCommand extends BaseCommand {
 
     @Subcommand("%clear")
     @CommandPermission("simpleclans.mod.bb-clear")
+    @CommandCompletion("@clans")
     @Description("{@@command.description.mod.bb.clear}")
     public void clear(Player player, @Name("clan") ClanInput input) {
         input.getClan().clearBb();
@@ -43,6 +45,7 @@ public class BbCommand extends BaseCommand {
 
     @Subcommand("%add")
     @CommandPermission("simpleclans.mod.bb-add")
+    @CommandCompletion("@clans @nothing")
     @Description("{@@command.description.mod.bb.post}")
     public void postMessage(Player player, @Name("clan") ClanInput input, @Name("message") String msg) {
         Clan clan = input.getClan();
