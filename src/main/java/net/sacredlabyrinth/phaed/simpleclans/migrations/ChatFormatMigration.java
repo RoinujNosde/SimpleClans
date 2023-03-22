@@ -7,19 +7,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
- *
  * @author RoinujNosde
  */
-@SuppressWarnings("deprecation")
-public class ChatFormatMigration {
+public class ChatFormatMigration implements Migration {
 
-    SimpleClans plugin = SimpleClans.getInstance();
+    private final SettingsManager sm;
+    private final FileConfiguration c;
 
-    
+    public ChatFormatMigration(SettingsManager settingsManager) {
+        sm = settingsManager;
+        c = sm.getConfig();
+    }
+
     public void migrateClanChat() {
-        SettingsManager sm = plugin.getSettingsManager();
-        FileConfiguration c = sm.getConfig();
-
         if (c.getString("clanchat.name-color") == null) {
             return;
         }
@@ -99,5 +99,11 @@ public class ChatFormatMigration {
         c.set("allychat.message-color", null);
         c.set("allychat.tag-bracket", null);
         sm.save();
+    }
+
+    @Override
+    public void migrate() {
+        migrateClanChat();
+        migrateAllyChat();
     }
 }

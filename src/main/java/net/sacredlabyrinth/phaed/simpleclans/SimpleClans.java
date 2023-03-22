@@ -112,7 +112,7 @@ public class SimpleClans extends JavaPlugin {
         protectionManager = new ProtectionManager();
         protectionManager.registerListeners();
         chatManager = new ChatManager(this);
-        migrateChatFormat();
+        new ChatFormatMigration(settingsManager).migrate();
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
@@ -141,12 +141,6 @@ public class SimpleClans extends JavaPlugin {
         pm.registerEvents(new TamableMobsSharing(this), this);
         pm.registerEvents(new PvPOnlyInWar(this), this);
         pm.registerEvents(new FriendlyFire(this), this);
-    }
-
-    private void migrateChatFormat() {
-        ChatFormatMigration chatFormatMigration = new ChatFormatMigration();
-        chatFormatMigration.migrateAllyChat();
-        chatFormatMigration.migrateClanChat();
     }
 
     private void hookIntoPAPI() {
