@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.utils;
+package net.sacredlabyrinth.phaed.simpleclans.migrations;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;

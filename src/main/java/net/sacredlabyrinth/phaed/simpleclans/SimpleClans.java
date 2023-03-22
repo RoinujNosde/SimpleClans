@@ -14,7 +14,7 @@ import net.sacredlabyrinth.phaed.simpleclans.proxy.BungeeManager;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.ProxyManager;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.ChatFormatMigration;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
