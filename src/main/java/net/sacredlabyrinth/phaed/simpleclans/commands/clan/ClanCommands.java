@@ -103,7 +103,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
+        clan.addBb(player.getName(), lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
         clan.changeClanTag(tag);
         cm.updateDisplayName(player);
     }
@@ -193,7 +193,7 @@ public class ClanCommands extends BaseCommand {
         }
         if (cm.purchaseMemberFeeSet(player)) {
             clan.setMemberFee(fee);
-            clan.addBb(player.getName(), AQUA + lang("bb.fee.set", fee));
+            clan.addBb(player.getName(), lang("bb.fee.set", fee));
             ChatBlock.sendMessage(player, AQUA + lang("fee.set", player));
             storage.updateClan(clan);
         }
@@ -204,7 +204,7 @@ public class ClanCommands extends BaseCommand {
     @Conditions("rank:name=FRIENDLYFIRE")
     @Description("{@@command.description.clanff.allow}")
     public void allowClanFf(Player player, Clan clan) {
-        clan.addBb(player.getName(), AQUA + lang("clan.wide.friendly.fire.is.allowed"));
+        clan.addBb(player.getName(), lang("clan.wide.friendly.fire.is.allowed"));
         clan.setFriendlyFire(true);
         storage.updateClan(clan);
     }
@@ -213,7 +213,7 @@ public class ClanCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.ff")
     @Description("{@@command.description.clanff.block}")
     public void blockClanFf(Player player, Clan clan) {
-        clan.addBb(player.getName(), AQUA + lang("clan.wide.friendly.fire.blocked"));
+        clan.addBb(player.getName(), lang("clan.wide.friendly.fire.blocked"));
         clan.setFriendlyFire(false);
         storage.updateClan(clan);
     }
@@ -252,9 +252,9 @@ public class ClanCommands extends BaseCommand {
         if (!issuerClan.reachedRivalLimit()) {
             if (!issuerClan.isRival(rivalInput.getTag())) {
                 issuerClan.addRival(rivalInput);
-                rivalInput.addBb(player.getName(), AQUA + lang("has.initiated.a.rivalry", issuerClan.getName(),
+                rivalInput.addBb(player.getName(), lang("has.initiated.a.rivalry", issuerClan.getName(),
                         rivalInput.getName()), false);
-                issuerClan.addBb(player.getName(), AQUA + lang("has.initiated.a.rivalry", player.getName(),
+                issuerClan.addBb(player.getName(), lang("has.initiated.a.rivalry", player.getName(),
                         rivalInput.getName()));
             } else {
                 ChatBlock.sendMessage(player, RED + lang("your.clans.are.already.rivals", player));
@@ -331,7 +331,7 @@ public class ClanCommands extends BaseCommand {
         issuerClan.removeAlly(allyInput);
         allyInput.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", issuerClan.getName(),
                 allyInput.getName()), false);
-        issuerClan.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", player.getName(),
+        issuerClan.addBb(player.getName(), lang("has.broken.the.alliance", player.getName(),
                 allyInput.getName()));
     }
 
@@ -354,7 +354,7 @@ public class ClanCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(sender.getName(), AQUA + lang("has.been.kicked.by", clanPlayer.getName(),
+        clan.addBb(sender.getName(), lang("has.been.kicked.by", clanPlayer.getName(),
                 sender.getName(), sender));
         clan.removePlayerFromClan(clanPlayer.getUniqueId());
     }
@@ -365,7 +365,7 @@ public class ClanCommands extends BaseCommand {
     @HelpSearchTags("leave")
     public void resignConfirm(Player player, ClanPlayer cp, Clan clan) {
         if (clan.isPermanent() || !clan.isLeader(player) || clan.getLeaders().size() > 1) {
-            clan.addBb(player.getName(), AQUA + lang("0.has.resigned", player.getName()));
+            clan.addBb(player.getName(),  lang("0.has.resigned", player.getName()));
             cp.addResignTime(clan.getTag());
             clan.removePlayerFromClan(player.getUniqueId());
 

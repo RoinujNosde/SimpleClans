@@ -114,7 +114,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
             if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
-                addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
+                addBb(player.getName(), lang("bb.clan.deposit", amount));
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
@@ -151,7 +151,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (getBalance() >= amount) {
             if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
-                addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
+                addBb(player.getName(), lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);
             }
         } else {
@@ -492,6 +492,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
+    public void setBb(List<String> bb) {
+        this.bb = new ArrayList<>(bb);
+    }
 
     /**
      * Adds a bulletin board message without saving it to the database
@@ -1277,8 +1280,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
+            addBb(msg);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1287,8 +1290,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg, updateLastUsed);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
+            addBb(msg, updateLastUsed);
+            clanAnnounce(announcerName,SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1305,31 +1308,35 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param maxSize amount of lines to display
      */
     public void displayBb(Player player, int maxSize) {
-        if (isVerified()) {
-            ChatBlock.sendBlank(player);
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
-            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getColored(PAGE_HEADINGS_COLOR);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
-
-            List<String> localBb;
-            if (maxSize == -1) {
-                localBb = bb;
-                maxSize = SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE);
-            } else {
-                localBb = new ArrayList<>(bb);
-            }
-            while (localBb.size() > maxSize) {
-                localBb.remove(0);
-            }
-
-            for (String msg : localBb) {
-                if (!sendBbTime(player, msg)) {
-                    String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
-                    ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
-                }
-            }
-            ChatBlock.sendBlank(player);
+        if (!isVerified()) {
+            return;
         }
+
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+
+        ChatBlock.sendBlank(player);
+        ChatBlock.saySingle(player, lang("bulletin.board.header", getName()));
+
+        List<String> localBb;
+        if (maxSize == -1) {
+            localBb = bb;
+            maxSize = settings.getInt(BB_SIZE);
+        } else {
+            localBb = new ArrayList<>(bb);
+        }
+
+        while (localBb.size() > maxSize) {
+            localBb.remove(0);
+        }
+
+        for (String msg : localBb) {
+            if (!sendBbTime(player, msg)) {
+                String bbPrefix = settings.getColored(BB_PREFIX);
+                ChatBlock.sendMessage(player, bbPrefix + ChatUtils.parseColors(msg));
+            }
+        }
+
+        ChatBlock.sendBlank(player);
     }
 
     /**
@@ -1345,10 +1352,12 @@ public class Clan implements Serializable, Comparable<Clan> {
             if (index < 1) {
                 return false;
             }
+
+            String bbPrefix = SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX);
+
             long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
-            String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
-            msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
+            msg = ChatUtils.parseColors(bbPrefix + msg.substring(++index));
+
             TextComponent textComponent = new TextComponent(msg);
             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
                     Dates.formatTime(time, 1) + lang("bb.ago"))));
@@ -1371,7 +1380,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<Clan> clans = SimpleClans.getInstance().getClanManager().getClans();
 
         if (isPermanent() && !force) {
-            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent"));
+            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent", sender));
             return;
         }
 
@@ -1404,17 +1413,18 @@ public class Clan implements Serializable, Comparable<Clan> {
             String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
+                c.addBb(disbanded, lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
+                c.addBb(disbanded, lang("has.been.disbanded.rivalry.ended", getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, AQUA + lang("has.been.disbanded.alliance.ended", getName()));
+                c.addBb(disbanded, lang("has.been.disbanded.alliance.ended", getName()));
             }
         }
+
         SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
 
         SimpleClans.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SimpleClans.getInstance(), () -> {
@@ -1462,7 +1472,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
             if (requestPlayer != null) {
-                addBb(requestPlayer.getName(), AQUA + lang("you.are.at.war",
+                addBb(requestPlayer.getName(), lang("you.are.at.war",
                         getName(), targetClan.getColorTag()));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);

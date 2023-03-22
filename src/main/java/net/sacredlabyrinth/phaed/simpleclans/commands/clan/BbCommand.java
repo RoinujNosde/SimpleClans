@@ -5,13 +5,14 @@ import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.RED;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions|verified")
@@ -21,6 +22,8 @@ public class BbCommand extends BaseCommand {
     private ClanManager cm;
     @Dependency
     private StorageManager storage;
+    @Dependency
+    private SettingsManager settings;
 
     @Subcommand("%bb")
     @CommandPermission("simpleclans.member.bb")
@@ -46,7 +49,8 @@ public class BbCommand extends BaseCommand {
     @Description("{@@command.description.bb.post}")
     public void postMessage(Player player, @Name("message") String msg) {
         Clan clan = Objects.requireNonNull(cm.getClanByPlayerUniqueId(player.getUniqueId()));
-        clan.addBb(player.getName(), AQUA + player.getName() + ": " + WHITE + msg);
+        clan.addBb(lang("bulletin.board.message", player.getName(), msg));
+        clan.displayBb(player);
         storage.updateClan(clan);
     }
 }
