@@ -2,10 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.DisbandPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
@@ -90,7 +87,7 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
         if (settings.is(CLAN_CONFIRMATION_FOR_PROMOTE) && clan.getLeaders().size() > 1) {
-            requestManager.addPromoteRequest(cp, otherPl.getName(), clan);
+            requestManager.requestAllLeaders(cp, ClanRequest.PROMOTE, otherPl.getName(), "asking.for.the.promotion", otherPl.getName());
             ChatBlock.sendMessage(player, AQUA + lang("promotion.vote.has.been.requested.from.all.leaders",
                     player));
             return;
@@ -105,7 +102,7 @@ public class LeaderCommands extends BaseCommand {
     @Description("{@@command.description.disband}")
     public void disband(Player player, ClanPlayer cp, Clan clan) {
         if (clan.getLeaders().size() != 1) {
-            requestManager.addDisbandRequest(cp, clan);
+            requestManager.requestAllLeaders(cp, ClanRequest.DISBAND, clan.getTag(), "asking.to.disband");
             ChatBlock.sendMessage(player, AQUA +
                     lang("clan.disband.vote.has.been.requested.from.all.leaders", player));
             return;
@@ -185,6 +182,21 @@ public class LeaderCommands extends BaseCommand {
                 player.getName()));
         trustedInput.setTrusted(false);
         storage.updateClanPlayer(trustedInput);
+    }
+
+    @Subcommand("%rename")
+    @CommandPermission("simpleclans.leader.rename")
+    @Description("{@@command.description.rename}")
+    public void rename(ClanPlayer cp, Clan clan, @Name("name") String clanName) {
+        if (clan.getLeaders().size() != 1) {
+            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", clanName);
+            return;
+        }
+
+        clan.setName(clanName);
+        storage.updateClan(clan);
+
+        ChatBlock.sendMessageKey(cp.toPlayer(), "you.have.successfully.renamed.your.clan", clanName);
     }
 
     @Subcommand("%discord %create")

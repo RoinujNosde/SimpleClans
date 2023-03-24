@@ -345,10 +345,22 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.admin.permanent")
     @Description("{@@command.description.admin.permanent}")
-    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
-        boolean permanent = !clan.getClan().isPermanent();
-        clan.getClan().setPermanent(permanent);
-        clan.getClan().addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
-        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getClan().getName()));
+    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clanInput) {
+        boolean permanent = !clanInput.getClan().isPermanent();
+        Clan clan = clanInput.getClan();
+        clan.setPermanent(permanent);
+        clan.addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
+        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getName()));
+    }
+
+    @Subcommand("%mod %rename")
+    @CommandPermission("simpleclans.mod.rename")
+    @Description("{@@command.description.rename}")
+    public void rename(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("name") String clanName) {
+        Clan clan = clanInput.getClan();
+        clan.setName(clanName);
+        storage.updateClan(clan);
+
+        ChatBlock.sendMessageKey(sender, "you.have.successfully.renamed.the.clan", clanName);
     }
 }
