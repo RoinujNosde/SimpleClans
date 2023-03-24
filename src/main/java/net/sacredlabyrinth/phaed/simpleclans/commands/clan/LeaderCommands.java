@@ -186,6 +186,7 @@ public class LeaderCommands extends BaseCommand {
 
     @Subcommand("%rename")
     @CommandPermission("simpleclans.leader.rename")
+    @CommandCompletion("@nothing")
     @Description("{@@command.description.rename}")
     public void rename(ClanPlayer cp, Clan clan, @Name("name") String clanName) {
         if (clan.getLeaders().size() != 1) {
