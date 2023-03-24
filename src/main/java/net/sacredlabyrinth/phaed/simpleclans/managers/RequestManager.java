@@ -75,7 +75,7 @@ public final class RequestManager {
      * </p>
      * <ul>
      *      <li>Demote request can be asked from all leaders,
-     *      <b>except the demoted one.</b</li>
+     *      <b>except the demoted one.</b></li>
      *      <li>Invite request has to ask someone <b>outside</b> of leaders clan</li>
      * </ul>
      *
