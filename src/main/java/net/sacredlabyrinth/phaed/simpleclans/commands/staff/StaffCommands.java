@@ -354,6 +354,7 @@ public class StaffCommands extends BaseCommand {
     }
 
     @Subcommand("%mod %rename")
+    @CommandCompletion("@clans @nothing")
     @CommandPermission("simpleclans.mod.rename")
     @Description("{@@command.description.rename}")
     public void rename(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("name") String clanName) {
