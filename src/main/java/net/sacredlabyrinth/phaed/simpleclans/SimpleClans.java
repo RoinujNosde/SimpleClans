@@ -3,17 +3,18 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import co.aikar.commands.BukkitCommandIssuer;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
-import net.sacredlabyrinth.phaed.simpleclans.language.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.CSVBankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.BbMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.BungeeManager;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.ProxyManager;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatFormatMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.ChatFormatMigration;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
@@ -98,6 +99,7 @@ public class SimpleClans extends JavaPlugin {
         instance = this;
         new LanguageMigration(this).migrate();
         settingsManager = new SettingsManager(this);
+        new BbMigration(settingsManager).migrate();
         languageResource = new LanguageResource();
         this.hasUUID = UUIDMigration.canReturnUUID();
 
@@ -110,7 +112,7 @@ public class SimpleClans extends JavaPlugin {
         protectionManager = new ProtectionManager();
         protectionManager.registerListeners();
         chatManager = new ChatManager(this);
-        migrateChatFormat();
+        new ChatFormatMigration(settingsManager).migrate();
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
@@ -139,12 +141,6 @@ public class SimpleClans extends JavaPlugin {
         pm.registerEvents(new TamableMobsSharing(this), this);
         pm.registerEvents(new PvPOnlyInWar(this), this);
         pm.registerEvents(new FriendlyFire(this), this);
-    }
-
-    private void migrateChatFormat() {
-        ChatFormatMigration chatFormatMigration = new ChatFormatMigration();
-        chatFormatMigration.migrateAllyChat();
-        chatFormatMigration.migrateClanChat();
     }
 
     private void hookIntoPAPI() {

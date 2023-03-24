@@ -1,4 +1,4 @@
-package net.sacredlabyrinth.phaed.simpleclans.language;
+package net.sacredlabyrinth.phaed.simpleclans.migrations;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,18 +20,18 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class that migrates old language files (yaml) to the new format (properties)
- * 
+ *
  * @author RoinujNosde
  *
  */
-public class LanguageMigration {
-	
-	private SimpleClans plugin;
+public class LanguageMigration implements Migration {
+
+	private final SimpleClans plugin;
 
 	public LanguageMigration(SimpleClans plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	/**
 	 * Migrates all language files in the plugin's data folder
 	 */
@@ -43,7 +43,7 @@ public class LanguageMigration {
 		File[] languageFiles = dataFolder.listFiles(f -> {
 			return f.getName().startsWith("language") && f.getName().endsWith(".yml");
 		});
-		
+
 		for (File file : languageFiles) {
 			convert(file);
 			backup(file);
@@ -53,21 +53,22 @@ public class LanguageMigration {
 
 	/**
 	 * Copies the file to the backup folder
-	 * 
-	 * @param file the file to backup
+	 *
+	 * @param file the file to back up
 	 */
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private void backup(File file) {
 		File backupFolder = new File(plugin.getDataFolder(), "language_backup");
 		if (!backupFolder.exists()) {
 			backupFolder.mkdir();
 		}
-		
-		file.renameTo(new File(backupFolder, file.getName()));		
+
+		file.renameTo(new File(backupFolder, file.getName()));
 	}
 
 	/**
 	 * Converts the yaml file to properties
-	 * 
+	 *
 	 * @param file
 	 */
 	private void convert(File file) {

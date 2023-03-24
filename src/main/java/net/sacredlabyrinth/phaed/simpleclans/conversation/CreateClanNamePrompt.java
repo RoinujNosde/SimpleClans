@@ -66,8 +66,7 @@ public class CreateClanNamePrompt extends StringPrompt {
             plugin.getClanManager().createClan(player, tag, name);
 
             Clan clan = plugin.getClanManager().getClan(tag);
-            clan.addBb(player.getName(), AQUA +
-                    lang("clan.created", name));
+            clan.addBb(player.getName(), lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
 
             if (plugin.getSettingsManager().is(REQUIRE_VERIFICATION)) {
