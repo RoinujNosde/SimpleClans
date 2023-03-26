@@ -191,13 +191,14 @@ public class LeaderCommands extends BaseCommand {
     public void rename(ClanPlayer cp, Clan clan, @Name("name") String clanName) {
         if (clan.getLeaders().size() != 1) {
             requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", clanName);
+            ChatBlock.sendMessageKey(cp, "rename.vote.has.been.requested.from.all.leaders");
             return;
         }
 
         clan.setName(clanName);
         storage.updateClan(clan);
 
-        ChatBlock.sendMessageKey(cp.toPlayer(), "you.have.successfully.renamed.your.clan", clanName);
+        ChatBlock.sendMessageKey(cp, "you.have.successfully.renamed.your.clan", clanName);
     }
 
     @Subcommand("%discord %create")

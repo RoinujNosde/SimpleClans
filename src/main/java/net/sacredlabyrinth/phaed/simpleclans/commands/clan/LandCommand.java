@@ -49,7 +49,7 @@ public class LandCommand extends BaseCommand {
                 cp.allow(action, land.getId());
             }
             if (notify) {
-                ChatBlock.sendMessageKey(cp.toPlayer(), "land.allowed.action");
+                ChatBlock.sendMessageKey(cp, "land.allowed.action");
             }
         }
 
@@ -118,7 +118,7 @@ public class LandCommand extends BaseCommand {
                 cp.disallow(action, land.getId());
             }
             if (notify) {
-                ChatBlock.sendMessageKey(cp.toPlayer(), "land.blocked.action");
+                ChatBlock.sendMessageKey(cp, "land.blocked.action");
             }
         }
 
