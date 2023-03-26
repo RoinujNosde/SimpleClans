@@ -84,9 +84,14 @@ public final class RequestManager {
      * @param target    the target which will be used in request processing
      * @param key       the language key that would be translated and send the message to all leaders
      * @param args      the language objects, requires in some language strings.
+     * @throws IllegalArgumentException if passed incompatible request
      */
     public void requestAllLeaders(@NotNull ClanPlayer requester, @NotNull ClanRequest request,
                                   @NotNull String target, @NotNull String key, @Nullable Object... args) {
+        if (request.equals(ClanRequest.INVITE) || request.equals(ClanRequest.DEMOTE)) {
+            throw new IllegalArgumentException("Unsupported request: " + request.name());
+        }
+
         Clan clan = requester.getClan();
         if (clan == null || requests.containsKey(target)) {
             return;
