@@ -7,7 +7,6 @@ import net.sacredlabyrinth.phaed.simpleclans.events.WarEndEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -338,8 +337,7 @@ public final class RequestManager {
     private void processDemote(Request req, Clan requestClan, UUID targetPlayer, List<String> denies) {
         String demotedName = req.getTarget();
         if (denies.isEmpty()) {
-            requestClan.addBb(lang("leaders"), ChatColor.AQUA
-                    + lang("demoted.back.to.member", demotedName));
+            requestClan.addBb(lang("leaders"), lang("demoted.back.to.member", demotedName));
             requestClan.demote(targetPlayer);
         } else {
             String deniers = String.join(", ", denies);

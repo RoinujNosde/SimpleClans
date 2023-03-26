@@ -72,7 +72,7 @@ public class StaffCommands extends BaseCommand {
 
         ClanPlayer cp = cm.getCreateClanPlayer(uuid);
 
-        newClan.addBb(AQUA + lang("joined.the.clan", cp.getName()));
+        newClan.addBb(lang("joined.the.clan", cp.getName()));
         cm.serverAnnounce(lang("has.joined", cp.getName(), newClan.getName()));
         newClan.addPlayerToClan(cp);
     }
@@ -346,8 +346,8 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.admin.permanent")
     @Description("{@@command.description.admin.permanent}")
     public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clanInput) {
-        boolean permanent = !clanInput.getClan().isPermanent();
         Clan clan = clanInput.getClan();
+        boolean permanent = !clan.isPermanent();
         clan.setPermanent(permanent);
         clan.addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
         ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getName()));

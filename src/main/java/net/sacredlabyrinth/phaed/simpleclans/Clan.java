@@ -1291,7 +1291,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
             addBb(msg, updateLastUsed);
-            clanAnnounce(announcerName,SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX) + ChatUtils.parseColors(msg));
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX) + ChatUtils.parseColors(msg));
         }
     }
 
