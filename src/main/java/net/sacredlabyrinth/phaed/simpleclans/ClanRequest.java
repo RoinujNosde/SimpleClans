@@ -6,5 +6,5 @@ package net.sacredlabyrinth.phaed.simpleclans;
  */
 public enum ClanRequest
 {
-    DEMOTE, PROMOTE, DISBAND, INVITE, CREATE_ALLY, BREAK_RIVALRY, START_WAR, END_WAR
+    DEMOTE, PROMOTE, DISBAND, INVITE, CREATE_ALLY, BREAK_RIVALRY, START_WAR, END_WAR, RENAME
 }

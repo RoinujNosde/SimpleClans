@@ -72,7 +72,7 @@ public class StaffCommands extends BaseCommand {
 
         ClanPlayer cp = cm.getCreateClanPlayer(uuid);
 
-        newClan.addBb(AQUA + lang("joined.the.clan", cp.getName()));
+        newClan.addBb(lang("joined.the.clan", cp.getName()));
         cm.serverAnnounce(lang("has.joined", cp.getName(), newClan.getName()));
         newClan.addPlayerToClan(cp);
     }
@@ -345,10 +345,23 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.admin.permanent")
     @Description("{@@command.description.admin.permanent}")
-    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
-        boolean permanent = !clan.getClan().isPermanent();
-        clan.getClan().setPermanent(permanent);
-        clan.getClan().addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
-        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getClan().getName()));
+    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clanInput) {
+        Clan clan = clanInput.getClan();
+        boolean permanent = !clan.isPermanent();
+        clan.setPermanent(permanent);
+        clan.addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
+        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getName()));
+    }
+
+    @Subcommand("%mod %rename")
+    @CommandCompletion("@clans @nothing")
+    @CommandPermission("simpleclans.mod.rename")
+    @Description("{@@command.description.mod.rename}")
+    public void rename(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("name") String clanName) {
+        Clan clan = clanInput.getClan();
+        clan.setName(clanName);
+        storage.updateClan(clan);
+
+        ChatBlock.sendMessageKey(sender, "you.have.successfully.renamed.the.clan", clanName);
     }
 }

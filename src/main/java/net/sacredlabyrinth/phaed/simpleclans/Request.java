@@ -20,8 +20,7 @@ public final class Request {
     private ClanPlayer requester;
     private int askCount;
 
-    public Request(SimpleClans plugin,
-                   ClanRequest type,
+    public Request(ClanRequest type,
                    @Nullable List<ClanPlayer> acceptors,
                    ClanPlayer requester,
                    String target,

@@ -524,7 +524,7 @@ public class ChatBlock {
      * Outputs a single line out, crops overflow
      *
      * @param receiver the receiver
-     * @param msg the message
+     * @param msg      the message
      */
     public static void saySingle(CommandSender receiver, String msg) {
         if (receiver == null) {
@@ -538,7 +538,7 @@ public class ChatBlock {
      * Outputs a message to a user
      *
      * @param receiver the receiver
-     * @param msg the message
+     * @param msg      the message
      */
     public static void sendMessage(@Nullable CommandSender receiver, @NotNull String msg) {
         if (receiver == null) {
@@ -559,6 +559,10 @@ public class ChatBlock {
     // ClanCommands#setbanner, LandCommands#Allow/BlockCommand/verify, StaffCommands#kick, etc
     public static void sendMessageKey(@Nullable CommandSender receiver, @NotNull String key, @NotNull Object... args) {
         sendMessage(receiver, lang(key, receiver, args));
+    }
+
+    public static void sendMessageKey(@NotNull ClanPlayer clanPlayer, @NotNull String key, @NotNull Object... args) {
+        sendMessageKey(clanPlayer.toPlayer(), key, args);
     }
 
     @Deprecated

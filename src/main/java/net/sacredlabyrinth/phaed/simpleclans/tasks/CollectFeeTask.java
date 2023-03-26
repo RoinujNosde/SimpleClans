@@ -60,7 +60,7 @@ public class CollectFeeTask extends BukkitRunnable {
                     plugin.getStorageManager().updateClan(clan);
                 } else {
                     clan.removePlayerFromClan(cp.getUniqueId());
-                    clan.addBb(AQUA + lang("bb.fee.player.kicked", cp.getName()));
+                    clan.addBb(lang("bb.fee.player.kicked", cp.getName()));
                 }
             }
         } 

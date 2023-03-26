@@ -899,7 +899,7 @@ public final class StorageManager {
     public void deleteClanPlayer(ClanPlayer cp) {
         final Clan clan = cp.getClan();
         if (clan != null) {
-            clan.addBbWithoutSaving(ChatColor.AQUA + MessageFormat.format(lang("has.been.purged"), cp.getName()));
+            clan.addBbWithoutSaving(MessageFormat.format(lang("has.been.purged"), cp.getName()));
             updateClan(clan, false);
         }
         plugin.getProxyManager().sendDelete(cp);

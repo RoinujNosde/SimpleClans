@@ -329,7 +329,7 @@ public class ClanCommands extends BaseCommand {
     public void removeAlly(Player player, Clan issuerClan, @Conditions("different|allied_clan") @Name("clan") ClanInput ally) {
         Clan allyInput = ally.getClan();
         issuerClan.removeAlly(allyInput);
-        allyInput.addBb(player.getName(), AQUA + lang("has.broken.the.alliance", issuerClan.getName(),
+        allyInput.addBb(player.getName(), lang("has.broken.the.alliance", issuerClan.getName(),
                 allyInput.getName()), false);
         issuerClan.addBb(player.getName(), lang("has.broken.the.alliance", player.getName(),
                 allyInput.getName()));

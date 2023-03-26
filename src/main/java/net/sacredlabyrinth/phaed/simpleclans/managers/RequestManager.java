@@ -7,7 +7,6 @@ import net.sacredlabyrinth.phaed.simpleclans.events.WarEndEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -52,37 +51,58 @@ public final class RequestManager {
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
         acceptors.remove(demotedTp);
 
-        Request req = new Request(plugin, ClanRequest.DEMOTE, acceptors, requester, demotedName, clan, msg);
+        Request req = new Request(ClanRequest.DEMOTE, acceptors, requester, demotedName, clan, msg);
         req.vote(requester.getName(), VoteResult.ACCEPT);
         requests.put(req.getClan().getTag(), req);
         ask(req);
     }
 
-    public void addPromoteRequest(ClanPlayer requester, String promotedName, Clan clan) {
-        if (requests.containsKey(clan.getTag())) {
+    /**
+     * This method asks <i>all</i> leaders about
+     * some action <i>inside</i> their clan.
+     * <p>
+     * Example of possible requests:
+     * </p>
+     * <ul>
+     *     <li>Disband request can be asked from all leaders</li>
+     *     <li>Rename request can be asked from all leaders</li>
+     *     <li>Promote request can be asked from all leaders</li>
+     * </ul>
+     *
+     * <p>
+     * Examples of incompatible requests:
+     * </p>
+     * <ul>
+     *      <li>Demote request can be asked from all leaders,
+     *      <b>except the demoted one.</b></li>
+     *      <li>Invite request has to ask someone <b>outside</b> of leaders clan</li>
+     * </ul>
+     *
+     * @param requester the clan player, who sent the request
+     * @param request   the type of request, see: {@link ClanRequest}
+     * @param target    the target which will be used in request processing
+     * @param key       the language key that would be translated and send the message to all leaders
+     * @param args      the language objects, requires in some language strings.
+     * @throws IllegalArgumentException if passed incompatible request
+     */
+    public void requestAllLeaders(@NotNull ClanPlayer requester, @NotNull ClanRequest request,
+                                  @NotNull String target, @NotNull String key, @Nullable Object... args) {
+        if (request.equals(ClanRequest.INVITE) || request.equals(ClanRequest.DEMOTE)) {
+            throw new IllegalArgumentException("Unsupported request: " + request.name());
+        }
+
+        Clan clan = requester.getClan();
+        if (clan == null || requests.containsKey(target)) {
             return;
         }
-        String msg = MessageFormat.format(lang("asking.for.the.promotion"), requester.getName(), promotedName);
 
+        String msg = MessageFormat.format(lang(key), args);
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
 
-        Request req = new Request(plugin, ClanRequest.PROMOTE, acceptors, requester, promotedName, clan, msg);
-        requests.put(req.getClan().getTag(), req);
-        req.vote(requester.getName(), VoteResult.ACCEPT);
-        ask(req);
-    }
-
-    public void addDisbandRequest(ClanPlayer requester, Clan clan) {
-        if (requests.containsKey(clan.getTag())) {
-            return;
-        }
-        String msg = MessageFormat.format(lang("asking.for.the.deletion"), requester.getName());
-
-        List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
-
-        Request req = new Request(plugin, ClanRequest.DISBAND, acceptors, requester, clan.getTag(), clan, msg);
+        Request req = new Request(request, acceptors, requester, target, clan, msg);
         requests.put(req.getTarget(), req);
         req.vote(requester.getName(), VoteResult.ACCEPT);
+
         ask(req);
     }
 
@@ -103,7 +123,7 @@ public final class RequestManager {
         }
 
         String msg = lang("inviting.you.to.join", player, requester.getName(), clan.getName());
-        Request req = new Request(plugin, ClanRequest.INVITE, null, requester, invitedName, clan, msg);
+        Request req = new Request(ClanRequest.INVITE, null, requester, invitedName, clan, msg);
         requests.put(invitedName.toLowerCase(), req);
         ask(req);
     }
@@ -117,7 +137,7 @@ public final class RequestManager {
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(warClan.getLeaders());
         acceptors.remove(requester);
 
-        Request req = new Request(plugin, ClanRequest.START_WAR, acceptors, requester, warClan.getTag(), requestingClan, msg);
+        Request req = new Request(ClanRequest.START_WAR, acceptors, requester, warClan.getTag(), requestingClan, msg);
         requests.put(req.getTarget(), req);
         ask(req);
     }
@@ -131,7 +151,7 @@ public final class RequestManager {
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(warClan.getLeaders());
         acceptors.remove(requester);
 
-        Request req = new Request(plugin, ClanRequest.END_WAR, acceptors, requester, warClan.getTag(), requestingClan, msg);
+        Request req = new Request(ClanRequest.END_WAR, acceptors, requester, warClan.getTag(), requestingClan, msg);
         requests.put(req.getTarget(), req);
         ask(req);
     }
@@ -145,7 +165,7 @@ public final class RequestManager {
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(allyClan.getLeaders());
         acceptors.remove(requester);
 
-        Request req = new Request(plugin, ClanRequest.CREATE_ALLY, acceptors, requester, allyClan.getTag(), requestingClan, msg);
+        Request req = new Request(ClanRequest.CREATE_ALLY, acceptors, requester, allyClan.getTag(), requestingClan, msg);
         requests.put(req.getTarget(), req);
         ask(req);
     }
@@ -159,7 +179,7 @@ public final class RequestManager {
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(rivalClan.getLeaders());
         acceptors.remove(requester);
 
-        Request req = new Request(plugin, ClanRequest.BREAK_RIVALRY, acceptors, requester, rivalClan.getTag(), requestingClan, msg);
+        Request req = new Request(ClanRequest.BREAK_RIVALRY, acceptors, requester, rivalClan.getTag(), requestingClan, msg);
         requests.put(req.getTarget(), req);
         ask(req);
     }
@@ -209,7 +229,7 @@ public final class RequestManager {
 
             if (maxMembers > 0 && maxMembers > clan.getSize()) {
                 ChatBlock.sendMessageKey(invited, "accepted.invitation", clan.getName());
-                clan.addBb(ChatColor.AQUA + lang("joined.the.clan", invited.getName()));
+                clan.addBb(lang("joined.the.clan", invited.getName()));
                 plugin.getClanManager().serverAnnounce(lang("has.joined", invited.getName(), clan.getName()));
                 clan.addPlayerToClan(cp);
             } else {
@@ -269,6 +289,13 @@ public final class RequestManager {
                 }
                 processDisband(requester, requestClan, denies);
                 break;
+            case RENAME:
+                if (!req.votingFinished()) {
+                    return;
+                }
+
+                processRename(req);
+                break;
             default:
                 return;
         }
@@ -276,6 +303,15 @@ public final class RequestManager {
         requests.remove(target);
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new RequestFinishedEvent(req));
         req.cleanVotes();
+    }
+
+    private void processRename(Request request) {
+        if (request.getDenies().isEmpty()) {
+            request.getClan().setName(request.getTarget());
+        } else {
+            String deniers = String.join(", ", request.getDenies());
+            request.getClan().leaderAnnounce(RED + lang("rename.refused", deniers));
+        }
     }
 
     private void processDisband(ClanPlayer requester, Clan requestClan, List<String> denies) {

@@ -140,6 +140,9 @@ permissions:
     description: Can set his clan's banner
   simpleclans.leader.discord.create:
     description: Can create discord channel for his clan
+  simpleclans.leader.rename:
+    description: Can rename his clan's name
+    default: false
   simpleclans.member.land:
     description: Can use land commands
   simpleclans.member.kills:
@@ -150,6 +153,8 @@ permissions:
     description: Can check his clan's fee
   simpleclans.mod.bb-clear:
     description: Can clear a clan's bb
+  simpleclans.mod.rename:
+    description: Can rename a clan's name
   simpleclans.mod.bb:
     description: Can view a clan's bulletin board
   simpleclans.mod.bb-add:
