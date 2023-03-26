@@ -142,6 +142,7 @@ permissions:
     description: Can create discord channel for his clan
   simpleclans.leader.rename:
     description: Can rename his clan's name
+    default: false
   simpleclans.member.land:
     description: Can use land commands
   simpleclans.member.kills:
