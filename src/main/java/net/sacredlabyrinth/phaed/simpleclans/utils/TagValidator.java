@@ -57,8 +57,8 @@ public class TagValidator {
                         lang("your.tag.cannot.contain.the.following.colors", player,
                                 plugin.getSettingsManager().getDisallowedColorString());
             }
+            checkAlphabet();
         }
-        checkAlphabet();
 
         return error;
     }
