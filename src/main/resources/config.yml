@@ -50,7 +50,7 @@ settings:
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
     accept-other-alphabets-letters-on-tag: false
-    allow-special-characters: true
+    allow-special-characters: false
     ranking-type: "DENSE"
     list-default-order-by: kdr
     lore-length: 36
