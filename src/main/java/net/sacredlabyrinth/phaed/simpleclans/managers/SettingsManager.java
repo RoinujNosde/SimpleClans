@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -308,6 +309,7 @@ public final class SettingsManager {
         REJOIN_COOLDOWN("settings.rejoin-cooldown", 60),
         ENABLE_REJOIN_COOLDOWN("settings.rejoin-cooldown-enabled", false),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
+        ALLOW_SPECIAL_CHARACTERS("settings.allow-special-characters", false),
         RANKING_TYPE("settings.ranking-type", "DENSE"),
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by", "kdr"),
         LORE_LENGTH("settings.lore-length", 36),

@@ -58,13 +58,16 @@ public class TagValidator {
                                 plugin.getSettingsManager().getDisallowedColorString());
             }
         }
-        checkAlphabet();
+        if (!plugin.getSettingsManager().is(ALLOW_SPECIAL_CHARACTERS)) {
+            checkAlphabet(cleanTag);
+        } else if (!cleanTag.matches("^[a-zA-Z0-9{}<>]+$")) {
+            error = RED + lang("your.clan.tag.cannot.contain.special.characters", player);
+        }
 
         return error;
     }
 
-    private void checkAlphabet() {
-        String cleanTag = Helper.cleanTag(tag);
+    private void checkAlphabet(String cleanTag) {
         String alphabetError = RED + lang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes", player);
         if (plugin.getSettingsManager().is(ACCEPT_OTHER_ALPHABETS_LETTERS)) {
             for (char c : cleanTag.toCharArray()) {
