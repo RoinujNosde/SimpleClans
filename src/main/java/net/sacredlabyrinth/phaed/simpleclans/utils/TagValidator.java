@@ -30,13 +30,13 @@ public class TagValidator {
      */
     @Nullable
     public String getErrorMessage() {
-        String cleanTag = ChatUtils.stripColors(this.tag);
+        String cleanTag = Helper.cleanTag(tag);
         if (tag.length() > 255 && plugin.getSettingsManager().is(MYSQL_ENABLE)) {
             return lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255);
         }
 
         if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
-            if (plugin.getSettingsManager().isDisallowedWord(cleanTag.toLowerCase())) {
+            if (plugin.getSettingsManager().isDisallowedWord(cleanTag)) {
                 error = RED + lang("that.tag.name.is.disallowed", player);
             }
             if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
