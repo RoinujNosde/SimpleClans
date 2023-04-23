@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -155,12 +156,21 @@ public final class ClanManager {
      * Reset a player's KDR
      */
     public void resetKdr(ClanPlayer cp) {
-        cp.setCivilianKills(0);
-        cp.setNeutralKills(0);
-        cp.setRivalKills(0);
-        cp.setAllyKills(0);
-        cp.setDeaths(0);
-        plugin.getStorageManager().updateClanPlayer(cp);
+        Player player = cp.toPlayer();
+        boolean isEnabled = plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR);
+        double price = plugin.getSettingsManager().getDouble(ECONOMY_RESET_KDR_PRICE);
+        if (player != null) {
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player, isEnabled, price);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                cp.setCivilianKills(0);
+                cp.setNeutralKills(0);
+                cp.setRivalKills(0);
+                cp.setAllyKills(0);
+                cp.setDeaths(0);
+                plugin.getStorageManager().updateClanPlayer(cp);
+            }
+        }
     }
 
     /**
