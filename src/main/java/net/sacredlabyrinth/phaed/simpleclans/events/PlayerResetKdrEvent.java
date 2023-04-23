@@ -13,20 +13,14 @@ public class PlayerResetKdrEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
-    private final boolean isEnabled;
-    private final double price;
 
     /**
      * Event called when a player resets his KDR
      *
-     * @param who the player
-     * @param isEnabled if the reset is enabled
-     * @param price the price of the reset
+     * @param who the player who reset his KDR
      */
-    public PlayerResetKdrEvent(@NotNull Player who, boolean isEnabled, double price) {
+    public PlayerResetKdrEvent(@NotNull Player who) {
         super(who);
-        this.isEnabled = isEnabled;
-        this.price = price;
     }
 
     @Override
@@ -37,14 +31,6 @@ public class PlayerResetKdrEvent extends PlayerEvent implements Cancellable {
     @Override
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
-    }
-
-    public boolean isEnabled() {
-        return this.isEnabled;
-    }
-
-    public double getPrice() {
-        return this.price;
     }
 
     @Override

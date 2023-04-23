@@ -157,10 +157,8 @@ public final class ClanManager {
      */
     public void resetKdr(ClanPlayer cp) {
         Player player = cp.toPlayer();
-        boolean isEnabled = plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR);
-        double price = plugin.getSettingsManager().getDouble(ECONOMY_RESET_KDR_PRICE);
         if (player != null) {
-            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player, isEnabled, price);
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
                 cp.setCivilianKills(0);
