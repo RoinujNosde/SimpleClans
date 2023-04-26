@@ -156,20 +156,13 @@ public final class ClanManager {
      * Reset a player's KDR
      */
     public void resetKdr(ClanPlayer cp) {
-        Player player = cp.toPlayer();
-        if (player != null) {
-            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                cp.setCivilianKills(0);
-                cp.setNeutralKills(0);
-                cp.setRivalKills(0);
-                cp.setAllyKills(0);
-                cp.setDeaths(0);
-                plugin.getStorageManager().updateClanPlayer(cp);
-            }
+        cp.setCivilianKills(0);
+        cp.setNeutralKills(0);
+        cp.setRivalKills(0);
+        cp.setAllyKills(0);
+        cp.setDeaths(0);
+        plugin.getStorageManager().updateClanPlayer(cp);
         }
-    }
 
     /**
      * Delete a players data file
