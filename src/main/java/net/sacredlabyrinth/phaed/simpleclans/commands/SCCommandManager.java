@@ -219,7 +219,7 @@ public class SCCommandManager extends PaperCommandManager {
         SUBCOMMANDS = Arrays.asList("setbanner", "resetkdr", "place", "rank", "home", "war", "regroup",
                 "mostkilled", "kills", "globalff", "reload", "unban", "ban", "verify", "disband", "resign", "ff",
                 "clanff", "demote", "promote", "untrust", "trust", "purge", "fee", "bank", "kick", "invite", "toggle",
-                "modtag", "bb", "clear", "rival", "ally", "add", "remove", "stats", "coords", "vitals", "rivalries",
+                "modtag", "bb", "display", "clear", "rival", "ally", "add", "remove", "stats", "coords", "vitals", "rivalries",
                 "alliances", "leaderboard", "allow", "block", "auto", "check", "assign", "unassign", "delete", "me",
                 "setdisplayname", "permissions", "tag", "deposit", "withdraw", "set", "status", "tp", "all", "everyone",
                 "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help", "mod",
