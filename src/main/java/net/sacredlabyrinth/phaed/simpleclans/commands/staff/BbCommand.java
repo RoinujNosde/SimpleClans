@@ -26,7 +26,7 @@ public class BbCommand extends BaseCommand {
     @Dependency
     private SettingsManager settings;
 
-    @Default
+    @Subcommand("%display")
     @CommandPermission("simpleclans.mod.bb")
     @CommandCompletion("@clans")
     @Description("{@@command.description.mod.bb.display}")
