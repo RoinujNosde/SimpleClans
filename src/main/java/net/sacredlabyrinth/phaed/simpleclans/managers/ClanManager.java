@@ -158,7 +158,7 @@ public final class ClanManager {
     public void resetKdr(ClanPlayer cp) {
         Player player = cp.toPlayer();
         if (player != null) {
-            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
                 cp.setCivilianKills(0);
