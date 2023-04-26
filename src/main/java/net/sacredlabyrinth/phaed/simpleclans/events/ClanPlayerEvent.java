@@ -1,9 +1,12 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author ThiagoROX
@@ -11,15 +14,18 @@ import org.jetbrains.annotations.NotNull;
 public class ClanPlayerEvent extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private final ClanPlayer clanPlayer;
+    private SimpleClans plugin;
+    private ClanManager cm;
 
-    public ClanPlayerEvent(@NotNull ClanPlayer clanPlayer) {
-        super(clanPlayer.toPlayer());
-        this.clanPlayer = clanPlayer;
+    public ClanPlayerEvent(Player player) {
+        super(player);
     }
 
+    @Nullable
     public ClanPlayer getClanPlayer() {
-        return this.clanPlayer;
+        plugin = SimpleClans.getInstance();
+        cm = plugin.getClanManager();
+        return cm.getClanPlayer(player);
     }
 
     @Override
