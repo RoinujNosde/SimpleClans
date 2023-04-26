@@ -1356,9 +1356,9 @@ public class Clan implements Serializable, Comparable<Clan> {
             String bbPrefix = SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX);
 
             long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
-            msg = bbPrefix + msg.substring(++index);
+            msg = ChatUtils.parseColors(bbPrefix + msg.substring(++index));
 
-            TextComponent textComponent = new TextComponent(msg);
+            TextComponent textComponent = new TextComponent(TextComponent.fromLegacyText(msg));
             textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
                     Dates.formatTime(time, 1) + lang("bb.ago"))));
             player.spigot().sendMessage(textComponent);
