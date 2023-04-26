@@ -188,12 +188,12 @@ public class ClanCommands extends BaseCommand {
         double maxFee = settings.getDouble(ECONOMY_MAX_MEMBER_FEE);
         if (fee > maxFee) {
             ChatBlock.sendMessage(player, RED
-                    + lang("max.fee.allowed.is.0", player, maxFee));
+                    + lang("max.fee.allowed.is.0", player, ChatUtils.formatPrice(maxFee)));
             return;
         }
         if (cm.purchaseMemberFeeSet(player)) {
             clan.setMemberFee(fee);
-            clan.addBb(player.getName(), lang("bb.fee.set", fee));
+            clan.addBb(player.getName(), lang("bb.fee.set", ChatUtils.formatPrice(fee)));
             ChatBlock.sendMessage(player, AQUA + lang("fee.set", player));
             storage.updateClan(clan);
         }

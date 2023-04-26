@@ -3,18 +3,27 @@ package net.sacredlabyrinth.phaed.simpleclans.utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
 import static net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DATE_PATTERN;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_DECIMAL_FORMAT_PATTERN;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_LOCALE_FORMAT;
 
 public class ChatUtils {
 
@@ -162,4 +171,16 @@ public class ChatUtils {
             }
         }
     }
+
+    public static String formatPrice(double value) {
+        Locale locale = new Locale(SimpleClans.getInstance().getSettingsManager().getString(ECONOMY_LOCALE_FORMAT));
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+        String pattern = SimpleClans.getInstance().getSettingsManager().getString(ECONOMY_DECIMAL_FORMAT_PATTERN);
+        return new DecimalFormat(pattern, symbols).format(value);
+    }
+
+    public static String formatDate(long time) {
+        return new SimpleDateFormat(SimpleClans.getInstance().getSettingsManager().getString(DATE_PATTERN)).format(new Date(time));
+    }
+
 }

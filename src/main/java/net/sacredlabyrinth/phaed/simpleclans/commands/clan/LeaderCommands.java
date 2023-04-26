@@ -9,6 +9,7 @@ import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -212,14 +213,14 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
 
-        double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
+        double price = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
-            if (!permissions.playerHasMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+            if (!permissions.playerHasMoney(player, price)) {
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return;
             }
 
-            if (!permissions.playerChargeMoney(player, amount)) {
+            if (!permissions.playerChargeMoney(player, price)) {
                 return;
             }
         }
@@ -230,7 +231,7 @@ public class LeaderCommands extends BaseCommand {
         } catch (DiscordHookException ex) {
             // Return player's money if clan creation went wrong
             if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
-                permissions.playerGrantMoney(player, amount);
+                permissions.playerGrantMoney(player, price);
             }
             String messageKey = ex.getMessageKey();
             if (messageKey != null) {

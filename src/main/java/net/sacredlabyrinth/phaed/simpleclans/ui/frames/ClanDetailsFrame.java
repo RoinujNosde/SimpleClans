@@ -161,7 +161,7 @@ public class ClanDetailsFrame extends SCFrame {
 		List<String> lore = verified ? null : new ArrayList<>();
 		if (!verified) {
 			if (purchaseVerification) {
-				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), settings.getDouble(ECONOMY_VERIFICATION_PRICE)));
+				lore.add(lang("gui.clandetails.verify.price.lore", getViewer(), ChatUtils.formatPrice(settings.getDouble(ECONOMY_VERIFICATION_PRICE))));
 			}
 			lore.add(lang("gui.clandetails.not.verified.lore", getViewer()));
 		}
@@ -177,7 +177,7 @@ public class ClanDetailsFrame extends SCFrame {
 		String withdrawStatus = clan.isAllowWithdraw() ? lang("allowed",getViewer()) : lang("blocked",getViewer());
 		String depositStatus = clan.isAllowDeposit() ? lang("allowed", getViewer()) : lang("blocked", getViewer());
 		SCComponent bank = new SCComponentImpl(lang("gui.clandetails.bank.title", getViewer()),
-				Arrays.asList(lang("gui.clandetails.bank.balance.lore", getViewer(), clan.getBalance()),
+				Arrays.asList(lang("gui.clandetails.bank.balance.lore", getViewer(), clan.getBalanceFormatted()),
 						lang("gui.clandetails.bank.withdraw.status.lore", getViewer(), withdrawStatus),
 						lang("gui.clandetails.bank.deposit.status.lore", getViewer(), depositStatus),
 						lang("gui.clandetails.bank.withdraw.toggle.lore", getViewer()),
@@ -242,7 +242,7 @@ public class ClanDetailsFrame extends SCFrame {
 		}
 
 		List<String> lore = new ArrayList<>();
-		if (price != 0) lore.add(lang("gui.clandetails.regroup.lore.price", getViewer(), price));
+		if (price != 0) lore.add(lang("gui.clandetails.regroup.lore.price", getViewer(), ChatUtils.formatPrice(price)));
 		lore.add(lang("gui.clandetails.regroup.lore.home", getViewer()));
 		lore.add(lang("gui.clandetails.regroup.lore.me", getViewer()));
 
@@ -264,9 +264,9 @@ public class ClanDetailsFrame extends SCFrame {
 		double setPrice = settings.is(ECONOMY_PURCHASE_HOME_TELEPORT_SET) ? settings.getDouble(ECONOMY_HOME_TELEPORT_SET_PRICE) : 0;
 
 		List<String> lore = new ArrayList<>();
-		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), homePrice));
+		if (homePrice != 0) lore.add(lang("gui.clandetails.home.lore.teleport.price", getViewer(), ChatUtils.formatPrice(homePrice)));
 		lore.add(lang("gui.clandetails.home.lore.teleport", getViewer()));
-		if (setPrice != 0) lore.add(lang("gui.clandetails.home.lore.set.price", getViewer(), setPrice));
+		if (setPrice != 0) lore.add(lang("gui.clandetails.home.lore.set.price", getViewer(), ChatUtils.formatPrice(setPrice)));
 		lore.add(lang("gui.clandetails.home.lore.set", getViewer()));
 		lore.add(lang("gui.clandetails.home.lore.clear", getViewer()));
 
