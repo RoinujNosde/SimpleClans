@@ -1,7 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.staff;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
