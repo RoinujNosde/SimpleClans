@@ -55,7 +55,7 @@ settings:
     lore-length: 36
     past-clans-limit: 10
     username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
-    date-format-patter: 'HH:mm - dd/MM/yyyy'
+    date-time-format-pattern: 'HH:mm - dd/MM/yyyy'
 war-and-protection:
     war-enabled: false
     land-sharing: true
@@ -134,7 +134,7 @@ economy:
     bank-log:
         enable: true
     locale-format: "en-US"
-    decimal-format-pattern: "#.###,##"
+    decimal-format-pattern: "#,###.##"
 kill-weights:
     rival: 2.0
     civilian: 0.0
