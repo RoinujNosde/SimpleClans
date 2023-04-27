@@ -314,7 +314,7 @@ public final class SettingsManager {
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
         PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
-        DATE_PATTERN("settings.date-format-patter", "MMM dd, yy h:mm a"),
+        DATE_PATTERN("settings.date-time-format-pattern", "HH:mm - dd/MM/yyyy"),
         /*
         ================
         > Tag Settings
@@ -420,7 +420,7 @@ public final class SettingsManager {
         ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled", true),
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
         ECONOMY_LOCALE_FORMAT("economy.locale-format", "en-US"),
-        ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#,###.##"),
+        ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#.###,##"),
         /*
         ================
         > Kill Weights Settings
