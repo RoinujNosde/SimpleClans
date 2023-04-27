@@ -331,7 +331,7 @@ public class StaffCommands extends BaseCommand {
             if (player == null) {
                 continue;
             }
-            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player, cp);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
                 cm.resetKdr(cp);
@@ -350,7 +350,7 @@ public class StaffCommands extends BaseCommand {
         if (player == null) {
             return;
         }
-        PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(player, cp);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             cm.resetKdr(cp);

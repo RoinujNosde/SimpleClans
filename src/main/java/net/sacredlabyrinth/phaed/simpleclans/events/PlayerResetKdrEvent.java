@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -19,8 +20,8 @@ public class PlayerResetKdrEvent extends ClanPlayerEvent implements Cancellable 
      *
      * @param player The player whose kill death rate was reset
      */
-    public PlayerResetKdrEvent(@NotNull Player player) {
-        super(player);
+    public PlayerResetKdrEvent(@NotNull Player player, ClanPlayer clanPlayer) {
+        super(player, clanPlayer);
     }
 
     @Override

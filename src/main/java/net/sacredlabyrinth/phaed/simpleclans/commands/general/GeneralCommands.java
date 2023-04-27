@@ -166,7 +166,7 @@ public class GeneralCommands extends BaseCommand {
             ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
             return;
         }
-        PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(player, cp);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled() && cm.purchaseResetKdr(player)) {
             cm.resetKdr(cp);
