@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,10 +22,12 @@ import static net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DATE_PATTERN;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_DECIMAL_FORMAT_PATTERN;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_LOCALE_FORMAT;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_DECIMAL_SEPARATOR;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_GROUPING_SEPARATOR;
 
 public class ChatUtils {
 
+    private static final SimpleClans plugin = SimpleClans.getInstance();
     public static boolean HEX_COLOR_SUPPORT;
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
@@ -173,14 +174,30 @@ public class ChatUtils {
     }
 
     public static String formatPrice(double value) {
-        Locale locale = new Locale(SimpleClans.getInstance().getSettingsManager().getString(ECONOMY_LOCALE_FORMAT));
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-        String pattern = SimpleClans.getInstance().getSettingsManager().getString(ECONOMY_DECIMAL_FORMAT_PATTERN);
-        return new DecimalFormat(pattern, symbols).format(value);
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(plugin.getSettingsManager().getString(ECONOMY_DECIMAL_SEPARATOR).charAt(0));
+        symbols.setGroupingSeparator(plugin.getSettingsManager().getString(ECONOMY_GROUPING_SEPARATOR).charAt(0));
+
+        String pattern = plugin.getSettingsManager().getString(ECONOMY_DECIMAL_FORMAT_PATTERN);
+
+        try {
+            return new DecimalFormat(pattern, symbols).format(value);
+        } catch (IllegalArgumentException e) {
+            plugin.getLogger().warning("Invalid decimal-format-pattern: " + pattern);
+            plugin.getLogger().warning("Using default decimal format pattern: #,###.##");
+            return new DecimalFormat("#,###.##", symbols).format(value);
+        }
     }
 
     public static String formatDate(long time) {
-        return new SimpleDateFormat(SimpleClans.getInstance().getSettingsManager().getString(DATE_PATTERN)).format(new Date(time));
+        String pattern = plugin.getSettingsManager().getString(DATE_PATTERN);
+        try {
+            return new SimpleDateFormat(pattern).format(new Date(time));
+        } catch (IllegalArgumentException e) {
+            plugin.getLogger().warning("Invalid date-time-format-pattern: " + pattern);
+            plugin.getLogger().warning("Using default date pattern: HH:mm - dd/MM/yyyy");
+            return new SimpleDateFormat("HH:mm - dd/MM/yyyy").format(new Date(time));
+        }
     }
 
 }

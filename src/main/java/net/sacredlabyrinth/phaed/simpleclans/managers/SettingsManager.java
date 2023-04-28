@@ -419,8 +419,9 @@ public final class SettingsManager {
         ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE("economy.multiply-upkeep-by-clan-size", false),
         ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled", true),
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
-        ECONOMY_LOCALE_FORMAT("economy.locale-format", "en-US"),
         ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#,###.##"),
+        ECONOMY_DECIMAL_SEPARATOR("economy.decimal-char-separator", "."),
+        ECONOMY_GROUPING_SEPARATOR("economy.grouping-char-separator", ","),
         /*
         ================
         > Kill Weights Settings
