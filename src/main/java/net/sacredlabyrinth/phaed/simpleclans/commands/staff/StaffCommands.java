@@ -90,7 +90,7 @@ public class StaffCommands extends BaseCommand {
         tag = event.getNewTag();
         String cleanTag = Helper.cleanTag(tag);
 
-        TagValidator validator = new TagValidator(plugin, player, tag);
+        TagValidator validator = new TagValidator(settings, permissions, player, tag);
         if (validator.getErrorMessage() != null) {
             ChatBlock.sendMessage(player, validator.getErrorMessage());
             return;

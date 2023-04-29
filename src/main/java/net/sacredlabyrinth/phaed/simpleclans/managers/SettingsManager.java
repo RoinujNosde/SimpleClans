@@ -5,7 +5,6 @@ import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -308,14 +307,13 @@ public final class SettingsManager {
         ALLOW_RESET_KDR("settings.allow-reset-kdr", false),
         REJOIN_COOLDOWN("settings.rejoin-cooldown", 60),
         ENABLE_REJOIN_COOLDOWN("settings.rejoin-cooldown-enabled", false),
-        ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
-        ALLOW_SPECIAL_CHARACTERS("settings.allow-special-characters", false),
         RANKING_TYPE("settings.ranking-type", "DENSE"),
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by", "kdr"),
         LORE_LENGTH("settings.lore-length", 36),
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
         PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
+        TAG_REGEX("settings.tag-regex", "^[a-zA-Z0-9]{2,5}$"),
         /*
         ================
         > Tag Settings
@@ -323,12 +321,10 @@ public final class SettingsManager {
          *
          */
         TAG_DEFAULT_COLOR("tag.default-color", "8"),
-        TAG_MAX_LENGTH("tag.max-length", 5),
         TAG_BRACKET_COLOR("tag.bracket.color", "8"),
         TAG_BRACKET_LEADER_COLOR("tag.bracket.leader-color", "4"),
         TAG_BRACKET_LEFT("tag.bracket.left", ""),
         TAG_BRACKET_RIGHT("tag.bracket.right", ""),
-        TAG_MIN_LENGTH("tag.min-length", 2),
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
         TAG_SEPARATOR_CHAR("tag.separator.char", " ."),

@@ -1,26 +1,33 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.regex.Pattern;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.RED;
 
 public class TagValidator {
-
-    private final SimpleClans plugin;
     private final Player player;
     private final String tag;
+    private final Pattern tagRegex;
+    private final SettingsManager settings;
+    private final PermissionsManager permissions;
     private String error;
 
-    public TagValidator(@NotNull SimpleClans plugin, @NotNull Player player, @NotNull String tag) {
-        this.plugin = plugin;
+    public TagValidator(@NotNull SettingsManager settings, @NotNull PermissionsManager permissions,
+                        @NotNull Player player, @NotNull String tag) {
+        this.settings = settings;
+        this.permissions = permissions;
         this.player = player;
         this.tag = tag;
+        tagRegex = Pattern.compile(settings.getString(TAG_REGEX));
     }
 
     /**
@@ -31,55 +38,26 @@ public class TagValidator {
     @Nullable
     public String getErrorMessage() {
         String cleanTag = Helper.cleanTag(tag);
-        if (tag.length() > 255 && plugin.getSettingsManager().is(MYSQL_ENABLE)) {
+        if (tag.length() > 255 && settings.is(MYSQL_ENABLE)) {
             return lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255);
         }
 
-        if (!plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass")) {
-            if (plugin.getSettingsManager().isDisallowedWord(cleanTag)) {
+        if (!permissions.has(player, "simpleclans.mod.bypass")) {
+            if (settings.isDisallowedWord(cleanTag)) {
                 error = RED + lang("that.tag.name.is.disallowed", player);
             }
-            if (!plugin.getPermissionsManager().has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
+            if (!permissions.has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
                 error = RED + lang("your.tag.cannot.contain.color.codes", player);
             }
-            if (cleanTag.length() < plugin.getSettingsManager().getInt(TAG_MIN_LENGTH)) {
-                error = RED +
-                        lang("your.clan.tag.must.be.longer.than.characters", player,
-                                plugin.getSettingsManager().getInt(TAG_MIN_LENGTH));
-            }
-            if (cleanTag.length() > plugin.getSettingsManager().getInt(TAG_MAX_LENGTH)) {
-                error = RED +
-                        lang("your.clan.tag.cannot.be.longer.than.characters", player,
-                                plugin.getSettingsManager().getInt(TAG_MAX_LENGTH));
-            }
-            if (plugin.getSettingsManager().hasDisallowedColor(tag)) {
-                error = RED +
-                        lang("your.tag.cannot.contain.the.following.colors", player,
-                                plugin.getSettingsManager().getDisallowedColorString());
+            if (settings.hasDisallowedColor(tag)) {
+                error = RED + lang("your.tag.cannot.contain.the.following.colors", player, settings.getDisallowedColorString());
             }
         }
-        if (!plugin.getSettingsManager().is(ALLOW_SPECIAL_CHARACTERS)) {
-            checkAlphabet(cleanTag);
-        } else if (!cleanTag.matches("^[a-zA-Z0-9{}<>]+$")) {
-            error = RED + lang("your.clan.tag.cannot.contain.special.characters", player);
+
+        if (!tagRegex.matcher(cleanTag).matches()) {
+            error = lang("your.tag.doesnt.meet.the.requirements", player);
         }
 
         return error;
-    }
-
-    private void checkAlphabet(String cleanTag) {
-        String alphabetError = RED + lang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes", player);
-        if (plugin.getSettingsManager().is(ACCEPT_OTHER_ALPHABETS_LETTERS)) {
-            for (char c : cleanTag.toCharArray()) {
-                if (!Character.isLetterOrDigit(c) || Character.isSpaceChar(c)) {
-                    error = alphabetError;
-                    return;
-                }
-            }
-            return;
-        }
-        if (!cleanTag.matches("[0-9a-zA-Z]*")) {
-            error = alphabetError;
-        }
     }
 }

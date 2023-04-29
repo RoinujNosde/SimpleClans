@@ -52,7 +52,7 @@ public class CreateClanTagPrompt extends StringPrompt {
                     lang("clan.with.this.tag.already.exists", player), this);
         }
 
-        TagValidator validator = new TagValidator(plugin, player, clanTag);
+        TagValidator validator = new TagValidator(plugin.getSettingsManager(), plugin.getPermissionsManager(), player, clanTag);
         String errorMessage = validator.getErrorMessage();
         if (errorMessage == null) {
             return null;
