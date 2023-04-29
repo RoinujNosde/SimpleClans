@@ -12,24 +12,12 @@ public class TagRegexMigration extends ConfigMigration {
 
     @Override
     public void migrate() {
-        int maxLength = 5, minLength = 2;
+        int maxLength = config.getInt("tag.min-length", 5),
+                minLength = config.getInt("tag.min-length", 2);
 
-        String tagRegex = settings.getString(TAG_REGEX);
-        if (config.contains("tag.max-length")) {
-            maxLength = config.getInt("tag.max-length");
-            config.set("tag.max-length", null);
-
-            tagRegex = tagRegex.replace("5", String.valueOf(maxLength));
-            config.set("settings.tag-regex", tagRegex);
-        }
-
-        if (config.contains("tag.min-length")) {
-            minLength = config.getInt("tag.min-length");
-            config.set("tag.min-length", null);
-
-            tagRegex = tagRegex.replace("2", String.valueOf(minLength));
-            config.set("settings.tag-regex", tagRegex);
-        }
+        // Adjust min and max tag length to new `settings.tag-regex`
+        adjustTagLength("tag.max-length", "5", maxLength);
+        adjustTagLength("tag.min-length", "2", minLength);
 
         if (config.contains("settings.accept-other-alphabets-letters-on-tag")) {
             if (config.getBoolean("settings.accept-other-alphabets-letters-on-tag")) {
@@ -40,6 +28,16 @@ public class TagRegexMigration extends ConfigMigration {
             }
 
             config.set("settings.accept-other-alphabets-letters-on-tag", null);
+        }
+    }
+
+    private void adjustTagLength(String path, String fromNumber, int toNumber) {
+        String tagRegex = settings.getString(TAG_REGEX);
+        if (config.contains(path)) {
+            config.set(path, null);
+
+            tagRegex = tagRegex.replace(fromNumber, String.valueOf(toNumber));
+            config.set("settings.tag-regex", tagRegex);
         }
     }
 }
