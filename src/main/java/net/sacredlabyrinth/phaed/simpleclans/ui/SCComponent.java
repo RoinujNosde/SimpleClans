@@ -1,16 +1,15 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
+import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class that represents a button

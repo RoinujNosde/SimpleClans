@@ -10,7 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Pattern;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.MYSQL_ENABLE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TAG_REGEX;
 import static org.bukkit.ChatColor.RED;
 
 public class TagValidator {
