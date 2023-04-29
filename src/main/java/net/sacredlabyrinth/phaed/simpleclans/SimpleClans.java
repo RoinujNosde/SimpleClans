@@ -10,6 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.loggers.CSVBankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.migrations.BbMigration;
 import net.sacredlabyrinth.phaed.simpleclans.migrations.LanguageMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.TagRegexMigration;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.BungeeManager;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.ProxyManager;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
@@ -99,7 +100,9 @@ public class SimpleClans extends JavaPlugin {
         instance = this;
         new LanguageMigration(this).migrate();
         settingsManager = new SettingsManager(this);
-        new BbMigration(settingsManager).migrate();
+        new BbMigration(settingsManager);
+        new TagRegexMigration(settingsManager);
+        new ChatFormatMigration(settingsManager);
         languageResource = new LanguageResource();
         this.hasUUID = UUIDMigration.canReturnUUID();
 
@@ -112,7 +115,6 @@ public class SimpleClans extends JavaPlugin {
         protectionManager = new ProtectionManager();
         protectionManager.registerListeners();
         chatManager = new ChatManager(this);
-        new ChatFormatMigration(settingsManager).migrate();
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
