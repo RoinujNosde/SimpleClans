@@ -2,7 +2,6 @@ package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
@@ -10,6 +9,8 @@ import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
@@ -52,12 +53,7 @@ public class CreateClanTagPrompt extends StringPrompt {
                     lang("clan.with.this.tag.already.exists", player), this);
         }
 
-        TagValidator validator = new TagValidator(plugin.getSettingsManager(), plugin.getPermissionsManager(), player, clanTag);
-        String errorMessage = validator.getErrorMessage();
-        if (errorMessage == null) {
-            return null;
-        } else {
-            return new MessagePromptImpl(errorMessage, this);
-        }
+        Optional<String> validationError = plugin.getTagValidator().validate(player, clanTag);
+        return validationError.map(error -> new MessagePromptImpl(error, this)).orElse(null);
     }
 }

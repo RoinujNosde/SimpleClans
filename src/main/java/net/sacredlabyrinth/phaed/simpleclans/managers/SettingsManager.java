@@ -313,7 +313,8 @@ public final class SettingsManager {
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
         PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
-        TAG_REGEX("settings.tag-regex", "^[a-zA-Z0-9]{2,5}$"),
+        TAG_REGEX("settings.tag-regex", ""),
+        ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
         /*
         ================
         > Tag Settings
@@ -324,6 +325,8 @@ public final class SettingsManager {
         TAG_BRACKET_COLOR("tag.bracket.color", "8"),
         TAG_BRACKET_LEADER_COLOR("tag.bracket.leader-color", "4"),
         TAG_BRACKET_LEFT("tag.bracket.left", ""),
+        TAG_MAX_LENGTH("tag.max-length", 5),
+        TAG_MIN_LENGTH("tag.min-length", 2),
         TAG_BRACKET_RIGHT("tag.bracket.right", ""),
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),

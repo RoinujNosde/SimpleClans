@@ -7,58 +7,86 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.MYSQL_ENABLE;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.TAG_REGEX;
-import static org.bukkit.ChatColor.RED;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 public class TagValidator {
-    private final Player player;
-    private final String tag;
-    private final Pattern tagRegex;
     private final SettingsManager settings;
     private final PermissionsManager permissions;
+    @Nullable
+    private Pattern tagRegex;
+    @Nullable
     private String error;
 
-    public TagValidator(@NotNull SettingsManager settings, @NotNull PermissionsManager permissions,
-                        @NotNull Player player, @NotNull String tag) {
+    public TagValidator(@NotNull SettingsManager settings, @NotNull PermissionsManager permissions) {
         this.settings = settings;
         this.permissions = permissions;
-        this.player = player;
-        this.tag = tag;
-        tagRegex = Pattern.compile(settings.getString(TAG_REGEX));
+
+        String regex = settings.getString(TAG_REGEX);
+        if (!regex.isEmpty()) {
+            tagRegex = Pattern.compile(regex);
+        }
     }
 
     /**
-     * Returns an error message or null if the tag is valid
+     * Validates a clan tag
      *
-     * @return an error message or null
+     * @param player player who tried to create a clan
+     * @param tag    clan tag
+     * @return error message if any
      */
-    @Nullable
-    public String getErrorMessage() {
+    public Optional<String> validate(@NotNull Player player, @NotNull String tag) {
         String cleanTag = Helper.cleanTag(tag);
         if (tag.length() > 255 && settings.is(MYSQL_ENABLE)) {
-            return lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255);
+            return Optional.of(lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255));
         }
 
         if (!permissions.has(player, "simpleclans.mod.bypass")) {
             if (settings.isDisallowedWord(cleanTag)) {
-                error = RED + lang("that.tag.name.is.disallowed", player);
+                error = lang("that.tag.name.is.disallowed", player);
             }
             if (!permissions.has(player, "simpleclans.leader.coloredtag") && tag.contains("&")) {
-                error = RED + lang("your.tag.cannot.contain.color.codes", player);
+                error = lang("your.tag.cannot.contain.color.codes", player);
+            }
+            int minLength = settings.getInt(TAG_MIN_LENGTH);
+            if (cleanTag.length() < minLength) {
+                error = lang("your.clan.tag.must.be.longer.than.characters", player, minLength);
+            }
+            int maxLength = settings.getInt(TAG_MAX_LENGTH);
+            if (cleanTag.length() > maxLength) {
+                error = lang("your.clan.tag.cannot.be.longer.than.characters", player, maxLength);
             }
             if (settings.hasDisallowedColor(tag)) {
-                error = RED + lang("your.tag.cannot.contain.the.following.colors", player, settings.getDisallowedColorString());
+                error = lang("your.tag.cannot.contain.the.following.colors", player, settings.getDisallowedColorString());
             }
         }
 
-        if (!tagRegex.matcher(cleanTag).matches()) {
+        if (tagRegex != null && !tagRegex.matcher(cleanTag).matches()) {
             error = lang("your.tag.doesnt.meet.the.requirements", player);
+        } else {
+            checkAlphabet(player, cleanTag);
         }
 
-        return error;
+        return Optional.ofNullable(error);
+    }
+
+    private void checkAlphabet(@NotNull Player player, @NotNull String cleanTag) {
+        String alphabetError = lang("your.clan.tag.can.only.contain.letters.numbers.and.color.codes", player);
+        if (settings.is(ACCEPT_OTHER_ALPHABETS_LETTERS)) {
+            for (char c : cleanTag.toCharArray()) {
+                if (!Character.isLetterOrDigit(c) || Character.isSpaceChar(c)) {
+                    error = alphabetError;
+                    return;
+                }
+            }
+            return;
+        }
+
+        if (!cleanTag.matches("[0-9a-zA-Z]*")) {
+            error = alphabetError;
+        }
     }
 }

@@ -22,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -90,9 +91,9 @@ public class StaffCommands extends BaseCommand {
         tag = event.getNewTag();
         String cleanTag = Helper.cleanTag(tag);
 
-        TagValidator validator = new TagValidator(settings, permissions, player, tag);
-        if (validator.getErrorMessage() != null) {
-            ChatBlock.sendMessage(player, validator.getErrorMessage());
+        Optional<String> validationError = plugin.getTagValidator().validate(player, tag);
+        if (validationError.isPresent()) {
+            ChatBlock.sendMessage(player, validationError.get());
             return;
         }
 
@@ -117,6 +118,8 @@ public class StaffCommands extends BaseCommand {
         settings.loadAndSave();
         storage.importFromDatabase();
         permissions.loadPermissions();
+
+        plugin.setTagValidator(new TagValidator(settings, permissions));
 
         for (Clan clan : cm.getClans()) {
             permissions.updateClanPermissions(clan);

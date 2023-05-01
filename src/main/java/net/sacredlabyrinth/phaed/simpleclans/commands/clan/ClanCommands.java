@@ -10,12 +10,12 @@ import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -91,9 +91,9 @@ public class ClanCommands extends BaseCommand {
         tag = event.getNewTag();
         String cleanTag = Helper.cleanTag(tag);
 
-        TagValidator validator = new TagValidator(settings, permissions, player, tag);
-        if (validator.getErrorMessage() != null) {
-            ChatBlock.sendMessage(player, validator.getErrorMessage());
+        Optional<String> validationError = plugin.getTagValidator().validate(player, tag);
+        if (validationError.isPresent()) {
+            ChatBlock.sendMessage(player, validationError.get());
             return;
         }
 
@@ -132,7 +132,7 @@ public class ClanCommands extends BaseCommand {
     @Description("{@@command.description.invite}")
     public void invite(Player sender, ClanPlayer cp, Clan clan,
                        @Conditions("not_banned|not_in_clan|online:ignore_vanished") @Name("player") ClanPlayerInput invited) {
-        if (!invited.getClanPlayer().isInviteEnabled()){
+        if (!invited.getClanPlayer().isInviteEnabled()) {
             ChatBlock.sendMessage(sender, RED + lang("invitedplayer.invite.off", sender));
             return;
         }
@@ -365,11 +365,11 @@ public class ClanCommands extends BaseCommand {
     @HelpSearchTags("leave")
     public void resignConfirm(Player player, ClanPlayer cp, Clan clan) {
         if (clan.isPermanent() || !clan.isLeader(player) || clan.getLeaders().size() > 1) {
-            clan.addBb(player.getName(),  lang("0.has.resigned", player.getName()));
+            clan.addBb(player.getName(), lang("0.has.resigned", player.getName()));
             cp.addResignTime(clan.getTag());
             clan.removePlayerFromClan(player.getUniqueId());
 
-            ChatBlock.sendMessage(cp,AQUA + lang("resign.success", player));
+            ChatBlock.sendMessage(cp, AQUA + lang("resign.success", player));
         } else if (clan.isLeader(player) && clan.getLeaders().size() == 1) {
             clan.disband(player, true, false);
             ChatBlock.sendMessage(cp, RED + lang("clan.has.been.disbanded", player, clan.getName()));

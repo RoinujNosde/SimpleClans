@@ -1,6 +1,8 @@
 safe-civilians: false
 tag:
     default-color: '8'
+    max-length: 5
+    min-length: 2
     bracket:
         color: '8'
         leader-color: '4'
@@ -24,6 +26,7 @@ settings:
     chat-compatibility-mode: true
     rival-limit-percent: 50
     use-colorcode-from-prefix-for-name: true
+    accept-other-alphabets-letters-on-tag: false
     display-chat-tags: true
     global-friendly-fire: false
     unrivable-clans:
@@ -52,7 +55,7 @@ settings:
     lore-length: 36
     past-clans-limit: 10
     username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
-    tag-regex: '^[a-zA-Z0-9]{2,5}$'
+    tag-regex: ''
 war-and-protection:
     war-enabled: false
     land-sharing: true
