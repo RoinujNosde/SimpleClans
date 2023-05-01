@@ -25,7 +25,5 @@ public class BbMigration extends ConfigMigration {
         if (config.contains("bb.color")) {
             config.set("bb.color", null);
         }
-
-        settings.save();
     }
 }
