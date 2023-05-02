@@ -420,8 +420,6 @@ public final class SettingsManager {
         ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled", true),
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
         ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#,###.##"),
-        ECONOMY_DECIMAL_SEPARATOR("economy.decimal-char-separator", "."),
-        ECONOMY_GROUPING_SEPARATOR("economy.grouping-char-separator", ","),
         /*
         ================
         > Kill Weights Settings
