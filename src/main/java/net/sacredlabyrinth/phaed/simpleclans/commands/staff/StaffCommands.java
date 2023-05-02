@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
@@ -326,7 +327,15 @@ public class StaffCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr.everyone}")
     public void resetKdr(CommandSender sender) {
         for (ClanPlayer cp : cm.getAllClanPlayers()) {
-            cm.resetKdr(cp);
+            Player player = cp.toPlayer();
+            if (player == null) {
+                continue;
+            }
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                cm.resetKdr(cp);
+            }
         }
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.kdr.of.all.players", sender));
     }
@@ -335,10 +344,18 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.admin.resetkdr")
     @Description("{@@command.description.resetkdr.player}")
-    public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput player) {
-        ClanPlayer cp = player.getClanPlayer();
-        cm.resetKdr(cp);
-        ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));
+    public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput clanPlayer) {
+        ClanPlayer cp = clanPlayer.getClanPlayer();
+        Player player = cp.toPlayer();
+        if (player == null) {
+            return;
+        }
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            cm.resetKdr(cp);
+            ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));
+        }
     }
 
     @Subcommand("%admin %permanent")
