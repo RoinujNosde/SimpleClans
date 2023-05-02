@@ -180,13 +180,10 @@ public class ChatUtils {
 
     public static String formatPrice(double value) {
         String lang = plugin.getSettingsManager().getString(LANGUAGE);
-        if (lang == null || lang.isEmpty()) {
-            lang = "en_US";
-        }
+        lang = (lang == null || lang.isEmpty()) ? "en_US" : lang;
         String[] langParts = lang.split("_");
         if (langParts.length != 2) {
-            plugin.getLogger().warning("Invalid language:" + lang);
-            plugin.getLogger().warning("Using default language: en_US");
+            plugin.getLogger().warning("Invalid language: " + lang + ". Using default language: en_US");
             lang = "en_US";
             langParts = lang.split("_");
         }
@@ -200,8 +197,7 @@ public class ChatUtils {
                 String pattern = plugin.getSettingsManager().getString(ECONOMY_DECIMAL_FORMAT_PATTERN);
                 return new DecimalFormat(pattern, symbols);
             } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Invalid decimal-format-pattern");
-                plugin.getLogger().warning("Using default decimal format pattern: #,###.##");
+                plugin.getLogger().warning("Invalid decimal-format-pattern. Using default decimal format pattern: #,###.##");
                 return new DecimalFormat("#,###.##", symbols);
             }
         });
