@@ -13,7 +13,6 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
-import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateRankNamePrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.RequestCanceller;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResetKdrPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
@@ -24,7 +23,6 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
 import org.bukkit.command.CommandSender;
-import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
