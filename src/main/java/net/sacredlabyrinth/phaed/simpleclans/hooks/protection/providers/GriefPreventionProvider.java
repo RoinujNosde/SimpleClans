@@ -4,25 +4,34 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.events.ClaimCreatedEvent;
+import me.ryanhamshire.GriefPrevention.events.ClaimResizeEvent;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Coordinate;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.Land;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.protection.ProtectionProvider;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
-public class GriefPreventionProvider implements ProtectionProvider {
+public class GriefPreventionProvider implements ProtectionProvider, Listener {
 
     @Override
     public void setup() {
+        Bukkit.getPluginManager().registerEvents(this, SimpleClans.getInstance());
     }
 
     @Override
@@ -102,6 +111,27 @@ public class GriefPreventionProvider implements ProtectionProvider {
             return claim.getOwnerID();
         } catch (NoSuchMethodError error) {
             return Bukkit.getOfflinePlayer(claim.getOwnerName()).getUniqueId();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    private void onResize(ClaimResizeEvent event) {
+        ClanManager clanManager = SimpleClans.getInstance().getClanManager();
+
+        Land originalLand = getLand(event.getFrom());
+        Land newLand = getLand(event.getTo());
+        if (originalLand == null || newLand == null) {
+            return;
+        }
+        for (UUID owner : originalLand.getOwners()) {
+            ClanPlayer cp = clanManager.getAnyClanPlayer(owner);
+            if (cp == null) continue;
+            for (ProtectionManager.Action action : ProtectionManager.Action.values()) {
+                if (cp.isAllowed(action, originalLand.getId())) {
+                    cp.disallow(action, originalLand.getId());
+                    cp.allow(action, newLand.getId());
+                }
+            }
         }
     }
 }
