@@ -2,7 +2,9 @@ package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import org.bukkit.Bukkit;
 import org.bukkit.conversations.Prompt;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -18,7 +20,9 @@ public class ResetKdrPrompt extends ConfirmationPrompt {
 
     @Override
     protected Prompt confirm(ClanPlayer sender, Clan clan) {
-        if (cm.purchaseResetKdr(sender.toPlayer())) {
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(sender);
+        Bukkit.getPluginManager().callEvent(event);
+        if (!event.isCancelled() && cm.purchaseResetKdr(sender.toPlayer())) {
             cm.resetKdr(sender);
             return new MessagePromptImpl(RED + lang("you.have.reseted.your.kdr", sender));
         } else {
