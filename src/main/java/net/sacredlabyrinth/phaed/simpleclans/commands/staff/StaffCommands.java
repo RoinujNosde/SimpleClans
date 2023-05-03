@@ -327,11 +327,7 @@ public class StaffCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr.everyone}")
     public void resetKdr(CommandSender sender) {
         for (ClanPlayer cp : cm.getAllClanPlayers()) {
-            Player player = cp.toPlayer();
-            if (player == null) {
-                continue;
-            }
-            PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
                 cm.resetKdr(cp);
@@ -346,11 +342,7 @@ public class StaffCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr.player}")
     public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput clanPlayer) {
         ClanPlayer cp = clanPlayer.getClanPlayer();
-        Player player = cp.toPlayer();
-        if (player == null) {
-            return;
-        }
-        PlayerResetKdrEvent event = new PlayerResetKdrEvent(player);
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             cm.resetKdr(cp);
