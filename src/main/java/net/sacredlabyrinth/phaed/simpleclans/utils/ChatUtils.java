@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -222,10 +221,8 @@ public class ChatUtils {
 
     public static String formatDate(long time) {
         String datePattern = plugin.getSettingsManager().getString(DATE_PATTERN);
-        String langPattern = plugin.getSettingsManager().getString(LANGUAGE);
-        Locale language = Locale.forLanguageTag(langPattern);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern)
-                .withLocale(language)
+                .withLocale(getLocale())
                 .withZone(ZoneId.systemDefault());
         Instant instant = Instant.ofEpochMilli(time);
         return formatter.format(instant);
