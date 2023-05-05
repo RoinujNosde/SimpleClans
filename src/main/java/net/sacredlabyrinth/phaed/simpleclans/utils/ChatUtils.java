@@ -1,8 +1,12 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -11,8 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +42,8 @@ public class ChatUtils {
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("[&§][0-9a-fA-Fk-orK-OR]");
     private static final Pattern HEX_STRIP_COLOR_PATTERN = Pattern.compile("([&§]#[0-9A-Fa-f]{6})|([&§][0-9a-fA-Fk-orK-OR])|([&§]x([&§][a-fA-F0-9]){6})");
-    private static final Map<String, SimpleDateFormat> DATE_FORMAT_CACHE = new HashMap<>();
+    private static final String DEFAULT_LANGUAGE = "en_US";
+    private static final String DEFAULT_DECIMAL_FORMAT_PATTERN = "#,###.##";
     private static final Map<String, DecimalFormat> DECIMAL_FORMAT_CACHE = new HashMap<>();
     private static final Map<String, DecimalFormatSymbols> SYMBOLS_CACHE = new HashMap<>();
 
@@ -179,48 +186,52 @@ public class ChatUtils {
     }
 
     public static String formatPrice(double value) {
-        String lang = plugin.getSettingsManager().getString(LANGUAGE);
-        lang = (lang == null || lang.isEmpty()) ? "en_US" : lang;
-        String[] langParts = lang.split("_");
-        if (langParts.length != 2) {
-            plugin.getLogger().warning("Invalid language: " + lang + ". Using default language: en_US");
-            lang = "en_US";
-            langParts = lang.split("_");
-        }
-        String languageCode = langParts[0];
-        String countryCode = langParts[1];
-        String cacheKey = languageCode + "_" + countryCode;
+        Locale locale = getLocale();
+        String cacheKey = locale.toLanguageTag();
         DecimalFormatSymbols symbols = SYMBOLS_CACHE.computeIfAbsent(cacheKey, k ->
-                new DecimalFormatSymbols(new Locale(languageCode, countryCode)));
+                new DecimalFormatSymbols(locale));
         DecimalFormat format = DECIMAL_FORMAT_CACHE.computeIfAbsent(cacheKey, k -> {
             try {
                 String pattern = plugin.getSettingsManager().getString(ECONOMY_DECIMAL_FORMAT_PATTERN);
                 return new DecimalFormat(pattern, symbols);
             } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Invalid decimal-format-pattern. Using default decimal format pattern: #,###.##");
-                return new DecimalFormat("#,###.##", symbols);
+                plugin.getLogger().warning("Invalid decimal-format-pattern.");
+                plugin.getLogger().warning("Using default decimal format pattern: " + DEFAULT_DECIMAL_FORMAT_PATTERN);
+                return new DecimalFormat(DEFAULT_DECIMAL_FORMAT_PATTERN, symbols);
             }
         });
         return format.format(value);
     }
 
+    private static Locale getLocale() {
+        String lang = plugin.getSettingsManager().getString(LANGUAGE);
+        if (lang == null || lang.isEmpty()) {
+            lang = DEFAULT_LANGUAGE;
+        }
+        String[] langParts = lang.split("_");
+        if (langParts.length != 2) {
+            plugin.getLogger().warning("Invalid language: " + lang);
+            plugin.getLogger().warning("Using default language: " + DEFAULT_LANGUAGE);
+            lang = DEFAULT_LANGUAGE;
+            langParts = lang.split("_");
+        }
+        String languageCode = langParts[0];
+        String countryCode = langParts[1];
+        return new Locale(languageCode, countryCode);
+    }
 
     public static String formatDate(long time) {
-        String pattern = plugin.getSettingsManager().getString(DATE_PATTERN);
-        SimpleDateFormat format = DATE_FORMAT_CACHE.computeIfAbsent(pattern, p -> {
-            try {
-                return new SimpleDateFormat(p);
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Invalid date-time-format-pattern: " + p);
-                plugin.getLogger().warning("Using default date pattern: HH:mm - dd/MM/yyyy");
-                return new SimpleDateFormat("HH:mm - dd/MM/yyyy");
-            }
-        });
-        return format.format(new Date(time));
+        String datePattern = plugin.getSettingsManager().getString(DATE_PATTERN);
+        String langPattern = plugin.getSettingsManager().getString(LANGUAGE);
+        Locale language = Locale.forLanguageTag(langPattern);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern)
+                .withLocale(language)
+                .withZone(ZoneId.systemDefault());
+        Instant instant = Instant.ofEpochMilli(time);
+        return formatter.format(instant);
     }
 
     public static void clearCache() {
-        DATE_FORMAT_CACHE.clear();
         DECIMAL_FORMAT_CACHE.clear();
         SYMBOLS_CACHE.clear();
     }
