@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.cryptomorin.xseries.XMaterial;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
@@ -75,7 +76,7 @@ public final class ClanManager {
                 continue;
             }
 
-            //cleaning
+            // cleaning
             final int delay = plugin.getSettingsManager().getInt(KDR_DELAY_BETWEEN_KILLS);
             long timePassed = oldKill.getTime().until(LocalDateTime.now(), ChronoUnit.MINUTES);
             if (timePassed >= delay) {
@@ -146,7 +147,7 @@ public final class ClanManager {
         importClan(clan);
         plugin.getStorageManager().updateClanPlayer(cp);
 
-        plugin.getRequestManager().deny(cp); //denies any previous invitation
+        plugin.getRequestManager().deny(cp); // denies any previous invitation
         SimpleClans.getInstance().getPermissionsManager().updateClanPermissions(clan);
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new CreateClanEvent(clan));
     }
@@ -395,7 +396,8 @@ public final class ClanManager {
         }
 
         plugin.getProxyManager().sendMessage("ALL", ChatColor.DARK_GRAY + "* " + ChatColor.AQUA + msg);
-        Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "[" + lang("server.announce") + "] " + ChatColor.WHITE + msg);
+        Bukkit.getConsoleSender()
+                .sendMessage(ChatColor.AQUA + "[" + lang("server.announce") + "] " + ChatColor.WHITE + msg);
     }
 
     /**
@@ -414,8 +416,10 @@ public final class ClanManager {
 
         if (plugin.getSettingsManager().is(DISPLAY_CHAT_TAGS)) {
             String prefix = plugin.getPermissionsManager().getPrefix(player);
-            //String suffix = plugin.getPermissionsManager().getSuffix(player);
-            String lastColor = plugin.getSettingsManager().is(COLOR_CODE_FROM_PREFIX_FOR_NAME) ? ChatUtils.getLastColorCode(prefix) : ChatColor.WHITE + "";
+            // String suffix = plugin.getPermissionsManager().getSuffix(player);
+            String lastColor = plugin.getSettingsManager().is(COLOR_CODE_FROM_PREFIX_FOR_NAME)
+                    ? ChatUtils.getLastColorCode(prefix)
+                    : ChatColor.WHITE + "";
             String fullName = player.getName();
 
             ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
@@ -929,7 +933,8 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.sendMessage(RED
+                        + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
             } else {
                 player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return false;
@@ -952,7 +957,8 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.sendMessage(RED
+                        + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
             } else {
                 player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return false;
@@ -975,7 +981,8 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.sendMessage(RED
+                        + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
             } else {
                 player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return false;
@@ -998,7 +1005,8 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.sendMessage(RED
+                        + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
             } else {
                 player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return false;
@@ -1021,7 +1029,8 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.sendMessage(RED
+                        + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
             } else {
                 player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return false;
@@ -1044,9 +1053,11 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.spigot().sendMessage(new TextComponent(RED + MessageFormat
+                        .format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price))));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
+                player.spigot().sendMessage(new TextComponent(RED
+                        + MessageFormat.format(lang("not.sufficient.money", player), ChatUtils.formatPrice(price))));
                 return false;
             }
         }
@@ -1077,7 +1088,8 @@ public final class ClanManager {
             if (plugin.getPermissionsManager().hasEconomy()) {
                 if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                     plugin.getPermissionsManager().playerChargeMoney(player, price);
-                    player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                    player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player),
+                            ChatUtils.formatPrice(price)));
                 } else {
                     player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                     return false;
@@ -1115,7 +1127,8 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
+                player.sendMessage(RED
+                        + MessageFormat.format(lang("account.has.been.debited", player), ChatUtils.formatPrice(price)));
             } else {
                 player.sendMessage(RED + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
                 return false;
