@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import com.cryptomorin.xseries.XMaterial;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
@@ -1044,9 +1045,9 @@ public final class ClanManager {
         if (plugin.getPermissionsManager().hasEconomy()) {
             if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
                 plugin.getPermissionsManager().playerChargeMoney(player, price);
-                player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
+                player.spigot().sendMessage(new TextComponent(RED +  MessageFormat.format(lang("account.has.been.debited", player), price)));
             } else {
-                player.sendMessage(RED + lang("not.sufficient.money", player, price));
+                player.spigot().sendMessage(new TextComponent( RED + MessageFormat.format(lang("not.sufficient.money", player), price)));
                 return false;
             }
         }
