@@ -189,6 +189,11 @@ public class LeaderCommands extends BaseCommand {
     @CommandCompletion("@nothing")
     @Description("{@@command.description.rename}")
     public void rename(ClanPlayer cp, Clan clan, @Name("name") String clanName) {
+        if (clanName.contains("&")) {
+            ChatBlock.sendMessageKey(cp, "your.clan.name.cannot.contain.color.codes");
+            return;
+        }
+
         if (clan.getLeaders().size() != 1) {
             requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", clanName);
             ChatBlock.sendMessageKey(cp, "rename.vote.has.been.requested.from.all.leaders");
