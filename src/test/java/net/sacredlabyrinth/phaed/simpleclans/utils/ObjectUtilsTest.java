@@ -2,9 +2,11 @@ package net.sacredlabyrinth.phaed.simpleclans.utils;
 
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ObjectUtilsTest {
 
@@ -13,7 +15,7 @@ public class ObjectUtilsTest {
     private Clan clanOrigin;
     private Clan clanDest;
 
-    @Before
+    @BeforeEach
     public void setup() {
         cpOrigin = new ClanPlayer();
         cpOrigin.setName("Test");
@@ -25,16 +27,15 @@ public class ObjectUtilsTest {
     @Test
     public void updateFields() throws IllegalAccessException {
         ObjectUtils.updateFields(cpOrigin, cpDest);
-        Assert.assertEquals("Test", cpDest.getName());
+        assertEquals("Test", cpDest.getName());
 
         clanOrigin.setMemberFee(0.222);
-
         ObjectUtils.updateFields(clanOrigin, clanDest);
-        Assert.assertEquals(0.222, clanDest.getMemberFee(), 0);
+        assertEquals(0.222, clanDest.getMemberFee(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateFieldsDifferentType() throws IllegalAccessException {
-        ObjectUtils.updateFields(clanOrigin, cpOrigin);
+    @Test
+    public void updateFieldsDifferentType() {
+        assertThrows(IllegalArgumentException.class, () -> ObjectUtils.updateFields(clanOrigin, cpOrigin));
     }
 }

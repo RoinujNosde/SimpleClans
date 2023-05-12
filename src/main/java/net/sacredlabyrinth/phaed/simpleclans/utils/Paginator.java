@@ -36,10 +36,8 @@ public class Paginator {
 	}
 	
 	/**
-	 * 
+	 * author: RoinujNosde
 	 * @return the total elements
-	 *
-	 * @author RoinujNosde
 	 */
 	public int getTotalElements() {
 		if (collection != null) {
@@ -49,40 +47,36 @@ public class Paginator {
 	}
 	
 	/**
-	 * 
+	 * author: RoinujNosde
 	 * @return the size per page
 	 *
-	 * @author RoinujNosde
 	 */
 	public int getSizePerPage() {
 		return sizePerPage;
 	}
 	
 	/**
-	 * 
+	 * author: RoinujNosde
 	 * @return the minimal index based on the current page
 	 *
-	 * @author RoinujNosde
 	 */
 	public int getMinIndex() {
 		return getCurrentPage() * getSizePerPage();
 	}
 	
 	/**
-	 * 
+	 * author: RoinujNosde
 	 * @return the max index based on the current page
 	 *
-	 * @author RoinujNosde
 	 */
 	public int getMaxIndex() {
 		return (getCurrentPage() + 1) * getSizePerPage();
 	}
 	
 	/**
-	 * 
-	 * @return the current page, starting at 0
+	 * author: RoinujNosde
 	 *
-	 * @author RoinujNosde
+	 * @return the current page, starting at 0
 	 */
 	public int getCurrentPage() {
 		return currentPage;
@@ -91,7 +85,9 @@ public class Paginator {
 	/**
 	 * Increases the page number if there are elements to display
 	 *
-	 * @author RoinujNosde
+	 * <p>
+	 * author: RoinujNosde
+	 * </p>
 	 */
 	public boolean nextPage() {
 		if (!hasNextPage()) {
@@ -111,8 +107,9 @@ public class Paginator {
 
 	/**
 	 * Decreases the page number if current {@literal >} 0
-	 *
-	 * @author RoinujNosde
+	 * <p>
+	 * author: RoinujNosde
+	 * </p>
 	 */
 	public boolean previousPage() {
 		if (hasPreviousPage()) {
@@ -134,7 +131,9 @@ public class Paginator {
 	 * @param index the index
 	 * @return if this index will not cause any IndexOutOfBoundsException
 	 *
-	 * @author RoinujNosde
+	 * <p>
+	 * author: RoinujNosde
+	 * </p>
 	 */
 	public boolean isValidIndex(int index) {
         return index >= getMinIndex() && index < getMaxIndex() && index < getTotalElements();

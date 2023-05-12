@@ -3,7 +3,6 @@
 /bin/
 /.classpath
 /.project
-/dependency-reduced-pom.xml
 *.jar
 .settings
 .factorypath
