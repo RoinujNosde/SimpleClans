@@ -121,14 +121,24 @@ public final class SettingsManager {
     }
 
     public Locale getLanguage() {
-        String language = getString(LANGUAGE);
-        String[] split = language.split("_");
+        String lang = getString(LANGUAGE);
 
-        if (split.length == 2) {
-            return new Locale(split[0], split[1]);
+        if (lang == null || lang.isEmpty()) {
+            lang = LANGUAGE.defaultValue.toString();
+        }
+        String[] langParts = lang.split("_");
+
+        if (langParts.length != 2) {
+
+            if (is(DEBUG)) {
+                plugin.getLogger().warning(String.format("Invalid language: %s", lang));
+                plugin.getLogger().warning(String.format("Using default language: %s", LANGUAGE.defaultValue));
+            }
+            lang = LANGUAGE.defaultValue.toString();
+            langParts = lang.split("_");
         }
 
-        return new Locale(language);
+        return new Locale(langParts[0], langParts[1]);
     }
 
     public List<Material> getItemList() {
@@ -298,7 +308,7 @@ public final class SettingsManager {
         BLACKLISTED_WORLDS("settings.blacklisted-worlds"),
         BANNED_PLAYERS("settings.banned-players"),
         DISALLOWED_TAGS("settings.disallowed-tags"),
-        LANGUAGE("settings.language", "en"),
+        LANGUAGE("settings.language", "en_US"),
         LANGUAGE_SELECTOR("settings.user-language-selector", true),
         DISALLOWED_TAG_COLORS("settings.disallowed-tag-colors"),
         SERVER_NAME("settings.server-name", "&4SimpleClans"),
