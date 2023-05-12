@@ -75,7 +75,9 @@ public class Dates {
     }
 
     /**
-     * @author RoboMWM, LaxWasHere
+     * <p>
+     * authors: RoboMWM, LaxWasHere
+     * </p>
      * @param seconds the time in seconds
      * @param depth Max amount of detail (e.g. only display days and hours if set to 1 and seconds {@literal >} 1 day)
      * @return the string representation of the amount of time labeled as days, hours, minutes, seconds

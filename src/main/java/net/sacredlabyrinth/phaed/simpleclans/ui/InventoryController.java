@@ -27,7 +27,7 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.COMMANDS_CLAN;
 
 /**
- * 
+ *
  * @author RoinujNosde
  *
  */
@@ -40,7 +40,7 @@ public class InventoryController implements Listener {
 		if (!(entity instanceof Player)) {
 			return;
 		}
-		
+
 		frames.remove(entity.getUniqueId());
 	}
 
@@ -55,13 +55,13 @@ public class InventoryController implements Listener {
 		if (frame == null) {
 			return;
 		}
-		
+
 		event.setCancelled(true);
-		
+
 		if (event.getClickedInventory() == null || event.getClickedInventory().getType() == InventoryType.PLAYER) {
 			return;
 		}
-		
+
 		SCComponent component = frame.getComponent(event.getSlot());
 		if (component == null) {
 			return;
@@ -77,7 +77,7 @@ public class InventoryController implements Listener {
 			InventoryDrawer.open(new WarningFrame(frame, (Player) entity, null));
 			return;
 		}
-		
+
 		Object permission = component.getPermission(click);
 		if (permission != null) {
 			if (!hasPermission((Player) entity, permission)) {
@@ -124,7 +124,7 @@ public class InventoryController implements Listener {
 
 	/**
 	 * Checks if the player has the permission
-	 * 
+	 *
 	 * @param player the Player
 	 * @param permission the permission
 	 * @return true if they have permission
@@ -147,8 +147,8 @@ public class InventoryController implements Listener {
 	/**
 	 * Registers the frame in the InventoryController
 	 * @param frame the frame
-	 *
-	 * @author RoinujNosde
+	 * <p>
+	 * author: RoinujNosde
 	 */
 	public static void register(@NotNull SCFrame frame) {
 		frames.put(frame.getViewer().getUniqueId(), frame);
@@ -169,15 +169,16 @@ public class InventoryController implements Listener {
 	 * @param player the Player
 	 * @param subcommand the subcommand
 	 * @param update whether to update the inventory instead of closing
-	 *
-	 * @author RoinujNosde
+	 * <p>
+	 * author: RoinujNosde
+	 * </p>
 	 */
 	public static void runSubcommand(@NotNull Player player, @NotNull String subcommand, boolean update, String... args) {
 		SimpleClans plugin = SimpleClans.getInstance();
 		String baseCommand = plugin.getSettingsManager().getString(COMMANDS_CLAN);
 		String finalCommand = String.format("%s %s ", baseCommand, subcommand) + String.join(" ", args);
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				player.performCommand(finalCommand);
