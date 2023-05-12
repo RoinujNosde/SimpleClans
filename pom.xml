@@ -177,6 +177,11 @@
                     <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
         </plugins>
     </build>
     <!-- Dependencies -->
@@ -192,6 +197,13 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
             <scope>provided</scope>
+            <exclusions>
+                <!-- No idea why, but it fails JUnit 5 tests -->
+                <exclusion>
+                    <groupId>com.googlecode.json-simple</groupId>
+                    <artifactId>json-simple</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
