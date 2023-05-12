@@ -45,6 +45,7 @@ public class ChatUtils {
     private static final String DEFAULT_DECIMAL_FORMAT_PATTERN = "#,###.##";
     private static final Map<String, DecimalFormat> DECIMAL_FORMAT_CACHE = new HashMap<>();
     private static final Map<String, DecimalFormatSymbols> SYMBOLS_CACHE = new HashMap<>();
+    private static final Map<String, Locale> LOCALE_CACHE = new HashMap<>();
 
     static {
         try {
@@ -216,7 +217,9 @@ public class ChatUtils {
         }
         String languageCode = langParts[0];
         String countryCode = langParts[1];
-        return new Locale(languageCode, countryCode);
+
+        String cacheKey = languageCode + "_" + countryCode;
+        return LOCALE_CACHE.computeIfAbsent(cacheKey, k -> new Locale(languageCode, countryCode));
     }
 
     public static String formatDate(long time) {
@@ -231,6 +234,7 @@ public class ChatUtils {
     public static void clearCache() {
         DECIMAL_FORMAT_CACHE.clear();
         SYMBOLS_CACHE.clear();
+        LOCALE_CACHE.clear();
     }
 
 }
