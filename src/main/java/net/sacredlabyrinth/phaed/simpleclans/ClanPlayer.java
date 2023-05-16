@@ -823,6 +823,15 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         return "";
     }
 
+    @Placeholder("has_rank")
+    public boolean hasRank() {
+        if (clan != null) {
+            Rank r = clan.getRank(getRankId());
+            return r != null;
+        }
+        return false;
+    }
+
     @Placeholder("rank")
     public @NotNull String getRankId() {
         return flags.getString("rank", "");
