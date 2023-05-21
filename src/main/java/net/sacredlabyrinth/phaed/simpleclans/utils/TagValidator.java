@@ -64,10 +64,10 @@ public class TagValidator {
             }
         }
 
-        if (tagRegex != null && !tagRegex.matcher(cleanTag).matches()) {
-            error = lang("your.tag.doesnt.meet.the.requirements", player);
-        } else {
+        if (tagRegex == null) {
             checkAlphabet(player, cleanTag);
+        } else if (!tagRegex.matcher(cleanTag).matches()) {
+            error = lang("your.tag.doesnt.meet.the.requirements", player);
         }
 
         return Optional.ofNullable(error);
