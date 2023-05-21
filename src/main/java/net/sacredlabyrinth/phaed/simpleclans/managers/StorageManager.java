@@ -1223,9 +1223,11 @@ public final class StorageManager {
 
 	/**
 	 * Saves modified Clans and ClanPlayers to the database
-	 *
-	 * @author RoinujNosde
-	 * @since 2.10.2
+     * @since 2.10.2
+     *
+     * <p>
+     * author: RoinujNosde
+     * </p>
 	 */
 	public void saveModified() {
         try (PreparedStatement pst = prepareUpdateClanPlayerStatement(core.getConnection())) {

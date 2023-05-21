@@ -1,7 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.hooks;
 
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 

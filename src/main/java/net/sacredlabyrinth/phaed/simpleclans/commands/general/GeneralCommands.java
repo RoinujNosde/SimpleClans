@@ -14,13 +14,16 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.RequestCanceller;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.ResetKdrPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -156,17 +159,30 @@ public class GeneralCommands extends BaseCommand {
         ChatBlock.sendMessage(player, AQUA + lang("friendy.fire.is.now.managed.by.your.clan", player));
     }
 
+    @Subcommand("%resetkdr %confirm")
+    @CommandPermission("simpleclans.vip.resetkdr")
+    @Description("{@@command.description.resetkdr}")
+    public void resetKdrConfirm(Player player, ClanPlayer cp) {
+        if (!settings.is(ALLOW_RESET_KDR)) {
+            ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
+            return;
+        }
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled() && cm.purchaseResetKdr(player)) {
+            cm.resetKdr(cp);
+            ChatBlock.sendMessage(player, RED + lang("you.have.reseted.your.kdr", player));
+        }
+    }
+
     @Subcommand("%resetkdr")
     @CommandPermission("simpleclans.vip.resetkdr")
     @Description("{@@command.description.resetkdr}")
     public void resetKdr(Player player, ClanPlayer cp) {
         if (!settings.is(ALLOW_RESET_KDR)) {
             ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
-            return;
-        }
-        if (cm.purchaseResetKdr(player)) {
-            cm.resetKdr(cp);
-            ChatBlock.sendMessage(player, RED + lang("you.have.reseted.your.kdr", player));
+        } else {
+            new SCConversation(plugin, player, new ResetKdrPrompt(cm), 60).begin();
         }
     }
 

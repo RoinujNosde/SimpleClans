@@ -1,28 +1,30 @@
 package net.sacredlabyrinth.phaed.simpleclans.language;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ResourceControlTest {
 
     @Test
     public void getFallbackLocaleAcf() {
-        LanguageResource.ResourceControl resourceControl = new LanguageResource.ResourceControl(Locale.ENGLISH,
-                true);
+        LanguageResource.ResourceControl resourceControl = new LanguageResource.ResourceControl(Locale.ENGLISH, true);
         String acfBaseName = "acf";
         Locale locale = resourceControl.getFallbackLocale(acfBaseName, Locale.ENGLISH);
-        Assert.assertNull(locale);
+        assertNull(locale);
+
         locale = resourceControl.getFallbackLocale(acfBaseName, new Locale("es", "ES"));
-        Assert.assertEquals(Locale.ENGLISH, locale);
+        assertEquals(Locale.ENGLISH, locale);
 
         Locale ptBR = new Locale("pt", "BR");
         resourceControl = new LanguageResource.ResourceControl(ptBR, true);
         locale = resourceControl.getFallbackLocale(acfBaseName, Locale.ENGLISH);
-        Assert.assertNull(locale);
+        assertNull(locale);
+
         locale = resourceControl.getFallbackLocale(acfBaseName, ptBR);
-        Assert.assertEquals(Locale.ENGLISH, locale);
+        assertEquals(Locale.ENGLISH, locale);
     }
 
     @Test
@@ -31,21 +33,27 @@ public class ResourceControlTest {
                 true);
         String pluginBaseName = "messages";
         Locale locale = resourceControl.getFallbackLocale(pluginBaseName, Locale.ENGLISH);
-        Assert.assertEquals(Locale.ROOT, locale);
+        assertEquals(Locale.ROOT, locale);
+
         locale = resourceControl.getFallbackLocale(pluginBaseName, Locale.ROOT);
-        Assert.assertNull(locale);
+        assertNull(locale);
+
         locale = resourceControl.getFallbackLocale(pluginBaseName, Locale.CANADA);
-        Assert.assertNotSame(Locale.CANADA, locale);
+        assertNotSame(Locale.CANADA, locale);
 
         Locale ptBR = new Locale("pt", "BR");
         resourceControl = new LanguageResource.ResourceControl(ptBR, true);
+
         locale = resourceControl.getFallbackLocale(pluginBaseName, ptBR);
-        Assert.assertEquals(Locale.ROOT, locale);
+        assertEquals(Locale.ROOT, locale);
+
         locale = resourceControl.getFallbackLocale(pluginBaseName, Locale.ROOT);
-        Assert.assertNull(locale);
+        assertNull(locale);
+
         locale = resourceControl.getFallbackLocale(pluginBaseName, Locale.CANADA);
-        Assert.assertNotSame(Locale.CANADA, locale);
+        assertNotSame(Locale.CANADA, locale);
+
         locale = resourceControl.getFallbackLocale(pluginBaseName, Locale.ENGLISH);
-        Assert.assertEquals(ptBR, locale);
+        assertEquals(ptBR, locale);
     }
 }
