@@ -120,8 +120,6 @@ public class StaffCommands extends BaseCommand {
         storage.importFromDatabase();
         permissions.loadPermissions();
 
-        plugin.setTagValidator(new TagValidator(settings, permissions));
-
         for (Clan clan : cm.getClans()) {
             permissions.updateClanPermissions(clan);
         }

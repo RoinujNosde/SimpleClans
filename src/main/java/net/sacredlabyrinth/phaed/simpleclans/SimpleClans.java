@@ -358,8 +358,4 @@ public class SimpleClans extends JavaPlugin {
     public TagValidator getTagValidator() {
         return tagValidator;
     }
-
-    public void setTagValidator(TagValidator tagValidator) {
-        this.tagValidator = tagValidator;
-    }
 }
