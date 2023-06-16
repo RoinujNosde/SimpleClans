@@ -374,7 +374,7 @@ public class StaffCommands extends BaseCommand {
         ChatBlock.sendMessageKey(sender, "you.have.successfully.renamed.the.clan", clanName);
     }
 
-    @Subcommand("%locale %set")
+    @Subcommand("%mod %locale")
     @CommandPermission("simpleclans.mod.locale")
     @Description("{@@command.description.mod.locale}")
     @CommandCompletion("@locales")
