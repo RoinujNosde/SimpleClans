@@ -66,7 +66,7 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.anyone.locale")
     @Description("{@@command.description.locale}")
     @CommandCompletion("@locales")
-    public void locale(ClanPlayer cp, @Name("locale") String locale) {
+    public void locale(ClanPlayer cp, @Values("@locales") @Name("locale") String locale) {
         cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
         plugin.getStorageManager().updateClanPlayer(cp);
 

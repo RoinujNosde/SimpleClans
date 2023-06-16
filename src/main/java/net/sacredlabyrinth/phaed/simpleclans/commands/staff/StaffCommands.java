@@ -378,7 +378,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.locale")
     @Description("{@@command.description.mod.locale}")
     @CommandCompletion("@locales")
-    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Name("locale") String locale) {
+    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Values("@locales") @Name("locale") String locale) {
         ClanPlayer cp = input.getClanPlayer();
         cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
         plugin.getStorageManager().updateClanPlayer(cp);
