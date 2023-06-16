@@ -373,4 +373,16 @@ public class StaffCommands extends BaseCommand {
 
         ChatBlock.sendMessageKey(sender, "you.have.successfully.renamed.the.clan", clanName);
     }
+
+    @Subcommand("%mod %locale")
+    @CommandPermission("simpleclans.mod.locale")
+    @Description("{@@command.description.mod.locale}")
+    @CommandCompletion("@locales")
+    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Values("@locales") @Name("locale") String locale) {
+        ClanPlayer cp = input.getClanPlayer();
+        cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
+        plugin.getStorageManager().updateClanPlayer(cp);
+
+        ChatBlock.sendMessage(sender, lang("locale.has.been.changed"));
+    }
 }
