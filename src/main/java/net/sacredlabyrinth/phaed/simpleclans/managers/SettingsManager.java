@@ -195,7 +195,7 @@ public final class SettingsManager {
      * Check whether a word is disallowed
      *
      * @param word the world
-     * @return whether its a disallowed word
+     * @return whether its disallowed word
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
@@ -238,8 +238,9 @@ public final class SettingsManager {
      * @return whether the clan is unrivable
      */
     public boolean isUnrivable(String tag) {
-        return getStringList(UNRIVABLE_CLANS).stream().map(String::toLowerCase)
-                .anyMatch(unrivable -> unrivable.equals(tag.toLowerCase()));
+        return getStringList(UNRIVABLE_CLANS).stream().
+                map(String::toLowerCase).
+                anyMatch(unrivable -> unrivable.equals(tag.toLowerCase()));
     }
 
     /**
@@ -319,9 +320,9 @@ public final class SettingsManager {
 
     public enum ConfigField {
         /*
-         ================
-         > General Settings
-         ================
+        ================
+        > General Settings
+        ================
          *
          */
         ENABLE_GUI("settings.enable-gui", true),
@@ -363,9 +364,9 @@ public final class SettingsManager {
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
         DATE_PATTERN("settings.date-time-format-pattern", "HH:mm - dd/MM/yyyy"),
         /*
-         ================
-         > Tag Settings
-         ================
+        ================
+        > Tag Settings
+        ================
          *
          */
         TAG_DEFAULT_COLOR("tag.default-color", "8"),
@@ -381,9 +382,9 @@ public final class SettingsManager {
         @Deprecated
         TAG_SEPARATOR_char("tag.separator.char", " ."),
         /*
-         ================
-         > War and Protection Settings
-         ================
+        ================
+        > War and Protection Settings
+        ================
          *
          */
         ENABLE_WAR("war-and-protection.war-enabled", false),
@@ -407,9 +408,9 @@ public final class SettingsManager {
         WAR_START_REQUEST_ENABLED("war-and-protection.war-start.request-enabled", true),
         WAR_MAX_MEMBERS_DIFFERENCE("war-and-protection.war-start.members-online-max-difference", 5),
         /*
-         ================
-         > KDR Grinding Prevention Settings
-         ================
+        ================
+        > KDR Grinding Prevention Settings
+        ================
          *
          */
         KDR_ENABLE_MAX_KILLS("kdr-grinding-prevention.enable-max-kills", false),
@@ -417,9 +418,9 @@ public final class SettingsManager {
         KDR_ENABLE_KILL_DELAY("kdr-grinding-prevention.enable-kill-delay", false),
         KDR_DELAY_BETWEEN_KILLS("kdr-grinding-prevention.delay-between-kills", 5),
         /*
-         ================
-         > Commands Settings
-         ================
+        ================
+        > Commands Settings
+        ================
          *
          */
         COMMANDS_MORE("commands.more", "more"),
@@ -431,9 +432,9 @@ public final class SettingsManager {
         COMMANDS_CLAN_CHAT("commands.clan_chat", "."),
         COMMANDS_FORCE_PRIORITY("commands.force-priority", true),
         /*
-         ================
-         > Economy Settings
-         ================
+        ================
+        > Economy Settings
+        ================
          *
          */
         ECONOMY_CREATION_PRICE("economy.creation-price", 100.0),
@@ -468,9 +469,9 @@ public final class SettingsManager {
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
         ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#,###.##"),
         /*
-         ================
-         > Kill Weights Settings
-         ================
+        ================
+        > Kill Weights Settings
+        ================
          *
          */
         KILL_WEIGHTS_RIVAL("kill-weights.rival", 2.0),
@@ -479,9 +480,9 @@ public final class SettingsManager {
         KILL_WEIGHTS_ALLY("kill-weights.ally", -1.0),
         KILL_WEIGHTS_DENY_SAME_IP_KILLS("kill-weights.deny-same-ip-kills", false),
         /*
-         ================
-         > Clan Settings
-         ================
+        ================
+        > Clan Settings
+        ================
          *
          */
         CLAN_TELEPORT_DELAY("clan.homebase-teleport-wait-secs", 10),
@@ -501,9 +502,9 @@ public final class SettingsManager {
         CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default", false),
         CLAN_MIN_TO_VERIFY("clan.min-to-verify", 1),
         /*
-         ================
-         > Tasks Settings
-         ================
+        ================
+        > Tasks Settings
+        ================
          *
          */
         TASKS_COLLECT_UPKEEP_HOUR("tasks.collect-upkeep.hour", 1),
@@ -513,9 +514,9 @@ public final class SettingsManager {
         TASKS_COLLECT_FEE_HOUR("tasks.collect-fee.hour", 1),
         TASKS_COLLECT_FEE_MINUTE("tasks.collect-fee.minute", 0),
         /*
-         ================
-         > Page Settings
-         ================
+        ================
+        > Page Settings
+        ================
          */
         PAGE_LEADER_COLOR("page.leader-color", "4"),
         PAGE_UNTRUSTED_COLOR("page.untrusted-color", "8"),
@@ -527,17 +528,16 @@ public final class SettingsManager {
         PAGE_SIZE("page.size", 100),
         HELP_SIZE("page.help-size", 10),
         /*
-         ================
-         > Clan Chat Settings
-         ================
+        ================
+        > Clan Chat Settings
+        ================
          *
          */
         CLANCHAT_ENABLE("clanchat.enable", true),
         CLANCHAT_TAG_BASED("clanchat.tag-based-clan-chat", false),
         CLANCHAT_ANNOUNCEMENT_COLOR("clanchat.announcement-color", "e"),
         CLANCHAT_FORMAT("clanchat.format", "&b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
-        CLANCHAT_SPYFORMAT("clanchat.spy-format",
-                "&8[Spy] [&bC&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
+        CLANCHAT_SPYFORMAT("clanchat.spy-format", "&8[Spy] [&bC&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
         CLANCHAT_RANK("clanchat.rank", "&f[%rank%&f]"),
         CLANCHAT_LEADER_COLOR("clanchat.leader-color", "4"),
         CLANCHAT_TRUSTED_COLOR("clanchat.trusted-color", "f"),
@@ -551,32 +551,31 @@ public final class SettingsManager {
         CLANCHAT_MESSAGE_COLOR("clanchat.message-color", "b"),
         CLANCHAT_LISTENER_PRIORITY("clanchat.listener-priority", "LOW"),
         /*
-         ================
-         > Request Settings
-         ================
+        ================
+        > Request Settings
+        ================
          *
          */
         REQUEST_MESSAGE_COLOR("request.message-color", "b"),
         REQUEST_FREQUENCY("request.ask-frequency-secs", 60),
         REQUEST_MAX("request.max-asks-per-request", 1440),
         /*
-         ================
-         > BB Settings
-         ================
+        ================
+        > BB Settings
+        ================
          */
         BB_PREFIX("bb.prefix", "&8* &e"),
         BB_SHOW_ON_LOGIN("bb.show-on-login", true),
         BB_SIZE("bb.size", 6),
         BB_LOGIN_SIZE("bb.login-size", 6),
         /*
-         ================
-         > Ally Chat Settings
-         ================
+        ================
+        > Ally Chat Settings
+        ================
          */
         ALLYCHAT_ENABLE("allychat.enable", true),
         ALLYCHAT_FORMAT("allychat.format", "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"),
-        ALLYCHAT_SPYFORMAT("allychat.spy-format",
-                "&8[Spy] [&cA&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
+        ALLYCHAT_SPYFORMAT("allychat.spy-format", "&8[Spy] [&cA&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
         ALLYCHAT_RANK("allychat.rank", "&f[%rank%&f]"),
         ALLYCHAT_LEADER_COLOR("allychat.leader-color", "4"),
         ALLYCHAT_TRUSTED_COLOR("allychat.trusted-color", "f"),
@@ -589,17 +588,15 @@ public final class SettingsManager {
         ALLYCHAT_MESSAGE_COLOR("allychat.message-color", "3"),
         ALLYCHAT_TAG_COLOR("allychat.tag-color", ""),
         /*
-         ================
-         > Discord Chat Settings
-         ================
+        ================
+        > Discord Chat Settings
+        ================
          */
         DISCORDCHAT_ENABLE("discordchat.enable", false),
         DISCORDCHAT_AUTO_CREATION("discordchat.auto-creation", true),
         DISCORDCHAT_FORMAT_TO("discordchat.discord-format", "%player% » %message%"),
-        DISCORDCHAT_FORMAT("discordchat.format",
-                "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
-        DISCORDCHAT_SPYFORMAT("discordchat.spy-format",
-                "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
+        DISCORDCHAT_FORMAT("discordchat.format", "&b[&9D&b] &b[%clan%&b] &4<%nick-color%%player%&4> %rank%: &b%message%"),
+        DISCORDCHAT_SPYFORMAT("discordchat.spy-format", "&8[Spy] [&9D&8] <%clan%&8> <%nick-color%*&8%player%>&8 %rank%: %message%"),
         DISCORDCHAT_RANK("discordchat.rank", "[%rank%]"),
         DISCORDCHAT_LEADER_ROLE("discordchat.leader-role", "Leader"),
         DISCORDCHAT_LEADER_ID("discordchat.leader-id", "0"),
@@ -610,17 +607,17 @@ public final class SettingsManager {
         DISCORDCHAT_TEXT_LIMIT("discordchat.text.clans-limit", 100),
         DISCORDCHAT_MINIMUM_LINKED_PLAYERS("discordchat.min-linked-players-to-create", 3),
         /*
-         ================
-         > Purge Settings
-         ================
+        ================
+        > Purge Settings
+        ================
          */
         PURGE_INACTIVE_PLAYER_DAYS("purge.inactive-player-data-days", 30),
         PURGE_INACTIVE_CLAN_DAYS("purge.inactive-clan-days", 7),
         PURGE_UNVERIFIED_CLAN_DAYS("purge.unverified-clan-days", 2),
         /*
-         ================
-         > MySQL Settings
-         ================
+        ================
+        > MySQL Settings
+        ================
          */
         MYSQL_USERNAME("mysql.username", ""),
         MYSQL_HOST("mysql.host", "localhost"),
