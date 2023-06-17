@@ -23,6 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -91,9 +92,9 @@ public class StaffCommands extends BaseCommand {
         tag = event.getNewTag();
         String cleanTag = Helper.cleanTag(tag);
 
-        TagValidator validator = new TagValidator(plugin, player, tag);
-        if (validator.getErrorMessage() != null) {
-            ChatBlock.sendMessage(player, validator.getErrorMessage());
+        Optional<String> validationError = plugin.getTagValidator().validate(player, tag);
+        if (validationError.isPresent()) {
+            ChatBlock.sendMessage(player, validationError.get());
             return;
         }
 
@@ -372,5 +373,17 @@ public class StaffCommands extends BaseCommand {
         storage.updateClan(clan);
 
         ChatBlock.sendMessageKey(sender, "you.have.successfully.renamed.the.clan", clanName);
+    }
+
+    @Subcommand("%mod %locale")
+    @CommandPermission("simpleclans.mod.locale")
+    @Description("{@@command.description.mod.locale}")
+    @CommandCompletion("@locales")
+    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Values("@locales") @Name("locale") String locale) {
+        ClanPlayer cp = input.getClanPlayer();
+        cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
+        plugin.getStorageManager().updateClanPlayer(cp);
+
+        ChatBlock.sendMessage(sender, lang("locale.has.been.changed"));
     }
 }

@@ -1,20 +1,18 @@
 package net.sacredlabyrinth.phaed.simpleclans.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
-
-import org.bukkit.scheduler.BukkitRunnable;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 

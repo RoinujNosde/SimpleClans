@@ -2,12 +2,12 @@ safe-civilians: false
 tag:
     default-color: '8'
     max-length: 5
+    min-length: 2
     bracket:
         color: '8'
         leader-color: '4'
         left: ''
         right: ''
-    min-length: 2
     separator:
         color: '8'
         leader-color: '4'
@@ -26,6 +26,7 @@ settings:
     chat-compatibility-mode: true
     rival-limit-percent: 50
     use-colorcode-from-prefix-for-name: true
+    accept-other-alphabets-letters-on-tag: false
     display-chat-tags: true
     global-friendly-fire: false
     unrivable-clans:
@@ -49,12 +50,12 @@ settings:
     allow-reset-kdr: false
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
-    accept-other-alphabets-letters-on-tag: false
     ranking-type: "DENSE"
     list-default-order-by: kdr
     lore-length: 36
     past-clans-limit: 10
     username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
+    tag-regex: ''
     date-time-format-pattern: 'HH:mm - dd/MM/yyyy'
 war-and-protection:
     war-enabled: false

@@ -303,7 +303,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void setTag(String tag) {
         this.tag = tag;
     }
-
     /**
      * Returns the first color in the clan's tag
      *

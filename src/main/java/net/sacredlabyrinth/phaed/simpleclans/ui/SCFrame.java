@@ -1,11 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 

@@ -60,6 +60,8 @@ permissions:
     description: Can list clans by balance
   simpleclans.anyone.profile:
     description: Can view a clan's profile
+  simpleclans.anyone.locale:
+    description: Can set his language
   simpleclans.anyone.roster:
     description: Can veiw a clan's member list
   simpleclans.anyone.lookup:
@@ -169,6 +171,8 @@ permissions:
     description: Can change a clan's tag
   simpleclans.mod.staffgui:
     description: Can open the staff gui
+  simpleclans.mod.locale:
+    description: Can set players language
   simpleclans.leader.fee:
     description: Can enable and set the clan fee
   simpleclans.leader.invite:
@@ -254,6 +258,7 @@ permissions:
       simpleclans.mod.bb-clear: true
       simpleclans.mod.bb: true
       simpleclans.mod.bb-add: true
+      simpleclans.mod.locale: true
   simpleclans.anyone.*:
     description: Permissions for anyone
     default: true
@@ -266,6 +271,7 @@ permissions:
       simpleclans.anyone.alliances: true
       simpleclans.anyone.rivalries: true
       simpleclans.anyone.invite-toggle: true
+      simpleclans.anyone.locale: true
   simpleclans.member.land.*:
     description: Permissions for allowing/blocking actions in lands
     default: false

@@ -15,8 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause.REVERT;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause.COMMAND;
+import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause.REVERT;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 

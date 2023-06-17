@@ -5,10 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandParameter;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.annotation.*;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
@@ -63,6 +60,17 @@ public class GeneralCommands extends BaseCommand {
             help(sender, new CommandHelp(getCurrentCommandManager(),
                     getCurrentCommandManager().getRootCommand(getName()), getCurrentCommandIssuer()));
         }
+    }
+
+    @Subcommand("%locale")
+    @CommandPermission("simpleclans.anyone.locale")
+    @Description("{@@command.description.locale}")
+    @CommandCompletion("@locales")
+    public void locale(ClanPlayer cp, @Values("@locales") @Name("locale") String locale) {
+        cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
+        plugin.getStorageManager().updateClanPlayer(cp);
+
+        ChatBlock.sendMessage(cp, lang("locale.has.been.changed"));
     }
 
     @Subcommand("%create")
