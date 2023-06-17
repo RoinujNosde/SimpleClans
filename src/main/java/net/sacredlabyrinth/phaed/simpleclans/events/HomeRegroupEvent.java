@@ -5,14 +5,15 @@
  */
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
-import java.util.Collections;
-import java.util.List;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import org.bukkit.Location;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  *

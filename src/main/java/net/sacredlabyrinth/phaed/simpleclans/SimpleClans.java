@@ -9,13 +9,14 @@ import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.CSVBankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.migrations.BbMigration;
+import net.sacredlabyrinth.phaed.simpleclans.migrations.ChatFormatMigration;
 import net.sacredlabyrinth.phaed.simpleclans.migrations.LanguageMigration;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.BungeeManager;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.ProxyManager;
 import net.sacredlabyrinth.phaed.simpleclans.tasks.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
-import net.sacredlabyrinth.phaed.simpleclans.migrations.ChatFormatMigration;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.UpdateChecker;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bstats.bukkit.Metrics;
@@ -63,6 +64,7 @@ public class SimpleClans extends JavaPlugin {
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
     private BankLogger bankLogger;
+    private TagValidator tagValidator;
 
     /**
      * @return the logger
@@ -99,7 +101,8 @@ public class SimpleClans extends JavaPlugin {
         instance = this;
         new LanguageMigration(this).migrate();
         settingsManager = new SettingsManager(this);
-        new BbMigration(settingsManager).migrate();
+        new BbMigration(settingsManager);
+        new ChatFormatMigration(settingsManager);
         languageResource = new LanguageResource();
         this.hasUUID = UUIDMigration.canReturnUUID();
 
@@ -112,11 +115,12 @@ public class SimpleClans extends JavaPlugin {
         protectionManager = new ProtectionManager();
         protectionManager.registerListeners();
         chatManager = new ChatManager(this);
-        new ChatFormatMigration(settingsManager).migrate();
         registerEvents();
         permissionsManager.loadPermissions();
         commandManager = new SCCommandManager(this);
         bankLogger = new CSVBankLogger(this);
+
+        tagValidator = new TagValidator(settingsManager, permissionsManager);
 
         logStatus();
         startTasks();
@@ -349,5 +353,9 @@ public class SimpleClans extends JavaPlugin {
     @Deprecated
     public void setUUID(boolean trueOrFalse) {
         this.hasUUID = trueOrFalse;
+    }
+
+    public TagValidator getTagValidator() {
+        return tagValidator;
     }
 }

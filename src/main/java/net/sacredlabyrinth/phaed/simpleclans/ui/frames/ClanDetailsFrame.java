@@ -1,8 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
 import com.cryptomorin.xseries.XMaterial;
-import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer.Channel;
+import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
