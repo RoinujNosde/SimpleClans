@@ -13,14 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,8 +24,6 @@ import java.util.regex.Pattern;
 import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
 import static net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.DATE_PATTERN;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ECONOMY_DECIMAL_FORMAT_PATTERN;
 
 public class ChatUtils {
 
@@ -40,8 +34,6 @@ public class ChatUtils {
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("[&§][0-9a-fA-Fk-orK-OR]");
     private static final Pattern HEX_STRIP_COLOR_PATTERN = Pattern.compile("([&§]#[0-9A-Fa-f]{6})|([&§][0-9a-fA-Fk-orK-OR])|([&§]x([&§][a-fA-F0-9]){6})");
-    private static final String DEFAULT_DECIMAL_FORMAT_PATTERN = "#,###.##";
-    private static final Map<String, DecimalFormat> FORMAT_CACHE = new HashMap<>();
 
     static {
         try {
@@ -182,35 +174,11 @@ public class ChatUtils {
     }
 
     public static String formatPrice(double value) {
-        Locale locale = plugin.getSettingsManager().getLanguage();
-        String cacheKey = locale.toLanguageTag();
-        DecimalFormat format = FORMAT_CACHE.computeIfAbsent(cacheKey, k -> {
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            try {
-                String pattern = plugin.getSettingsManager().getString(ECONOMY_DECIMAL_FORMAT_PATTERN);
-                return new DecimalFormat(pattern, symbols);
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning("Invalid decimal-format-pattern.");
-                plugin.getLogger().warning("Using default decimal format pattern: " + DEFAULT_DECIMAL_FORMAT_PATTERN);
-                return new DecimalFormat(DEFAULT_DECIMAL_FORMAT_PATTERN, symbols);
-            }
-        });
-
-        return format.format(value);
+        return plugin.getSettingsManager().getDecimalFormat().format(value);
     }
 
     public static String formatDate(long time) {
-        String datePattern = plugin.getSettingsManager().getString(DATE_PATTERN);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern)
-                .withLocale(plugin.getSettingsManager().getLanguage())
-                .withZone(ZoneId.systemDefault());
-        Instant instant = Instant.ofEpochMilli(time);
-
-        return formatter.format(instant);
-    }
-
-    public static void clearCache() {
-        FORMAT_CACHE.clear();
+        return plugin.getSettingsManager().getDateTimeFormatter().format(Instant.ofEpochMilli(time));
     }
 
 }

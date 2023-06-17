@@ -11,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -28,6 +32,8 @@ public final class SettingsManager {
 
     private final FileConfiguration config;
     private final File configFile;
+    private static final Map<String, DecimalFormat> FORMAT_CACHE = new HashMap<>();
+    private static final Map<String, Locale> LOCALE_CACHE = new HashMap<>();
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -93,7 +99,7 @@ public final class SettingsManager {
                 e.printStackTrace();
             }
         }
-        ChatUtils.clearCache();
+        clearCache();
         save();
     }
 
@@ -103,6 +109,11 @@ public final class SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void clearCache() {
+        FORMAT_CACHE.clear();
+        LOCALE_CACHE.clear();
     }
 
     private void warnAboutPluginDependencies() {
@@ -121,24 +132,50 @@ public final class SettingsManager {
     }
 
     public Locale getLanguage() {
-        String lang = getString(LANGUAGE);
+        return LOCALE_CACHE.computeIfAbsent(LANGUAGE.toString(), k -> {
+            String lang = getString(LANGUAGE);
 
-        if (lang == null || lang.isEmpty()) {
-            lang = LANGUAGE.defaultValue.toString();
-        }
-        String[] langParts = lang.split("_");
-
-        if (langParts.length != 2) {
-
-            if (is(DEBUG)) {
-                plugin.getLogger().warning(String.format("Invalid language: %s", lang));
-                plugin.getLogger().warning(String.format("Using default language: %s", LANGUAGE.defaultValue));
+            if (lang == null || lang.isEmpty()) {
+                lang = LANGUAGE.defaultValue.toString();
             }
-            lang = LANGUAGE.defaultValue.toString();
-            langParts = lang.split("_");
-        }
+            String[] langParts = lang.split("_");
 
-        return new Locale(langParts[0], langParts[1]);
+            if (langParts.length != 2) {
+
+                if (is(DEBUG)) {
+                    plugin.getLogger().warning(String.format("Invalid language: %s", lang));
+                    plugin.getLogger().warning(String.format("Using default language: %s", LANGUAGE.defaultValue));
+                }
+                lang = LANGUAGE.defaultValue.toString();
+                langParts = lang.split("_");
+            }
+
+            return new Locale(langParts[0], langParts[1]);
+        });
+    }
+
+    public DecimalFormat getDecimalFormat() {
+        return FORMAT_CACHE.computeIfAbsent(LANGUAGE.toString(), k -> {
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(getLanguage());
+
+            try {
+                return new DecimalFormat(ECONOMY_DECIMAL_FORMAT_PATTERN.toString(), symbols);
+            } catch (IllegalArgumentException e) {
+                if (is(DEBUG)) {
+                    plugin.getLogger().warning("Invalid decimal-format-pattern.");
+                    plugin.getLogger().warning(String.format("Using default decimal format pattern: %s",
+                            ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue));
+                }
+
+                return new DecimalFormat(ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue.toString(), symbols);
+            }
+        });
+    }
+
+    public DateTimeFormatter getDateTimeFormatter() {
+        return DateTimeFormatter.ofPattern(DATE_PATTERN.toString())
+                .withLocale(getLanguage())
+                .withZone(ZoneId.systemDefault());
     }
 
     public List<Material> getItemList() {
@@ -282,9 +319,9 @@ public final class SettingsManager {
 
     public enum ConfigField {
         /*
-         * ================
-         * > General Settings
-         * ================
+         ================
+         > General Settings
+         ================
          *
          */
         ENABLE_GUI("settings.enable-gui", true),
@@ -326,9 +363,9 @@ public final class SettingsManager {
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
         DATE_PATTERN("settings.date-time-format-pattern", "HH:mm - dd/MM/yyyy"),
         /*
-         * ================
-         * > Tag Settings
-         * ================
+         ================
+         > Tag Settings
+         ================
          *
          */
         TAG_DEFAULT_COLOR("tag.default-color", "8"),
@@ -344,9 +381,9 @@ public final class SettingsManager {
         @Deprecated
         TAG_SEPARATOR_char("tag.separator.char", " ."),
         /*
-         * ================
-         * > War and Protection Settings
-         * ================
+         ================
+         > War and Protection Settings
+         ================
          *
          */
         ENABLE_WAR("war-and-protection.war-enabled", false),
@@ -370,9 +407,9 @@ public final class SettingsManager {
         WAR_START_REQUEST_ENABLED("war-and-protection.war-start.request-enabled", true),
         WAR_MAX_MEMBERS_DIFFERENCE("war-and-protection.war-start.members-online-max-difference", 5),
         /*
-         * ================
-         * > KDR Grinding Prevention Settings
-         * ================
+         ================
+         > KDR Grinding Prevention Settings
+         ================
          *
          */
         KDR_ENABLE_MAX_KILLS("kdr-grinding-prevention.enable-max-kills", false),
@@ -380,9 +417,9 @@ public final class SettingsManager {
         KDR_ENABLE_KILL_DELAY("kdr-grinding-prevention.enable-kill-delay", false),
         KDR_DELAY_BETWEEN_KILLS("kdr-grinding-prevention.delay-between-kills", 5),
         /*
-         * ================
-         * > Commands Settings
-         * ================
+         ================
+         > Commands Settings
+         ================
          *
          */
         COMMANDS_MORE("commands.more", "more"),
@@ -394,9 +431,9 @@ public final class SettingsManager {
         COMMANDS_CLAN_CHAT("commands.clan_chat", "."),
         COMMANDS_FORCE_PRIORITY("commands.force-priority", true),
         /*
-         * ================
-         * > Economy Settings
-         * ================
+         ================
+         > Economy Settings
+         ================
          *
          */
         ECONOMY_CREATION_PRICE("economy.creation-price", 100.0),
@@ -431,9 +468,9 @@ public final class SettingsManager {
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
         ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#,###.##"),
         /*
-         * ================
-         * > Kill Weights Settings
-         * ================
+         ================
+         > Kill Weights Settings
+         ================
          *
          */
         KILL_WEIGHTS_RIVAL("kill-weights.rival", 2.0),
@@ -442,9 +479,9 @@ public final class SettingsManager {
         KILL_WEIGHTS_ALLY("kill-weights.ally", -1.0),
         KILL_WEIGHTS_DENY_SAME_IP_KILLS("kill-weights.deny-same-ip-kills", false),
         /*
-         * ================
-         * > Clan Settings
-         * ================
+         ================
+         > Clan Settings
+         ================
          *
          */
         CLAN_TELEPORT_DELAY("clan.homebase-teleport-wait-secs", 10),
@@ -464,9 +501,9 @@ public final class SettingsManager {
         CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default", false),
         CLAN_MIN_TO_VERIFY("clan.min-to-verify", 1),
         /*
-         * ================
-         * > Tasks Settings
-         * ================
+         ================
+         > Tasks Settings
+         ================
          *
          */
         TASKS_COLLECT_UPKEEP_HOUR("tasks.collect-upkeep.hour", 1),
@@ -476,9 +513,9 @@ public final class SettingsManager {
         TASKS_COLLECT_FEE_HOUR("tasks.collect-fee.hour", 1),
         TASKS_COLLECT_FEE_MINUTE("tasks.collect-fee.minute", 0),
         /*
-         * ================
-         * > Page Settings
-         * ================
+         ================
+         > Page Settings
+         ================
          */
         PAGE_LEADER_COLOR("page.leader-color", "4"),
         PAGE_UNTRUSTED_COLOR("page.untrusted-color", "8"),
@@ -490,9 +527,9 @@ public final class SettingsManager {
         PAGE_SIZE("page.size", 100),
         HELP_SIZE("page.help-size", 10),
         /*
-         * ================
-         * > Clan Chat Settings
-         * ================
+         ================
+         > Clan Chat Settings
+         ================
          *
          */
         CLANCHAT_ENABLE("clanchat.enable", true),
@@ -514,27 +551,27 @@ public final class SettingsManager {
         CLANCHAT_MESSAGE_COLOR("clanchat.message-color", "b"),
         CLANCHAT_LISTENER_PRIORITY("clanchat.listener-priority", "LOW"),
         /*
-         * ================
-         * > Request Settings
-         * ================
+         ================
+         > Request Settings
+         ================
          *
          */
         REQUEST_MESSAGE_COLOR("request.message-color", "b"),
         REQUEST_FREQUENCY("request.ask-frequency-secs", 60),
         REQUEST_MAX("request.max-asks-per-request", 1440),
         /*
-         * ================
-         * > BB Settings
-         * ================
+         ================
+         > BB Settings
+         ================
          */
         BB_PREFIX("bb.prefix", "&8* &e"),
         BB_SHOW_ON_LOGIN("bb.show-on-login", true),
         BB_SIZE("bb.size", 6),
         BB_LOGIN_SIZE("bb.login-size", 6),
         /*
-         * ================
-         * > Ally Chat Settings
-         * ================
+         ================
+         > Ally Chat Settings
+         ================
          */
         ALLYCHAT_ENABLE("allychat.enable", true),
         ALLYCHAT_FORMAT("allychat.format", "&b[Ally Chat] &4<%clan%&4> <%nick-color%%player%&4> %rank%: &b%message%"),
@@ -552,9 +589,9 @@ public final class SettingsManager {
         ALLYCHAT_MESSAGE_COLOR("allychat.message-color", "3"),
         ALLYCHAT_TAG_COLOR("allychat.tag-color", ""),
         /*
-         * ================
-         * > Discord Chat Settings
-         * ================
+         ================
+         > Discord Chat Settings
+         ================
          */
         DISCORDCHAT_ENABLE("discordchat.enable", false),
         DISCORDCHAT_AUTO_CREATION("discordchat.auto-creation", true),
@@ -573,17 +610,17 @@ public final class SettingsManager {
         DISCORDCHAT_TEXT_LIMIT("discordchat.text.clans-limit", 100),
         DISCORDCHAT_MINIMUM_LINKED_PLAYERS("discordchat.min-linked-players-to-create", 3),
         /*
-         * ================
-         * > Purge Settings
-         * ================
+         ================
+         > Purge Settings
+         ================
          */
         PURGE_INACTIVE_PLAYER_DAYS("purge.inactive-player-data-days", 30),
         PURGE_INACTIVE_CLAN_DAYS("purge.inactive-clan-days", 7),
         PURGE_UNVERIFIED_CLAN_DAYS("purge.unverified-clan-days", 2),
         /*
-         * ================
-         * > MySQL Settings
-         * ================
+         ================
+         > MySQL Settings
+         ================
          */
         MYSQL_USERNAME("mysql.username", ""),
         MYSQL_HOST("mysql.host", "localhost"),
@@ -592,15 +629,15 @@ public final class SettingsManager {
         MYSQL_PASSWORD("mysql.password", ""),
         MYSQL_DATABASE("mysql.database", ""),
         /*
-         * ================
-         * > Permissions Settings
-         * ================
+         ================
+         > Permissions Settings
+         ================
          */
         PERMISSIONS_AUTO_GROUP_GROUPNAME("permissions.auto-group-groupname", false),
         /*
-         * ================
-         * > Performance Settings
-         * ================
+         ================
+         > Performance Settings
+         ================
          */
         PERFORMANCE_SAVE_PERIODICALLY("performance.save-periodically", true),
         PERFORMANCE_SAVE_INTERVAL("performance.save-interval", 10),
