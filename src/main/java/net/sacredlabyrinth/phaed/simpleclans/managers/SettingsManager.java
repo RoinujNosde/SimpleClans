@@ -626,15 +626,15 @@ public final class SettingsManager {
         MYSQL_PASSWORD("mysql.password", ""),
         MYSQL_DATABASE("mysql.database", ""),
         /*
-         ================
-         > Permissions Settings
-         ================
+        ================
+        > Permissions Settings
+        ================
          */
         PERMISSIONS_AUTO_GROUP_GROUPNAME("permissions.auto-group-groupname", false),
         /*
-         ================
-         > Performance Settings
-         ================
+        ================
+        > Performance Settings
+        ================
          */
         PERFORMANCE_SAVE_PERIODICALLY("performance.save-periodically", true),
         PERFORMANCE_SAVE_INTERVAL("performance.save-interval", 10),
