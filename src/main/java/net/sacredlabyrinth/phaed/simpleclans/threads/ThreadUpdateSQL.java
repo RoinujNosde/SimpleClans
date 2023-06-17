@@ -1,8 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.threads;
 
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+
 import java.sql.Connection;
 import java.sql.SQLException;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 /**
  *

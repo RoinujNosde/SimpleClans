@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.GLOBAL_FRIENDLY_FIRE;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.SAFE_CIVILIANS;
 
 public class FriendlyFire extends SCListener {
 

@@ -10,22 +10,20 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
  *
  * @since 2.19.0
  */
-public class BbMigration implements Migration {
-
-    private final SettingsManager settingsManager;
+public class BbMigration extends ConfigMigration {
 
     public BbMigration(SettingsManager settingsManager) {
-        this.settingsManager = settingsManager;
+        super(settingsManager);
     }
 
     @Override
     public void migrate() {
-        if (settingsManager.getConfig().contains("bb.accent-color")) {
-            settingsManager.getConfig().set("bb.accent-color", null);
+        if (config.contains("bb.accent-color")) {
+            config.set("bb.accent-color", null);
         }
 
-        if (settingsManager.getConfig().contains("bb.color")) {
-            settingsManager.getConfig().set("bb.color", null);
+        if (config.contains("bb.color")) {
+            config.set("bb.color", null);
         }
     }
 }
