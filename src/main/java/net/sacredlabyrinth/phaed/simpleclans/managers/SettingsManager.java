@@ -34,6 +34,7 @@ public final class SettingsManager {
     private final File configFile;
     private static final Map<String, DecimalFormat> FORMAT_CACHE = new HashMap<>();
     private static final Map<String, Locale> LOCALE_CACHE = new HashMap<>();
+    private static final Map<String, DateTimeFormatter> DATE_CACHE = new HashMap<>();
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -114,6 +115,7 @@ public final class SettingsManager {
     private void clearCache() {
         FORMAT_CACHE.clear();
         LOCALE_CACHE.clear();
+        DATE_CACHE.clear();
     }
 
     private void warnAboutPluginDependencies() {
@@ -132,7 +134,7 @@ public final class SettingsManager {
     }
 
     public Locale getLanguage() {
-        return LOCALE_CACHE.computeIfAbsent(LANGUAGE.toString(), k -> {
+        return LOCALE_CACHE.computeIfAbsent(getString(LANGUAGE), k -> {
             String lang = getString(LANGUAGE);
 
             if (lang == null || lang.isEmpty()) {
@@ -155,14 +157,15 @@ public final class SettingsManager {
     }
 
     public DecimalFormat getDecimalFormat() {
-        return FORMAT_CACHE.computeIfAbsent(LANGUAGE.toString(), k -> {
+        return FORMAT_CACHE.computeIfAbsent(getString(ECONOMY_DECIMAL_FORMAT_PATTERN), k -> {
             DecimalFormatSymbols symbols = new DecimalFormatSymbols(getLanguage());
 
             try {
-                return new DecimalFormat(ECONOMY_DECIMAL_FORMAT_PATTERN.toString(), symbols);
+                return new DecimalFormat(getString(ECONOMY_DECIMAL_FORMAT_PATTERN), symbols);
             } catch (IllegalArgumentException e) {
                 if (is(DEBUG)) {
-                    plugin.getLogger().warning("Invalid decimal-format-pattern.");
+                    plugin.getLogger().warning(String.format("Invalid decimal-format-pattern: %s",
+                            getString(ECONOMY_DECIMAL_FORMAT_PATTERN)));
                     plugin.getLogger().warning(String.format("Using default decimal format pattern: %s",
                             ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue));
                 }
@@ -173,9 +176,22 @@ public final class SettingsManager {
     }
 
     public DateTimeFormatter getDateTimeFormatter() {
-        return DateTimeFormatter.ofPattern(DATE_PATTERN.toString())
-                .withLocale(getLanguage())
-                .withZone(ZoneId.systemDefault());
+        return DATE_CACHE.computeIfAbsent(getString(DATE_PATTERN), k -> {
+            try {
+                return DateTimeFormatter.ofPattern(getString(DATE_PATTERN))
+                        .withLocale(getLanguage())
+                        .withZone(ZoneId.systemDefault());
+            } catch (IllegalArgumentException e) {
+                if (is(DEBUG)) {
+                    plugin.getLogger().warning(String.format("Invalid date-time-format-pattern: %s", getString(DATE_PATTERN)));
+                    plugin.getLogger().warning(String.format("Using default date pattern: %s", DATE_PATTERN.defaultValue));
+                }
+
+                return DateTimeFormatter.ofPattern(DATE_PATTERN.defaultValue.toString())
+                        .withLocale(getLanguage())
+                        .withZone(ZoneId.systemDefault());
+            }
+        });
     }
 
     public List<Material> getItemList() {
