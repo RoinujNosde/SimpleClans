@@ -143,11 +143,8 @@ public final class SettingsManager {
             String[] langParts = lang.split("_");
 
             if (langParts.length != 2) {
-
-                if (is(DEBUG)) {
-                    plugin.getLogger().warning(String.format("Invalid language: %s", lang));
-                    plugin.getLogger().warning(String.format("Using default language: %s", LANGUAGE.defaultValue));
-                }
+                plugin.getLogger().warning(String.format("Invalid language: %s", lang));
+                plugin.getLogger().warning(String.format("Using default language: %s", LANGUAGE.defaultValue));
                 lang = LANGUAGE.defaultValue.toString();
                 langParts = lang.split("_");
             }
@@ -163,12 +160,10 @@ public final class SettingsManager {
             try {
                 return new DecimalFormat(getString(ECONOMY_DECIMAL_FORMAT_PATTERN), symbols);
             } catch (IllegalArgumentException e) {
-                if (is(DEBUG)) {
-                    plugin.getLogger().warning(String.format("Invalid decimal-format-pattern: %s",
-                            getString(ECONOMY_DECIMAL_FORMAT_PATTERN)));
-                    plugin.getLogger().warning(String.format("Using default decimal format pattern: %s",
-                            ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue));
-                }
+                plugin.getLogger().warning(String.format("Invalid decimal-format-pattern: %s",
+                        getString(ECONOMY_DECIMAL_FORMAT_PATTERN)));
+                plugin.getLogger().warning(String.format("Using default decimal format pattern: %s",
+                        ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue));
 
                 return new DecimalFormat(ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue.toString(), symbols);
             }
@@ -182,10 +177,8 @@ public final class SettingsManager {
                         .withLocale(getLanguage())
                         .withZone(ZoneId.systemDefault());
             } catch (IllegalArgumentException e) {
-                if (is(DEBUG)) {
-                    plugin.getLogger().warning(String.format("Invalid date-time-format-pattern: %s", getString(DATE_PATTERN)));
-                    plugin.getLogger().warning(String.format("Using default date pattern: %s", DATE_PATTERN.defaultValue));
-                }
+                plugin.getLogger().warning(String.format("Invalid date-time-format-pattern: %s", getString(DATE_PATTERN)));
+                plugin.getLogger().warning(String.format("Using default date pattern: %s", DATE_PATTERN.defaultValue));
 
                 return DateTimeFormatter.ofPattern(DATE_PATTERN.defaultValue.toString())
                         .withLocale(getLanguage())
