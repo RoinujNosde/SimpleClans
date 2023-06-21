@@ -60,7 +60,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
                 clan.disband(null, true, false);
             }
             if (response == EconomyResponse.SUCCESS) {
-                clan.addBb(MessageFormat.format(lang("upkeep.collected"), ChatUtils.formatPrice(upkeep)), false);
+                clan.addBb(MessageFormat.format(lang("upkeep.collected"), ChatUtils.formatCurrency(upkeep)), false);
             }
         });
     }

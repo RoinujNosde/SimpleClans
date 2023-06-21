@@ -222,7 +222,7 @@ public class LeaderCommands extends BaseCommand {
         double price = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
             if (!permissions.playerHasMoney(player, price)) {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player, ChatUtils.formatPrice(price)));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, ChatUtils.formatCurrency(price)));
                 return;
             }
 

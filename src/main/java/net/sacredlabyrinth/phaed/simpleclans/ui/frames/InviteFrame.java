@@ -55,7 +55,7 @@ public class InviteFrame extends SCFrame {
 	private SCComponent createPlayerComponent(@NotNull Player player, int slot) {
 		double price = plugin.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_INVITE) ? plugin.getSettingsManager().getDouble(ECONOMY_INVITE_PRICE) : 0;
 		List<String> lore = new ArrayList<>();
-		if (price != 0) lore.add(lang("gui.invite.player.price.lore", getViewer(), ChatUtils.formatPrice(price)));
+		if (price != 0) lore.add(lang("gui.invite.player.price.lore", getViewer(), ChatUtils.formatCurrency(price)));
 		lore.add(lang("gui.invite.player.lore", getViewer()));
 
 		SCComponent c = new SCComponentImpl(

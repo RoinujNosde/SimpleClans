@@ -253,7 +253,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("balance_formatted")
     public String getBalanceFormatted() {
-        return ChatUtils.formatPrice(balance);
+        return ChatUtils.formatCurrency(balance);
     }
 
     /**

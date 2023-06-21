@@ -166,7 +166,7 @@ public class ChatUtils {
         }
     }
 
-    public static String formatPrice(double value) {
+    public static String formatCurrency(double value) {
         return plugin.getSettingsManager().getDecimalFormat().format(value);
     }
 
