@@ -27,16 +27,16 @@ economy:
 
 ## Permissions
 
-| Permission | Description |
-| :--- | :--- |
-| `simpleclans.leader.fee` | Allows the user to toggle the fee and set its value |
+| Permission                     | Description                                                        |
+|:-------------------------------|:-------------------------------------------------------------------|
+| `simpleclans.leader.fee`       | Allows the user to toggle the fee and set its value                |
 | `simpleclans.member.fee-check` | allows the member to check how much is the fee and if it's enabled |
 
 ## Commands
 
-| Permission | Description | Permission |
-| :--- | :--- | :--- |
-| `/clan toggle fee` | Enables/disables the fee | `simpleclans.leader.fee` |
-| `/clan fee set [amount]` | Sets the fee value | `simpleclans.leader.fee` |
-| `/clan fee check` | Checks the status of the fee | `simpleclans.member.fee-check` |
+| Permission               | Description                  | Permission                     |
+|:-------------------------|:-----------------------------|:-------------------------------|
+| `/clan toggle fee`       | Enables/disables the fee     | `simpleclans.leader.fee`       |
+| `/clan fee set [amount]` | Sets the fee value           | `simpleclans.leader.fee`       |
+| `/clan fee check`        | Checks the status of the fee | `simpleclans.member.fee-check` |
 

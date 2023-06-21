@@ -6,87 +6,88 @@ description: null
 
 ## Available placeholders
 
-| Placeholder | Result | Description |  |
-| :--- | :--- | :--- | :--- |
-| %simpleclans\_neutral\_kills% | INTEGER |  |  |
-| %simpleclans\_rival\_kills% | INTEGER |  |  |
-| %simpleclans\_civilian\_kills% | INTEGER |  |  |
-| %simpleclans\_total\_kills% | INTEGER |  |  |
-| %simpleclans\_weighted\_kills% | INTEGER |  |  |
-| %simpleclans\_deaths% | INTEGER |  |  |
-| %simpleclans\_kdr% | FLOAT |  |  |
-| %simpleclans\_in\_clan% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_leader% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_trusted% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_member% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_bb\_enabled% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_usechatshortcut% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_allychat% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_clanchat% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_globalchat% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_cape\_enabled% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_tag\_enabled% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_friendlyfire\_on% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_muted% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_is\_mutedally% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_join\_date% | DATE | Month, Day, Year, Hour |  |
-| %simpleclans\_inactive\_days% | INTEGER |  |  |
-| %simpleclans\_lastseen% | INTEGER |  |  |
-| %simpleclans\_lastseendays% | INTEGER |  |  |
-| %simpleclans\_tag% | STRING | lowerscored Clan tag without color |  |
-| %simpleclans\_tag\_label% | STRING | Clan tag with correct mayus, color and at the end &c |  |
-| %simpleclans\_rank% | STRING |  |  |
-| %simpleclans\_rank\_displayname% | STRING |  |  |
-| %simpleclans\_clanchat\_player\_color% |  |  |  |
-| %simpleclans\_allychat\_player\_color% |  |  |  |
-| %simpleclans\_clan\_total\_neutral% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_civilian% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_rival% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_kills% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_deaths% | INTEGER |  |  |
-| %simpleclans\_clan\_total\_kdr% | FLOAT |  |  |
-| %simpleclans\_clan\_average\_wk% | INTEGER |  |  |
-| %simpleclans\_clan\_leader\_size% | INTEGER |  |  |
-| %simpleclans\_clan\_balance% | INTEGER |  |  |
-| %simpleclans\_clan\_allow\_withdraw% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_clan\_allow\_deposit% | BOOLEAN \(YES/NO\) |  |  |
-| %simpleclans\_clan\_size% | INTEGER |  |  |
-| %simpleclans\_clan\_name% | STRING |  |  |
-| %simpleclans\_clan\_color\_tag% |  |  |  |
-| %simpleclans\_clan\_tag% |  |  |  |
-| %simpleclans\_clan\_founded% |  |  |  |
-| %simpleclans\_clan\_friendly\_fire% |  |  |  |
-| %simpleclans\_clan\_is\_unrivable% |  |  |  |
-| %simpleclans\_clan\_is\_anyonline% |  |  |  |
-| %simpleclans\_clan\_is\_verified% |  |  |  |
-| %simpleclans\_clan\_capeurl% |  |  |  |
-| %simpleclans\_clan\_inactivedays% |  |  |  |
-| %simpleclans\_clan\_onlinemembers\_count% |  |  |  |
-| %simpleclans\_clan\_allies\_count% |  |  |  |
-| %simpleclans\_clan\_rivals\_count% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_neutral% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_civilian% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_rival% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_kills% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_deaths% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_total\_kdr% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_average\_wk% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_leader\_size% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_balance% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_allow\_withdraw% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_allow\_deposit% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_size% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_name% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_color\_tag% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_tag% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_founded% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_friendly\_fire% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_is\_unrivable% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_is\_anyonline% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_is\_verified% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_capeurl% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_inactivedays% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_onlinemembers\_count% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_allies\_count% |  |  |  |
-| %simpleclanstopclans\_\#\_clan\_rivals\_count% |  |  |  |
+| Placeholder                                        | Result             | Description                                          |
+|:---------------------------------------------------|:-------------------|:-----------------------------------------------------|
+| `%simpleclans_neutral_kills%`                      | INTEGER            |                                                      |
+| `%simpleclans_rival_kills%`                        | INTEGER            |                                                      |
+| `%simpleclans_civilian_kills%`                     | INTEGER            |                                                      |
+| `%simpleclans_total_kills%`                        | INTEGER            |                                                      |
+| `%simpleclans_weighted_kills%`                     | INTEGER            |                                                      |
+| `%simpleclans_deaths%`                             | INTEGER            |                                                      |
+| `%simpleclans_kdr%`                                | FLOAT              |                                                      |
+| `%simpleclans_in_clan%`                            | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_leader%`                          | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_trusted%`                         | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_member%`                          | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_bb_enabled%`                      | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_usechatshortcut%`                 | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_allychat%`                        | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_clanchat%`                        | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_globalchat%`                      | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_cape_enabled%`                    | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_tag_enabled%`                     | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_friendlyfire_on%`                 | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_muted%`                           | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_is_mutedally%`                       | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_join_date%`                          | DATE               | Month, Day, Year, Hour                               |
+| `%simpleclans_inactive_days%`                      | INTEGER            |                                                      |
+| `%simpleclans_lastseen%`                           | INTEGER            |                                                      |
+| `%simpleclans_lastseendays%`                       | INTEGER            |                                                      |
+| `%simpleclans_tag%`                                | STRING             | lowerscored Clan tag without color                   |
+| `%simpleclans_tag_label%`                          | STRING             | Clan tag with correct mayus, color and at the end &c |
+| `%simpleclans_has_rank%`                           | BOOLEAN\(YES/NO\)  |                                                      |
+| `%simpleclans_rank%`                               | STRING             |                                                      |
+| `%simpleclans_rank_displayname%`                   | STRING             |                                                      |
+| `%simpleclans_clanchat_player_color%`              |                    |                                                      |
+| `%simpleclans_allychat_player_color%`              |                    |                                                      |
+| `%simpleclans_clan_total_neutral%`                 | INTEGER            |                                                      |
+| `%simpleclans_clan_total_civilian%`                | INTEGER            |                                                      |
+| `%simpleclans_clan_total_rival%`                   | INTEGER            |                                                      |
+| `%simpleclans_clan_total_kills%`                   | INTEGER            |                                                      |
+| `%simpleclans_clan_total_deaths%`                  | INTEGER            |                                                      |
+| `%simpleclans_clan_total_kdr%`                     | FLOAT              |                                                      |
+| `%simpleclans_clan_average_wk%`                    | INTEGER            |                                                      |
+| `%simpleclans_clan_leader_size%`                   | INTEGER            |                                                      |
+| `%simpleclans_clan_balance%`                       | INTEGER            |                                                      |
+| `%simpleclans_clan_allow_withdraw%`                | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_clan_allow_deposit%`                 | BOOLEAN \(YES/NO\) |                                                      |
+| `%simpleclans_clan_size%`                          | INTEGER            |                                                      |
+| `%simpleclans_clan_name%`                          | STRING             |                                                      |
+| `%simpleclans_clan_color_tag%`                     |                    |                                                      |
+| `%simpleclans_clan_tag%`                           |                    |                                                      |
+| `%simpleclans_clan_founded%`                       |                    |                                                      |
+| `%simpleclans_clan_friendly_fire%`                 |                    |                                                      |
+| `%simpleclans_clan_is_unrivable%`                  |                    |                                                      |
+| `%simpleclans_clan_is_anyonline%`                  |                    |                                                      |
+| `%simpleclans_clan_is_verified%`                   |                    |                                                      |
+| `%simpleclans_clan_capeurl%`                       |                    |                                                      |
+| `%simpleclans_clan_inactivedays%`                  |                    |                                                      |
+| `%simpleclans_clan_onlinemembers_count%`           |                    |                                                      |
+| `%simpleclans_clan_allies_count%`                  |                    |                                                      |
+| `%simpleclans_clan_rivals_count%`                  |                    |                                                      |
+| `%simpleclanstopclans_#_clan_total_neutral%`       |                    |                                                      |
+| `%simpleclanstopclans_#_clan_total_civilian%`      |                    |                                                      |
+| `%simpleclanstopclans_#_clan_total_rival%`         |                    |                                                      |
+| `%simpleclanstopclans_#_clan_total_kills%`         |                    |                                                      |
+| `%simpleclanstopclans_#_clan_total_deaths%`        |                    |                                                      |
+| `%simpleclanstopclans_#_clan_total_kdr%`           |                    |                                                      |
+| `%simpleclanstopclans_#_clan_average_wk%`          |                    |                                                      |
+| `%simpleclanstopclans_#_clan_leader_size%`         |                    |                                                      |
+| `%simpleclanstopclans_#_clan_balance%`             |                    |                                                      |
+| `%simpleclanstopclans_#_clan_allow_withdraw%`      |                    |                                                      |
+| `%simpleclanstopclans_#_clan_allow_deposit%`       |                    |                                                      |
+| `%simpleclanstopclans_#_clan_size%`                |                    |                                                      |
+| `%simpleclanstopclans_#_clan_name%`                |                    |                                                      |
+| `%simpleclanstopclans_#_clan_color_tag%`           |                    |                                                      |
+| `%simpleclanstopclans_#_clan_tag%`                 |                    |                                                      |
+| `%simpleclanstopclans_#_clan_founded%`             |                    |                                                      |
+| `%simpleclanstopclans_#_clan_friendly_fire%`       |                    |                                                      |
+| `%simpleclanstopclans_#_clan_is_unrivable%`        |                    |                                                      |
+| `%simpleclanstopclans_#_clan_is_anyonline%`        |                    |                                                      |
+| `%simpleclanstopclans_#_clan_is_verified%`         |                    |                                                      |
+| `%simpleclanstopclans_#_clan_capeurl%`             |                    |                                                      |
+| `%simpleclanstopclans_#_clan_inactivedays%`        |                    |                                                      |
+| `%simpleclanstopclans_#_clan_onlinemembers_count%` |                    |                                                      |
+| `%simpleclanstopclans_#_clan_allies_count%`        |                    |                                                      |
+| `%simpleclanstopclans_#_clan_rivals_count%`        |                    |                                                      |
 

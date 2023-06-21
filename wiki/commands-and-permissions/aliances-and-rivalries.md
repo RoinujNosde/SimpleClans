@@ -12,22 +12,22 @@ You can view a list of all clans and their allies with the `/clan alliances` com
 
 ## Commands
 
-| Commands | Description |
-| :--- | :--- |
-| `/clan ally add [tag]` | Send an request to start an alliance \(acceptance is required\) |
-| `/clan ally remove [tag]` | Remove alliance \(no acceptance is required\) |
-| `/clan rival add [tag]` | Starting a rivalry \(no acceptance is required\) |
-| `/clan rival remove [tag]` | Remove a rivalry \(acceptance is required\) |
-| `/clan alliances` | List all clans and their allies |
-| `/clan rivalries` | List all clans and their rivals |
+| Commands                   | Description                                                     |
+|:---------------------------|:----------------------------------------------------------------|
+| `/clan ally add [tag]`     | Send an request to start an alliance \(acceptance is required\) |
+| `/clan ally remove [tag]`  | Remove alliance \(no acceptance is required\)                   |
+| `/clan rival add [tag]`    | Starting a rivalry \(no acceptance is required\)                |
+| `/clan rival remove [tag]` | Remove a rivalry \(acceptance is required\)                     |
+| `/clan alliances`          | List all clans and their allies                                 |
+| `/clan rivalries`          | List all clans and their rivals                                 |
 
 ## Permissions
 
-| Permission | Description |
-| :--- | :--- |
-| `simpleclans.member.ally` | Can use ally chat |
-| `simpleclans.leader.ally` | Can ally his clan with other simpleclans |
-| `simpleclans.leader.rival` | Can start a rivalry with another clan |
-| `simpleclans.anyone.alliances` | Can view alliances by clan |
-| `simpleclans.anyone.rivalries` | Can view rivalries by clan |
+| Permission                     | Description                              |
+|:-------------------------------|:-----------------------------------------|
+| `simpleclans.member.ally`      | Can use ally chat                        |
+| `simpleclans.leader.ally`      | Can ally his clan with other simpleclans |
+| `simpleclans.leader.rival`     | Can start a rivalry with another clan    |
+| `simpleclans.anyone.alliances` | Can view alliances by clan               |
+| `simpleclans.anyone.rivalries` | Can view rivalries by clan               |
 
