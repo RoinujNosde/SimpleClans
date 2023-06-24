@@ -39,6 +39,7 @@ public class TagValidator {
      * @return error message if any
      */
     public Optional<String> validate(@NotNull Player player, @NotNull String tag) {
+        error = null;
         String cleanTag = Helper.cleanTag(tag);
         if (tag.length() > 255 && settings.is(MYSQL_ENABLE)) {
             return Optional.of(lang("your.clan.color.tag.cannot.be.longer.than.characters", player, 255));
