@@ -4,6 +4,8 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -170,16 +172,20 @@ public final class PermissionsManager {
      * Charge a player some money
      *
      */
-    public boolean playerChargeMoney(OfflinePlayer player, double money) {
-        return economy.withdrawPlayer(player, money).transactionSuccess();
+    public boolean playerChargeMoney(OfflinePlayer player, double money, Cause cause) {
+        SimpleClansEconomyTransactionEvent event = new SimpleClansEconomyTransactionEvent(player, money, cause, SimpleClansEconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
+        Bukkit.getPluginManager().callEvent(event);
+        return economy.withdrawPlayer(player, event.getAmount()).transactionSuccess();
     }
 
     /**
      * Grants a player some money
      *
      */
-    public boolean playerGrantMoney(OfflinePlayer player, double money) {
-        return economy.depositPlayer(player, money).transactionSuccess();
+    public boolean playerGrantMoney(OfflinePlayer player, double money, Cause cause) {
+        SimpleClansEconomyTransactionEvent event = new SimpleClansEconomyTransactionEvent(player, money, cause, SimpleClansEconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
+        Bukkit.getPluginManager().callEvent(event);
+        return economy.depositPlayer(player, event.getAmount()).transactionSuccess();
     }
 
     /**

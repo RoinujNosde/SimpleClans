@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause.PLAYER_KILLED;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
@@ -99,7 +100,7 @@ public class PlayerDeath extends SCListener {
                 }
                 player.sendMessage(ChatColor.AQUA + lang("player.got.money", player, money,
                         victim.getName(), attacker.getKDR()));
-                plugin.getPermissionsManager().playerGrantMoney(player, money);
+                plugin.getPermissionsManager().playerGrantMoney(player, money, PLAYER_KILLED);
             }
         }
     }

@@ -8,3 +8,5 @@
 .factorypath
 SimpleClans.iml
 dependency-reduced-pom.xml
+/pom.xml
+/.gitignore

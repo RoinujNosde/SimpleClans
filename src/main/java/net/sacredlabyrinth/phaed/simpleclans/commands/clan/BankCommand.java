@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause.COMMAND;
 import static net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent.Cause.REVERT;
+import static net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause.CLAN_BANK;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -72,7 +73,7 @@ public class BankCommand extends BaseCommand {
         BankOperator operator = new BankOperator(player, permissions.playerGetMoney(player));
         switch (clan.withdraw(operator, COMMAND, amount)) {
             case SUCCESS:
-                if (permissions.playerGrantMoney(player, amount)) {
+                if (permissions.playerGrantMoney(player, amount, CLAN_BANK)) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                     clan.addBb(player.getName(), lang("bb.clan.withdraw", amount, player.getName()));
                 } else {
@@ -129,7 +130,7 @@ public class BankCommand extends BaseCommand {
         BankOperator operator = new BankOperator(player, permissions.playerGetMoney(player));
         EconomyResponse response = clan.deposit(operator, COMMAND, amount);
         if (response == EconomyResponse.SUCCESS) {
-            if (permissions.playerChargeMoney(player, amount)) {
+            if (permissions.playerChargeMoney(player, amount, CLAN_BANK)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
                 clan.addBb(player.getName(), lang("bb.clan.deposit", amount, player.getName()));
             } else {
