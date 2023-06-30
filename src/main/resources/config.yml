@@ -39,7 +39,7 @@ settings:
     disallowed-tags:
     - vip
     - clan
-    language: en_US
+    language: en
     user-language-selector: true
     disallowed-tag-colors:
     - '4'
