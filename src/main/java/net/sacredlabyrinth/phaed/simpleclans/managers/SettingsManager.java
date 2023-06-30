@@ -319,7 +319,7 @@ public final class SettingsManager {
         BLACKLISTED_WORLDS("settings.blacklisted-worlds"),
         BANNED_PLAYERS("settings.banned-players"),
         DISALLOWED_TAGS("settings.disallowed-tags"),
-        LANGUAGE("settings.language", "en_US"),
+        LANGUAGE("settings.language", "en"),
         LANGUAGE_SELECTOR("settings.user-language-selector", true),
         DISALLOWED_TAG_COLORS("settings.disallowed-tag-colors"),
         SERVER_NAME("settings.server-name", "&4SimpleClans"),
