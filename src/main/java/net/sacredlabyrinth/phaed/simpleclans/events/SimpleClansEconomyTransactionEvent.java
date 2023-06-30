@@ -45,6 +45,10 @@ public class SimpleClansEconomyTransactionEvent extends Event {
         return handlers;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public enum Cause {
         CLAN_CREATION, CLAN_VERIFICATION, ADD_MEMBER_TO_CLAN, CLAN_BANK, DISCORD_CREATION, PLAYER_KILLED,
         SET_MEMBER_FEE, MEMBER_FEE, CLAN_HOME_TELEPORT, SET_CLAN_TP, RESET_CLAN_KDR, CLAN_REGROUP, CUSTOM;
