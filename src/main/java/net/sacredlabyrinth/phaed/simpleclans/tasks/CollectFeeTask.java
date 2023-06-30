@@ -1,7 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.tasks;
 
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
@@ -53,7 +53,7 @@ public class CollectFeeTask extends BukkitRunnable {
 
             for (ClanPlayer cp : clan.getFeePayers()) {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(cp.getUniqueId());
-                boolean success = pm.playerChargeMoney(player, memberFee, SimpleClansEconomyTransactionEvent.Cause.MEMBER_FEE);
+                boolean success = pm.playerChargeMoney(player, memberFee, EconomyTransactionEvent.Cause.MEMBER_FEE);
                 if (success) {
                     ChatBlock.sendMessage(cp, AQUA + lang("fee.collected", cp, memberFee));
 

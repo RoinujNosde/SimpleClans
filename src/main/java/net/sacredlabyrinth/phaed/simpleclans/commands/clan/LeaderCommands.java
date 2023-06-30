@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause.DISCORD_CREATION;
+import static net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause.DISCORD_CREATION;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;

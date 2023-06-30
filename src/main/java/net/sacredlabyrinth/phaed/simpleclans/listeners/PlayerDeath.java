@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause.PLAYER_KILLED;
+import static net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause.PLAYER_KILLED;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**

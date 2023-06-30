@@ -4,8 +4,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class SimpleClansEconomyTransactionEvent extends Event {
+public class EconomyTransactionEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -14,7 +15,7 @@ public class SimpleClansEconomyTransactionEvent extends Event {
     private final Cause cause;
     private final TransactionType transactionType;
 
-    public SimpleClansEconomyTransactionEvent(OfflinePlayer affected, double amount, Cause cause, TransactionType transactionType) {
+    public EconomyTransactionEvent(OfflinePlayer affected, double amount, @Nullable Cause cause, TransactionType transactionType) {
         this.player = affected;
         this.amount = amount;
         this.cause = cause;

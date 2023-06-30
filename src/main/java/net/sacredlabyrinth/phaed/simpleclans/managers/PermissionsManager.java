@@ -4,8 +4,8 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.sacredlabyrinth.phaed.simpleclans.*;
-import net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause;
+import net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -168,14 +168,33 @@ public final class PermissionsManager {
         return permissions.get(clan.getTag());
     }
 
+
+    /**
+     * Charge a player some money
+     * @deprecated Use playerChargeMoney(OfflinePlayer, double, Cause) instead
+     */
+    @Deprecated(since = "2.19.0", forRemoval = true)
+    public boolean playerChargeMoney(OfflinePlayer player, double money) {
+        return playerChargeMoney(player, money, Cause.CUSTOM);
+    }
+
     /**
      * Charge a player some money
      *
      */
     public boolean playerChargeMoney(OfflinePlayer player, double money, Cause cause) {
-        SimpleClansEconomyTransactionEvent event = new SimpleClansEconomyTransactionEvent(player, money, cause, SimpleClansEconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
         Bukkit.getPluginManager().callEvent(event);
         return economy.withdrawPlayer(player, event.getAmount()).transactionSuccess();
+    }
+
+    /**
+     * Grants a player some money
+     * @deprecated Use playerGrantMoney(OfflinePlayer, double, Cause) instead
+     */
+    @Deprecated(since = "2.19.0", forRemoval = true)
+    public boolean playerGrantMoney(OfflinePlayer player, double money) {
+        return playerGrantMoney(player, money, Cause.CUSTOM);
     }
 
     /**
@@ -183,7 +202,7 @@ public final class PermissionsManager {
      *
      */
     public boolean playerGrantMoney(OfflinePlayer player, double money, Cause cause) {
-        SimpleClansEconomyTransactionEvent event = new SimpleClansEconomyTransactionEvent(player, money, cause, SimpleClansEconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
         Bukkit.getPluginManager().callEvent(event);
         return economy.depositPlayer(player, event.getAmount()).transactionSuccess();
     }

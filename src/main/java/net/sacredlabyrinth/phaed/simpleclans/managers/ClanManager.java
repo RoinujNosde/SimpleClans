@@ -5,7 +5,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.CreateClanEvent;
-import net.sacredlabyrinth.phaed.simpleclans.events.SimpleClansEconomyTransactionEvent.Cause;
+import net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
