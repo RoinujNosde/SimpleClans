@@ -175,14 +175,14 @@ public final class PermissionsManager {
      */
     @Deprecated(since = "2.19.0", forRemoval = true)
     public boolean playerChargeMoney(OfflinePlayer player, double money) {
-        return playerChargeMoney(player, money, Cause.CUSTOM);
+        return playerChargeMoney(player, money, null);
     }
 
     /**
      * Charge a player some money
      *
      */
-    public boolean playerChargeMoney(OfflinePlayer player, double money, Cause cause) {
+    public boolean playerChargeMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
         Bukkit.getPluginManager().callEvent(event);
         return economy.withdrawPlayer(player, event.getAmount()).transactionSuccess();
@@ -194,14 +194,14 @@ public final class PermissionsManager {
      */
     @Deprecated(since = "2.19.0", forRemoval = true)
     public boolean playerGrantMoney(OfflinePlayer player, double money) {
-        return playerGrantMoney(player, money, Cause.CUSTOM);
+        return playerGrantMoney(player, money, null);
     }
 
     /**
      * Grants a player some money
      *
      */
-    public boolean playerGrantMoney(OfflinePlayer player, double money, Cause cause) {
+    public boolean playerGrantMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
         Bukkit.getPluginManager().callEvent(event);
         return economy.depositPlayer(player, event.getAmount()).transactionSuccess();

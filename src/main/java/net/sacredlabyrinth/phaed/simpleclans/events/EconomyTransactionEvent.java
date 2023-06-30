@@ -33,6 +33,7 @@ public class EconomyTransactionEvent extends Event {
         this.amount = amount;
     }
 
+    @Nullable
     public Cause getCause() {
         return cause;
     }
