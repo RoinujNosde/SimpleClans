@@ -18,10 +18,12 @@ import org.jetbrains.annotations.Nullable;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.PERMISSIONS_AUTO_GROUP_GROUPNAME;
+import static org.bukkit.Bukkit.getPluginManager;
 
 /**
  * @author phaed
@@ -53,7 +55,6 @@ public final class PermissionsManager {
 
     /**
      * Whether economy plugin exists and is enabled
-     *
      */
     public boolean hasEconomy() {
         return economy != null && economy.isEnabled();
@@ -83,7 +84,6 @@ public final class PermissionsManager {
 
     /**
      * Adds all permissions for a clan
-     *
      */
     public void updateClanPermissions(Clan clan) {
         for (ClanPlayer cp : clan.getMembers()) {
@@ -93,7 +93,6 @@ public final class PermissionsManager {
 
     /**
      * Adds permissions for a player
-     *
      */
     public void addPlayerPermissions(@Nullable ClanPlayer cp) {
         if (cp == null) {
@@ -123,7 +122,6 @@ public final class PermissionsManager {
 
     /**
      * Removes permissions for a clan (when it gets disbanded for example)
-     *
      */
     public void removeClanPermissions(Clan clan) {
         for (ClanPlayer cp : clan.getMembers()) {
@@ -134,7 +132,6 @@ public final class PermissionsManager {
 
     /**
      * Removes permissions for a player (when he gets kicked for example)
-     *
      */
     public void removeClanPlayerPermissions(@Nullable ClanPlayer cp) {
         if (cp != null && cp.getClan() != null && cp.toPlayer() != null) {
@@ -172,6 +169,7 @@ public final class PermissionsManager {
 
     /**
      * Charge a player some money
+     *
      * @deprecated Use playerChargeMoney(OfflinePlayer, double, Cause) instead
      */
     @Deprecated(since = "2.19.0", forRemoval = true)
@@ -181,28 +179,35 @@ public final class PermissionsManager {
 
     /**
      * Charge a player some money
-     *
      */
     public boolean playerChargeMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyResponse response = economy.withdrawPlayer(player, money);
-        boolean success = response.transactionSuccess();
-        if (success) {
-            EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
-            Bukkit.getPluginManager().callEvent(event);
-            if(event.isCancelled()) {
-                success = false;
-                economy.depositPlayer(player, money);
-            } else if(event.getAmount() != response.amount) {
-                double difference = event.getAmount() - response.amount;
-                if(difference > 0) economy.withdrawPlayer(player, difference);
-                else economy.depositPlayer(player, difference);
-            }
+        if (!response.transactionSuccess()) {
+            return false;
         }
-        return success;
+
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
+        getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            economy.depositPlayer(player, event.getAmount());
+            return false;
+        }
+
+        double difference = event.getAmount() - response.amount;
+        if (difference > 0) {
+            economy.withdrawPlayer(player, difference);
+        }
+        if (difference < 0) {
+            economy.depositPlayer(player, Math.abs(difference));
+        }
+
+        return true;
     }
 
     /**
      * Grants a player some money
+     *
      * @deprecated Use playerGrantMoney(OfflinePlayer, double, Cause) instead
      */
     @Deprecated(since = "2.19.0", forRemoval = true)
@@ -212,20 +217,19 @@ public final class PermissionsManager {
 
     /**
      * Grants a player some money
-     *
      */
     public boolean playerGrantMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyResponse response = economy.depositPlayer(player, money);
         boolean success = response.transactionSuccess();
         if (success) {
             EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
-            Bukkit.getPluginManager().callEvent(event);
-            if(event.isCancelled()) {
+            getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
                 success = false;
                 economy.withdrawPlayer(player, money);
-            } else if(event.getAmount() != response.amount) {
+            } else if (event.getAmount() != response.amount) {
                 double difference = event.getAmount() - response.amount;
-                if(difference > 0) economy.depositPlayer(player, difference);
+                if (difference > 0) economy.depositPlayer(player, difference);
                 else economy.withdrawPlayer(player, difference);
             }
         }
@@ -276,10 +280,9 @@ public final class PermissionsManager {
     /**
      * Checks if the player has the rank permission or the permission level, and the equivalent Bukkit permission
      *
-     * @param player the player
+     * @param player     the player
      * @param permission the rank permission
-     * @param notify notify the player if they don't have permission
-     *
+     * @param notify     notify the player if they don't have permission
      * @deprecated use {@link PermissionsManager#has(Player, RankPermission, boolean)} or {@link PermissionsManager#has(Player, String)}
      */
     @Deprecated
@@ -332,9 +335,9 @@ public final class PermissionsManager {
     /**
      * Checks if the player has the rank permission or the permission level, and the equivalent Bukkit permission
      *
-     * @param player the player
+     * @param player     the player
      * @param permission the rank permission
-     * @param notify notify the player if they don't have permission
+     * @param notify     notify the player if they don't have permission
      */
     public boolean has(Player player, RankPermission permission, boolean notify) {
         if (player == null || permission == null) {
@@ -389,7 +392,6 @@ public final class PermissionsManager {
 
     /**
      * Gives the player permissions linked to a clan
-     *
      */
     public void addClanPermissions(ClanPlayer cp) {
         if (!plugin.getSettingsManager().is(ENABLE_AUTO_GROUPS) || cp == null || permission == null) {
