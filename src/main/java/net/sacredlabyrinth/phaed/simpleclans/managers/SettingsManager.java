@@ -11,10 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.text.MessageFormat;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -32,9 +29,6 @@ public final class SettingsManager {
 
     private final FileConfiguration config;
     private final File configFile;
-    private static final Map<String, DecimalFormat> FORMAT_CACHE = new HashMap<>();
-    private static final Map<String, Locale> LOCALE_CACHE = new HashMap<>();
-    private static final Map<String, DateTimeFormatter> DATE_CACHE = new HashMap<>();
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -100,7 +94,6 @@ public final class SettingsManager {
                 e.printStackTrace();
             }
         }
-        clearCache();
         save();
     }
 
@@ -110,12 +103,6 @@ public final class SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void clearCache() {
-        FORMAT_CACHE.clear();
-        LOCALE_CACHE.clear();
-        DATE_CACHE.clear();
     }
 
     private void warnAboutPluginDependencies() {
@@ -134,57 +121,35 @@ public final class SettingsManager {
     }
 
     public Locale getLanguage() {
-        return LOCALE_CACHE.computeIfAbsent(getString(LANGUAGE), k -> {
-            String lang = getString(LANGUAGE);
+        String language = getString(LANGUAGE);
+        String[] split = language.split("_");
 
-            if (lang == null || lang.isEmpty()) {
-                lang = LANGUAGE.defaultValue.toString();
-            }
-            String[] langParts = lang.split("_");
+        if (split.length == 2) {
+            return new Locale(split[0], split[1]);
+        }
 
-            if (langParts.length != 2) {
-                plugin.getLogger().warning(String.format("Invalid language: %s", lang));
-                plugin.getLogger().warning(String.format("Using default language: %s", LANGUAGE.defaultValue));
-                lang = LANGUAGE.defaultValue.toString();
-                langParts = lang.split("_");
-            }
-
-            return new Locale(langParts[0], langParts[1]);
-        });
+        return new Locale(language);
     }
 
-    public DecimalFormat getDecimalFormat() {
-        return FORMAT_CACHE.computeIfAbsent(getString(ECONOMY_DECIMAL_FORMAT_PATTERN), k -> {
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(getLanguage());
+    /**
+     * Formats a message using a pattern specified in a ConfigField and optional arguments.
+     *
+     * @param field     The ConfigField specifying the pattern to use for formatting.
+     * @param arguments Optional arguments to be inserted into the formatted message.
+     * @return The formatted message.
+     */
+    public String format(ConfigField field, Object... arguments) {
+        var pattern = getString(field);
 
-            try {
-                return new DecimalFormat(getString(ECONOMY_DECIMAL_FORMAT_PATTERN), symbols);
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning(String.format("Invalid decimal-format-pattern: %s",
-                        getString(ECONOMY_DECIMAL_FORMAT_PATTERN)));
-                plugin.getLogger().warning(String.format("Using default decimal format pattern: %s",
-                        ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue));
+        String message;
+        try {
+            message = MessageFormat.format(pattern, arguments);
+        } catch (IllegalArgumentException exception) {
+            plugin.getLogger().warning(String.format("Provided pattern (%s) of %s is invalid, using the default one", pattern, field.name()));
+            message = MessageFormat.format(field.defaultValue.toString(), arguments);
+        }
 
-                return new DecimalFormat(ECONOMY_DECIMAL_FORMAT_PATTERN.defaultValue.toString(), symbols);
-            }
-        });
-    }
-
-    public DateTimeFormatter getDateTimeFormatter() {
-        return DATE_CACHE.computeIfAbsent(getString(DATE_PATTERN), k -> {
-            try {
-                return DateTimeFormatter.ofPattern(getString(DATE_PATTERN))
-                        .withLocale(getLanguage())
-                        .withZone(ZoneId.systemDefault());
-            } catch (IllegalArgumentException e) {
-                plugin.getLogger().warning(String.format("Invalid date-time-format-pattern: %s", getString(DATE_PATTERN)));
-                plugin.getLogger().warning(String.format("Using default date pattern: %s", DATE_PATTERN.defaultValue));
-
-                return DateTimeFormatter.ofPattern(DATE_PATTERN.defaultValue.toString())
-                        .withLocale(getLanguage())
-                        .withZone(ZoneId.systemDefault());
-            }
-        });
+        return message;
     }
 
     public List<Material> getItemList() {
@@ -371,7 +336,7 @@ public final class SettingsManager {
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
-        DATE_PATTERN("settings.date-time-format-pattern", "HH:mm - dd/MM/yyyy"),
+        DATE_PATTERN("settings.date-time-format-pattern", "{0, date, HH:mm - dd/MM/yyyy}"),
         /*
         ================
         > Tag Settings
@@ -476,7 +441,7 @@ public final class SettingsManager {
         ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE("economy.multiply-upkeep-by-clan-size", false),
         ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled", true),
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
-        ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "#,###.##"),
+        ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "{0, number, #,###.##}"),
         /*
         ================
         > Kill Weights Settings
