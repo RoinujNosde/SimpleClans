@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent;
@@ -183,9 +184,21 @@ public final class PermissionsManager {
      *
      */
     public boolean playerChargeMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
-        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
-        Bukkit.getPluginManager().callEvent(event);
-        return economy.withdrawPlayer(player, event.getAmount()).transactionSuccess();
+        EconomyResponse response = economy.withdrawPlayer(player, money);
+        boolean success = response.transactionSuccess();
+        if (success) {
+            EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
+            Bukkit.getPluginManager().callEvent(event);
+            if(event.isCancelled()) {
+                success = false;
+                economy.depositPlayer(player, money);
+            } else if(event.getAmount() != response.amount) {
+                double difference = event.getAmount() - response.amount;
+                if(difference > 0) economy.withdrawPlayer(player, difference);
+                else economy.depositPlayer(player, difference);
+            }
+        }
+        return success;
     }
 
     /**
@@ -202,9 +215,21 @@ public final class PermissionsManager {
      *
      */
     public boolean playerGrantMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
-        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
-        Bukkit.getPluginManager().callEvent(event);
-        return economy.depositPlayer(player, event.getAmount()).transactionSuccess();
+        EconomyResponse response = economy.depositPlayer(player, money);
+        boolean success = response.transactionSuccess();
+        if (success) {
+            EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
+            Bukkit.getPluginManager().callEvent(event);
+            if(event.isCancelled()) {
+                success = false;
+                economy.withdrawPlayer(player, money);
+            } else if(event.getAmount() != response.amount) {
+                double difference = event.getAmount() - response.amount;
+                if(difference > 0) economy.depositPlayer(player, difference);
+                else economy.withdrawPlayer(player, difference);
+            }
+        }
+        return success;
     }
 
     /**

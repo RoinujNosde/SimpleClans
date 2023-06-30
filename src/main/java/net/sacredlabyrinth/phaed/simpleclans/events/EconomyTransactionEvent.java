@@ -1,12 +1,13 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EconomyTransactionEvent extends Event {
+public class EconomyTransactionEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -14,6 +15,7 @@ public class EconomyTransactionEvent extends Event {
     private double amount;
     private final Cause cause;
     private final TransactionType transactionType;
+    private boolean cancelled;
 
     public EconomyTransactionEvent(OfflinePlayer affected, double amount, @Nullable Cause cause, TransactionType transactionType) {
         this.player = affected;
@@ -49,6 +51,19 @@ public class EconomyTransactionEvent extends Event {
 
     public static HandlerList getHandlerList() {
         return handlers;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    /**
+     * If cancelled, the transaction will result as denied.
+     */
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     public enum Cause {
