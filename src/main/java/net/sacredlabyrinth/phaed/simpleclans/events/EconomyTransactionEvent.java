@@ -1,12 +1,11 @@
 package net.sacredlabyrinth.phaed.simpleclans.events;
 
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 
 /**
  * This event is fired when money is granted or charged from a player's account.
@@ -26,7 +25,7 @@ public class EconomyTransactionEvent extends Event implements Cancellable {
     private boolean cancelled;
 
     public EconomyTransactionEvent(@NotNull OfflinePlayer affected, double amount,
-                                   @Nullable Cause cause, @NotNull TransactionType transactionType) {
+                                   @NotNull Cause cause, @NotNull TransactionType transactionType) {
         this.player = affected;
         this.amount = amount;
         this.cause = cause;
@@ -45,7 +44,7 @@ public class EconomyTransactionEvent extends Event implements Cancellable {
         this.amount = amount;
     }
 
-    @Nullable
+    @NotNull
     public Cause getCause() {
         return cause;
     }
