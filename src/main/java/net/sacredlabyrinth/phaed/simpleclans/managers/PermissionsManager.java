@@ -204,8 +204,10 @@ public final class PermissionsManager {
      */
     public boolean chargePlayer(@NotNull OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyResponse response = Objects.requireNonNull(economy, "Can't find economy provider").withdrawPlayer(player, money);
-        if (!response.transactionSuccess() || cause == null) {
+        if (!response.transactionSuccess()) {
             return false;
+        } else if (cause == null) {
+            return true;
         }
 
         EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.WITHDRAW);
