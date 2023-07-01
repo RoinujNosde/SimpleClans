@@ -100,7 +100,7 @@ public class PlayerDeath extends SCListener {
                 }
                 player.sendMessage(ChatColor.AQUA + lang("player.got.money", player, money,
                         victim.getName(), attacker.getKDR()));
-                plugin.getPermissionsManager().playerGrantMoney(player, money, PLAYER_KILLED);
+                plugin.getPermissionsManager().grantPlayer(player, money, PLAYER_KILLED);
             }
         }
     }

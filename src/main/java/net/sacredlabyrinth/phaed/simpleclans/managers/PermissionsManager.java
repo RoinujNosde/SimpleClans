@@ -13,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.MessageFormat;
@@ -170,23 +171,44 @@ public final class PermissionsManager {
     /**
      * Charge a player some money
      *
-     * @deprecated Use playerChargeMoney(OfflinePlayer, double, Cause) instead
+     * @deprecated use {@link PermissionsManager#chargePlayer(OfflinePlayer, double)} instead
      */
     @Deprecated(since = "2.19.0", forRemoval = true)
     public boolean playerChargeMoney(OfflinePlayer player, double money) {
-        return playerChargeMoney(player, money, null);
+        return chargePlayer(player, money);
     }
 
     /**
-     * Charge a player some money
+     * Charges the specified amount of money from the player's account.
+     * <p>
+     * As the {@link EconomyTransactionEvent.Cause} is not passed, this method won't fire the {@link EconomyTransactionEvent}.
+     * Use this method when you don't need to track the cause or handle custom transaction events.
+     * </p>
+     *
+     * @param player The player whose account will be charged.
+     * @param money  The amount of money to charge.
+     * @see EconomyTransactionEvent
      */
-    public boolean playerChargeMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
-        EconomyResponse response = Objects.requireNonNull(economy).withdrawPlayer(player, money);
+    public boolean chargePlayer(OfflinePlayer player, double money) {
+        return chargePlayer(player, money, null);
+    }
+
+    /**
+     * Charges the specified amount of money from the player's account.
+     *
+     * @param player The player whose account will be charged.
+     * @param money  The amount of money to charge.
+     * @param cause  The cause of the transaction.
+     * @return {@code true} if the charge was successful, {@code false} otherwise.
+     * @see EconomyTransactionEvent
+     */
+    public boolean chargePlayer(@NotNull OfflinePlayer player, double money, @Nullable Cause cause) {
+        EconomyResponse response = Objects.requireNonNull(economy, "Can't find economy provider").withdrawPlayer(player, money);
         if (!response.transactionSuccess() || cause == null) {
             return false;
         }
 
-        EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW);
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT);
         getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -194,6 +216,7 @@ public final class PermissionsManager {
             return false;
         }
 
+        // handle EconomyTransactionEvent#setAmount
         double difference = event.getAmount() - response.amount;
         if (difference > 0) {
             economy.withdrawPlayer(player, difference);
@@ -208,23 +231,45 @@ public final class PermissionsManager {
     /**
      * Grants a player some money
      *
-     * @deprecated Use playerGrantMoney(OfflinePlayer, double, Cause) instead
+     * @deprecated use {@link PermissionsManager#grantPlayer(OfflinePlayer, double)} instead
      */
     @Deprecated(since = "2.19.0", forRemoval = true)
     public boolean playerGrantMoney(OfflinePlayer player, double money) {
-        return playerGrantMoney(player, money, null);
+        return grantPlayer(player, money);
     }
 
     /**
-     * Grants a player some money
+     * Grants the specified amount of money to the player's account.
+     * <p>
+     * As the {@link EconomyTransactionEvent.Cause} is not passed, this method won't fire the {@link EconomyTransactionEvent}.
+     * Use this method when you don't need to track the cause or handle custom transaction events.
+     * </p>
+     *
+     * @param player The player to whom the money will be granted.
+     * @param money  The amount of money to grant.
+     * @see PermissionsManager#grantPlayer(OfflinePlayer, double, Cause)
+     * @see EconomyTransactionEvent
      */
-    public boolean playerGrantMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
-        EconomyResponse response = Objects.requireNonNull(economy).depositPlayer(player, money);
+    public boolean grantPlayer(OfflinePlayer player, double money) {
+        return grantPlayer(player, money, null);
+    }
+
+    /**
+     * Grants the specified amount of money to the player's account.
+     *
+     * @param player The player to whom the money will be granted.
+     * @param money  The amount of money to grant.
+     * @param cause  The cause of the transaction.
+     * @return {@code true} if the grant was successful, {@code false} otherwise.
+     * @see EconomyTransactionEvent
+     */
+    public boolean grantPlayer(@NotNull OfflinePlayer player, double money, @Nullable Cause cause) {
+        EconomyResponse response = Objects.requireNonNull(economy, "Can't find economy provider").depositPlayer(player, money);
         if (!response.transactionSuccess() || cause == null) {
             return false;
         }
 
-        EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW);
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.DEPOSIT);
         getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -232,6 +277,7 @@ public final class PermissionsManager {
             return false;
         }
 
+        // handle EconomyTransactionEvent#setAmount
         double difference = event.getAmount() - response.amount;
         if (difference > 0) {
             economy.depositPlayer(player, difference);
@@ -310,14 +356,10 @@ public final class PermissionsManager {
 
         boolean hasLevel = false;
         if (level != null) {
-            switch (level) {
-                case LEADER:
-                    hasLevel = clanPlayer.isLeader();
-                    break;
-                case TRUSTED:
-                    hasLevel = clanPlayer.isTrusted();
-                    break;
-            }
+            hasLevel = switch (level) {
+                case LEADER -> clanPlayer.isLeader();
+                case TRUSTED -> clanPlayer.isTrusted();
+            };
         }
 
         boolean hasRankPermission = false;
@@ -367,15 +409,10 @@ public final class PermissionsManager {
             return false;
         }
 
-        boolean hasLevel = false;
-        switch (permission.getPermissionLevel()) {
-            case LEADER:
-                hasLevel = clanPlayer.isLeader();
-                break;
-            case TRUSTED:
-                hasLevel = clanPlayer.isTrusted();
-                break;
-        }
+        boolean hasLevel = switch (permission.getPermissionLevel()) {
+            case LEADER -> clanPlayer.isLeader();
+            case TRUSTED -> clanPlayer.isTrusted();
+        };
 
         boolean hasRankPermission = false;
         String rankName = clanPlayer.getRankId();

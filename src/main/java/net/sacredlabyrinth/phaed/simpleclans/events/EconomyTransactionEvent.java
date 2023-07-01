@@ -6,7 +6,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import net.sacredlabyrinth.phaed.simpleclans.managers.PermissionsManager;
 
+/**
+ * This event is fired when money is granted or charged from a player's account.
+ * <p>Note: Cancelling this event will deny the transaction.</p>
+ *
+ * @see PermissionsManager#grantPlayer(OfflinePlayer, double, Cause)
+ * @see PermissionsManager#chargePlayer(OfflinePlayer, double, Cause)
+ */
 public class EconomyTransactionEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -17,7 +25,8 @@ public class EconomyTransactionEvent extends Event implements Cancellable {
     private final TransactionType transactionType;
     private boolean cancelled;
 
-    public EconomyTransactionEvent(OfflinePlayer affected, double amount, @Nullable Cause cause, TransactionType transactionType) {
+    public EconomyTransactionEvent(@NotNull OfflinePlayer affected, double amount,
+                                   @Nullable Cause cause, @NotNull TransactionType transactionType) {
         this.player = affected;
         this.amount = amount;
         this.cause = cause;
@@ -31,6 +40,7 @@ public class EconomyTransactionEvent extends Event implements Cancellable {
     public double getAmount() {
         return amount;
     }
+
     public void setAmount(double amount) {
         this.amount = amount;
     }
@@ -40,6 +50,7 @@ public class EconomyTransactionEvent extends Event implements Cancellable {
         return cause;
     }
 
+    @SuppressWarnings("unused")
     public TransactionType getTransactionType() {
         return transactionType;
     }
@@ -67,12 +78,20 @@ public class EconomyTransactionEvent extends Event implements Cancellable {
     }
 
     public enum Cause {
-        CLAN_CREATION, CLAN_VERIFICATION, ADD_MEMBER_TO_CLAN, DISCORD_CREATION, PLAYER_KILLED,
-        SET_MEMBER_FEE, MEMBER_FEE, CLAN_HOME_TELEPORT, SET_CLAN_TP, RESET_CLAN_KDR, CUSTOM;
+        CLAN_CREATION,
+        CLAN_VERIFICATION,
+        CLAN_INVITATION,
+        CLAN_REGROUP,
+        CLAN_HOME_TELEPORT,
+        CLAN_HOME_TELEPORT_SET,
+        DISCORD_CREATION,
+        PLAYER_KILLED,
+        MEMBER_FEE_SET,
+        RESET_KDR
     }
 
     public enum TransactionType {
-        DEPOSIT_TO_PLAYER, WITHDRAW_FROM_PLAYER;
+        DEPOSIT, WITHDRAW
     }
 
 }

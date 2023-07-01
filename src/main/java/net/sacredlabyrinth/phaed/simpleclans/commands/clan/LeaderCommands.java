@@ -226,7 +226,7 @@ public class LeaderCommands extends BaseCommand {
                 return;
             }
 
-            if (!permissions.playerChargeMoney(player, amount, DISCORD_CREATION)) {
+            if (!permissions.chargePlayer(player, amount, DISCORD_CREATION)) {
                 return;
             }
         }
@@ -237,7 +237,7 @@ public class LeaderCommands extends BaseCommand {
         } catch (DiscordHookException ex) {
             // Return player's money if clan creation went wrong
             if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
-                permissions.playerGrantMoney(player, amount, DISCORD_CREATION);
+                permissions.grantPlayer(player, amount, DISCORD_CREATION);
             }
             String messageKey = ex.getMessageKey();
             if (messageKey != null) {
