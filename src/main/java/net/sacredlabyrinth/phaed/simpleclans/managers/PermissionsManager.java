@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
@@ -181,12 +181,12 @@ public final class PermissionsManager {
      * Charge a player some money
      */
     public boolean playerChargeMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
-        EconomyResponse response = economy.withdrawPlayer(player, money);
-        if (!response.transactionSuccess()) {
+        EconomyResponse response = Objects.requireNonNull(economy).withdrawPlayer(player, money);
+        if (!response.transactionSuccess() || cause == null) {
             return false;
         }
 
-        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW);
         getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -219,21 +219,28 @@ public final class PermissionsManager {
      * Grants a player some money
      */
     public boolean playerGrantMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
-        EconomyResponse response = economy.depositPlayer(player, money);
-        boolean success = response.transactionSuccess();
-        if (success) {
-            EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
-            getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                success = false;
-                economy.withdrawPlayer(player, money);
-            } else if (event.getAmount() != response.amount) {
-                double difference = event.getAmount() - response.amount;
-                if (difference > 0) economy.depositPlayer(player, difference);
-                else economy.withdrawPlayer(player, difference);
-            }
+        EconomyResponse response = Objects.requireNonNull(economy).depositPlayer(player, money);
+        if (!response.transactionSuccess() || cause == null) {
+            return false;
         }
-        return success;
+
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW);
+        getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            economy.withdrawPlayer(player, event.getAmount());
+            return false;
+        }
+
+        double difference = event.getAmount() - response.amount;
+        if (difference > 0) {
+            economy.depositPlayer(player, difference);
+        }
+        if (difference < 0) {
+            economy.withdrawPlayer(player, Math.abs(difference));
+        }
+
+        return true;
     }
 
     /**
