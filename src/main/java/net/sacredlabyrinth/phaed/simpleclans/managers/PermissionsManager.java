@@ -208,7 +208,7 @@ public final class PermissionsManager {
             return false;
         }
 
-        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.DEPOSIT);
+        EconomyTransactionEvent event = new EconomyTransactionEvent(player, money, cause, EconomyTransactionEvent.TransactionType.WITHDRAW);
         getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
