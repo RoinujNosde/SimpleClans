@@ -186,7 +186,7 @@ public final class PermissionsManager {
     public boolean playerChargeMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyResponse response = economy.withdrawPlayer(player, money);
         boolean success = response.transactionSuccess();
-        if (success) {
+        if (success && cause != null) {
             EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.WITHDRAW_FROM_PLAYER);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) {
@@ -195,7 +195,7 @@ public final class PermissionsManager {
             } else if(event.getAmount() != response.amount) {
                 double difference = event.getAmount() - response.amount;
                 if(difference > 0) economy.withdrawPlayer(player, difference);
-                else economy.depositPlayer(player, difference);
+                else economy.depositPlayer(player, -difference);
             }
         }
         return success;
@@ -217,7 +217,7 @@ public final class PermissionsManager {
     public boolean playerGrantMoney(OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyResponse response = economy.depositPlayer(player, money);
         boolean success = response.transactionSuccess();
-        if (success) {
+        if (success && cause != null) {
             EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.DEPOSIT_TO_PLAYER);
             Bukkit.getPluginManager().callEvent(event);
             if(event.isCancelled()) {
@@ -226,7 +226,7 @@ public final class PermissionsManager {
             } else if(event.getAmount() != response.amount) {
                 double difference = event.getAmount() - response.amount;
                 if(difference > 0) economy.depositPlayer(player, difference);
-                else economy.withdrawPlayer(player, difference);
+                else economy.withdrawPlayer(player, -difference);
             }
         }
         return success;

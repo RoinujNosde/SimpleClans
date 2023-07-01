@@ -1078,7 +1078,7 @@ public final class ClanManager {
         if (plugin.getSettingsManager().is(ECONOMY_ISSUER_PAYS_REGROUP)) {
             if (plugin.getPermissionsManager().hasEconomy()) {
                 if (plugin.getPermissionsManager().playerHasMoney(player, price)) {
-                    plugin.getPermissionsManager().playerChargeMoney(player, price, Cause.CLAN_REGROUP);
+                    plugin.getPermissionsManager().playerChargeMoney(player, price, null);
                     player.sendMessage(RED + MessageFormat.format(lang("account.has.been.debited", player), price));
                 } else {
                     player.sendMessage(RED + lang("not.sufficient.money", player, price));
@@ -1089,7 +1089,7 @@ public final class ClanManager {
             double money = plugin.getPermissionsManager().playerGetMoney(player);
             switch (clan.withdraw(new BankOperator(player, money), ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
                 case SUCCESS:
-                    if (plugin.getPermissionsManager().playerGrantMoney(player, price, Cause.CLAN_REGROUP)) {
+                    if (plugin.getPermissionsManager().playerGrantMoney(player, price, null)) {
                         player.sendMessage(ChatColor.AQUA + lang("player.clan.withdraw", player, price));
                         clan.addBb(player.getName(), lang("bb.clan.withdraw", price));
                         return true;
