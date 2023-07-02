@@ -139,11 +139,11 @@ public final class SettingsManager {
      * @return The formatted message.
      */
     public String format(ConfigField field, Object... arguments) {
-        MessageFormat formatter = new MessageFormat(getString(field), getLanguage());
         String message;
         try {
+            MessageFormat formatter = new MessageFormat(getString(field), getLanguage());
             message = formatter.format(arguments);
-        } catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException | NullPointerException exception) {
             plugin.getLogger().warning(String.format("Provided pattern (%s) of %s is invalid, using the default %s",
                     getString(field), field.path, field.defaultValue));
             message = MessageFormat.format(field.defaultValue.toString(), arguments);
