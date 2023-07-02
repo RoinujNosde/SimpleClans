@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -173,7 +174,8 @@ public class ChatUtils {
     }
 
     public static String formatDate(long time) {
-        return plugin.getSettingsManager().format(DATE_PATTERN, Instant.ofEpochMilli(time));
+        Date date = new Date(time);
+        return plugin.getSettingsManager().format(DATE_PATTERN, date);
     }
 
 }
