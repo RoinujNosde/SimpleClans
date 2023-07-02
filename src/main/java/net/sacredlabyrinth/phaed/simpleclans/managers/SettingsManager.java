@@ -94,6 +94,7 @@ public final class SettingsManager {
                 e.printStackTrace();
             }
         }
+
         save();
     }
 
