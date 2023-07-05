@@ -214,7 +214,7 @@ public final class PermissionsManager {
         getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
-            economy.depositPlayer(player, event.getAmount());
+            economy.depositPlayer(player, money);
             return false;
         }
 
@@ -275,7 +275,7 @@ public final class PermissionsManager {
         getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
-            economy.withdrawPlayer(player, event.getAmount());
+            economy.withdrawPlayer(player, money);
             return false;
         }
 
