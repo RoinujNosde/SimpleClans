@@ -247,6 +247,16 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
+     * Returns the clan's balance formatted
+     *
+     * @return the balance formatted
+     */
+    @Placeholder("balance_formatted")
+    public String getBalanceFormatted() {
+        return ChatUtils.formatCurrency(balance);
+    }
+
+    /**
      * (used internally)
      *
      * @param balance the balance to set
@@ -453,7 +463,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("founded")
     public String getFoundedString() {
-        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(this.founded));
+        return ChatUtils.formatDate(founded);
     }
 
     /**

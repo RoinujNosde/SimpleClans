@@ -121,7 +121,7 @@ public class Components {
             double price = pl.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_CREATE) ? pl.getSettingsManager().getDouble(ECONOMY_CREATION_PRICE) : 0;
             lore = new ArrayList<>();
             if (price != 0) {
-                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), price));
+                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), ChatUtils.formatCurrency(price)));
             }
             lore.add(lang("gui.clandetails.free.agent.create.clan.lore", frame.getViewer()));
         }
