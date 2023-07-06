@@ -110,6 +110,25 @@ public class Clan implements Serializable, Comparable<Clan> {
     /**
      * Deposits money to the clan
      */
+    @Deprecated
+    public void deposit(double amount, Player player) {
+        if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
+            if (SimpleClans.getInstance().getPermissionsManager().grantPlayer(player, amount)) {
+                player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
+                addBb(player.getName(), lang("bb.clan.deposit", amount));
+                setBalance(getBalance() + amount);
+                SimpleClans.getInstance().getStorageManager().updateClan(this);
+            } else {
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+            }
+        } else {
+            player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+        }
+    }
+
+    /**
+     * Deposits money to the clan
+     */
     public EconomyResponse deposit(@NotNull BankOperator sender, @NotNull Cause cause, double amount) {
         EconomyResponse response = null;
 
@@ -123,6 +142,22 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getBankLogger().log(new BankLog(sender, this, response, DEPOSIT, cause, amount));
         return response;
+    }
+
+    /**
+     * Withdraws money from the clan
+     */
+    @Deprecated
+    public void withdraw(double amount, Player player) {
+        if (getBalance() >= amount) {
+            if (SimpleClans.getInstance().getPermissionsManager().grantPlayer(player, amount)) {
+                player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
+                addBb(player.getName(), lang("bb.clan.withdraw", amount));
+                setBalance(getBalance() - amount);
+            }
+        } else {
+            player.sendMessage(AQUA + lang("clan.bank.not.enough.money", player));
+        }
     }
 
     /**
