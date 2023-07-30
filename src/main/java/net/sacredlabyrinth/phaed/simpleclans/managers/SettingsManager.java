@@ -171,7 +171,7 @@ public final class SettingsManager {
      */
     public boolean hasDisallowedColor(String str) {
         var loweredString = str.toLowerCase();
-        return getStringList(DISALLOWED_TAG_COLORS).stream().anyMatch(color -> loweredString.contains("&" + color));
+        return getStringList(DISALLOWED_TAG_COLORS).stream().map(String::toLowerCase).anyMatch(color -> loweredString.contains("&" + color));
     }
 
     /**
