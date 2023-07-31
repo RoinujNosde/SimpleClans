@@ -169,7 +169,7 @@ public final class SettingsManager {
      */
     public boolean hasDisallowedColor(String str) {
         for (String disallowedTag : getStringList(DISALLOWED_TAG_COLORS)) {
-            if (str.contains("&" + disallowedTag)) {
+            if (str.toLowerCase().contains("&" + disallowedTag.toLowerCase())) {
                 return true;
             }
         }
