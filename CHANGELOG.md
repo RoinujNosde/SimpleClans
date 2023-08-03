@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.19.1](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.0...v2.19.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* charge money on deposit ([#394](https://github.com/RoinujNosde/SimpleClans/issues/394)) ([fe60b25](https://github.com/RoinujNosde/SimpleClans/commit/fe60b25f6107281a9771f6498400c3f8ce81c916))
+* consider uppercase when checking for disallowed colors ([#391](https://github.com/RoinujNosde/SimpleClans/issues/391)) ([503d679](https://github.com/RoinujNosde/SimpleClans/commit/503d67903e386b1c4b6eb7903a1addbfd42a684a))
+
 ## [2.19.0](https://github.com/RoinujNosde/SimpleClans/compare/v2.18.1...v2.19.0) (2023-07-27)
 
 
