@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.19.2](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.1...v2.19.2) (2023-08-03)
+
+
+### Bug Fixes
+
+* cause check should return true on granting ([#397](https://github.com/RoinujNosde/SimpleClans/issues/397)) ([f29bc74](https://github.com/RoinujNosde/SimpleClans/commit/f29bc746af4940b493ebc43b1e25ff0fc00ab8d0))
+
 ## [2.19.1](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.0...v2.19.1) (2023-08-03)
 
 
