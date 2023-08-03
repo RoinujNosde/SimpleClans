@@ -267,8 +267,10 @@ public final class PermissionsManager {
      */
     public boolean grantPlayer(@NotNull OfflinePlayer player, double money, @Nullable Cause cause) {
         EconomyResponse response = Objects.requireNonNull(economy, "Can't find economy provider").depositPlayer(player, money);
-        if (!response.transactionSuccess() || cause == null) {
+        if (!response.transactionSuccess()) {
             return false;
+        } else if (cause == null) {
+            return true;
         }
 
         EconomyTransactionEvent event = new EconomyTransactionEvent(player, response.amount, cause, EconomyTransactionEvent.TransactionType.DEPOSIT);
