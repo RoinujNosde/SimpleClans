@@ -44,7 +44,6 @@ public class PlayerDeath extends SCListener {
         ClanPlayer attackerCp = plugin.getClanManager().getCreateClanPlayer(attacker.getUniqueId());
 
         classifyKill(victimCp, attackerCp);
-        giveMoneyReward(victimCp, attackerCp);
 
         // record death for victim
         victimCp.addDeath();
@@ -152,14 +151,17 @@ public class PlayerDeath extends SCListener {
                 if (kills != null) {
                     if (kills < max) {
                         saveKill(kill, type);
+			giveMoneyReward(victim, attacker);
                     }
                 } else {
                     saveKill(kill, type);
+		    giveMoneyReward(victim, attacker);
                 }
             });
     		return;
     	}
     	saveKill(kill, type);
+	giveMoneyReward(victim, attacker);
     }
 
 	private void saveKill(Kill kill, Kill.Type type) {
