@@ -73,9 +73,9 @@ public class BankCommand extends BaseCommand {
         BankOperator operator = new BankOperator(player, permissions.playerGetMoney(player));
         switch (clan.withdraw(operator, COMMAND, amount)) {
             case SUCCESS -> {
-                if (permissions.grantPlayer(player, ChatUtils.formatCurrency(amount))) {
+                if (permissions.grantPlayer(player, amount)) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, ChatUtils.formatCurrency(amount)));
-                    clan.addBb(player.getName(), lang("bb.clan.withdraw", amount, player.getName()));
+                    clan.addBb(player.getName(), lang("bb.clan.withdraw", ChatUtils.formatCurrency(amount), player.getName()));
                 } else {
                     clan.setBalance(operator, REVERT, BankLogger.Operation.WITHDRAW, clan.getBalance() + amount);
                 }

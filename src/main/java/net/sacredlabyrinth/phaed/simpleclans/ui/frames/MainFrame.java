@@ -95,7 +95,7 @@ public class MainFrame extends SCFrame {
 		List<String> resetKdrLore;
 		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR)) {
 			double price = plugin.getSettingsManager().getDouble(ECONOMY_RESET_KDR_PRICE);
-			resetKrLore = Arrays.asList(
+			resetKdrLore = Arrays.asList(
 					lang("gui.main.reset.kdr.lore.price", getViewer(), ChatUtils.formatCurrency(price)),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
