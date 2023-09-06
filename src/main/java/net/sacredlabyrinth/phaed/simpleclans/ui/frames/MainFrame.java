@@ -88,20 +88,25 @@ public class MainFrame extends SCFrame {
 	}
 
 	public void addResetKdr() {
-		List<String> resetKrLore;
+		if (!plugin.getPermissionsManager().has(getViewer(), "simpleclans.vip.resetkdr")) {
+			return;
+		}
+
+		List<String> resetKdrLore;
 		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR)) {
 			double price = plugin.getSettingsManager().getDouble(ECONOMY_RESET_KDR_PRICE);
 			resetKrLore = Arrays.asList(
 					lang("gui.main.reset.kdr.lore.price", getViewer(), ChatUtils.formatCurrency(price)),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
-			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
+			resetKdrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
 		}
 		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title", getViewer()),
-				resetKrLore, XMaterial.ANVIL, 5);
+				resetKdrLore, XMaterial.ANVIL, 5);
 		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
 		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.vip.resetkdr");
+
 		add(resetKdr);
 	}
 

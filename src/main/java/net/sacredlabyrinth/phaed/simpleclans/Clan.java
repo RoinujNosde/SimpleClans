@@ -113,7 +113,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     @Deprecated
     public void deposit(double amount, Player player) {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
-            if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
+            if (SimpleClans.getInstance().getPermissionsManager().chargePlayer(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
                 addBb(player.getName(), lang("bb.clan.deposit", amount));
                 setBalance(getBalance() + amount);
@@ -150,7 +150,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     @Deprecated
     public void withdraw(double amount, Player player) {
         if (getBalance() >= amount) {
-            if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
+            if (SimpleClans.getInstance().getPermissionsManager().grantPlayer(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
                 addBb(player.getName(), lang("bb.clan.withdraw", amount));
                 setBalance(getBalance() - amount);

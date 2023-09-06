@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause.DISCORD_CREATION;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
@@ -226,7 +227,7 @@ public class LeaderCommands extends BaseCommand {
                 return;
             }
 
-            if (!permissions.playerChargeMoney(player, price)) {
+            if (!permissions.chargePlayer(player, amount, DISCORD_CREATION)) {
                 return;
             }
         }
@@ -237,7 +238,7 @@ public class LeaderCommands extends BaseCommand {
         } catch (DiscordHookException ex) {
             // Return player's money if clan creation went wrong
             if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
-                permissions.playerGrantMoney(player, price);
+                permissions.grantPlayer(player, amount, DISCORD_CREATION);
             }
             String messageKey = ex.getMessageKey();
             if (messageKey != null) {

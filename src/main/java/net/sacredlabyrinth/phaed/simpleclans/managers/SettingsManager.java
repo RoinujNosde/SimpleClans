@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
@@ -90,8 +92,8 @@ public final class SettingsManager {
         if (configFile.exists()) {
             try {
                 config.load(configFile);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException | InvalidConfigurationException ex) {
+                SimpleClans.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
 
@@ -101,8 +103,8 @@ public final class SettingsManager {
     public void save() {
         try {
             config.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            SimpleClans.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -190,13 +192,8 @@ public final class SettingsManager {
      * @return whether the string contains the color code
      */
     public boolean hasDisallowedColor(String str) {
-        for (String disallowedTag : getStringList(DISALLOWED_TAG_COLORS)) {
-            if (str.contains("&" + disallowedTag)) {
-                return true;
-            }
-        }
-
-        return false;
+        var loweredString = str.toLowerCase();
+        return getStringList(DISALLOWED_TAG_COLORS).stream().map(String::toLowerCase).anyMatch(color -> loweredString.contains("&" + color));
     }
 
     /**

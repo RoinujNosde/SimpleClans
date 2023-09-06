@@ -72,17 +72,15 @@ public class BankCommand extends BaseCommand {
          */
         BankOperator operator = new BankOperator(player, permissions.playerGetMoney(player));
         switch (clan.withdraw(operator, COMMAND, amount)) {
-            case SUCCESS:
-                if (permissions.playerGrantMoney(player, amount)) {
+            case SUCCESS -> {
+                if (permissions.grantPlayer(player, ChatUtils.formatCurrency(amount))) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, ChatUtils.formatCurrency(amount)));
-                    clan.addBb(player.getName(), lang("bb.clan.withdraw", ChatUtils.formatCurrency(amount), player.getName()));
+                    clan.addBb(player.getName(), lang("bb.clan.withdraw", amount, player.getName()));
                 } else {
                     clan.setBalance(operator, REVERT, BankLogger.Operation.WITHDRAW, clan.getBalance() + amount);
                 }
-                break;
-            case NOT_ENOUGH_BALANCE:
-                player.sendMessage(lang("clan.bank.not.enough.money", player));
-                break;
+            }
+            case NOT_ENOUGH_BALANCE -> player.sendMessage(lang("clan.bank.not.enough.money", player));
         }
     }
 
@@ -130,9 +128,9 @@ public class BankCommand extends BaseCommand {
         BankOperator operator = new BankOperator(player, permissions.playerGetMoney(player));
         EconomyResponse response = clan.deposit(operator, COMMAND, amount);
         if (response == EconomyResponse.SUCCESS) {
-            if (permissions.playerChargeMoney(player, amount)) {
+            if (permissions.chargePlayer(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, ChatUtils.formatCurrency(amount)));
-                clan.addBb(player.getName(), lang("bb.clan.deposit", ChatUtils.formatCurrency(amount), player.getName()));
+                clan.addBb(player.getName(), lang("bb.clan.deposit", amount, player.getName()));
             } else {
                 //Reverts the deposit if something went wrong with Vault
                 clan.setBalance(operator, REVERT, BankLogger.Operation.DEPOSIT, clan.getBalance() - amount);

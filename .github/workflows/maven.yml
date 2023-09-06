@@ -28,7 +28,7 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
       - name: Build with Maven
-        run: mvn -B -U package --file pom.xml
+        run: ./mvnw -B -U package --file pom.xml
       - name: Upload Build Artifact
         if: "${{ matrix.java-version == 16 }}"
         uses: actions/upload-artifact@v3

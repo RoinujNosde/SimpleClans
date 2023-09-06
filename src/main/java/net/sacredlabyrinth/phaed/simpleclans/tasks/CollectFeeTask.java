@@ -52,7 +52,7 @@ public class CollectFeeTask extends BukkitRunnable {
 
             for (ClanPlayer cp : clan.getFeePayers()) {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(cp.getUniqueId());
-                boolean success = pm.playerChargeMoney(player, memberFee);
+                boolean success = pm.chargePlayer(player, memberFee);
                 if (success) {
                     ChatBlock.sendMessage(cp, AQUA + lang("fee.collected", cp, memberFee));
 
