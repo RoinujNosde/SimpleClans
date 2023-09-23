@@ -10,6 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -188,12 +189,12 @@ public class ClanCommands extends BaseCommand {
         double maxFee = settings.getDouble(ECONOMY_MAX_MEMBER_FEE);
         if (fee > maxFee) {
             ChatBlock.sendMessage(player, RED
-                    + lang("max.fee.allowed.is.0", player, ChatUtils.formatCurrency(maxFee)));
+                    + lang("max.fee.allowed.is.0", player, CurrencyFormat.format(maxFee)));
             return;
         }
         if (cm.purchaseMemberFeeSet(player)) {
             clan.setMemberFee(fee);
-            clan.addBb(player.getName(), lang("bb.fee.set", ChatUtils.formatCurrency(fee)));
+            clan.addBb(player.getName(), lang("bb.fee.set", CurrencyFormat.format(fee)));
             ChatBlock.sendMessage(player, AQUA + lang("fee.set", player));
             storage.updateClan(clan);
         }

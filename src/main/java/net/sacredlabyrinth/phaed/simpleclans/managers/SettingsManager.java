@@ -134,27 +134,6 @@ public final class SettingsManager {
         return new Locale(language);
     }
 
-    /**
-     * Formats a message using a pattern specified in a ConfigField and optional arguments.
-     *
-     * @param field     The ConfigField specifying the pattern to use for formatting.
-     * @param arguments Optional arguments to be inserted into the formatted message.
-     * @return The formatted message.
-     */
-    public String format(ConfigField field, Object... arguments) {
-        String message;
-        try {
-            MessageFormat formatter = new MessageFormat(getString(field), getLanguage());
-            message = formatter.format(arguments);
-        } catch (IllegalArgumentException | NullPointerException exception) {
-            plugin.getLogger().warning(String.format("Provided pattern (%s) of %s is invalid, using the default %s",
-                    getString(field), field.path, field.defaultValue));
-            message = MessageFormat.format(field.defaultValue.toString(), arguments);
-        }
-
-        return message;
-    }
-
     public List<Material> getItemList() {
         List<Material> itemsList = new ArrayList<>();
         for (String material : getStringList(ITEM_LIST)) {
@@ -334,7 +313,7 @@ public final class SettingsManager {
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
-        DATE_PATTERN("settings.date-time-format-pattern", "{0, date, HH:mm - dd/MM/yyyy}"),
+        DATE_PATTERN("settings.date-time-format-pattern", "HH:mm - dd/MM/yyyy"),
         /*
         ================
         > Tag Settings
@@ -439,7 +418,6 @@ public final class SettingsManager {
         ECONOMY_MULTIPLY_UPKEEP_BY_CLAN_SIZE("economy.multiply-upkeep-by-clan-size", false),
         ECONOMY_UPKEEP_REQUIRES_MEMBER_FEE("economy.charge-upkeep-only-if-member-fee-enabled", true),
         ECONOMY_BANK_LOG_ENABLED("economy.bank-log.enable", true),
-        ECONOMY_DECIMAL_FORMAT_PATTERN("economy.decimal-format-pattern", "{0, number, #,###.##}"),
         /*
         ================
         > Kill Weights Settings

@@ -10,6 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -253,7 +254,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("balance_formatted")
     public String getBalanceFormatted() {
-        return ChatUtils.formatCurrency(balance);
+        return CurrencyFormat.format(balance);
     }
 
     /**

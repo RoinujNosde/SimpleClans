@@ -6,10 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
-import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.KDRFormat;
-import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
-import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
+import net.sacredlabyrinth.phaed.simpleclans.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -121,7 +118,7 @@ public class Components {
             double price = pl.getSettingsManager().is(ECONOMY_PURCHASE_CLAN_CREATE) ? pl.getSettingsManager().getDouble(ECONOMY_CREATION_PRICE) : 0;
             lore = new ArrayList<>();
             if (price != 0) {
-                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), ChatUtils.formatCurrency(price)));
+                lore.add(lang("gui.clandetails.free.agent.create.clan.price.lore", frame.getViewer(), CurrencyFormat.format(price)));
             }
             lore.add(lang("gui.clandetails.free.agent.create.clan.lore", frame.getViewer()));
         }
