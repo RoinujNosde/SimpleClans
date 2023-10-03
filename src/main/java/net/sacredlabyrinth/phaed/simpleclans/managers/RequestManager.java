@@ -92,11 +92,11 @@ public final class RequestManager {
         }
 
         Clan clan = requester.getClan();
-        if (clan == null || requests.containsKey(target)) {
+        if (clan == null || requests.containsKey(clan.getTag())) {
             return;
         }
 
-        String msg = MessageFormat.format(lang(key), args);
+        String msg = lang(key, args);
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
 
         Request req = new Request(request, acceptors, requester, target, clan, msg);

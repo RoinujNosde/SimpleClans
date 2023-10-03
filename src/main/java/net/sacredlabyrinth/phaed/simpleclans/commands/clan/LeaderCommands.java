@@ -89,7 +89,8 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
         if (settings.is(CLAN_CONFIRMATION_FOR_PROMOTE) && clan.getLeaders().size() > 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.PROMOTE, otherPl.getName(), "asking.for.the.promotion", otherPl.getName());
+            requestManager.requestAllLeaders(cp, ClanRequest.PROMOTE, otherPl.getName(), "asking.for.the.promotion",
+                    player.getName(), otherPl.getName());
             ChatBlock.sendMessage(player, AQUA + lang("promotion.vote.has.been.requested.from.all.leaders",
                     player));
             return;
@@ -104,7 +105,8 @@ public class LeaderCommands extends BaseCommand {
     @Description("{@@command.description.disband}")
     public void disband(Player player, ClanPlayer cp, Clan clan) {
         if (clan.getLeaders().size() != 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.DISBAND, clan.getTag(), "asking.to.disband");
+            requestManager.requestAllLeaders(cp, ClanRequest.DISBAND, clan.getTag(), "asking.to.disband",
+                    player.getName());
             ChatBlock.sendMessage(player, AQUA +
                     lang("clan.disband.vote.has.been.requested.from.all.leaders", player));
             return;
@@ -197,7 +199,7 @@ public class LeaderCommands extends BaseCommand {
         }
 
         if (clan.getLeaders().size() != 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", clanName);
+            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", cp.getName(), clanName);
             ChatBlock.sendMessageKey(cp, "rename.vote.has.been.requested.from.all.leaders");
             return;
         }
