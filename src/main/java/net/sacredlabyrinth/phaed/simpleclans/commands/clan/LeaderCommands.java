@@ -10,6 +10,7 @@ import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -193,10 +194,23 @@ public class LeaderCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.rename")
     @CommandCompletion("@nothing")
     @Description("{@@command.description.rename}")
-    public void rename(ClanPlayer cp, Clan clan, @Name("name") String clanName) {
+    public void rename(Player player, ClanPlayer cp, Clan clan, @Name("name") String clanName) {
         if (clanName.contains("&")) {
             ChatBlock.sendMessageKey(cp, "your.clan.name.cannot.contain.color.codes");
             return;
+        }
+        boolean bypass = plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass");
+        if (!bypass) {
+            if (ChatUtils.stripColors(clanName).length() > plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)) {
+                ChatBlock.sendMessage(player, RED + lang("your.clan.name.cannot.be.longer.than.characters",
+                        player, plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)));
+                return;
+            }
+            if (ChatUtils.stripColors(clanName).length() <= plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)) {
+                ChatBlock.sendMessage(player, RED + lang("your.clan.name.must.be.longer.than.characters",
+                        player, plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)));
+                return;
+            }
         }
 
         if (clan.getLeaders().size() != 1) {
