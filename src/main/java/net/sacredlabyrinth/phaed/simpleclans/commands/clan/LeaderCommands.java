@@ -214,7 +214,7 @@ public class LeaderCommands extends BaseCommand {
         }
 
         if (clan.getLeaders().size() != 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", cp.getName(), clanName);
+            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, clanName, "asking.to.rename", cp.getName(), clanName);
             ChatBlock.sendMessageKey(cp, "rename.vote.has.been.requested.from.all.leaders");
             return;
         }
