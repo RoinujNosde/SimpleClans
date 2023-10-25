@@ -99,8 +99,8 @@ public final class RequestManager {
         String msg = lang(key, args);
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
 
-        Request req = new Request(request, acceptors, requester, clan.getTag(), clan, msg);
-        requests.put(req.getTarget(), req);
+        Request req = new Request(request, acceptors, requester, target, clan, msg);
+        requests.put(clan.getTag(), req);
         req.vote(requester.getName(), VoteResult.ACCEPT);
 
         ask(req);
