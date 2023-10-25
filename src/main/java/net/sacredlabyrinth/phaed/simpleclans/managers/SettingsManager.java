@@ -573,6 +573,7 @@ public final class SettingsManager {
         MYSQL_ENABLE("mysql.enable", false),
         MYSQL_PASSWORD("mysql.password", ""),
         MYSQL_DATABASE("mysql.database", ""),
+        MYSQL_TABLE_PREFIX("mysql.table_prefix", "sc_"),
         /*
         ================
         > Permissions Settings

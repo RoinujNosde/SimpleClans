@@ -242,6 +242,7 @@ mysql:
     enable: false
     password: ''
     database: ''
+    table_prefix: 'sc_'
 permissions:
   auto-group-groupname: false
   YourClanNameHere:
