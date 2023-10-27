@@ -3,15 +3,11 @@ package net.sacredlabyrinth.phaed.simpleclans.utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
-import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +18,6 @@ import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
 public class ChatUtils {
 
-    private static final SimpleClans plugin = SimpleClans.getInstance();
     public static boolean HEX_COLOR_SUPPORT;
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
@@ -52,7 +47,7 @@ public class ChatUtils {
         // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
         if (HEX_COLOR_SUPPORT) {
             Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, ChatColor.of("#" + matcher.group(1)).toString());
             }
@@ -64,7 +59,7 @@ public class ChatUtils {
     public static String stripColors(String text) {
         Pattern pattern = HEX_COLOR_SUPPORT ? HEX_STRIP_COLOR_PATTERN : STRIP_COLOR_PATTERN;
         Matcher matcher = pattern.matcher(text);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         while (matcher.find()) {
             matcher.appendReplacement(buffer, "");
         }
@@ -166,11 +161,6 @@ public class ChatUtils {
                 lines.set(i, getLastColors(pLine) + subLine);
             }
         }
-    }
-
-    @Deprecated
-    public static String formatDate(long time) { //TODO move to DateFormat class
-        return new SimpleDateFormat(plugin.getSettingsManager().getString(SettingsManager.ConfigField.DATE_PATTERN)).format(new Date(time));
     }
 
 }

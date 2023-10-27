@@ -11,6 +11,7 @@ import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.DateFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -464,7 +465,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("founded")
     public String getFoundedString() {
-        return ChatUtils.formatDate(founded);
+        return DateFormat.formatDateTime(founded);
     }
 
     /**

@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -313,7 +312,7 @@ public final class SettingsManager {
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
-        DATE_PATTERN("settings.date-time-format-pattern", "HH:mm - dd/MM/yyyy"),
+        DATE_TIME_PATTERN("settings.date-time-pattern", "HH:mm - dd/MM/yyyy"),
         /*
         ================
         > Tag Settings
