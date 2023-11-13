@@ -1092,8 +1092,8 @@ public final class ClanManager {
             switch (clan.withdraw(new BankOperator(player, money), ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
                 case SUCCESS -> {
                     if (plugin.getPermissionsManager().grantPlayer(player, price)) {
-                        player.sendMessage(AQUA + lang("player.clan.withdraw", player, price));
-                        clan.addBb(player.getName(), lang("bb.clan.withdraw", price));
+                        player.sendMessage(AQUA + lang("player.clan.withdraw", player, CurrencyFormat.format(price)));
+                        clan.addBb(player.getName(), lang("bb.clan.withdraw", CurrencyFormat.format(price)));
                         return true;
                     }
                 }

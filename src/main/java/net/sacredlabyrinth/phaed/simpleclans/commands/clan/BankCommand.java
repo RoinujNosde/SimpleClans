@@ -130,7 +130,7 @@ public class BankCommand extends BaseCommand {
         if (response == EconomyResponse.SUCCESS) {
             if (permissions.chargePlayer(player, amount)) {
                 player.sendMessage(AQUA + lang("player.clan.deposit", player, CurrencyFormat.format(amount)));
-                clan.addBb(player.getName(), lang("bb.clan.deposit", amount, player.getName()));
+                clan.addBb(player.getName(), lang("bb.clan.deposit", CurrencyFormat.format(amount), player.getName()));
             } else {
                 //Reverts the deposit if something went wrong with Vault
                 clan.setBalance(operator, REVERT, BankLogger.Operation.DEPOSIT, clan.getBalance() - amount);
