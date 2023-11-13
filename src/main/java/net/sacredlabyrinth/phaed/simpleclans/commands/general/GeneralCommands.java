@@ -280,7 +280,7 @@ public class GeneralCommands extends BaseCommand {
             Clan clan = clans.get(i);
             String name = " " + (clan.isVerified() ? settings.getColored(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
             String line = MessageFormat.format(lineFormat, i + 1, leftBracket, clan.getColorTag(),
-                    rightBracket, name, clan.getBalance());
+                    rightBracket, name, clan.getBalanceFormatted());
             sender.sendMessage(line);
         }
     }

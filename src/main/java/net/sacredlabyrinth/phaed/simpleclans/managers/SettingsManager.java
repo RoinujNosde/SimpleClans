@@ -150,7 +150,7 @@ public final class SettingsManager {
      * Check whether a word is disallowed
      *
      * @param word the world
-     * @return whether its a disallowed word
+     * @return whether its disallowed word
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
@@ -312,6 +312,7 @@ public final class SettingsManager {
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
+        DATE_TIME_PATTERN("settings.date-time-pattern", "HH:mm - dd/MM/yyyy"),
         /*
         ================
         > Tag Settings

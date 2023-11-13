@@ -9,6 +9,7 @@ import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -238,7 +239,7 @@ public class LeaderCommands extends BaseCommand {
         double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
             if (!permissions.playerHasMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, CurrencyFormat.format(amount)));
                 return;
             }
 

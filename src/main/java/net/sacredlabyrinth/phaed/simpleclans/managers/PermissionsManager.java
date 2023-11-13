@@ -167,6 +167,9 @@ public final class PermissionsManager {
         return permissions.get(clan.getTag());
     }
 
+    public String format(double value) {
+        return Objects.requireNonNull(economy, "Can't find economy provider").format(value);
+    }
 
     /**
      * Charge a player some money

@@ -56,6 +56,7 @@ settings:
     past-clans-limit: 10
     username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
     tag-regex: ''
+    date-time-pattern: 'HH:mm - dd/MM/yyyy'
 war-and-protection:
     war-enabled: false
     land-sharing: true

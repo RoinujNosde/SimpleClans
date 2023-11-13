@@ -47,7 +47,7 @@ public class ChatUtils {
         // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
         if (HEX_COLOR_SUPPORT) {
             Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, ChatColor.of("#" + matcher.group(1)).toString());
             }
@@ -59,7 +59,7 @@ public class ChatUtils {
     public static String stripColors(String text) {
         Pattern pattern = HEX_COLOR_SUPPORT ? HEX_STRIP_COLOR_PATTERN : STRIP_COLOR_PATTERN;
         Matcher matcher = pattern.matcher(text);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         while (matcher.find()) {
             matcher.appendReplacement(buffer, "");
         }
@@ -162,4 +162,5 @@ public class ChatUtils {
             }
         }
     }
+
 }
