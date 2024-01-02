@@ -626,11 +626,7 @@ public class DiscordHook implements Listener {
     }
 
     private void updateLeaderRole(@NotNull Member member, @NotNull ClanPlayer clanPlayer, DiscordAction action) {
-        if (!clanPlayer.isLeader()) {
-            return;
-        }
-
-        if (action == ADD) {
+        if (action == ADD && clanPlayer.isLeader()) {
             guild.addRoleToMember(member, leaderRole).queue();
         } else {
             guild.removeRoleFromMember(member, leaderRole).queue();
