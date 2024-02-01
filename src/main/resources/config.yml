@@ -167,7 +167,7 @@ clan:
         - treasurer:
             display-name: "&6Treasurer"
             permissions: [ bank.balance, bank.deposit, bank.withdraw ]
-    default-rank: ""
+    default_rank: "recruit"
 
 tasks:
     collect-upkeep:
