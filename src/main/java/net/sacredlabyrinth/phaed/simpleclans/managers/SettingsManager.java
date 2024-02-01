@@ -450,6 +450,7 @@ public final class SettingsManager {
         CLAN_PERCENTAGE_ONLINE_TO_DEMOTE("clan.percentage-online-to-demote", 100.0),
         CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default", false),
         CLAN_MIN_TO_VERIFY("clan.min-to-verify", 1),
+        CLAN_DEFAULT_RANK("clan.default-rank", "recruit"),
         /*
         ================
         > Tasks Settings
