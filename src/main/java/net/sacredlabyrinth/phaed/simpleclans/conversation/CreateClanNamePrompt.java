@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_DEFAULTRANK;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_DEFAULT_RANK;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
