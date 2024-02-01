@@ -70,8 +70,8 @@ public class CreateClanNamePrompt extends StringPrompt {
             Clan clan = plugin.getClanManager().getClan(tag);
             clan.addBb(player.getName(), lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
-            if (!plugin.getSettingsManager().getString(CLAN_DEFAULTRANK).isEmpty()) {
-                clan.setDefaultRank(plugin.getSettingsManager().getString(CLAN_DEFAULTRANK));
+            if (!plugin.getSettingsManager().getString(CLAN_DEFAULT_RANK).isEmpty()) {
+                clan.setDefaultRank(plugin.getSettingsManager().getString(CLAN_DEFAULT_RANK));
 
 
                 if (plugin.getSettingsManager().is(REQUIRE_VERIFICATION)) {
