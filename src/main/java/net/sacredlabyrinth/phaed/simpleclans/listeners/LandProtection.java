@@ -63,9 +63,10 @@ public class LandProtection implements Listener {
     public void registerListeners() {
         registerListener(BlockBreakEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
-            if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
+            if (isIgnored(BREAK, block)) {
                 return;
             }
+
             if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
                 event.setCancelled(cancel);
             }
@@ -98,7 +99,7 @@ public class LandProtection implements Listener {
         });
         registerListener(BlockPlaceEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
-            if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
+            if (isIgnored(PLACE, block)) {
                 return;
             }
             if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
@@ -107,7 +108,7 @@ public class LandProtection implements Listener {
         });
         registerListener(PlayerBucketEmptyEvent.class, (event, cancel) -> {
             Block block = event.getBlockClicked();
-            if (settingsManager.getIgnoredList(PLACE).contains(block.getType().name())) {
+            if (isIgnored(PLACE, block)) {
                 return;
             }
             if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
@@ -116,7 +117,7 @@ public class LandProtection implements Listener {
         });
         registerListener(PlayerBucketFillEvent.class, (event, cancel) -> {
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-            if (settingsManager.getIgnoredList(BREAK).contains(block.getType().name())) {
+            if (isIgnored(BREAK, block)) {
                 return;
             }
             if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
@@ -238,6 +239,12 @@ public class LandProtection implements Listener {
                 }
             }
         }, plugin, true);
+    }
+
+    private boolean isIgnored(ProtectionManager.Action action, Block block) {
+        if (settingsManager.is(WAR_LISTENERS_INVERT_IGNORED_LIST)) {
+            return !settingsManager.getIgnoredList(action).contains(block.getType().name());
+        } else return settingsManager.getIgnoredList(action).contains(block.getType().name());
     }
 
     private void cancelWithMessage(Player player, Event event, String messageKey) {

@@ -66,6 +66,7 @@ war-and-protection:
         - GriefPreventionProvider
     listeners:
         priority: HIGHEST
+        invert-ignored-list: true
         ignored-list:
             PLACE:
                 - "PLAYER_HEAD"

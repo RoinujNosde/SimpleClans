@@ -341,6 +341,7 @@ public final class SettingsManager {
         LAND_SHARING("war-and-protection.land-sharing", true),
         LAND_PROTECTION_PROVIDERS("war-and-protection.protection-providers"),
         WAR_LISTENERS_PRIORITY("war-and-protection.listeners.priority", "HIGHEST"),
+        WAR_LISTENERS_INVERT_IGNORED_LIST("war-and-protection.listeners.invert-ignored-list", true),
         WAR_LISTENERS_IGNORED_LIST_PLACE("war-and-protection.listeners.ignored-list.PLACE"),
         WAR_LISTENERS_IGNORED_LIST_BREAK("war-and-protection.listeners.ignored-list.BREAK"),
         LAND_SET_BASE_ONLY_IN_LAND("war-and-protection.set-base-only-in-land", false),
