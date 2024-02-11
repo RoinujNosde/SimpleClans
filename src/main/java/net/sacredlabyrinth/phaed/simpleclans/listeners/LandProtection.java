@@ -63,7 +63,7 @@ public class LandProtection implements Listener {
     public void registerListeners() {
         registerListener(BlockBreakEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
-            if (isIgnored(BREAK, block)) {
+            if (settingsManager.isIgnored(BREAK, block)) {
                 return;
             }
 
@@ -99,7 +99,7 @@ public class LandProtection implements Listener {
         });
         registerListener(BlockPlaceEvent.class, (event, cancel) -> {
             Block block = event.getBlock();
-            if (isIgnored(PLACE, block)) {
+            if (settingsManager.isIgnored(PLACE, block)) {
                 return;
             }
             if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
@@ -108,7 +108,7 @@ public class LandProtection implements Listener {
         });
         registerListener(PlayerBucketEmptyEvent.class, (event, cancel) -> {
             Block block = event.getBlockClicked();
-            if (isIgnored(PLACE, block)) {
+            if (settingsManager.isIgnored(PLACE, block)) {
                 return;
             }
             if (protectionManager.can(PLACE, block.getLocation(), event.getPlayer())) {
@@ -117,7 +117,7 @@ public class LandProtection implements Listener {
         });
         registerListener(PlayerBucketFillEvent.class, (event, cancel) -> {
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-            if (isIgnored(BREAK, block)) {
+            if (settingsManager.isIgnored(BREAK, block)) {
                 return;
             }
             if (protectionManager.can(BREAK, block.getLocation(), event.getPlayer())) {
@@ -239,12 +239,6 @@ public class LandProtection implements Listener {
                 }
             }
         }, plugin, true);
-    }
-
-    private boolean isIgnored(ProtectionManager.Action action, Block block) {
-        if (settingsManager.is(WAR_LISTENERS_INVERT_IGNORED_LIST)) {
-            return !settingsManager.getIgnoredList(action).contains(block.getType().name());
-        } else return settingsManager.getIgnoredList(action).contains(block.getType().name());
     }
 
     private void cancelWithMessage(Player player, Event event, String messageKey) {

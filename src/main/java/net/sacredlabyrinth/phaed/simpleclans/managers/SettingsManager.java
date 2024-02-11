@@ -5,6 +5,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -82,6 +83,11 @@ public final class SettingsManager {
 
     public boolean is(ConfigField field) {
         return config.getBoolean(field.path, (Boolean) field.defaultValue);
+    }
+
+    public boolean isIgnored(ProtectionManager.Action action, Block block) {
+       return is(WAR_LISTENERS_INVERT_IGNORED_LIST) ? !getIgnoredList(action).contains(block.getType().name())
+        : getIgnoredList(action).contains(block.getType().name());
     }
 
     /**
