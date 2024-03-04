@@ -25,12 +25,12 @@
 
 ## Integration
 
-* [🏝 Land Claiming](integration/land-claiming.md)
+* [🏝️ Land Claiming](integration/land-claiming.md)
 * [👾 DiscordSRV](integration/discordsrv-integration.md)
 
 ## Other
 
-* [♟ API Examples](other/simpleclans-api.md)
+* [♟️ API Examples](other/simpleclans-api.md)
 * [🪜 Placeholders](other/placeholderapi-support.md)
 * [💸 Logging server economy](other/untitled.md)
 * [🪓 Known issues](other/known-issues.md)

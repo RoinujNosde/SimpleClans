@@ -121,6 +121,7 @@ You can find land commands [here](../integration/land-claiming.md).
 | `/clan mod globalff (allow\|auto)`    | Toggles the global friendly-fire status |
 | `/clan mod verify (tag)`              | Verifies a clan                         |
 | `/clan mod disband (tag)`             | Disbands a clan                         |
+| `/clan mod locale (player) (locale)`  | Sets a player's locale                  |
 
 ## Admin Commands
 
