@@ -443,7 +443,7 @@ public final class SettingsManager {
         CLAN_MAX_DESCRIPTION_LENGTH("clan.max-description-length", 120),
         CLAN_MIN_DESCRIPTION_LENGTH("clan.min-description-length", 10),
         CLAN_MAX_MEMBERS("clan.max-members", 25),
-        CLAN_VERIFIED_MAX_MEMBERS("clan.verified-max-members", 25),
+        CLAN_UNVERIFIED_MAX_MEMBERS("clan.unverified-max-members", 25),
         CLAN_MAX_ALLIANCES("clan.max-alliances", -1),
         CLAN_CONFIRMATION_FOR_PROMOTE("clan.confirmation-for-promote", false),
         CLAN_TRUST_MEMBERS_BY_DEFAULT("clan.trust-members-by-default", false),
