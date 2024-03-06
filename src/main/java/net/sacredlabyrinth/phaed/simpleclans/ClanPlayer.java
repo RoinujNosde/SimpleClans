@@ -777,6 +777,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         SimpleClans.getInstance().getStorageManager().updateClanPlayer(this);
     }
 
+    @Placeholder("is_invite_enabled")
     public boolean isInviteEnabled() {
         return flags.getBoolean("invite", true);
     }
