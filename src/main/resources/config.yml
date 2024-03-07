@@ -66,12 +66,25 @@ war-and-protection:
         - GriefPreventionProvider
     listeners:
         priority: HIGHEST
-        invert-ignored-list: true
-        ignored-list:
-            PLACE:
-                - "PLAYER_HEAD"
-            BREAK:
-                - "EMERALD_BLOCK"
+        ignored-lists:
+            land:
+                PLACE:
+                    invert: false
+                    blocks:
+                        - "PLAYER_HEAD"
+                BREAK:
+                    invert: true
+                    blocks:
+                        - "EMERALD_BLOCK"
+            war:
+                PLACE:
+                    invert: false
+                    blocks:
+                    - "PLAYER_HEAD"
+                BREAK:
+                    invert: true
+                    blocks:
+                    - "EMERALD_BLOCK"
     set-base-only-in-land: false
     war-normal-expiration-time: 0
     war-disconnect-expiration-time: 0
