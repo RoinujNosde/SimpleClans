@@ -224,11 +224,9 @@ public final class RequestManager {
 
         if (vote.equals(VoteResult.ACCEPT)) {
             ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(invited.getUniqueId());
-            int maxMembers = plugin.getSettingsManager().getInt(CLAN_MAX_MEMBERS);
-            int unverifiedMaxMembers = plugin.getSettingsManager().getInt(CLAN_UNVERIFIED_MAX_MEMBERS);
+            int maxMembers = !clan.isVerified() ? plugin.getSettingsManager().getInt(CLAN_UNVERIFIED_MAX_MEMBERS) : plugin.getSettingsManager().getInt(CLAN_MAX_MEMBERS);
 
-            if ((clan.isVerified() && maxMembers > 0 && maxMembers > clan.getSize()) ||
-                    (!clan.isVerified() && unverifiedMaxMembers > 0 && unverifiedMaxMembers > clan.getSize())) {
+            if (maxMembers > 0 && maxMembers > clan.getSize()) {
                 ChatBlock.sendMessageKey(invited, "accepted.invitation", clan.getName());
                 clan.addBb(lang("joined.the.clan", invited.getName()));
                 plugin.getClanManager().serverAnnounce(lang("has.joined", invited.getName(), clan.getName()));
