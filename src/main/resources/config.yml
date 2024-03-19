@@ -148,6 +148,7 @@ clan:
     max-description-length: 120
     min-description-length: 10
     max-members: 25
+    unverified-max-members: 10
     confirmation-for-promote: false
     trust-members-by-default: false
     confirmation-for-demote: false

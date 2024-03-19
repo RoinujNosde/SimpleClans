@@ -16,8 +16,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_MAX_MEMBERS;
-import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.REQUEST_FREQUENCY;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static org.bukkit.ChatColor.RED;
 
 /**
@@ -225,7 +224,7 @@ public final class RequestManager {
 
         if (vote.equals(VoteResult.ACCEPT)) {
             ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(invited.getUniqueId());
-            int maxMembers = plugin.getSettingsManager().getInt(CLAN_MAX_MEMBERS);
+            int maxMembers = !clan.isVerified() ? plugin.getSettingsManager().getInt(CLAN_UNVERIFIED_MAX_MEMBERS) : plugin.getSettingsManager().getInt(CLAN_MAX_MEMBERS);
 
             if (maxMembers > 0 && maxMembers > clan.getSize()) {
                 ChatBlock.sendMessageKey(invited, "accepted.invitation", clan.getName());
@@ -240,6 +239,7 @@ public final class RequestManager {
             clan.leaderAnnounce(RED + lang("membership.invitation", invited.getName()));
         }
     }
+
 
     public void processResults(Request req) {
         Clan requestClan = req.getClan();
