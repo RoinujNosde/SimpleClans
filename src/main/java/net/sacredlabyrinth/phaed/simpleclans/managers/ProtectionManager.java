@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,8 @@ import java.util.logging.Logger;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.debug;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.IgnoredType.LAND;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.IgnoredType.WAR;
 
 public class ProtectionManager {
 
@@ -104,10 +107,22 @@ public class ProtectionManager {
     }
 
     public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player) {
-        return can(action, location, player, null);
+        return can(action, location, player, null, null);
     }
 
-    public boolean can(@NotNull Action action, @NotNull Location location, @NotNull Player player, @Nullable Player other) {
+    /**
+     * Checks if the specified action is allowed at the given location for the players involved.
+     *
+     * @param action   The action to be performed.
+     * @param location The location where the action is to be performed.
+     * @param player   The player performing the action.
+     * @param involvedBlock the block involved in the action (can be null).
+     * @param other    The other player involved in the action (can be null).
+     * @return true if the action is allowed, false otherwise.
+     * @see Action
+     */
+    public boolean can(@NotNull Action action, @NotNull Location location,
+                       @NotNull Player player, @Nullable Block involvedBlock, @Nullable Player other) {
         for (Land land : getLandsAt(location)) {
             for (UUID owner : land.getOwners()) {
                 if (owner == null) {
@@ -119,8 +134,8 @@ public class ProtectionManager {
                 } else {
                     involved = player;
                 }
-                if (isWarringAndAllowed(action, owner, involved) ||
-                        isSameClanAndAllowed(action, owner, involved, land.getId())) {
+                if (isWarringAndAllowed(action, owner, involved, involvedBlock) ||
+                        isSameClanAndAllowed(action, owner, involved, land.getId(), involvedBlock)) {
                     return true;
                 }
             }
@@ -213,10 +228,12 @@ public class ProtectionManager {
         }
     }
 
-    private boolean isSameClanAndAllowed(Action action, UUID owner, Player involved, String landId) {
-        if (!settingsManager.is(LAND_SHARING)) {
+    private boolean isSameClanAndAllowed(Action action, UUID owner, Player involved, String landId, @Nullable Block block) {
+        if (!settingsManager.is(LAND_SHARING) ||
+                block != null && settingsManager.ignoredIn(LAND, action, block)) {
             return false;
         }
+
         ClanPlayer cp = clanManager.getCreateClanPlayer(owner);
         Clan involvedClan = clanManager.getClanByPlayerUniqueId(involved.getUniqueId());
         if (cp.getClan() == null || !cp.getClan().equals(involvedClan)) {
@@ -225,10 +242,12 @@ public class ProtectionManager {
         return cp.isAllowed(action, landId);
     }
 
-    private boolean isWarringAndAllowed(@NotNull Action action, @NotNull UUID owner, @NotNull Player involved) {
-        if (!settingsManager.isActionAllowedInWar(action) || !settingsManager.is(ENABLE_WAR)) {
+    private boolean isWarringAndAllowed(@NotNull Action action, @NotNull UUID owner, @NotNull Player involved, @Nullable Block block) {
+        if (!settingsManager.isActionAllowedInWar(action) || !settingsManager.is(ENABLE_WAR)
+                || block != null && settingsManager.ignoredIn(WAR, action, block)) {
             return false;
         }
+
         Clan ownerClan = clanManager.getClanByPlayerUniqueId(owner);
         Clan involvedClan = clanManager.getClanByPlayerUniqueId(involved.getUniqueId());
         if (ownerClan == null || involvedClan == null) {
@@ -246,7 +265,7 @@ public class ProtectionManager {
             } catch (ClassNotFoundException ex) {
                 logger.log(Level.WARNING, String.format("Provider %s not found!", className), ex);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                    IllegalAccessException ex) {
+                     IllegalAccessException ex) {
                 logger.log(Level.WARNING, String.format("Error instantiating provider %s", className), ex);
             }
             if (instance instanceof ProtectionProvider) {
