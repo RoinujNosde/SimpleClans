@@ -11,7 +11,7 @@
 * [🍕 Перевод](how-to-setup/translation.md)
 * [💰 Комиссия в клане](how-to-setup/komissiya-v-klane.md)
 * [👇 Клан под ником игрока](how-to-setup/clan-below-players-name.md)
-* [☝ Клан в табе](how-to-setup/clan-on-tablist.md)
+* [☝️ Клан в табе](how-to-setup/clan-on-tablist.md)
 
 ## Команды и разрешения <a href="#commands-and-permissions" id="commands-and-permissions"></a>
 
@@ -24,11 +24,11 @@
 
 ## Интеграции
 
-* [🏝 GriefPrevention, WorldGuard и другие](integracii/land-claims.md)
+* [🏝️ GriefPrevention, WorldGuard и другие](integracii/land-claims.md)
 * [👾 DiscordSRV](integracii/discordsrv.md)
 
 ## Другое <a href="#other" id="other"></a>
 
 * [🪓 Известные проблемы](other/known-issues.md)
-* [♟ SimpleClans API](other/simpleclans-api.md)
+* [♟️ SimpleClans API](other/simpleclans-api.md)
 * [🪜 Поддержка PlaceholderAPI](other/placeholderapi-support.md)

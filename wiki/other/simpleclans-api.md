@@ -4,7 +4,7 @@ description: >-
   SimpleClans API в своих плагинах.
 ---
 
-# ♟ SimpleClans API
+# ♟️ SimpleClans API
 
 ## Шаг 1. Добавьте SimpleClans API в свой плагин
 
@@ -38,7 +38,7 @@ description: >-
 
 {% hint style="info" %}
 **Заметка**\
-****Последнюю версию можно узнать тут: [ссылка](https://github.com/RoinujNosde/SimpleClans/releases)
+Последнюю версию можно узнать тут: [ссылка](https://github.com/RoinujNosde/SimpleClans/releases)
 {% endhint %}
 
 ### Локально
@@ -154,8 +154,3 @@ public class Example {
 ```
 {% endtab %}
 {% endtabs %}
-
-{% hint style="info" %}
-**Заметка**\
-****_Javadoc_ в настоящее время не реализован, вы можете ускорить его выход, отметив [тут](https://github.com/RoinujNosde/SimpleClans/discussions/210).
-{% endhint %}
