@@ -327,6 +327,9 @@ public final class StorageManager {
 
         for (Clan clan : purge) {
         	plugin.getLogger().info(lang("purging.clan", clan.getName()));
+            for (ClanPlayer member : clan.getMembers()) {
+                clan.removePlayerFromClan(member.getUniqueId());
+            }
             deleteClan(clan);
             clans.remove(clan);
         }
