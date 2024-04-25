@@ -18,8 +18,8 @@ description: >-
 ```markup
 <repositories>
     <repository>
-        <id>codemc-repo</id>
-        <url>https://repo.codemc.org/repository/maven-public</url>
+        <id>roinujnosde-repo</id>
+        <url>https://repo.roinujnosde.me/releases/</url>
     </repository>
 </repositories>
 ```
@@ -29,7 +29,7 @@ description: >-
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.15.2</version> 
+        <version>2.19.2</version> 
         <!-- Вы можете узнать последнюю доступную версию в заметке ниже -->
         <scope>provided</scope>
     </dependency>
