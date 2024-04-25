@@ -4,7 +4,7 @@ description: >-
   in your plugins.
 ---
 
-# ♟ API Examples
+# ♟️ API Examples
 
 ## Step 1. Add the SimpleClans API to your plugin
 
@@ -18,8 +18,8 @@ Add the following lines to `pom.xml`:
 ```markup
 <repositories>
     <repository>
-        <id>codemc-repo</id>
-        <url>https://repo.codemc.org/repository/maven-public</url>
+        <id>roinujnosde-repo</id>
+        <url>https://repo.roinujnosde.me/releases/</url>
     </repository>
 </repositories>
 ```
@@ -29,7 +29,7 @@ Add the following lines to `pom.xml`:
     <dependency>
         <groupId>net.sacredlabyrinth.phaed.simpleclans</groupId>
         <artifactId>SimpleClans</artifactId>
-        <version>2.15.2</version> 
+        <version>2.19.2</version> 
         <!-- You can find out the latest available version in the note below -->
         <scope>provided</scope>
     </dependency>
@@ -38,7 +38,7 @@ Add the following lines to `pom.xml`:
 
 {% hint style="info" %}
 **Note**\
-****The latest version can be found here: [link](https://github.com/RoinujNosde/SimpleClans/releases)
+The latest version can be found here: [link](https://github.com/RoinujNosde/SimpleClans/releases)
 {% endhint %}
 
 ### Locally
@@ -60,9 +60,9 @@ Return to the project structure, then go to Project Settings - > Modules, set th
 
 #### What do you need to know?
 
-* ****[**ClanPlayer**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/ClanPlayer.html) **** is a class that represents a player object. This class contains information about the player, his clan, etc.
-* ****[**Clan**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/Clan.html) **** is a class that presents a clan object. It has methods for getting clan players, clan tag, allies, leaders, etc.
-* ****[**ClanManager**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/managers/ClanManager.html) **** is a class that allows you to retrieve **Clan** and **ClanPlayer**.
+* [**ClanPlayer**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/ClanPlayer.html) is a class that represents a player object. This class contains information about the player, his clan, etc.
+* [**Clan**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/Clan.html) is a class that presents a clan object. It has methods for getting clan players, clan tag, allies, leaders, etc.
+* [**ClanManager**](https://ci.roinujnosde.me/job/SimpleClans/Javadoc/net/sacredlabyrinth/phaed/simpleclans/managers/ClanManager.html) is a class that allows you to retrieve **Clan** and **ClanPlayer**.
 
 #### Example of using SimpleClans API
 
