@@ -37,17 +37,17 @@ public class InventoryDrawer {
 
         OPENING.put(uuid, frame);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Inventory inventory = prepareInventory(frame);
+	    FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return;
+	    }
+	    Inventory inventory = prepareInventory(frame);
 
             if (!frame.equals(OPENING.get(uuid))) {
                 return;
             }
             Bukkit.getScheduler().runTask(plugin, () -> {
-                FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
-                Bukkit.getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
-                    return;
-                }
                 frame.getViewer().openInventory(inventory);
                 InventoryController.register(frame);
                 OPENING.remove(uuid);
