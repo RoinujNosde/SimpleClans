@@ -4,37 +4,41 @@ The main configuration file for SimpleClans can be found [here.](https://github.
 
 ## General Settings
 
-| Option                               | Description                                                                                                                                                                                         | Default                       |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `enable-gui`                         | Enables the GUI                                                                                                                                                                                     | `true`                        |
-| `disable-messages`                   | Disables broadcasts from plugin ("Clan Created", "Clan Disbanded", etc.)                                                                                                                            | `false`                       |
-| `tameable-mobs-sharing`              | If true, tameable mobs will be shared with your clan members. It also disables any clan damage to them                                                                                              | `false`                       |
-| `teleport-blocks`                    | Fancy teleporting (placed glass block below)                                                                                                                                                        | `false`                       |
-| `teleport-home-on-spawn`             | Players will be teleported to their clan's home when they respawn                                                                                                                                   | `false`                       |
-| `drop-items-on-clan-home`            | Drops defined items on teleporting to clan home                                                                                                                                                     | `false`                       |
-| `keep-items-on-clan-home`            | Keeps defined items on teleporting to clan home                                                                                                                                                     | `false`                       |
-| `item-list`                          | List of defined items (used with `keep-item-on-clan-home` and `drop-items-on-clan-home`)                                                                                                            | `[]`                          |
-| `show-debug-info`                    | Shows debug info on console                                                                                                                                                                         | `false`                       |
-| `enable-auto-groups`                 | <p>Manages group of a clan player by auto.<br>(For example, a leader would be added to <code>sc_leader</code> group, trusted player to <code>sc_trusted</code>, etc.)</p>                           | `false`                       |
-| `chat-compatibility-mode`            | <p>Changes method of initiate tags.<br>If you have a problem with tags, try to disable it.</p>                                                                                                      | `true`                        |
-| `rival-limit-percent`                | <p>The percent of possible rivals per clan</p><p>Formula: <code>(rivalsOfClan - 1) * rivalLimitPercent / 100</code></p>                                                                             | <p><code>50</code><br></p>    |
-| `use-colorcode-from-prefix-for-name` | Uses the last color code in the end of prefix                                                                                                                                                       | `true`                        |
-| `display-chat-tags`                  | Shows clan tags in chat                                                                                                                                                                             | `true`                        |
-| `unrivable-clans`                    | The list of clans, which can't be rivaled                                                                                                                                                           | See Example below             |
-| `show-unverified-on-list`            | <p>Shows or not unverified clans on <code>/clan list</code></p><p>(Doesn't affect on GUI)</p>                                                                                                       | `false`                       |
-| `blacklisted-worlds`                 | Disables SimpleClans at defined worlds                                                                                                                                                              | <p><code>[]</code><br></p>    |
-| `banned-players`                     | List of banned players from using plugin                                                                                                                                                            | `[]`                          |
-| `disallowed-tags`                    | List of tags, which wouldn't be used on clan creation                                                                                                                                               | See Example below             |
-| `language`                           | Default language                                                                                                                                                                                    | `en`                          |
-| `user-language-selector`             | Allows players to change their language                                                                                                                                                             | `true`                        |
-| `disallowed-tag-colors`              | The list of tag colors, which wouldn't be used on clan creation                                                                                                                                     | See Example below             |
-| `server-name`                        | The name of your server                                                                                                                                                                             | `&4SimpleClans`               |
-| `new-clan-verification-required`     | Should new clans requires being verified?                                                                                                                                                           | `true`                        |
-| `allow-regroup-command`              | Allows players to use regroup command                                                                                                                                                               | `true`                        |
-| `allow-reset-kdr`                    | Allows players to reset their KDR                                                                                                                                                                   | `true`                        |
-| `rejoin-cooldown`                    | The time in minutes, when player will can join after resigning to the same clan                                                                                                                     | `60`                          |
-| `rejoin-cooldown-enabled`            | Should rejoin cooldown be enabled?                                                                                                                                                                  | `false`                       |
-| `ranking-type`                       | <p><code>DENSE</code>: if players have the same KDR, they will have the same rank position. Ex.: 12234</p><p><code>ORDINAL</code>: Every player will have a different rank position. Ex.: 12345</p> | <p><code>DENSE</code><br></p> |
+| Option                                  | Description                                                                                                                                                                                         | Default                            |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `enable-gui`                            | Enables the GUI                                                                                                                                                                                     | `true`                             |
+| `disable-messages`                      | Disables broadcasts from plugin ("Clan Created", "Clan Disbanded", etc.)                                                                                                                            | `false`                            |
+| `tameable-mobs-sharing`                 | If true, tameable mobs will be shared with your clan members. It also disables any clan damage to them                                                                                              | `false`                            |
+| `teleport-blocks`                       | Fancy teleporting (placed glass block below)                                                                                                                                                        | `false`                            |
+| `teleport-home-on-spawn`                | Players will be teleported to their clan's home when they respawn                                                                                                                                   | `false`                            |
+| `drop-items-on-clan-home`               | Drops defined items on teleporting to clan home                                                                                                                                                     | `false`                            |
+| `keep-items-on-clan-home`               | Keeps defined items on teleporting to clan home                                                                                                                                                     | `false`                            |
+| `item-list`                             | List of defined items (used with `keep-item-on-clan-home` and `drop-items-on-clan-home`)                                                                                                            | `[]`                               |
+| `show-debug-info`                       | Shows debug info on console                                                                                                                                                                         | `false`                            |
+| `enable-auto-groups`                    | <p>Manages group of a clan player by auto.<br>(For example, a leader would be added to <code>sc_leader</code> group, trusted player to <code>sc_trusted</code>, etc.)</p>                           | `false`                            |
+| `chat-compatibility-mode`               | <p>Changes method of initiate tags.<br>If you have a problem with tags, try to disable it.</p>                                                                                                      | `true`                             |
+| `rival-limit-percent`                   | <p>The percent of possible rivals per clan</p><p>Formula: <code>(rivalsOfClan - 1) * rivalLimitPercent / 100</code></p>                                                                             | <p><code>50</code><br></p>         |
+| `use-colorcode-from-prefix-for-name`    | Uses the last color code in the end of prefix                                                                                                                                                       | `true`                             |
+| `accept-other-alphabets-letters-on-tag` | Accepts other alphabets letters in clan tag validation.                                                                                                                                             | `true`                             |
+| `display-chat-tags`                     | Shows clan tags in chat                                                                                                                                                                             | `true`                             |
+| `unrivable-clans`                       | The list of clans, which can't be rivaled                                                                                                                                                           | See Example below                  |
+| `show-unverified-on-list`               | <p>Shows or not unverified clans on <code>/clan list</code></p><p>(Doesn't affect on GUI)</p>                                                                                                       | `false`                            |
+| `blacklisted-worlds`                    | Disables SimpleClans at defined worlds                                                                                                                                                              | <p><code>[]</code><br></p>         |
+| `banned-players`                        | List of banned players from using plugin                                                                                                                                                            | `[]`                               |
+| `disallowed-tags`                       | List of tags, which wouldn't be used on clan creation                                                                                                                                               | See Example below                  |
+| `language`                              | Default language                                                                                                                                                                                    | `en`                               |
+| `user-language-selector`                | Allows players to change their language                                                                                                                                                             | `true`                             |
+| `disallowed-tag-colors`                 | The list of tag colors, which wouldn't be used on clan creation                                                                                                                                     | See Example below                  |
+| `server-name`                           | The name of your server                                                                                                                                                                             | `&4SimpleClans`                    |
+| `new-clan-verification-required`        | Should new clans requires being verified?                                                                                                                                                           | `true`                             |
+| `allow-regroup-command`                 | Allows players to use regroup command                                                                                                                                                               | `true`                             |
+| `allow-reset-kdr`                       | Allows players to reset their KDR                                                                                                                                                                   | `true`                             |
+| `rejoin-cooldown`                       | The time in minutes, when player will can join after resigning to the same clan                                                                                                                     | `60`                               |
+| `rejoin-cooldown-enabled`               | Should rejoin cooldown be enabled?                                                                                                                                                                  | `false`                            |
+| `ranking-type`                          | <p><code>DENSE</code>: if players have the same KDR, they will have the same rank position. Ex.: 12234</p><p><code>ORDINAL</code>: Every player will have a different rank position. Ex.: 12345</p> | <p><code>DENSE</code><br></p>      |
+| `username-regex`                        | <p>Tells SimpleClans what usernames on your server is permitted. <br><br>Used, for example, to invite members. Supports Bedrock players by default.</p>                                             | `'(.\|*){0,1}[a-zA-Z0-9_$]{1,16}'` |
+| `tag-regex`                             | Rules for clan tag validation. Disables `accept-other-alphabets-letters-on-tag` if set.                                                                                                             | `''`                               |
+| `date-time-pattern`                     | Changes how dates should look. You can check the format [here](https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html).                                                          | `"HH:mm - dd/MM/yyyy"`             |
 
 ### Example
 
@@ -54,6 +58,7 @@ settings:
     chat-compatibility-mode: true
     rival-limit-percent: 50
     use-colorcode-from-prefix-for-name: true
+    accept-other-alphabets-letters-on-tag: true
     display-chat-tags: true
     unrivable-clans:
     - admin
@@ -76,6 +81,9 @@ settings:
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
     ranking-type: DENSE
+    username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
+    tag-regex: ''
+    date-time-pattern: 'HH:mm - dd/MM/yyyy'
 ```
 
 ## War and protection
@@ -285,6 +293,7 @@ kill-weights:
 * `max-description-length` - the maximum length of the clan's description
 * `min-description-length` - the minimum length of the clan's description
 * `max-members` - the maximum amount of members a clan can have
+* `unverified-max-members` – the limit of members in unverified clans
 * `confirmation-for-promote` - if other leaders must confirm the promotion of members
 * `trust-members-by-default` - if members are set as trusted by default
 * `confirmation-for-demote` - if other leaders (except the one being demoted, of course) must confirm the demotion
@@ -293,6 +302,8 @@ kill-weights:
 * `min-length` - the minimum length of the clan's name
 * `min-size-to-set-ally` - the minimum amount of members a clan needs to add allies
 * `min-to-verify` - The clan must have this amount of members to get verified (moderators can bypass this)
+* `starter-ranks` – The list of ranks created in the new clan
+* `default-rank` – The rank assigned to a new clan member
 
 ### Example
 
@@ -305,6 +316,7 @@ clan:
     max-description-length: 120
     min-description-length: 10
     max-members: 25
+    unverified-max-members: 10
     confirmation-for-promote: false
     trust-members-by-default: false
     confirmation-for-demote: false
@@ -313,6 +325,17 @@ clan:
     min-length: 2
     min-size-to-set-ally: 3
     min-to-verify: 1
+    starter-ranks:
+        - recruit:
+            display-name: "&7Recruit"
+            permissions: [ stats, kills, mostkilled, rank.list ]
+        - ambassador:
+            display-name: "&bAmbassador"
+            permissions: [ ally.chat, ally.add, ally.remove, rival.add, rival.remove, war.end, war.start ]
+        - treasurer:
+            display-name: "&6Treasurer"
+            permissions: [ bank.balance, bank.deposit, bank.withdraw ]
+    default-rank: "recruit"
 ```
 
 ## Tasks
@@ -413,8 +436,7 @@ request:
 
 ## Bulletin Board
 
-* `color` - the color
-* `accent-color` - the accent color&#x20;
+* `prefix` – A prefix of messages in bulletin board
 * `show-on-login` - if enabled, the BB is sent to clan members when they login&#x20;
 * `size` - the BB size (when using its command)
 * `login-size` - the BB size on login&#x20;
@@ -423,8 +445,7 @@ request:
 
 ```yaml
 bb:
-    color: e
-    accent-color: '8'
+    prefix: "&8* &e"
     show-on-login: true
     size: 6
     login-size: 6

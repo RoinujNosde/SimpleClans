@@ -1,7 +1,3 @@
----
-description: null
----
-
 # 🚦 Permissions
 
 ## SuperPerms Nodes (Some auto added)
@@ -116,6 +112,7 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 | `simpleclans.leader.deposit-toggle:`            | Can toggle clan bank deposit                        |
 | `simpleclans.leader.discord.create`             | Can create a discord channel                        |
 | `simpleclans.leader.bb-clear`                   | Clan clear their clan's bb                          |
+| `simpleclans.leader.rename`                     | Can rename his own clan                             |
 
 ### Mod Nodes
 
@@ -134,6 +131,7 @@ These super permission nodes are a quick way to setup SimpleClans, some are auto
 | `simpleclans.mod.nopvpinwar` | Can bypass PvP in wars                       |
 | `simpleclans.mod.unban`      | Can unban players from the entire plugin     |
 | `simpleclans.mod.verify`     | Can verify clans                             |
+| `simpleclans.mod.rename`     | Can rename any clan                          |
 
 ### Admin Nodes
 

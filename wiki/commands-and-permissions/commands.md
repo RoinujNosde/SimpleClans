@@ -122,6 +122,7 @@ You can find land commands [here](../integration/land-claiming.md).
 | `/clan mod verify (tag)`              | Verifies a clan                         |
 | `/clan mod disband (tag)`             | Disbands a clan                         |
 | `/clan mod locale (player) (locale)`  | Sets a player's locale                  |
+| `/clan mod rename (clan) (tag)`       | Renames a clan                          |
 
 ## Admin Commands
 
