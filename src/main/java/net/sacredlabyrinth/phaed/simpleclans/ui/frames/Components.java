@@ -190,7 +190,7 @@ public class Components {
     @SuppressWarnings("deprecation")
     public static void setOwningPlayer(@NotNull ItemStack item, @NotNull OfflinePlayer player) {
         SkullMeta itemMeta = (SkullMeta) item.getItemMeta();
-        if (itemMeta == null) {
+        if (itemMeta == null || player.getName() == null) {
             return;
         }
         try {
