@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.20.0](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.2...v2.20.0) (2024-06-12)
+
+
+### Features
+
+* add %simpleclans_is_invite_enabled% placeholder ([#424](https://github.com/RoinujNosde/SimpleClans/issues/424)) ([01c7986](https://github.com/RoinujNosde/SimpleClans/commit/01c79862b9586e042d019e997b0180e9ff589289))
+* added price and date formatters ([#401](https://github.com/RoinujNosde/SimpleClans/issues/401)) ([b2c7d12](https://github.com/RoinujNosde/SimpleClans/commit/b2c7d12b609b3b13a10d463a3ebed096d5bf3331))
+* limit unverified clan members ([#422](https://github.com/RoinujNosde/SimpleClans/issues/422)) ([cb314db](https://github.com/RoinujNosde/SimpleClans/commit/cb314dbe7b1b3b63691c8881957614816139862d))
+* possibility to set a default rank for new clans ([#418](https://github.com/RoinujNosde/SimpleClans/issues/418)) ([c9df6ac](https://github.com/RoinujNosde/SimpleClans/commit/c9df6acb139cd7195d36586e0152f2cfca938cfe))
+
+
+### Bug Fixes
+
+* **discord:** bump DiscordSRV to 1.27.0 ([#414](https://github.com/RoinujNosde/SimpleClans/issues/414)) ([ad910e9](https://github.com/RoinujNosde/SimpleClans/commit/ad910e9c309e83dfbaa508d1c86f45e982ec4ab1))
+* **discord:** revoke discord leader role on events ([#411](https://github.com/RoinujNosde/SimpleClans/issues/411)) ([1375679](https://github.com/RoinujNosde/SimpleClans/commit/1375679df825b7dfb2c8d6ea36c7ca6777cde697))
+* fire FrameOpenEvent sync ([67d3e70](https://github.com/RoinujNosde/SimpleClans/commit/67d3e70f58c01e91c095baf47dc92dc308d4355f))
+* more fixes for RequestManager ([#405](https://github.com/RoinujNosde/SimpleClans/issues/405)) ([b363efe](https://github.com/RoinujNosde/SimpleClans/commit/b363efe530ab0eb0dde4274e72cdaf82e23e31a2))
+* NPE while setting owner of skull ([5212296](https://github.com/RoinujNosde/SimpleClans/commit/5212296d62355c49bf64ddc7dadfb531c51c0026))
+* order of FrameOpenEvent ([8cd0b2e](https://github.com/RoinujNosde/SimpleClans/commit/8cd0b2e45431723537234ebf01116362d9b91f24))
+* players not able to vote on some requests ([bc85864](https://github.com/RoinujNosde/SimpleClans/commit/bc85864134319b2850ee7c221e589e24338e2064))
+* players not getting removed from clans on purge ([da9ec6c](https://github.com/RoinujNosde/SimpleClans/commit/da9ec6c9179492c33a5e16ac5bfbb30d380f82ce))
+* rename command not checking length ([876b5ac](https://github.com/RoinujNosde/SimpleClans/commit/876b5ac50eb9948b572a60d788d4460c3fe0c82b))
+* update the Mojang API endpoint ([#413](https://github.com/RoinujNosde/SimpleClans/issues/413)) ([d4d144f](https://github.com/RoinujNosde/SimpleClans/commit/d4d144fe365e6ac6bd19ecc236265aa25315a197))
+* wrong request key in requestAllLeaders ([d2825df](https://github.com/RoinujNosde/SimpleClans/commit/d2825df01ba99e17cd83b4a0b453acd7ac6b6211))
+
+
+### Documentation
+
+* added mikasa's banner ([3b51299](https://github.com/RoinujNosde/SimpleClans/commit/3b51299dd615917c1e2d35cd00672c27d2a4800d))
+
 ## [2.19.2](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.1...v2.19.2) (2023-08-03)
 
 
