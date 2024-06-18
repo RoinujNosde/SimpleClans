@@ -167,7 +167,7 @@ public class PlayerDeath extends SCListener {
     	ClanPlayer killer = kill.getKiller();
     	ClanPlayer victim = kill.getVictim();
 		killer.addKill(type);
-		plugin.getStorageManager().insertKill(killer, victim, type.getShortname());
+		plugin.getStorageManager().insertKill(killer, victim, type.getShortname(), kill.getTime());
 	}
 
     private double calculateReward(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim) {
