@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.Placeholder;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ProtectionManager.Action;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.utils.DateFormat;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -487,8 +488,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         if (joinDate == 0) {
             return "";
         }
-
-        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(joinDate));
+        return DateFormat.formatDateTime(joinDate);
     }
 
     /**
@@ -512,7 +512,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         if (!VanishUtils.isVanished(sender, this)) {
             return lang("online", sender);
         }
-        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(lastSeen));
+        return DateFormat.formatDateTime(lastSeen);
     }
 
     /**
@@ -777,6 +777,7 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
         SimpleClans.getInstance().getStorageManager().updateClanPlayer(this);
     }
 
+    @Placeholder("is_invite_enabled")
     public boolean isInviteEnabled() {
         return flags.getBoolean("invite", true);
     }

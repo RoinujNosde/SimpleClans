@@ -56,6 +56,7 @@ settings:
     past-clans-limit: 10
     username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
     tag-regex: ''
+    date-time-pattern: 'HH:mm - dd/MM/yyyy'
 war-and-protection:
     war-enabled: false
     land-sharing: true
@@ -147,6 +148,7 @@ clan:
     max-description-length: 120
     min-description-length: 10
     max-members: 25
+    unverified-max-members: 10
     confirmation-for-promote: false
     trust-members-by-default: false
     confirmation-for-demote: false
@@ -166,6 +168,7 @@ clan:
         - treasurer:
             display-name: "&6Treasurer"
             permissions: [ bank.balance, bank.deposit, bank.withdraw ]
+    default-rank: "recruit"
 
 tasks:
     collect-upkeep:

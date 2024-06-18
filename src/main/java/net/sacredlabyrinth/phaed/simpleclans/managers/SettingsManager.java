@@ -150,7 +150,7 @@ public final class SettingsManager {
      * Check whether a word is disallowed
      *
      * @param word the world
-     * @return whether its a disallowed word
+     * @return whether its disallowed word
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
@@ -312,6 +312,7 @@ public final class SettingsManager {
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
+        DATE_TIME_PATTERN("settings.date-time-pattern", "HH:mm - dd/MM/yyyy"),
         /*
         ================
         > Tag Settings
@@ -442,6 +443,7 @@ public final class SettingsManager {
         CLAN_MAX_DESCRIPTION_LENGTH("clan.max-description-length", 120),
         CLAN_MIN_DESCRIPTION_LENGTH("clan.min-description-length", 10),
         CLAN_MAX_MEMBERS("clan.max-members", 25),
+        CLAN_UNVERIFIED_MAX_MEMBERS("clan.unverified-max-members", 10),
         CLAN_MAX_ALLIANCES("clan.max-alliances", -1),
         CLAN_CONFIRMATION_FOR_PROMOTE("clan.confirmation-for-promote", false),
         CLAN_TRUST_MEMBERS_BY_DEFAULT("clan.trust-members-by-default", false),
@@ -449,6 +451,7 @@ public final class SettingsManager {
         CLAN_PERCENTAGE_ONLINE_TO_DEMOTE("clan.percentage-online-to-demote", 100.0),
         CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default", false),
         CLAN_MIN_TO_VERIFY("clan.min-to-verify", 1),
+        CLAN_DEFAULT_RANK("clan.default-rank", "recruit"),
         /*
         ================
         > Tasks Settings

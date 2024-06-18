@@ -9,6 +9,8 @@ import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -89,7 +91,8 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
         if (settings.is(CLAN_CONFIRMATION_FOR_PROMOTE) && clan.getLeaders().size() > 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.PROMOTE, otherPl.getName(), "asking.for.the.promotion", otherPl.getName());
+            requestManager.requestAllLeaders(cp, ClanRequest.PROMOTE, otherPl.getName(), "asking.for.the.promotion",
+                    player.getName(), otherPl.getName());
             ChatBlock.sendMessage(player, AQUA + lang("promotion.vote.has.been.requested.from.all.leaders",
                     player));
             return;
@@ -104,7 +107,8 @@ public class LeaderCommands extends BaseCommand {
     @Description("{@@command.description.disband}")
     public void disband(Player player, ClanPlayer cp, Clan clan) {
         if (clan.getLeaders().size() != 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.DISBAND, clan.getTag(), "asking.to.disband");
+            requestManager.requestAllLeaders(cp, ClanRequest.DISBAND, clan.getTag(), "asking.to.disband",
+                    player.getName());
             ChatBlock.sendMessage(player, AQUA +
                     lang("clan.disband.vote.has.been.requested.from.all.leaders", player));
             return;
@@ -190,14 +194,27 @@ public class LeaderCommands extends BaseCommand {
     @CommandPermission("simpleclans.leader.rename")
     @CommandCompletion("@nothing")
     @Description("{@@command.description.rename}")
-    public void rename(ClanPlayer cp, Clan clan, @Name("name") String clanName) {
+    public void rename(Player player, ClanPlayer cp, Clan clan, @Name("name") String clanName) {
         if (clanName.contains("&")) {
             ChatBlock.sendMessageKey(cp, "your.clan.name.cannot.contain.color.codes");
             return;
         }
+        boolean bypass = plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass");
+        if (!bypass) {
+            if (ChatUtils.stripColors(clanName).length() > plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)) {
+                ChatBlock.sendMessage(player, RED + lang("your.clan.name.cannot.be.longer.than.characters",
+                        player, plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)));
+                return;
+            }
+            if (ChatUtils.stripColors(clanName).length() <= plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)) {
+                ChatBlock.sendMessage(player, RED + lang("your.clan.name.must.be.longer.than.characters",
+                        player, plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)));
+                return;
+            }
+        }
 
         if (clan.getLeaders().size() != 1) {
-            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, "asking.to.rename", clanName);
+            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, clanName, "asking.to.rename", cp.getName(), clanName);
             ChatBlock.sendMessageKey(cp, "rename.vote.has.been.requested.from.all.leaders");
             return;
         }
@@ -222,7 +239,7 @@ public class LeaderCommands extends BaseCommand {
         double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
             if (!permissions.playerHasMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, CurrencyFormat.format(amount)));
                 return;
             }
 
