@@ -24,6 +24,7 @@ import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.*;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ChatManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -384,6 +385,7 @@ public class DiscordHook implements Listener {
 
         try {
             availableCategory.createTextChannel(clanTag).complete();
+            SimpleClans.debug(String.format("[%s] Creating a discord text channel for %s clan", Thread.currentThread().getId(), clanTag));
         } catch (ErrorResponseException ex) {
             Response response = ex.getResponse();
             plugin.getLogger().warning(String.format("Could not create a channel for clan %s, error %d - %s",
@@ -454,7 +456,7 @@ public class DiscordHook implements Listener {
 
         if (channelExists(channelName)) {
             for (Category category : getCachedCategories()) {
-                if (category.getTextChannels().size() > 0) {
+                if (!category.getTextChannels().isEmpty()) {
                     for (TextChannel textChannel : category.getTextChannels()) {
                         if (textChannel.getName().equals(channelName)) {
                             textChannel.delete().complete();
@@ -463,7 +465,7 @@ public class DiscordHook implements Listener {
                         }
                     }
 
-                    if (category.getTextChannels().size() == 0) {
+                    if (category.getTextChannels().isEmpty()) {
                         textCategories.remove(category.getId());
                         settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
                         settingsManager.save();
