@@ -260,10 +260,16 @@ public class DiscordHook implements Listener {
     protected void setupDiscord() {
         Map<String, TextChannel> discordTagChannels = getCachedChannels().stream().
                 collect(Collectors.toMap(TextChannel::getName, textChannel -> textChannel));
+        SimpleClans.debug("DiscordTagChannels before clearing: " + String.join(",", discordTagChannels.keySet()));
 
         clearChannels(discordTagChannels);
+        SimpleClans.debug("DiscordTagChannels after clearing: " + String.join(",", discordTagChannels.keySet()));
+
         resetPermissions(discordTagChannels);
+
+        SimpleClans.debug("ClanTags before creating: " + String.join(",", clanTags));
         createChannels(discordTagChannels);
+        SimpleClans.debug("ClanTags after creating: " + String.join(",", clanTags));
     }
 
     @NotNull
@@ -384,6 +390,7 @@ public class DiscordHook implements Listener {
                     clanTag, response.code, response.message));
             return;
         }
+
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
             // The map is formed from clan#getMembers (so the clan exists)
             //noinspection ConstantConditions
@@ -592,7 +599,7 @@ public class DiscordHook implements Listener {
         }
 
         Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clan);
-        if (discordClanPlayers.size() == 0) {
+        if (discordClanPlayers.isEmpty()) {
             throw new InvalidChannelException(String.format("Clan %s doesn't have any linked players", clanTag),
                     "your.clan.doesnt.have.any.linked.player");
         }
