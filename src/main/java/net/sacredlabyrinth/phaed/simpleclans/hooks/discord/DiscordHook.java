@@ -636,8 +636,10 @@ public class DiscordHook implements Listener {
     private void updateLeaderRole(@NotNull Member member, @NotNull ClanPlayer clanPlayer, DiscordAction action) {
         if (action == ADD && clanPlayer.isLeader()) {
             guild.addRoleToMember(member, leaderRole).queue();
+            SimpleClans.debug(String.format("Added leader role to %s (%s) discord member", member.getNickname(), member.getId()));
         } else {
             guild.removeRoleFromMember(member, leaderRole).queue();
+            SimpleClans.debug(String.format("Revoked leader role from %s (%s) discord member", member.getNickname(), member.getId()));
         }
     }
 
@@ -649,14 +651,16 @@ public class DiscordHook implements Listener {
         if (action == ADD) {
             channel.upsertPermissionOverride(member).
                     setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
+            SimpleClans.debug(String.format("Added view permission to %s (%s) discord member", member.getNickname(), member.getId()));
         } else {
             channel.getManager().removePermissionOverride(member).queue();
+            SimpleClans.debug(String.format("Revoked view permission from %s (%s) discord member", member.getNickname(), member.getId()));
         }
     }
 
     private void updateViewPermission(@NotNull Member member, @NotNull Clan clan, DiscordAction action) {
         String tag = clan.getTag();
-        Optional<TextChannel> channel = getCachedChannel(tag).map(Optional::of).orElse(getChannel(tag));
+        Optional<TextChannel> channel = getCachedChannel(tag).or(() -> getChannel(tag));
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
             updateViewPermission(member, textChannel, action);
