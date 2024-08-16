@@ -254,7 +254,7 @@ public class DiscordHook implements Listener {
     }
 
     protected void setupDiscord() {
-        Map<String, TextChannel> discordTagChannels = getCachedChannels().stream().
+        Map<String, TextChannel> discordTagChannels = getChannels().stream().
                 collect(Collectors.toMap(TextChannel::getName, textChannel -> textChannel));
         SimpleClans.debug("DiscordTagChannels before clearing: " + String.join(",", discordTagChannels.keySet()));
 
