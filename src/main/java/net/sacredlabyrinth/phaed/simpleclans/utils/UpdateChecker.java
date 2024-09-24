@@ -47,7 +47,7 @@ public class UpdateChecker {
 					connection.addRequestProperty("User-Agent", userAgent);
 					InputStreamReader reader = new InputStreamReader(connection.getInputStream());
 					
-					JsonElement parse = new JsonParser().parse(reader);
+					JsonElement parse = JsonParser.parseReader(reader);
 					if (parse.isJsonObject()) {
 						String latestVersion = parse.getAsJsonObject().get("name").getAsString();
 
