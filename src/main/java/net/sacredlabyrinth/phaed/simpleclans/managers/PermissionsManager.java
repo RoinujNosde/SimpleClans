@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.ENABLE_AUTO_GROUPS;
@@ -439,6 +442,37 @@ public final class PermissionsManager {
         }
 
         return hasLevel || hasRankPermission;
+    }
+
+    /**
+     * Extracts a number from the player's permissions based on the provided permission prefix.
+     * <p>
+     * For example, if the player has the permission "simpleclans.other.clan-size.10" and the prefix "simpleclans.other.clan-size." is provided,
+     * the method will return an Optional containing the number 10.
+     * If no permission with the specified prefix is found, or if the trailing part is not a valid number,
+     * an empty Optional will be returned.
+     *
+     * @param player           the player whose permissions are being checked
+     * @param permissionPrefix the prefix of the permission to match (e.g., "simpleclans.other.clan-size.")
+     * @return an Optional containing the extracted number if the permission is found and the number is valid;
+     * an empty Optional if no matching permission is found or the number is not valid
+     */
+    public Optional<Integer> getPermissionNumber(Player player, String permissionPrefix) {
+        for (PermissionAttachmentInfo permInfo : player.getEffectivePermissions()) {
+            String permission = permInfo.getPermission();
+
+            if (permission.startsWith(permissionPrefix)) {
+                try {
+                    // extracts the last part of the permission and attempts transforming into an integer
+                    int extractedNumber = Integer.parseInt(permission.substring(permissionPrefix.length()));
+                    return Optional.of(extractedNumber);
+                } catch (NumberFormatException e) {
+                    SimpleClans.getInstance().getLogger().log(Level.WARNING, String.format("Permission %s should contain a number at the end", permission), e);
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     /**
