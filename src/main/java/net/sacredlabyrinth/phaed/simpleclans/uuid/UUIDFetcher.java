@@ -27,7 +27,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class UUIDFetcher implements Callable<Map<String, UUID>> {
 
     private static final double PROFILES_PER_REQUEST = 100;
-    private static final String PROFILE_URL = "https://api.minecraftservices.com/minecraft/profile/lookup/bulk/byname";
+    private static final String PROFILE_URL = "https://api.mojang.com/profiles/minecraft";
     private final Gson gson = new Gson();
     private final List<String> names;
     private final boolean rateLimiting;
