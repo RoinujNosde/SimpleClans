@@ -75,6 +75,7 @@ public class GeneralCommands extends BaseCommand {
 
     @Subcommand("%create")
     @CommandPermission("simpleclans.leader.create")
+    @CommandCompletion("%compl:tag %compl:name")
     @Description("{@@command.description.create}")
     public void create(Player player, @Optional @Name("tag") String tag, @Optional @Name("name") String name) {
         ClanPlayer cp = cm.getAnyClanPlayer(player.getUniqueId());
