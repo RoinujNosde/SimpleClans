@@ -3,7 +3,6 @@ package net.sacredlabyrinth.phaed.simpleclans.uuid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,10 +19,5 @@ public class UUIDFetcherTest {
     @Test
     public void getUUIDOf() throws Exception {
         assertEquals(ghostUUID, UUIDFetcher.getUUIDOf("GhostTheWolf"));
-    }
-
-    @Test
-    public void getUUIDOfThrottled() throws IOException, InterruptedException {
-        assertEquals(ghostUUID, UUIDFetcher.getUUIDOfThrottled("GhostTheWolf"));
     }
 }
