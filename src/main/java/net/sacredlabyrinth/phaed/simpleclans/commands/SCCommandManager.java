@@ -172,8 +172,8 @@ public class SCCommandManager extends PaperCommandManager {
                 "clan_chat", sm.getString(COMMANDS_CLAN_CHAT)
         );
 
-        SUBCOMMANDS.forEach(s -> processReplacement(s, "", ".command"));
-        COMPLETIONS.forEach(s -> processReplacement(s, "compl:", ".completion"));
+        SUBCOMMANDS.forEach(s -> processReplacement(s, "", ".command", true));
+        COMPLETIONS.forEach(s -> processReplacement(s, "compl:", ".completion", false));
     }
 
     @Override
@@ -206,16 +206,18 @@ public class SCCommandManager extends PaperCommandManager {
         return this.locales;
     }
 
-    private void processReplacement(String key, String prefix, String suffix) {
+    private void processReplacement(String key, String prefix, String suffix, boolean hasFallback) {
         String replacement = optionalLang(key + suffix, (ClanPlayer) null);
         if (replacement == null) {
             replacement = key;
         }
 
         replacement = replacement.replace(" ", "");
-        String finalReplacement = replacement.equals(key) ? key : replacement + "|" + key;
+        if (hasFallback) {
+            replacement = replacement + "|" + key;
+        }
 
-        getCommandReplacements().addReplacement(prefix + key, finalReplacement);
+        getCommandReplacements().addReplacement(prefix + key, replacement);
     }
 
     static {
