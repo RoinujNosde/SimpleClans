@@ -6,10 +6,8 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
