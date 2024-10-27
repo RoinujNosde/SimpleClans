@@ -55,7 +55,7 @@ public class ClanStats extends Sendable {
                 lang("deaths", sender));
     }
 
-    private void addRows(List<ClanPlayer> clanPlayers) {
+    protected void addRows(List<ClanPlayer> clanPlayers) {
         for (ClanPlayer cp : clanPlayers) {
             String color;
             if (cp.isLeader()) {
