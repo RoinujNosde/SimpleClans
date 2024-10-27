@@ -31,7 +31,6 @@ import static org.mockito.Mockito.*;
  */
 public class ClanStatsTest {
 
-    private AutoCloseable closeable;
     private ClanStats clanStats;
     private SettingsManager sm;
 
@@ -45,16 +44,6 @@ public class ClanStatsTest {
         when(sm.getColored(PAGE_SUBTITLE_COLOR)).thenReturn(ChatColor.GRAY.toString());
 
         clanStats = new ClanStats(plugin, mock(CommandSender.class), mock(Clan.class));
-    }
-
-    @BeforeEach
-    public void openMocks() {
-        closeable = MockitoAnnotations.openMocks(this);
-    }
-
-    @AfterEach
-    public void releaseMocks() throws Exception {
-        closeable.close();
     }
 
     @Test
