@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UUIDFetcherTest {
 
@@ -18,6 +18,8 @@ public class UUIDFetcherTest {
 
     @Test
     public void getUUIDOf() throws Exception {
-        assertEquals(ghostUUID, UUIDFetcher.getUUIDOf("GhostTheWolf"));
+        assertEquals(ghostUUID, UUIDFetcher.getUUIDOf("GhostTheWolf"), "Assert fetching UUID from right name");
+
+        assertNull(UUIDFetcher.getUUIDOf("AnyNameLongerThan16Chars"), "Assert fetching UUID from wrong name");
     }
 }

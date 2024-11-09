@@ -3,27 +3,31 @@ package net.sacredlabyrinth.phaed.simpleclans.uuid;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
 
 /**
- * Previous authors:
- *
- * @author evilmidget38
+ * @author evilmidget38 (previous author)
  * @see <a href="http://forums.bukkit.org/threads/250926/">Bukkit Thread</a>
  * @see <a href="http://web.archive.org/web/20140909143249/https://gist.github.com/evilmidget38/26d70114b834f71fb3b4">Github Gist</a>
  */
 public final class UUIDFetcher {
     private static final String PROFILE_URL = "https://api.minetools.eu/uuid/";
+    private static final String FALLBACK_PROFILE_URL = "https://api.mojang.com/users/profiles/minecraft/";
     private static final int BATCH_SIZE = 100;
     private static final Gson gson = new Gson();
 
@@ -54,7 +58,7 @@ public final class UUIDFetcher {
      * @throws InterruptedException If the operation is interrupted while waiting
      * @throws ExecutionException   If the computation threw an exception
      */
-    public static UUID getUUIDOf(String name) throws InterruptedException, ExecutionException {
+    public static @Nullable UUID getUUIDOf(@NotNull String name) throws InterruptedException, ExecutionException {
         return fetchUUIDsConcurrently(singletonList(name)).get(name);
     }
 
@@ -79,16 +83,18 @@ public final class UUIDFetcher {
         }
 
         // Shutdown the executor service
-        executorService.shutdown();
+        executorService.shutdownNow();
+        if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+            SimpleClans.getInstance().getLogger().warning("Executor did not terminate in time.");
+        }
 
         return resultMap;
     }
 
     // Create connection for each name
-    private static HttpURLConnection createConnection(String name) throws IOException {
-        URL url = new URL(PROFILE_URL + name);
-
+    private static HttpURLConnection createConnection(@NotNull URL url) throws IOException {
         var connection = (HttpURLConnection) url.openConnection();
+
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setUseCaches(false);
@@ -98,24 +104,61 @@ public final class UUIDFetcher {
     }
 
     // Get UUID by name
-    private static UUID getUUID(String id) {
+    private static @NotNull UUID getUUID(@NotNull String id) {
         return UUID.fromString(id.substring(0, 8) + "-" + id.substring(8, 12) + "-" + id.substring(12, 16) + "-" + id.substring(16, 20) + "-" + id.substring(20, 32));
     }
 
     // Handle single batch of names
-    private static Map<String, UUID> fetchUUIDsForBatch(List<String> batch) throws IOException {
+    private static Map<String, UUID> fetchUUIDsForBatch(List<String> batch) {
         Map<String, UUID> uuidMap = new HashMap<>();
-        for (String name : batch) {
-            HttpURLConnection connection = createConnection(name);
-            JsonObject response = gson.fromJson(new InputStreamReader(connection.getInputStream(), UTF_8), JsonObject.class);
 
-            if (response.get("status").getAsString().equals("OK")) {
-                String id = response.get("id").getAsString();
-                UUID uuid = getUUID(id);
-                uuidMap.put(response.get("name").getAsString(), uuid);
-            }
+        for (String name : batch) {
+            uuidMap.computeIfAbsent(name, k -> {
+                try {
+                    return tryFetchUUIDWithFallback(k);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
+
         return uuidMap;
+    }
+
+    private static @Nullable UUID tryFetchUUIDWithFallback(@NotNull String name) throws IOException {
+        try {
+            // Try the primary URL
+            return fetchUUID(URI.create(PROFILE_URL + name).toURL());
+        } catch (IOException e) {
+            // If the primary URL fails, attempt the fallback URL
+            SimpleClans.getInstance().getLogger().log(Level.WARNING,
+                    String.format("Failed to fetch %s UUID by MineTools API. Trying to use Mojang API instead...", name), e);
+            return fetchUUID(URI.create(FALLBACK_PROFILE_URL + name).toURL());
+        }
+    }
+
+    private static @Nullable UUID fetchUUID(@NotNull URL url) throws IOException {
+        HttpURLConnection connection = createConnection(url);
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new IOException(String.format("Unexpected response code: %d. Response: %s",
+                    connection.getResponseCode(), connection.getResponseMessage()));
+        }
+
+        JsonObject response = gson.fromJson(new InputStreamReader(connection.getInputStream(), UTF_8), JsonObject.class);
+
+        if (!response.has("id")) {
+            return null;
+        }
+
+        var id = response.get("id");
+        var status = response.get("status");
+
+        if (id.isJsonNull() ||
+                (response.has("status") && status.getAsString().equals("ERR"))) {
+            throw new IOException(String.format("Invalid UUID: %s", id));
+        }
+
+        return getUUID(id.getAsString());
     }
 
     // Callable task for batch processing
