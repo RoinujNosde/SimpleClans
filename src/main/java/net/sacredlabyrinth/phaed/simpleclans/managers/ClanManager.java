@@ -349,6 +349,7 @@ public final class ClanManager {
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      */
+    @Deprecated
     public @Nullable ClanPlayer getCreateClanPlayerUUID(String playerName) {
         UUID playerUniqueId = UUIDMigration.getForcedPlayerUUID(playerName);
         if (playerUniqueId != null) {

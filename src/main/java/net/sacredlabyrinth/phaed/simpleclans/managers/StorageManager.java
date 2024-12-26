@@ -11,7 +11,6 @@ import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.YAMLSerializer;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDFetcher;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -60,7 +59,7 @@ public final class StorageManager {
      * @return the ChatBlock
      */
     public ChatBlock getChatBlock(Player player) {
-    	return chatBlocks.get(player.getUniqueId().toString());
+    	return chatBlocks.get(player.getName());
     }
 
     /**
@@ -68,13 +67,7 @@ public final class StorageManager {
      *
      */
     public void addChatBlock(CommandSender player, ChatBlock cb) {
-		UUID uuid = UUIDMigration.getForcedPlayerUUID(player.getName());
-
-		if (uuid == null) {
-			return;
-		}
-
-		chatBlocks.put(uuid.toString(), cb);
+		chatBlocks.put(player.getName(), cb);
     }
 
     /**
