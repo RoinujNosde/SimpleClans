@@ -679,6 +679,81 @@ public final class StorageManager {
     }
 
     /**
+     * Retrieves one clan player by name from the database
+     */
+    public @Nullable ClanPlayer retrieveOneClanPlayerByName(String playerName) {
+        ClanPlayer out = null;
+
+        String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = '" + playerName + "';";
+        ResultSet res = core.select(query);
+
+        if (res != null) {
+            try {
+                while (res.next()) {
+                    try {
+                        String uuidStr = res.getString("uuid");
+                        UUID uuid = uuidStr != null ? UUID.fromString(uuidStr) : null;
+                        String tag = res.getString("tag");
+                        boolean leader = res.getBoolean("leader");
+                        boolean friendlyFire = res.getBoolean("friendly_fire");
+                        boolean trusted = res.getBoolean("trusted");
+                        int neutralKills = res.getInt("neutral_kills");
+                        int rivalKills = res.getInt("rival_kills");
+                        int civilianKills = res.getInt("civilian_kills");
+                        int allyKills = res.getInt("ally_kills");
+                        int deaths = res.getInt("deaths");
+                        long lastSeen = res.getLong("last_seen");
+                        long joinDate = res.getLong("join_date");
+                        String flags = res.getString("flags");
+                        String packedPastClans = ChatUtils.parseColors(res.getString("packed_past_clans"));
+                        String resignTimes = res.getString("resign_times");
+                        Locale locale = Helper.forLanguageTag(res.getString("locale"));
+
+                        if (lastSeen == 0L) {
+                            lastSeen = new Date().getTime();
+                        }
+
+                        ClanPlayer cp = new ClanPlayer();
+                        cp.setUniqueId(uuid);
+                        cp.setName(playerName);
+                        cp.setFlags(flags);
+                        cp.setLeader(leader);
+                        cp.setFriendlyFire(friendlyFire);
+                        cp.setNeutralKills(neutralKills);
+                        cp.setRivalKills(rivalKills);
+                        cp.setCivilianKills(civilianKills);
+                        cp.setAllyKills(allyKills);
+                        cp.setDeaths(deaths);
+                        cp.setLastSeen(lastSeen);
+                        cp.setJoinDate(joinDate);
+                        cp.setPackedPastClans(packedPastClans);
+                        cp.setTrusted(leader || trusted);
+                        cp.setResignTimes(Helper.resignTimesFromJson(resignTimes));
+                        cp.setLocale(locale);
+
+                        if (!tag.isEmpty()) {
+                            Clan clan = plugin.getClanManager().getClan(tag);
+                            if (clan != null) {
+                                cp.setClan(clan);
+                            }
+                        }
+
+                        out = cp;
+                        break;
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } catch (SQLException ex) {
+                plugin.getLogger().severe(String.format("An Error occurred: %s", ex.getErrorCode()));
+            }
+        }
+
+        return out;
+    }
+
+    /**
      * Insert a clan into the database
      *
      */
