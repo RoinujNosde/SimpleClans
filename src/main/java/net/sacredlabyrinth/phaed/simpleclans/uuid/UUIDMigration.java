@@ -25,6 +25,7 @@ public class UUIDMigration {
         }
     }
 
+    @Deprecated
     public static UUID getForcedPlayerUUID(String playerName) {
         Player player = Bukkit.getPlayerExact(playerName);
 

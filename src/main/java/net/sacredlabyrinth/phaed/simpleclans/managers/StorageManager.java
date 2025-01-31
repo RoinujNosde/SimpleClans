@@ -11,7 +11,6 @@ import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.YAMLSerializer;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDFetcher;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -59,7 +59,7 @@ public final class StorageManager {
      * @return the ChatBlock
      */
     public ChatBlock getChatBlock(Player player) {
-    	return chatBlocks.get(player.getUniqueId().toString());
+    	return chatBlocks.get(player.getName());
     }
 
     /**
@@ -67,13 +67,7 @@ public final class StorageManager {
      *
      */
     public void addChatBlock(CommandSender player, ChatBlock cb) {
-		UUID uuid = UUIDMigration.getForcedPlayerUUID(player.getName());
-
-		if (uuid == null) {
-			return;
-		}
-
-		chatBlocks.put(uuid.toString(), cb);
+		chatBlocks.put(player.getName(), cb);
     }
 
     /**
@@ -151,6 +145,7 @@ public final class StorageManager {
                     		+ " `victim` varchar(16) NOT NULL,"
                     		+ " `victim_tag` varchar(16) NOT NULL,"
                     		+ " `kill_type` varchar(1) NOT NULL,"
+                            + " `created_at` datetime NULL,"
                     		+ " PRIMARY KEY  (`kill_id`));";
                     core.execute(query);
                 }
@@ -228,6 +223,7 @@ public final class StorageManager {
                     		+ " `victim` varchar(16) NOT NULL,"
                     		+ " `victim_tag` varchar(16) NOT NULL,"
                     		+ " `kill_type` varchar(1) NOT NULL,"
+                            + " `created_at` datetime NULL,"
                     		+ " PRIMARY KEY  (`kill_id`));";
                     core.execute(query);
                 }
@@ -931,11 +927,11 @@ public final class StorageManager {
      * @param victim the victim
      * @param type the kill type
      */
-    public void insertKill(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim, @NotNull String type) {
-        String query = "INSERT INTO `" + getPrefixedTable("kills") + "` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, " +
-                "`victim`, `victim_tag`, `kill_type`) ";
+    public void insertKill(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim, @NotNull String type, @NotNull LocalDateTime time) {
+        String query = "INSERT INTO `sc_kills` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, " +
+                "`victim`, `victim_tag`, `kill_type`, `created_at`) ";
         String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attacker.getTag()
-                + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victim.getTag() + "','" + type + "');";
+                + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victim.getTag() + "','" + type + "','" + time + "');";
         core.executeUpdate(query + values);
     }
 
@@ -1172,6 +1168,12 @@ public final class StorageManager {
 
         if (core.existsColumn(getPrefixedTable("players"), "uuid") && !useMysql) {
             query = "CREATE UNIQUE INDEX IF NOT EXISTS `uq_player_uuid` ON `" + getPrefixedTable("players") + "` (`uuid`);";
+            core.execute(query);
+        }
+
+        // From 2.19.3 to 2.20.0
+        if (!core.existsColumn("sc_kills", "created_at")) {
+            query = "ALTER TABLE sc_kills ADD `created_at` datetime NULL;";
             core.execute(query);
         }
     }

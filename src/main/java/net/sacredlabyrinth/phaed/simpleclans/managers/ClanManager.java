@@ -334,16 +334,22 @@ public final class ClanManager {
     @Nullable
     public ClanPlayer getAnyClanPlayer(String playerName) {
         for (ClanPlayer cp : getAllClanPlayers()) {
-            if (cp.getName().equals(playerName)) {
+            if (cp.getName().equalsIgnoreCase(playerName)) {
                 return cp;
             }
         }
-        return getAnyClanPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            if (player.getName().equalsIgnoreCase(playerName)) {
+                return getAnyClanPlayer(player.getUniqueId());
+            }
+        }
+        return null;
     }
 
     /**
      * Gets the ClanPlayer object for the player, creates one if not found
      */
+    @Deprecated
     public @Nullable ClanPlayer getCreateClanPlayerUUID(String playerName) {
         UUID playerUniqueId = UUIDMigration.getForcedPlayerUUID(playerName);
         if (playerUniqueId != null) {

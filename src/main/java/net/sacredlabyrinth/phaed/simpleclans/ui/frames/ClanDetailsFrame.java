@@ -143,6 +143,7 @@ public class ClanDetailsFrame extends SCFrame {
 				50);
 		disband.setListener(ClickType.DROP, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
 		disband.setPermission(ClickType.DROP, "simpleclans.leader.disband");
+		disband.setConfirmationRequired(ClickType.LEFT);
 		add(disband);
 	}
 
