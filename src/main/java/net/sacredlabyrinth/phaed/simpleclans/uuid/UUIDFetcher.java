@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.uuid;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -14,7 +15,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -131,14 +131,13 @@ public final class UUIDFetcher {
             return fetchUUID(URI.create(PROFILE_URL + name).toURL());
         } catch (IOException e) {
             // If the primary URL fails, attempt the fallback URL
-            SimpleClans.getInstance().getLogger().log(Level.WARNING,
-                    String.format("Failed to fetch %s UUID by MineTools API. Trying to use Mojang API instead...", name), e);
+            SimpleClans.debug(String.format("Failed to fetch %s UUID by MineTools API. Trying to use Mojang API instead...", name));
             return fetchUUID(URI.create(FALLBACK_PROFILE_URL + name).toURL());
         }
     }
 
     private static @Nullable UUID fetchUUID(@NotNull URL url) throws IOException {
-        HttpURLConnection connection = createConnection(url);
+        var connection = createConnection(url);
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException(String.format("Unexpected response code: %d. Response: %s",
                     connection.getResponseCode(), connection.getResponseMessage()));
@@ -150,8 +149,8 @@ public final class UUIDFetcher {
             return null;
         }
 
-        var id = response.get("id");
-        var status = response.get("status");
+        JsonElement id = response.get("id");
+        JsonElement status = response.get("status");
 
         if (id.isJsonNull() ||
                 (response.has("status") && status.getAsString().equals("ERR"))) {

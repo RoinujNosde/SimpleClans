@@ -1186,7 +1186,6 @@ public final class StorageManager {
      */
 	private void updatePlayersToUUID() {
         logMigrationStart();
-        SimpleClans.getInstance().setUUID(false);
 
         List<ClanPlayer> cps = retrieveClanPlayers();
         Map<String, UUID> uuidMap = fetchUUIDs(cps);
@@ -1204,7 +1203,6 @@ public final class StorageManager {
         }
 
         logMigrationEnd(totalPlayers);
-        SimpleClans.getInstance().setUUID(true);
     }
 
     private void updatePlayerInDatabase(String playerName, UUID uuid) {
