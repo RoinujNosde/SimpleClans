@@ -338,11 +338,6 @@ public final class ClanManager {
                 return cp;
             }
         }
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            if (player.getName().equalsIgnoreCase(playerName)) {
-                return getAnyClanPlayer(player.getUniqueId());
-            }
-        }
         return null;
     }
 
