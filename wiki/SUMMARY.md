@@ -17,7 +17,7 @@
 
 * [📌 Команды](commands-and-permissions/commands.md)
 * [🚦 Разрешения](commands-and-permissions/permissions.md)
-* [🪖 Союзники и противники](commands-and-permissions/aliances-and-rivalries.md)
+* [🪖 Союзники и соперники](commands-and-permissions/aliances-and-rivalries.md)
 * [🏅 Ранги с разрешениями](commands-and-permissions/ranks-with-permissions.md)
 * [👍 Подтвержденные кланы](commands-and-permissions/podtverzhdennye-klany.md)
 * [⌛ Постоянные кланы](commands-and-permissions/postoyannye-klany.md)
