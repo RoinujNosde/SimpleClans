@@ -145,6 +145,7 @@ public final class ClanManager {
         clan.addPlayerToClan(cp);
         cp.setLeader(true);
         clan.getRanks().addAll(plugin.getSettingsManager().getStarterRanks());
+        plugin.getPermissionsManager().getPermissionNumber(player, "simpleclans.other.clan-size.").ifPresent(clan::setMaxSize);
 
         plugin.getStorageManager().insertClan(clan);
         importClan(clan);
