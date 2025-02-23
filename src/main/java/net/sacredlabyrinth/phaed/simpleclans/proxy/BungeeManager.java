@@ -123,22 +123,27 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
 
     @Override
     public void sendMessage(@NotNull String target, @NotNull String message) {
-        if ("ALL".equals(target)) {
-            if (isChannelRegistered()) {
-                sendBroadcast(message);
-            } else {
-                Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
-            }
-        } else {
-            Player player = Bukkit.getPlayerExact(target);
-            if (player != null) {
-                player.sendMessage(message);
-                return;
-            }
-            if (isChannelRegistered()) {
-                sendPrivateMessage(target, message);
-            }
+        if (message.isEmpty()) {
+            return;
         }
+
+        if ("ALL".equals(target) && isChannelRegistered()) {
+            sendBroadcast(message);
+            return;
+        }
+
+        if ("ALL".equals(target)) {
+            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+            return;
+        }
+
+        Player player = Bukkit.getPlayerExact(target);
+        if (player != null) {
+            player.sendMessage(message);
+            return;
+        }
+
+        sendPrivateMessage(target, message);
     }
 
     private void sendBroadcast(@NotNull String message) {
