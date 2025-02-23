@@ -38,17 +38,18 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
 public class SCCommandManager extends PaperCommandManager {
     private final SimpleClans plugin;
     private static final List<String> SUBCOMMANDS;
+    private static final List<String> COMPLETIONS;
 
     public SCCommandManager(@NotNull SimpleClans plugin) {
         super(plugin);
         this.plugin = plugin;
         configure();
     }
-    
+
     private void configure() {
         enableUnstableAPI("help");
         registerDependencies();
-        addCommandReplacements();
+        addReplacements();
         registerContexts();
         registerCommands();
         registerConditions();
@@ -105,13 +106,10 @@ public class SCCommandManager extends PaperCommandManager {
             }
             try {
                 AbstractCondition obj = c.getConstructor(SimpleClans.class).newInstance(plugin);
-                if (obj instanceof AbstractParameterCondition) {
-                    @SuppressWarnings("rawtypes")
-                    AbstractParameterCondition condition = (AbstractParameterCondition) obj;
+                if (obj instanceof @SuppressWarnings("rawtypes")AbstractParameterCondition condition) {
                     getCommandConditions().addCondition(condition.getType(), condition.getId(), condition);
                 }
-                if (obj instanceof AbstractCommandCondition) {
-                    AbstractCommandCondition condition = (AbstractCommandCondition) obj;
+                if (obj instanceof AbstractCommandCondition condition) {
                     getCommandConditions().addCondition(condition.getId(), condition);
                 }
             } catch (Exception ex) {
@@ -162,7 +160,7 @@ public class SCCommandManager extends PaperCommandManager {
         }
     }
 
-    private void addCommandReplacements() {
+    private void addReplacements() {
         SettingsManager sm = plugin.getSettingsManager();
         getCommandReplacements().addReplacements(
                 "basic_conditions", "not_blacklisted|not_banned",
@@ -174,17 +172,10 @@ public class SCCommandManager extends PaperCommandManager {
                 "clan_chat", sm.getString(COMMANDS_CLAN_CHAT)
         );
 
-        SUBCOMMANDS.forEach(s -> {
-            String command = optionalLang(s + ".command", (ClanPlayer) null);
-            if (command == null) {
-                command = s;
-            }
-            command = command.replace(" ", "");
-            String replacement = command.equals(s) ? s : command + "|" + s;
-            getCommandReplacements().addReplacement(s, replacement);
-        });
+        SUBCOMMANDS.forEach(s -> processReplacement(s, "", ".command", true));
+        COMPLETIONS.forEach(s -> processReplacement(s, "compl:", ".completion", false));
     }
-    
+
     @Override
     public BukkitLocales getLocales() {
         if (this.locales == null) {
@@ -215,6 +206,20 @@ public class SCCommandManager extends PaperCommandManager {
         return this.locales;
     }
 
+    private void processReplacement(String key, String prefix, String suffix, boolean hasFallback) {
+        String replacement = optionalLang(key + suffix, (ClanPlayer) null);
+        if (replacement == null) {
+            replacement = key;
+        }
+
+        replacement = replacement.replace(" ", "");
+        if (hasFallback) {
+            replacement = replacement + "|" + key;
+        }
+
+        getCommandReplacements().addReplacement(prefix + key, replacement);
+    }
+
     static {
         SUBCOMMANDS = Arrays.asList("setbanner", "resetkdr", "place", "rank", "home", "war", "regroup",
                 "mostkilled", "kills", "globalff", "reload", "unban", "ban", "verify", "disband", "resign", "ff",
@@ -225,5 +230,7 @@ public class SCCommandManager extends PaperCommandManager {
                 "lookup", "roster", "profile", "list", "create", "description", "start", "end", "admin", "help", "mod",
                 "setdefault", "removedefault", "land", "break", "interact", "place_block", "damage", "interact_entity",
                 "container", "permanent", "take", "give", "join", "leave", "mute", "confirm", "balance", "discord", "rename", "locale");
+
+        COMPLETIONS = Arrays.asList("tag", "name");
     }
 }
