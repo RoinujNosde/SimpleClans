@@ -89,7 +89,6 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         if (servers.isEmpty()) {
             return true;
         }
-        servers.add(getServerName()); //accepts messages from this very server
 
         return servers.contains(serverName);
     }
@@ -127,13 +126,9 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
             return;
         }
 
-        if ("ALL".equals(target) && isChannelRegistered()) {
-            sendBroadcast(message);
-            return;
-        }
-
         if ("ALL".equals(target)) {
             Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+            sendBroadcast(message);
             return;
         }
 
