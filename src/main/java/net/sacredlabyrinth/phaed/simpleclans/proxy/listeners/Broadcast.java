@@ -15,4 +15,9 @@ public class Broadcast extends MessageListener {
         String message = data.readUTF();
         Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
     }
+
+    @Override
+    public boolean isBungeeSubchannel() {
+        return false;
+    }
 }

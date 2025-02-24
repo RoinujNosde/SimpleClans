@@ -21,4 +21,9 @@ public class Message extends MessageListener {
             player.sendMessage(message);
         }
     }
+
+    @Override
+    public boolean isBungeeSubchannel() {
+        return false;
+    }
 }

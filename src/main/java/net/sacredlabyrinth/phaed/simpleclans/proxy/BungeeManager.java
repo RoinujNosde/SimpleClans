@@ -69,8 +69,11 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         try {
             Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + subChannel);
             MessageListener listener = (MessageListener) clazz.getConstructor(BungeeManager.class).newInstance(this);
-            String serverName = input.readUTF();
-            if (!isServerAllowed(serverName)) {
+            String serverName = null;
+            if (!listener.isBungeeSubchannel()) {
+                serverName = input.readUTF();
+            }
+            if (serverName != null && !isServerAllowed(serverName)) {
                 SimpleClans.debug(String.format("Server not allowed: %s", serverName));
                 return;
             }
