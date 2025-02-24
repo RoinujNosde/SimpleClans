@@ -313,6 +313,7 @@ public final class SettingsManager {
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
         DATE_TIME_PATTERN("settings.date-time-pattern", "HH:mm - dd/MM/yyyy"),
+        BUNGEE_SERVERS("settings.bungee-servers"),
         /*
         ================
         > Tag Settings

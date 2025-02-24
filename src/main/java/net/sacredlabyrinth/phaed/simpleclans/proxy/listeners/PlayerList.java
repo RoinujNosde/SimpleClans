@@ -20,4 +20,9 @@ public class PlayerList extends MessageListener {
         bungee.setOnlinePlayers(players);
         SimpleClans.debug("Updated player list");
     }
+
+    @Override
+    public boolean isBungeeSubchannel() {
+        return true;
+    }
 }
