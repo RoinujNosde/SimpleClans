@@ -3,6 +3,8 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.chest.LockResult;
+import net.sacredlabyrinth.phaed.simpleclans.chest.LockStatus;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResignPrompt;
@@ -11,12 +13,15 @@ import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -386,5 +391,43 @@ public class ClanCommands extends BaseCommand {
     @HelpSearchTags("leave")
     public void resign(@Conditions("clan_member") Player player) {
         new SCConversation(plugin, player, new ResignPrompt()).begin();
+    }
+
+    @Subcommand("%chest")
+    @Description("{@@command.description.chest}")
+    @CommandPermission("simpleclans.member.chest")
+    public void chest(@Conditions("clan_member") Player player, Clan clan) {
+        var clanChest = clan.getClanChest();
+
+        if (!settings.is(PERFORMANCE_USE_BUNGEECORD) || !settings.is(MYSQL_ENABLE)) {
+            player.openInventory(clanChest.getInventory());
+            return;
+        }
+
+        String serverName = plugin.getProxyManager().getServerName();
+        if (serverName == null || serverName.isEmpty()) {
+            throw new IllegalStateException("Server name is empty");
+        }
+
+        var success = storage.runWithTransaction(() -> {
+            LockResult lockResult = storage.checkChestLock(serverName, clan.getTag());
+            if (lockResult.getStatus() != LockStatus.NOT_LOCKED) {
+                @Nullable ClanPlayer cp = cm.getAnyClanPlayer(lockResult.getLockedBy());
+                String name = cp == null ? lang("player") : cp.getName();
+
+                ChatBlock.sendMessageKey(player, "clan.chest.is.locked", name, lockResult.getServerName());
+                return;
+            }
+
+            boolean lockSuccess = storage.lockChest(serverName, clan.getTag(), UUID.fromString(player.getUniqueId().toString()));
+            if (lockSuccess) {
+                // inventory must be opened in the main thread
+                Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(clanChest.getInventory()));
+            }
+        });
+
+        if (!success) {
+            ChatBlock.sendMessageKey(player, "clan.chest.cant.be.opened");
+        }
     }
 }

@@ -9,11 +9,9 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
+import net.sacredlabyrinth.phaed.simpleclans.chest.ClanChest;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField;
-import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.ClanPlayerListAdapter;
-import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.ClanPlayerTypeAdapterFactory;
-import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.ConfigurationSerializableAdapter;
-import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.SCMessageAdapter;
+import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.*;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.listeners.MessageListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -45,7 +43,9 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         gson = new GsonBuilder().registerTypeAdapterFactory(new ClanPlayerTypeAdapterFactory(plugin))
                 .registerTypeAdapterFactory(new ConfigurationSerializableAdapter())
                 .registerTypeAdapter(ClanPlayerListAdapter.getType(), new ClanPlayerListAdapter(plugin))
-                .registerTypeAdapter(SCMessage.class, new SCMessageAdapter(plugin)).setExclusionStrategies()
+                .registerTypeAdapter(SCMessage.class, new SCMessageAdapter(plugin))
+                .registerTypeAdapter(ClanChest.class, new ClanChestAdapter(plugin))
+                .setExclusionStrategies()
                 .create();
         if (!plugin.getSettingsManager().is(ConfigField.PERFORMANCE_USE_BUNGEECORD)) {
             return;
@@ -147,6 +147,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         return plugin;
     }
 
+    @Override
     public Gson getGson() {
         return gson;
     }
@@ -171,10 +172,10 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
                 ByteArrayDataOutput output = ByteStreams.newDataOutput();
                 output.writeUTF("GetServer");
 
-                Bukkit.getScheduler().runTask(plugin, () -> {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     event.getPlayer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
                     PlayerJoinEvent.getHandlerList().unregister(this); //only needed once
-                });
+                }, 20L);
             }
         };
         Bukkit.getPluginManager().registerEvents(listener, plugin);

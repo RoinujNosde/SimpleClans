@@ -60,6 +60,7 @@ public class ClanDetailsFrame extends SCFrame {
 		addRank();
 		addVerify();
 		addResign();
+		addChest();
 		addDisband();
 		addChat();
 	}
@@ -140,16 +141,24 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addDisband() {
 		SCComponent disband = new SCComponentImpl(lang("gui.clandetails.disband.title", getViewer()),
 				Collections.singletonList(lang("gui.clandetails.disband.lore", getViewer())), XMaterial.BARRIER,
-				50);
+				51);
 		disband.setListener(ClickType.DROP, () -> InventoryController.runSubcommand(getViewer(), "disband", false));
 		disband.setPermission(ClickType.DROP, "simpleclans.leader.disband");
 		disband.setConfirmationRequired(ClickType.LEFT);
 		add(disband);
 	}
 
+	private void addChest() {
+		SCComponent chest = new SCComponentImpl(lang("gui.clandetails.chest.title", getViewer()),
+				Collections.singletonList(lang("gui.clandetails.chest.lore", getViewer())), XMaterial.CHEST, 49);
+		chest.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "chest", false));
+		chest.setPermission(ClickType.LEFT, "simpleclans.member.chest");
+		add(chest);
+	}
+
 	private void addResign() {
 		SCComponent resign = new SCComponentImpl(lang("gui.clandetails.resign.title", getViewer()),
-				Collections.singletonList(lang("gui.clandetails.resign.lore", getViewer())), XMaterial.IRON_DOOR, 48);
+				Collections.singletonList(lang("gui.clandetails.resign.lore", getViewer())), XMaterial.IRON_DOOR, 47);
 		resign.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resign", false));
 		resign.setConfirmationRequired(ClickType.LEFT);
 		resign.setPermission(ClickType.LEFT, "simpleclans.member.resign");
