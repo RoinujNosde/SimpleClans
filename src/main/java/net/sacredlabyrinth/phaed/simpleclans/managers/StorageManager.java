@@ -1172,7 +1172,7 @@ public final class StorageManager {
         }
 
         // From 2.19.3 to 2.20.0
-        if (!core.existsColumn("sc_kills", "created_at")) {
+        if (!core.existsColumn(getPrefixedTable("kills"), "created_at")) {
             query = "ALTER TABLE sc_kills ADD `created_at` datetime NULL;";
             core.execute(query);
         }
