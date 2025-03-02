@@ -409,25 +409,27 @@ public class ClanCommands extends BaseCommand {
             throw new IllegalStateException("Server name is empty");
         }
 
-        var success = storage.runWithTransaction(() -> {
-            LockResult lockResult = storage.checkChestLock(serverName, clan.getTag());
-            if (lockResult.getStatus() != LockStatus.NOT_LOCKED) {
-                @Nullable ClanPlayer cp = cm.getAnyClanPlayer(lockResult.getLockedBy());
-                String name = cp == null ? lang("player") : cp.getName();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            var success = storage.runWithTransaction(() -> {
+                LockResult lockResult = storage.checkChestLock(serverName, clan.getTag());
+                if (lockResult.getStatus() != LockStatus.NOT_LOCKED) {
+                    @Nullable ClanPlayer cp = cm.getAnyClanPlayer(lockResult.getLockedBy());
+                    String name = cp == null ? lang("player") : cp.getName();
 
-                ChatBlock.sendMessageKey(player, "clan.chest.is.locked", name, lockResult.getServerName());
-                return;
-            }
+                    ChatBlock.sendMessageKey(player, "clan.chest.is.locked", name, lockResult.getServerName());
+                    return;
+                }
 
-            boolean lockSuccess = storage.lockChest(serverName, clan.getTag(), UUID.fromString(player.getUniqueId().toString()));
-            if (lockSuccess) {
-                // inventory must be opened in the main thread
-                Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(clanChest.getInventory()));
+                boolean lockSuccess = storage.lockChest(serverName, clan.getTag(), UUID.fromString(player.getUniqueId().toString()));
+                if (lockSuccess) {
+                    // inventory must be opened in the main thread
+                    Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(clanChest.getInventory()));
+                }
+            });
+
+            if (!success) {
+                ChatBlock.sendMessageKey(player, "clan.chest.cant.be.opened");
             }
         });
-
-        if (!success) {
-            ChatBlock.sendMessageKey(player, "clan.chest.cant.be.opened");
-        }
     }
 }
