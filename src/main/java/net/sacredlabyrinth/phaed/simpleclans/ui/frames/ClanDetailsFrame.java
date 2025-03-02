@@ -151,7 +151,7 @@ public class ClanDetailsFrame extends SCFrame {
 	private void addChest() {
 		SCComponent chest = new SCComponentImpl(lang("gui.clandetails.chest.title", getViewer()),
 				Collections.singletonList(lang("gui.clandetails.chest.lore", getViewer())), XMaterial.CHEST, 49);
-		chest.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "chest", false));
+		chest.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "chest", true));
 		chest.setPermission(ClickType.LEFT, "simpleclans.member.chest");
 		add(chest);
 	}
