@@ -170,7 +170,7 @@ public final class SettingsManager {
      * @return whether the string contains the color code
      */
     public boolean hasDisallowedColor(String str) {
-        var loweredString = str.toLowerCase();
+        String loweredString = str.toLowerCase();
         return getStringList(DISALLOWED_TAG_COLORS).stream().map(String::toLowerCase).anyMatch(color -> loweredString.contains("&" + color));
     }
 

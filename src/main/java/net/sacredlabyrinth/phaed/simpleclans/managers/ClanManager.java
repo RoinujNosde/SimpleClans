@@ -1091,14 +1091,14 @@ public final class ClanManager {
         } else {
             double money = plugin.getPermissionsManager().playerGetMoney(player);
             switch (clan.withdraw(new BankOperator(player, money), ClanBalanceUpdateEvent.Cause.COMMAND, price)) {
-                case SUCCESS -> {
+                case SUCCESS:
                     if (plugin.getPermissionsManager().grantPlayer(player, price)) {
                         player.sendMessage(AQUA + lang("player.clan.withdraw", player, CurrencyFormat.format(price)));
                         clan.addBb(player.getName(), lang("bb.clan.withdraw", CurrencyFormat.format(price)));
                         return true;
                     }
-                }
-                case NOT_ENOUGH_BALANCE -> player.sendMessage(lang("clan.bank.not.enough.money", player));
+                case NOT_ENOUGH_BALANCE:
+                    player.sendMessage(lang("clan.bank.not.enough.money", player));
             }
         }
 

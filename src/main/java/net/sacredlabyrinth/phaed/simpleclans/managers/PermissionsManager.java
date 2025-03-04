@@ -361,13 +361,7 @@ public final class PermissionsManager {
             return false;
         }
 
-        boolean hasLevel = false;
-        if (level != null) {
-            hasLevel = switch (level) {
-                case LEADER -> clanPlayer.isLeader();
-                case TRUSTED -> clanPlayer.isTrusted();
-            };
-        }
+        boolean hasLevel = hasLevel(clanPlayer, level);
 
         boolean hasRankPermission = false;
         String rankName = clanPlayer.getRankId();
@@ -416,11 +410,7 @@ public final class PermissionsManager {
             return false;
         }
 
-        boolean hasLevel = switch (permission.getPermissionLevel()) {
-            case LEADER -> clanPlayer.isLeader();
-            case TRUSTED -> clanPlayer.isTrusted();
-        };
-
+        boolean hasLevel = hasLevel(clanPlayer, permission.getPermissionLevel());
         boolean hasRankPermission = false;
         String rankName = clanPlayer.getRankId();
         Clan clan = clanPlayer.getClan();
@@ -439,6 +429,18 @@ public final class PermissionsManager {
         }
 
         return hasLevel || hasRankPermission;
+    }
+
+    private boolean hasLevel(@NotNull ClanPlayer cp, @Nullable PermissionLevel level) {
+        if (level != null) {
+            switch (level) {
+                case LEADER:
+                    return cp.isLeader();
+                case TRUSTED:
+                    return cp.isTrusted();
+            }
+        }
+        return false;
     }
 
     /**

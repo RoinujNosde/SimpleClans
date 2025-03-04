@@ -61,9 +61,9 @@ war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-        - WorldGuardProvider
+        - Landlord4Provider
         - WorldGuard6Provider
-        - GriefPreventionProvider
+        - GriefPrevention
     listeners:
         priority: HIGHEST
         ignored-list:
