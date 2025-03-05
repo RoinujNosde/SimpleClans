@@ -1194,9 +1194,11 @@ public final class StorageManager {
         for (int i = 0; i < totalPlayers; i++) {
             ClanPlayer cp = cps.get(i);
             try {
-                UUID uuid = uuidMap.getOrDefault(cp.getName(), cp.getUniqueId());
-                updatePlayerInDatabase(cp.getName(), uuid);
-                logSuccess(i + 1, totalPlayers, cp.getName(), uuid);
+                UUID uuid = uuidMap.get(cp.getName());
+                if (uuid != null) {
+                    updatePlayerInDatabase(cp.getName(), uuid);
+                    logSuccess(i + 1, totalPlayers, cp.getName(), uuid);
+                }
             } catch (Exception ex) {
                 logFailure(i + 1, totalPlayers, cp.getName(), ex);
             }
@@ -1224,7 +1226,8 @@ public final class StorageManager {
             if (SimpleClans.getInstance().getServer().getOnlineMode()) {
                 uuidMap = UUIDFetcher.fetchUUIDsForClanPlayers(clanPlayers);
             } else {
-                uuidMap = clanPlayers.stream().collect(Collectors.toMap(ClanPlayer::getName, ClanPlayer::getUniqueId));
+                uuidMap = clanPlayers.stream().collect(Collectors.toMap(ClanPlayer::getName, player ->
+                        UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(Charsets.UTF_8))));
             }
         } catch (InterruptedException | ExecutionException ex) {
             plugin.getLogger().log(Level.SEVERE, "Error fetching UUIDs in bulk: " + ex.getMessage(), ex);
