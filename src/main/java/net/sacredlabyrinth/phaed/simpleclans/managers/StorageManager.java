@@ -24,11 +24,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.Date;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -105,7 +107,7 @@ public final class StorageManager {
                             + " `fee_value` double(64,2),"
                             + " `ranks` text NOT NULL,"
                             + " `banner` text,"
-                            + " `chest_content` BLOB,"
+                            + " `chest_content` longblob,"
                             + " PRIMARY KEY  (`id`),"
                             + " UNIQUE KEY `uq_simpleclans_1` (`tag`));";
                     core.execute(query);
@@ -1213,8 +1215,10 @@ public final class StorageManager {
             query = "ALTER TABLE sc_kills ADD `created_at` datetime NULL;";
             core.execute(query);
         }
+
+        String blobType = useMysql ? "longblob" : "blob";
         if (!core.existsColumn(getPrefixedTable("clans"), "chest_content")) {
-            core.execute("ALTER TABLE `" + getPrefixedTable("clans") + "` ADD COLUMN `chest_content` BLOB DEFAULT NULL;");
+            core.execute("ALTER TABLE `" + getPrefixedTable("clans") + "` ADD COLUMN `chest_content` " + blobType + " DEFAULT NULL;");
         }
     }
 
