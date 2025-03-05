@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1226,7 +1227,7 @@ public final class StorageManager {
                 uuidMap = UUIDFetcher.fetchUUIDsForClanPlayers(clanPlayers);
             } else {
                 uuidMap = clanPlayers.stream().collect(Collectors.toMap(ClanPlayer::getName, player ->
-                        UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(Charsets.UTF_8))));
+                        UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8))));
             }
         } catch (InterruptedException | ExecutionException ex) {
             plugin.getLogger().log(Level.SEVERE, "Error fetching UUIDs in bulk: " + ex.getMessage(), ex);
