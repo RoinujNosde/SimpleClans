@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 
-public class ClanChestListener extends SCListener{
+public class ClanChestListener extends SCListener {
 
     public ClanChestListener(SimpleClans plugin) {
         super(plugin);
@@ -26,11 +26,11 @@ public class ClanChestListener extends SCListener{
         var clan = clanPlayer.getClan();
         var storage = plugin.getStorageManager();
 
-        if (event.getInventory().getHolder() instanceof ClanChest) {
+        if (event.getInventory().getHolder() instanceof ClanChest cc && cc.getInventory().getViewers().size() <= 1) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                boolean success = storage.runWithTransaction(() -> storage.unlockChest(clan.getTag(), clanPlayer.getUniqueId()));
+                boolean success = storage.runWithTransaction(() -> storage.unlockChest(clan.getTag()));
                 if (success) {
-                    storage.updateClan(clan, true);
+                    storage.updateChestContent(clan.getTag(), cc.serialize());
                 }
             });
         }

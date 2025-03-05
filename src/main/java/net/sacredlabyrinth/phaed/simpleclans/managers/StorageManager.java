@@ -1310,7 +1310,7 @@ public final class StorageManager {
         }
     }
 
-    public LockResult checkChestLock(String serverName, String clanTag) throws SQLException {
+    public LockResult checkChestLock(String serverName, String clanTag, UUID openedUuid) throws SQLException {
         PreparedStatement pst = prepareSelectChestLockStatement(core.getConnection());
         pst.setString(1, clanTag);
         ResultSet rs = pst.executeQuery();
@@ -1318,6 +1318,10 @@ public final class StorageManager {
         if (rs.next()) {
             String lockedServer = rs.getString("server_name");
             UUID lockedBy = UUID.fromString(rs.getString("locked_by"));
+
+            if (!openedUuid.equals(lockedBy) && lockedServer.equals(serverName)) {
+                return new LockResult(LockStatus.LOCKED_BY_OTHER_PLAYER);
+            }
 
             if (!lockedServer.equals(serverName)) {
                 return new LockResult(LockStatus.LOCKED_BY_OTHER_SERVER, lockedBy, lockedServer);
@@ -1335,10 +1339,9 @@ public final class StorageManager {
         return pst.executeUpdate() > 0;
     }
 
-    public void unlockChest(String clanTag, UUID playerUuid) throws SQLException {
+    public void unlockChest(String clanTag) throws SQLException {
         PreparedStatement pst = prepareDeleteChestLockStatement(core.getConnection());
         pst.setString(1, clanTag);
-        pst.setString(2, playerUuid.toString());
         pst.executeUpdate();
     }
 
@@ -1383,12 +1386,49 @@ public final class StorageManager {
     }
 
     private PreparedStatement prepareDeleteChestLockStatement(Connection connection) throws SQLException {
-        String sql = "DELETE FROM `" + getPrefixedTable("chest_locks") + "` WHERE `clan_tag` = ? AND `locked_by` = ?";
+        String sql = "DELETE FROM `" + getPrefixedTable("chest_locks") + "` WHERE `clan_tag` = ?";
         return connection.prepareStatement(sql);
     }
 
     private PreparedStatement prepareInsertChestLockStatement(Connection connection) throws SQLException {
         String sql = "INSERT INTO `" + getPrefixedTable("chest_locks") + "` (`clan_tag`, `server_name`, `locked_by`) VALUES (?, ?, ?)";
+        return connection.prepareStatement(sql);
+    }
+
+    public void updateChestContent(String clanTag, byte[] chestContent) {
+        try {
+            PreparedStatement pst = prepareUpdateChestContentStatement(core.getConnection());
+            pst.setBytes(1, chestContent);
+            pst.setString(2, clanTag);
+            pst.executeUpdate();
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error updating chest content", ex);
+        }
+    }
+
+    public @Nullable ClanChest selectChestContent(String clanTag) {
+        try {
+            PreparedStatement pst = prepareSelectChestContentStatement(core.getConnection());
+            pst.setString(1, clanTag);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return ClanChest.deserialize(rs.getBytes("chest_content"));
+            }
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error selecting chest content", ex);
+        }
+
+        return null;
+    }
+
+    private PreparedStatement prepareSelectChestContentStatement(Connection connection) throws SQLException {
+        String sql = "SELECT `chest_content` FROM `" + getPrefixedTable("clans") + "` WHERE `tag` = ?";
+        return connection.prepareStatement(sql);
+    }
+
+    private PreparedStatement prepareUpdateChestContentStatement(Connection connection) throws SQLException {
+        String sql = "UPDATE `" + getPrefixedTable("clans") + "` SET `chest_content` = ? WHERE `tag` = ?";
         return connection.prepareStatement(sql);
     }
 }

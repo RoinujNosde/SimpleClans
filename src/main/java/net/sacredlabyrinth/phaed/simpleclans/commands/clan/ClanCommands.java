@@ -3,8 +3,8 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.*;
+import net.sacredlabyrinth.phaed.simpleclans.chest.ClanChest;
 import net.sacredlabyrinth.phaed.simpleclans.chest.LockResult;
-import net.sacredlabyrinth.phaed.simpleclans.chest.LockStatus;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.ResignPrompt;
@@ -16,6 +16,7 @@ import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -400,7 +401,7 @@ public class ClanCommands extends BaseCommand {
         var clanChest = clan.getClanChest();
 
         if (!settings.is(PERFORMANCE_USE_BUNGEECORD) || !settings.is(MYSQL_ENABLE)) {
-            player.openInventory(clanChest.getInventory());
+            openChest(player, clanChest);
             return;
         }
 
@@ -410,20 +411,29 @@ public class ClanCommands extends BaseCommand {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            var success = storage.runWithTransaction(() -> {
-                LockResult lockResult = storage.checkChestLock(serverName, clan.getTag());
-                if (lockResult.getStatus() != LockStatus.NOT_LOCKED) {
-                    @Nullable ClanPlayer cp = cm.getAnyClanPlayer(lockResult.getLockedBy());
-                    String name = cp == null ? lang("player") : cp.getName();
+            boolean success = storage.runWithTransaction(() -> {
+                LockResult lockResult = storage.checkChestLock(serverName, clan.getTag(), player.getUniqueId());
 
-                    ChatBlock.sendMessageKey(player, "clan.chest.is.locked", name, lockResult.getServerName());
-                    return;
-                }
+                switch (lockResult.getStatus()) {
+                    case LOCKED_BY_OTHER_PLAYER:
+                        openChest(player, clanChest);
+                        break;
+                    case LOCKED_BY_OTHER_SERVER:
+                        @Nullable ClanPlayer cp = cm.getAnyClanPlayer(lockResult.getLockedBy());
+                        String name = cp == null ? lang("player") : cp.getName();
 
-                boolean lockSuccess = storage.lockChest(serverName, clan.getTag(), UUID.fromString(player.getUniqueId().toString()));
-                if (lockSuccess) {
-                    // inventory must be opened in the main thread
-                    Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(clanChest.getInventory()));
+                        ChatBlock.sendMessageKey(player, "clan.chest.is.locked", name, lockResult.getServerName());
+                        break;
+                    case NOT_LOCKED:
+                        boolean lockSuccess = storage.lockChest(serverName, clan.getTag(), UUID.fromString(player.getUniqueId().toString()));
+                        if (lockSuccess) {
+                            ClanChest chest = storage.selectChestContent(clan.getTag());
+                            if (chest != null) {
+                                clan.setClanChest(chest);
+                                openChest(player, chest);
+                            }
+                        }
+                        break;
                 }
             });
 
@@ -431,5 +441,9 @@ public class ClanCommands extends BaseCommand {
                 ChatBlock.sendMessageKey(player, "clan.chest.cant.be.opened");
             }
         });
+    }
+
+    private void openChest(@NotNull Player player, @NotNull ClanChest clanChest) {
+        Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(clanChest.getInventory()));
     }
 }
