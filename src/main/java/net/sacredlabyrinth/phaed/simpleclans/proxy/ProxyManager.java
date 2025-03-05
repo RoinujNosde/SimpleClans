@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.proxy;
 
+import com.google.gson.Gson;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
@@ -21,4 +22,6 @@ public interface ProxyManager {
     void sendDelete(Clan clan);
 
     void sendDelete(ClanPlayer cp);
+
+    Gson getGson();
 }

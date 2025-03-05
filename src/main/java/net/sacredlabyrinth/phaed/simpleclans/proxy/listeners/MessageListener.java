@@ -22,5 +22,4 @@ public abstract class MessageListener {
     protected Gson getGson() {
         return bungee.getGson();
     }
-
 }

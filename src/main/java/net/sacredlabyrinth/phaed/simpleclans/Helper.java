@@ -41,6 +41,7 @@ public final class Helper {
     private static final Gson GSON = new Gson();
     private static final Type RANKS_TYPE = TypeToken.getParameterized(List.class, Rank.class).getType();
     private static final Type RESIGN_TYPE = TypeToken.getParameterized(Map.class, String.class, Long.class).getType();
+
     private Helper() {
     }
 

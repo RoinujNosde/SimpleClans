@@ -77,6 +77,8 @@ permissions:
   simpleclans.other.kdr-exempt:
     description: The player's KDR is not affected on killing/dying
     default: false
+  simpleclans.member.chest:
+    description: can open his clan's chest
   simpleclans.member.profile:
     description: Can view his own clan's profile
   simpleclans.member.roster:
@@ -315,6 +317,7 @@ permissions:
       simpleclans.member.bank: true
       simpleclans.member.fee-check: true
       simpleclans.member.chat.color: true
+      simpleclans.member.chest: true
   simpleclans.leader.*:
     description: Permissions for those who can be clan leaders
     default: true
