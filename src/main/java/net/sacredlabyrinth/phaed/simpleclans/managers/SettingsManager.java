@@ -5,6 +5,8 @@ import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -235,8 +237,23 @@ public final class SettingsManager {
         return is(ConfigField.valueOf("WAR_ACTIONS_" + action.name()));
     }
 
+    @Deprecated
     public List<String> getIgnoredList(@NotNull ProtectionManager.Action action) {
         return getStringList(ConfigField.valueOf("WAR_LISTENERS_IGNORED_LIST_" + action.name()));
+    }
+
+    public boolean ignoredIn(IgnoredType type, @NotNull ProtectionManager.Action action, @NotNull Block block) {
+        ConfigField configField = valueOf(type.name() + "_LISTENERS_IGNORED_LISTS");
+        ConfigurationSection section = getConfig().getConfigurationSection(configField.path + "." + action.name());
+        if (section == null) {
+            return false;
+        }
+
+        if (section.getBoolean("invert")) {
+            return section.getStringList("blocks").contains(block.getType().name());
+        } else {
+            return !section.getStringList("blocks").contains(block.getType().name());
+        }
     }
 
     @NotNull
@@ -342,8 +359,12 @@ public final class SettingsManager {
         LAND_SHARING("war-and-protection.land-sharing", true),
         LAND_PROTECTION_PROVIDERS("war-and-protection.protection-providers"),
         WAR_LISTENERS_PRIORITY("war-and-protection.listeners.priority", "HIGHEST"),
+        @Deprecated
         WAR_LISTENERS_IGNORED_LIST_PLACE("war-and-protection.listeners.ignored-list.PLACE"),
+        @Deprecated
         WAR_LISTENERS_IGNORED_LIST_BREAK("war-and-protection.listeners.ignored-list.BREAK"),
+        WAR_LISTENERS_IGNORED_LISTS("war-and-protection.listeners.ignored-lists.war"),
+        LAND_LISTENERS_IGNORED_LISTS("war-and-protection.listeners.ignored-lists.land"),
         LAND_SET_BASE_ONLY_IN_LAND("war-and-protection.set-base-only-in-land", false),
         WAR_NORMAL_EXPIRATION_TIME("war-and-protection.war-normal-expiration-time", 0),
         WAR_DISCONNECT_EXPIRATION_TIME("war-and-protection.war-disconnect-expiration-time", 0),
@@ -609,5 +630,9 @@ public final class SettingsManager {
             this.path = path;
             defaultValue = null;
         }
+    }
+
+    public enum IgnoredType {
+        WAR, LAND
     }
 }
