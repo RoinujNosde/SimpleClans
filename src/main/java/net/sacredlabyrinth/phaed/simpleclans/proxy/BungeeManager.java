@@ -33,6 +33,8 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     private static final String DELETE_CLAN_CHANNEL = "DeleteClan";
     private static final String DELETE_CLANPLAYER_CHANNEL = "DeleteClanPlayer";
     private static final String CHAT_CHANNEL = "Chat";
+    private static final String BROADCAST = "Broadcast";
+    private static final String MESSAGE = "Message";
 
     private final SimpleClans plugin;
     private final Gson gson;
@@ -67,6 +69,14 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         try {
             Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + subChannel);
             MessageListener listener = (MessageListener) clazz.getConstructor(BungeeManager.class).newInstance(this);
+            String serverName = null;
+            if (!listener.isBungeeSubchannel()) {
+                serverName = input.readUTF();
+            }
+            if (serverName != null && !isServerAllowed(serverName)) {
+                SimpleClans.debug(String.format("Server not allowed: %s", serverName));
+                return;
+            }
             listener.accept(input);
             SimpleClans.debug("Message processed");
         } catch (ClassNotFoundException e) {
@@ -75,6 +85,15 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         } catch (ReflectiveOperationException ex) {
             plugin.getLogger().log(Level.SEVERE, String.format("Error processing channel %s", subChannel), ex);
         }
+    }
+
+    private boolean isServerAllowed(@NotNull String serverName) {
+        List<String> servers = plugin.getSettingsManager().getStringList(ConfigField.BUNGEE_SERVERS);
+        if (servers.isEmpty()) {
+            return true;
+        }
+
+        return servers.contains(serverName);
     }
 
     @Override
@@ -104,23 +123,45 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         forwardPluginMessage(CHAT_CHANNEL, gson.toJson(message), false);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void sendMessage(@NotNull String target, @NotNull String message) {
-        if (isChannelRegistered()) {
-            ByteArrayDataOutput output = ByteStreams.newDataOutput();
-            output.writeUTF("Message");
-            output.writeUTF(target);
-            output.writeUTF(message);
-
-            sendOnBungeeChannel(output);
-        } else {
-            if ("ALL".equals(target)) {
-                Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
-            } else {
-                Optional.ofNullable(Bukkit.getPlayer(target)).ifPresent(p -> p.sendMessage(message));
-            }
+        if (message.isEmpty()) {
+            return;
         }
+
+        if ("ALL".equals(target)) {
+            Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage(message));
+            sendBroadcast(message);
+            return;
+        }
+
+        Player player = Bukkit.getPlayerExact(target);
+        if (player != null) {
+            player.sendMessage(message);
+            return;
+        }
+
+        sendPrivateMessage(target, message);
+    }
+
+    private void sendBroadcast(@NotNull String message) {
+        forwardPluginMessage(BROADCAST, message, false);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void sendPrivateMessage(@NotNull String playerName, @NotNull String message) {
+        if (!isChannelRegistered()) {
+            return;
+        }
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeUTF("Forward");
+        output.writeUTF("ONLINE");
+        output.writeUTF(MESSAGE);
+        output.writeUTF(serverName);
+        output.writeUTF(playerName);
+        output.writeUTF(message);
+
+        sendOnBungeeChannel(output);
     }
 
     @Override
@@ -196,6 +237,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         output.writeUTF("Forward");
         output.writeUTF(target);
         output.writeUTF(subChannel);
+        output.writeUTF(serverName);
         output.writeUTF(message);
 
         sendOnBungeeChannel(output);

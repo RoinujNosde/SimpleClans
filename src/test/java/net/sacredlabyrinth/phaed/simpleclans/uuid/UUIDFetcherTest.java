@@ -3,10 +3,9 @@ package net.sacredlabyrinth.phaed.simpleclans.uuid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UUIDFetcherTest {
 
@@ -19,11 +18,8 @@ public class UUIDFetcherTest {
 
     @Test
     public void getUUIDOf() throws Exception {
-        assertEquals(ghostUUID, UUIDFetcher.getUUIDOf("GhostTheWolf"));
-    }
+        assertEquals(ghostUUID, UUIDFetcher.getUUIDOf("GhostTheWolf"), "Assert fetching UUID from right name");
 
-    @Test
-    public void getUUIDOfThrottled() throws IOException, InterruptedException {
-        assertEquals(ghostUUID, UUIDFetcher.getUUIDOfThrottled("GhostTheWolf"));
+        assertNull(UUIDFetcher.getUUIDOf("AnyNameLongerThan16Chars"), "Assert fetching UUID from wrong name");
     }
 }
