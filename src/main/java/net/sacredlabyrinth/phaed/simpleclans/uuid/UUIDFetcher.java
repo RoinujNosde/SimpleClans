@@ -93,7 +93,7 @@ public final class UUIDFetcher {
 
     // Create connection for each name
     private static HttpURLConnection createConnection(@NotNull URL url) throws IOException {
-        var connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");
@@ -137,7 +137,7 @@ public final class UUIDFetcher {
     }
 
     private static @Nullable UUID fetchUUID(@NotNull URL url) throws IOException {
-        var connection = createConnection(url);
+        HttpURLConnection connection = createConnection(url);
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException(String.format("Unexpected response code: %d. Response: %s",
                     connection.getResponseCode(), connection.getResponseMessage()));
