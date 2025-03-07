@@ -106,10 +106,13 @@ public class SCCommandManager extends PaperCommandManager {
             }
             try {
                 AbstractCondition obj = c.getConstructor(SimpleClans.class).newInstance(plugin);
-                if (obj instanceof @SuppressWarnings("rawtypes")AbstractParameterCondition condition) {
+                if (obj instanceof AbstractParameterCondition) {
+                    @SuppressWarnings("rawtypes")
+                    AbstractParameterCondition condition = ((AbstractParameterCondition<?>) obj);
                     getCommandConditions().addCondition(condition.getType(), condition.getId(), condition);
                 }
-                if (obj instanceof AbstractCommandCondition condition) {
+                if (obj instanceof AbstractCommandCondition) {
+                    AbstractCommandCondition condition = ((AbstractCommandCondition) obj);
                     getCommandConditions().addCondition(condition.getId(), condition);
                 }
             } catch (Exception ex) {

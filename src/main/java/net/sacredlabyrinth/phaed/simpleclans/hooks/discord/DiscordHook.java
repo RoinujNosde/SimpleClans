@@ -656,7 +656,7 @@ public class DiscordHook implements Listener {
 
     private void updateViewPermission(@NotNull Member member, @NotNull Clan clan, DiscordAction action) {
         String tag = clan.getTag();
-        Optional<TextChannel> channel = getCachedChannel(tag).or(() -> getChannel(tag));
+        Optional<TextChannel> channel = getChannel(tag);
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
             updateViewPermission(member, textChannel, action);
