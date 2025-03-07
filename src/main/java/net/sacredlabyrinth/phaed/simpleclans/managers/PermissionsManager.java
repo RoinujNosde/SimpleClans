@@ -176,7 +176,7 @@ public final class PermissionsManager {
      *
      * @deprecated use {@link PermissionsManager#chargePlayer(OfflinePlayer, double)} instead
      */
-    @Deprecated(since = "2.19.0", forRemoval = true)
+    @Deprecated
     public boolean playerChargeMoney(OfflinePlayer player, double money) {
         return chargePlayer(player, money);
     }
@@ -238,7 +238,7 @@ public final class PermissionsManager {
      *
      * @deprecated use {@link PermissionsManager#grantPlayer(OfflinePlayer, double)} instead
      */
-    @Deprecated(since = "2.19.0", forRemoval = true)
+    @Deprecated
     public boolean playerGrantMoney(OfflinePlayer player, double money) {
         return grantPlayer(player, money);
     }
