@@ -41,12 +41,6 @@ public class ClanListFrame extends PageableFrame<Clan> {
 	@Override
 	public void createComponents() {
 		super.createComponents();
-		for (int slot = 0; slot < 9; slot++) {
-			if (slot == 2 || slot == 6 || slot == 7)
-				continue;
-			add(Components.getPanelComponent(slot));
-		}
-
 		List<SCComponent> list = new ListBuilder<>(getConfig(), "list", paginator.getCurrentElements())
 				.withItem(Clan::getBanner)
 				.withViewer(getViewer())

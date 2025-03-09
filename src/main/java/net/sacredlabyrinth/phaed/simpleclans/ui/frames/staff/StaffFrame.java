@@ -24,11 +24,6 @@ public class StaffFrame extends SCFrame {
     }
 
     @Override
-    public int getSize() {
-        return 3 * 9;
-    }
-
-    @Override
     public void createComponents() {
         super.createComponents();
         addClans();

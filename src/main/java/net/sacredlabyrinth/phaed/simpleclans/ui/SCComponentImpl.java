@@ -1,13 +1,16 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import com.cryptomorin.xseries.XMaterial;
+import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -135,6 +138,7 @@ public class SCComponentImpl extends SCComponent {
 		public SCComponent build() {
 			SCComponentImpl component = new SCComponentImpl();
 			component.item = item;
+			component.setEnabled(enabled);
 			ItemMeta itemMeta = item.getItemMeta();
 			if (itemMeta != null) {
 				itemMeta.setLore(lore);
@@ -150,6 +154,7 @@ public class SCComponentImpl extends SCComponent {
 		private final boolean enabled;
 		private final XMaterial material;
 		private Function<T, ItemStack> item;
+		private Function<T, OfflinePlayer> owningPlayer;
 		private final List<Integer> slots;
 		private final List<T> elements;
 		private Player viewer;
@@ -199,6 +204,16 @@ public class SCComponentImpl extends SCComponent {
 			return this;
 		}
 
+		public final ListBuilder<T> withLoreLine(Function<T, String> line) {
+			lore.add(line);
+			return this;
+		}
+
+		public final ListBuilder<T> withOwningPlayer(Function<T, OfflinePlayer> owningPlayer) {
+			this.owningPlayer = owningPlayer;
+			return this;
+		}
+
 		@NotNull
 		private String processLang(@NotNull String key, T t, Function<T, Object>[] args) {
 			Object[] processedArgs = Arrays.stream(args).map(func -> func.apply(t)).toArray();
@@ -229,6 +244,9 @@ public class SCComponentImpl extends SCComponent {
 					itemMeta.setDisplayName(displayName.apply(t));
 					List<String> processedLore = lore.stream().map(f -> f.apply(t)).collect(Collectors.toList());
 					itemMeta.setLore(processedLore);
+					if (itemMeta instanceof SkullMeta && owningPlayer != null) {
+						Components.setOwningPlayer(((SkullMeta) itemMeta), owningPlayer.apply(t));
+					}
 					component.setItemMeta(itemMeta);
 				}
 				component.setLorePermission(lorePermission);
