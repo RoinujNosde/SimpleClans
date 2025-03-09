@@ -3,17 +3,22 @@ package net.sacredlabyrinth.phaed.simpleclans.managers;
 import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
@@ -30,6 +35,7 @@ public final class SettingsManager {
 
     private final FileConfiguration config;
     private final File configFile;
+    private final Map<Class<? extends SCFrame>, FileConfiguration> frameConfigs = new ConcurrentHashMap<>();
 
     public SettingsManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -95,6 +101,7 @@ public final class SettingsManager {
                 SimpleClans.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
+        frameConfigs.clear();
 
         save();
     }
@@ -131,6 +138,30 @@ public final class SettingsManager {
         }
 
         return new Locale(language);
+    }
+
+    public FileConfiguration getConfig(Class<? extends SCFrame> clazz) {
+        return frameConfigs.computeIfAbsent(clazz, this::readConfig);
+    }
+
+    private FileConfiguration readConfig(Class<? extends SCFrame> clazz) {
+        String configPath = clazz.getName().replace("net.sacredlabyrinth.phaed.simpleclans.ui.", "")
+                .replace(".", File.separator) + ".yml";
+        File externalFile = new File(plugin.getDataFolder(), configPath);
+        InputStream resource = plugin.getResource(configPath);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(externalFile);
+        if (resource != null) {
+            YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(resource));
+            config.setDefaults(defaults);
+            if (!externalFile.exists()) {
+                try {
+                    defaults.save(externalFile);
+                } catch (IOException e) {
+                    plugin.getLogger().log(Level.SEVERE, String.format("Error saving defaults to %s", configPath), e);
+                }
+            }
+        }
+        return config;
     }
 
     public List<Material> getItemList() {
