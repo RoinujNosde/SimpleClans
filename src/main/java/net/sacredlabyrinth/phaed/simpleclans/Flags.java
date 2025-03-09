@@ -61,6 +61,10 @@ public class Flags {
         return element.getAsNumber();
     }
 
+    public boolean has(@NotNull String key) {
+        return flags.has(key);
+    }
+
     public boolean getBoolean(@NotNull String key) {
         return getBoolean(key, false);
     }

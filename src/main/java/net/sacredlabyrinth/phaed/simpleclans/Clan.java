@@ -69,6 +69,8 @@ public class Clan implements Serializable, Comparable<Clan> {
     public Clan() {
         this.capeUrl = "";
         this.tag = "";
+
+        setMaxSize(getMaxSize());
     }
 
     public Clan(String tag, String name, boolean verified) {
@@ -79,13 +81,11 @@ public class Clan implements Serializable, Comparable<Clan> {
         this.lastUsed = (new Date()).getTime();
         this.verified = verified;
         this.capeUrl = "";
-
-        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
-        int maxSize = !verified ? settings.getInt(CLAN_UNVERIFIED_MAX_MEMBERS) : settings.getInt(CLAN_MAX_MEMBERS);
-        setMaxSize(maxSize);
-        if (settings.is(CLAN_FF_ON_BY_DEFAULT)) {
+        if (SimpleClans.getInstance().getSettingsManager().is(CLAN_FF_ON_BY_DEFAULT)) {
             friendlyFire = true;
         }
+
+        setMaxSize(getMaxSize());
     }
 
     @Override
@@ -571,7 +571,12 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("max_size")
     public int getMaxSize() {
-        return flags.getNumber("max-size").intValue();
+        if (flags.has("max-size")) {
+            return flags.getNumber("max-size").intValue();
+        }
+
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+        return !verified ? settings.getInt(CLAN_UNVERIFIED_MAX_MEMBERS) : settings.getInt(CLAN_MAX_MEMBERS);
     }
 
     /**
