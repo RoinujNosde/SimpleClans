@@ -62,7 +62,7 @@ war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-        - WorldGuardProvider
+        - Landlord4Provider
         - WorldGuard6Provider
         - GriefPreventionProvider
     listeners:

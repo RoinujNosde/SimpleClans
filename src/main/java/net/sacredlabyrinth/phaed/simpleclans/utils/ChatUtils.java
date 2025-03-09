@@ -47,7 +47,7 @@ public class ChatUtils {
         // https://www.spigotmc.org/threads/hex-color-code-translate.449748/#post-3867795
         if (HEX_COLOR_SUPPORT) {
             Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
-            StringBuilder buffer = new StringBuilder();
+            StringBuffer buffer = new StringBuffer();
             while (matcher.find()) {
                 matcher.appendReplacement(buffer, ChatColor.of("#" + matcher.group(1)).toString());
             }
@@ -59,7 +59,7 @@ public class ChatUtils {
     public static String stripColors(String text) {
         Pattern pattern = HEX_COLOR_SUPPORT ? HEX_STRIP_COLOR_PATTERN : STRIP_COLOR_PATTERN;
         Matcher matcher = pattern.matcher(text);
-        StringBuilder buffer = new StringBuilder();
+        StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {
             matcher.appendReplacement(buffer, "");
         }
@@ -150,14 +150,14 @@ public class ChatUtils {
     }
 
     public static void applyLastColorToFollowingLines(@NotNull List<String> lines) {
-        if (lines.get(0).length() == 0 || lines.get(0).charAt(0) != COLOR_CHAR) {
+        if (lines.get(0).isEmpty() || lines.get(0).charAt(0) != COLOR_CHAR) {
             lines.set(0, ChatColor.WHITE + lines.get(0));
         }
         for (int i = 1; i < lines.size(); i++) {
             final String pLine = lines.get(i - 1);
             final String subLine = lines.get(i);
 
-            if (subLine.length() == 0 || subLine.charAt(0) != COLOR_CHAR) {
+            if (subLine.isEmpty() || subLine.charAt(0) != COLOR_CHAR) {
                 lines.set(i, getLastColors(pLine) + subLine);
             }
         }
