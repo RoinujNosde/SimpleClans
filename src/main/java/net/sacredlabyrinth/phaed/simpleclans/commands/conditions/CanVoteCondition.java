@@ -1,6 +1,9 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.conditions;
 
-import co.aikar.commands.*;
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.ConditionContext;
+import co.aikar.commands.ConditionFailedException;
+import co.aikar.commands.InvalidCommandArgument;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;

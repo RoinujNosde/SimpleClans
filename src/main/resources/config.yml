@@ -2,12 +2,12 @@ safe-civilians: false
 tag:
     default-color: '8'
     max-length: 5
+    min-length: 2
     bracket:
         color: '8'
         leader-color: '4'
         left: ''
         right: ''
-    min-length: 2
     separator:
         color: '8'
         leader-color: '4'
@@ -26,6 +26,7 @@ settings:
     chat-compatibility-mode: true
     rival-limit-percent: 50
     use-colorcode-from-prefix-for-name: true
+    accept-other-alphabets-letters-on-tag: false
     display-chat-tags: true
     global-friendly-fire: false
     unrivable-clans:
@@ -49,17 +50,19 @@ settings:
     allow-reset-kdr: false
     rejoin-cooldown: 60
     rejoin-cooldown-enabled: false
-    accept-other-alphabets-letters-on-tag: false
     ranking-type: "DENSE"
     list-default-order-by: kdr
     lore-length: 36
     past-clans-limit: 10
-    username-regex: '^(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}$'
+    username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
+    tag-regex: ''
+    date-time-pattern: 'HH:mm - dd/MM/yyyy'
+    bungee-servers: []
 war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-        - WorldGuardProvider
+        - Landlord4Provider
         - WorldGuard6Provider
         - GriefPreventionProvider
     listeners:
@@ -146,6 +149,7 @@ clan:
     max-description-length: 120
     min-description-length: 10
     max-members: 25
+    unverified-max-members: 10
     confirmation-for-promote: false
     trust-members-by-default: false
     confirmation-for-demote: false
@@ -165,6 +169,7 @@ clan:
         - treasurer:
             display-name: "&6Treasurer"
             permissions: [ bank.balance, bank.deposit, bank.withdraw ]
+    default-rank: "recruit"
 
 tasks:
     collect-upkeep:
@@ -202,8 +207,7 @@ request:
     ask-frequency-secs: 60
     max-asks-per-request: 1440
 bb:
-    color: e
-    accent-color: '8'
+    prefix: "&8* &e"
     show-on-login: true
     size: 6
     login-size: 6
@@ -242,6 +246,7 @@ mysql:
     enable: false
     password: ''
     database: ''
+    table_prefix: 'sc_'
 permissions:
   auto-group-groupname: false
   YourClanNameHere:

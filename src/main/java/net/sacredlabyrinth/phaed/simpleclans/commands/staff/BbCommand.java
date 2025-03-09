@@ -1,26 +1,17 @@
 package net.sacredlabyrinth.phaed.simpleclans.commands.staff;
 
-import org.bukkit.entity.Player;
-
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Conditions;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Dependency;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Name;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
+import org.bukkit.entity.Player;
 
-import static org.bukkit.ChatColor.RED;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.WHITE;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static org.bukkit.ChatColor.RED;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions")
@@ -31,9 +22,13 @@ public class BbCommand extends BaseCommand {
     private StorageManager storage;
     @Dependency
     private ClanManager cm;
-    
-    @Default
+
+    @Dependency
+    private SettingsManager settings;
+
+    @Subcommand("%display")
     @CommandPermission("simpleclans.mod.bb")
+    @CommandCompletion("@clans")
     @Description("{@@command.description.mod.bb.display}")
     public void display(Player sender, @Name("clan") ClanInput input) {
         input.getClan().displayBb(sender);
@@ -41,6 +36,7 @@ public class BbCommand extends BaseCommand {
 
     @Subcommand("%clear")
     @CommandPermission("simpleclans.mod.bb-clear")
+    @CommandCompletion("@clans")
     @Description("{@@command.description.mod.bb.clear}")
     public void clear(Player player, @Name("clan") ClanInput input) {
         input.getClan().clearBb();
@@ -49,10 +45,12 @@ public class BbCommand extends BaseCommand {
 
     @Subcommand("%add")
     @CommandPermission("simpleclans.mod.bb-add")
+    @CommandCompletion("@clans @nothing")
     @Description("{@@command.description.mod.bb.post}")
     public void postMessage(Player player, @Name("clan") ClanInput input, @Name("message") String msg) {
         Clan clan = input.getClan();
-        clan.addBb(player.getName(), AQUA + player.getName() + ": " + WHITE + msg);
+        clan.addBb(lang("bulletin.board.message", player.getName(), msg));
+        clan.displayBb(player);
         storage.updateClan(clan);
     }
 

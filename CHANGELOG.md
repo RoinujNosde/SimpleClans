@@ -1,5 +1,76 @@
 # Changelog
 
+## [2.19.2](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.1...v2.19.2) (2023-08-03)
+
+
+### Bug Fixes
+
+* cause check should return true on granting ([#397](https://github.com/RoinujNosde/SimpleClans/issues/397)) ([f29bc74](https://github.com/RoinujNosde/SimpleClans/commit/f29bc746af4940b493ebc43b1e25ff0fc00ab8d0))
+
+## [2.19.1](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.0...v2.19.1) (2023-08-03)
+
+
+### Bug Fixes
+
+* charge money on deposit ([#394](https://github.com/RoinujNosde/SimpleClans/issues/394)) ([fe60b25](https://github.com/RoinujNosde/SimpleClans/commit/fe60b25f6107281a9771f6498400c3f8ce81c916))
+* consider uppercase when checking for disallowed colors ([#391](https://github.com/RoinujNosde/SimpleClans/issues/391)) ([503d679](https://github.com/RoinujNosde/SimpleClans/commit/503d67903e386b1c4b6eb7903a1addbfd42a684a))
+
+## [2.19.0](https://github.com/RoinujNosde/SimpleClans/compare/v2.18.1...v2.19.0) (2023-07-27)
+
+
+### Features
+
+* add %simpleclans_has_rank% placeholder ([#379](https://github.com/RoinujNosde/SimpleClans/issues/379)) ([f8ce0f4](https://github.com/RoinujNosde/SimpleClans/commit/f8ce0f415f17748f8b4382e028dd1f5f93cae06a))
+* add a command to set player's locale ([#378](https://github.com/RoinujNosde/SimpleClans/issues/378)) ([5cf64a6](https://github.com/RoinujNosde/SimpleClans/commit/5cf64a672d0a25a62d3abd6720082bb3b4cf056f))
+* add confirmation before reset kdr ([#371](https://github.com/RoinujNosde/SimpleClans/issues/371)) ([d4f1a74](https://github.com/RoinujNosde/SimpleClans/commit/d4f1a74dee9cdeeb458ff6975715a817bfe30fa1))
+* add PlayerResetKdrEvent ([#370](https://github.com/RoinujNosde/SimpleClans/issues/370)) ([d68ec28](https://github.com/RoinujNosde/SimpleClans/commit/d68ec28f8e14926cbe9d13c09a61735e5304a97d))
+* add subcommand /clan mod bb display ([#367](https://github.com/RoinujNosde/SimpleClans/issues/367)) ([105a8ca](https://github.com/RoinujNosde/SimpleClans/commit/105a8cad51b12bf6f487cf6c2b81eb85d966a3cc))
+* adds the possibility to rename a clan ([#360](https://github.com/RoinujNosde/SimpleClans/issues/360)) ([0f69332](https://github.com/RoinujNosde/SimpleClans/commit/0f693329cae81036bfe1423344ed41cf3d535f64))
+* bb message language key ([#358](https://github.com/RoinujNosde/SimpleClans/issues/358)) ([263d129](https://github.com/RoinujNosde/SimpleClans/commit/263d129325888fb1303dda549986ab43ca93ed13))
+* **chat:** adds permissions to use colors and formats ([#341](https://github.com/RoinujNosde/SimpleClans/issues/341)) ([2a139ab](https://github.com/RoinujNosde/SimpleClans/commit/2a139aba03be174086dfb3603007312d0c7a6c33))
+* EconomyTransactionEvent creation ([#384](https://github.com/RoinujNosde/SimpleClans/issues/384)) ([d21dc02](https://github.com/RoinujNosde/SimpleClans/commit/d21dc02dff45f4f20a40303cd26215a71de7dddb))
+* hide reset kdr in main frame if perm denied ([#385](https://github.com/RoinujNosde/SimpleClans/issues/385)) ([ad6bb7b](https://github.com/RoinujNosde/SimpleClans/commit/ad6bb7b13b347be71789fbfb4b8a82f6c5481c96))
+* validating tag by regex ([#363](https://github.com/RoinujNosde/SimpleClans/issues/363)) ([3ef3169](https://github.com/RoinujNosde/SimpleClans/commit/3ef3169942f897280af15040f1243d955df001ab))
+
+
+### Bug Fixes
+
+* added clan suggestion in staff bb commands ([#359](https://github.com/RoinujNosde/SimpleClans/issues/359)) ([442096e](https://github.com/RoinujNosde/SimpleClans/commit/442096e9da98410682c2cd09e0e930454fe0364f))
+* async permission reset & category deletion ([#347](https://github.com/RoinujNosde/SimpleClans/issues/347)) ([7eb748b](https://github.com/RoinujNosde/SimpleClans/commit/7eb748bb9a31a826f53fd7ac6b1eeac64e330467))
+* bump JDK to 16 ([e368ead](https://github.com/RoinujNosde/SimpleClans/commit/e368ead04aa2735f5525d88d5dcb63b78286f80e))
+* **bungee:** removes players from clan on delete ([0258a75](https://github.com/RoinujNosde/SimpleClans/commit/0258a75c819f12e5dbbaf383a572682717f34c59))
+* **bungee:** updates kills count immediately ([ed243f7](https://github.com/RoinujNosde/SimpleClans/commit/ed243f72ecc58a3af11d053d73b315bce9e20e94))
+* default username-regex ([bf1033a](https://github.com/RoinujNosde/SimpleClans/commit/bf1033af769bacbca9a790d2184ec77eeb519485))
+* **discord:** permission overrides reset only existing members ([#349](https://github.com/RoinujNosde/SimpleClans/issues/349)) ([8a35293](https://github.com/RoinujNosde/SimpleClans/commit/8a3529377f5b4a482b530e474e4921b311197a04))
+* display hex message on bulletin board ([#365](https://github.com/RoinujNosde/SimpleClans/issues/365)) ([0b74355](https://github.com/RoinujNosde/SimpleClans/commit/0b74355467625a4901944c72feb84d8de91a4283))
+* invalid colors being used in tags ([2850e59](https://github.com/RoinujNosde/SimpleClans/commit/2850e59d370da34c643de198de85d91744610467))
+* invalid colors being used in tags, pt. 2 ([f98868c](https://github.com/RoinujNosde/SimpleClans/commit/f98868c776a2e275dc7c1647748a0231e935f43e))
+* migrates land permissions on GP claim resize ([2f4ad00](https://github.com/RoinujNosde/SimpleClans/commit/2f4ad00f1c72ee7e3948267965c3a075ec4ef728))
+* NPE on EntityDamageByEntityEvent listener (LandProtection) ([524e407](https://github.com/RoinujNosde/SimpleClans/commit/524e40762011dd500a407286b72b51acf6c357f3))
+* players not able to break vehicles/exit horses ([86d4fac](https://github.com/RoinujNosde/SimpleClans/commit/86d4fac938e353f94c288c39b884027027972bba))
+* players not able to sleep on beds (WorldGuard) ([e9ec283](https://github.com/RoinujNosde/SimpleClans/commit/e9ec283ace55af10abdeb6f937d31d4c2dc198dc))
+* players not able to strip logs/fertilize blocks ([5021b8a](https://github.com/RoinujNosde/SimpleClans/commit/5021b8ad7b5633769bd87af96a0226a53a8b24b4))
+* players not able to use water buckets (WorldGuard) ([807d39a](https://github.com/RoinujNosde/SimpleClans/commit/807d39afeb51d99a96fb793099393b44e2c43b04))
+* players unable to interact with armor stands, paintings, etc ([61dcb3d](https://github.com/RoinujNosde/SimpleClans/commit/61dcb3d440e2eedfb717afcc69687194311a8973))
+* possibly fixes CME on SpyChatHandler ([8a05dbb](https://github.com/RoinujNosde/SimpleClans/commit/8a05dbbf00df97afa7df71a500e2626aaa46ed37))
+* prevent clan name renaming with colors ([#374](https://github.com/RoinujNosde/SimpleClans/issues/374)) ([7fcb964](https://github.com/RoinujNosde/SimpleClans/commit/7fcb964f41118e7d8746e87d5770cc329730834c))
+* remove abandoned channels before validating ([#348](https://github.com/RoinujNosde/SimpleClans/issues/348)) ([5f519c4](https://github.com/RoinujNosde/SimpleClans/commit/5f519c477af3e759596017010d51ddd06e26157e))
+* resets error message when validating a clan tag ([#383](https://github.com/RoinujNosde/SimpleClans/issues/383)) ([8269d80](https://github.com/RoinujNosde/SimpleClans/commit/8269d80831533e517ed2ebd94bec18021de7b0e3))
+* sets duplicate names to something unique ([046aa1d](https://github.com/RoinujNosde/SimpleClans/commit/046aa1d96d58e21496a3361c7d072f3943595304))
+* tnt explosion doesn't count a kill ([#381](https://github.com/RoinujNosde/SimpleClans/issues/381)) ([57b9987](https://github.com/RoinujNosde/SimpleClans/commit/57b9987e9b9dade59c52c88dbfd3b12fdf5eee94))
+* view permission applies only to cached channels ([#346](https://github.com/RoinujNosde/SimpleClans/issues/346)) ([1850701](https://github.com/RoinujNosde/SimpleClans/commit/18507016a843c28efc6d8109f2bb5a5106531f47))
+
+
+### Performance Improvements
+
+* **discord:** remove discord channels from creation ([#353](https://github.com/RoinujNosde/SimpleClans/issues/353)) ([36084db](https://github.com/RoinujNosde/SimpleClans/commit/36084dbfa3e73aedccb156e49af5062e40639927))
+
+
+### Documentation
+
+* author tag isn't available at methods ([f5d547a](https://github.com/RoinujNosde/SimpleClans/commit/f5d547ab27fac7cfe1abd9c819e4f1bb3dd7c624))
+* updated version in README ([#343](https://github.com/RoinujNosde/SimpleClans/issues/343)) ([718868b](https://github.com/RoinujNosde/SimpleClans/commit/718868b2d9eea2aeb6fcfd734e85d16a2cefaa36))
+
 ## [2.18.1](https://github.com/RoinujNosde/SimpleClans/compare/v2.18.0...v2.18.1) (2022-11-29)
 
 

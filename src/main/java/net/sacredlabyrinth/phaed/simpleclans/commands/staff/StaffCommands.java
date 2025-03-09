@@ -6,6 +6,8 @@ import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ReloadEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
@@ -14,7 +16,6 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,6 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
@@ -65,14 +67,14 @@ public class StaffCommands extends BaseCommand {
                 ChatBlock.sendMessage(sender, RED + lang("you.cannot.move.the.last.leader", sender));
                 return;
             } else {
-                oldClan.addBb(oldCp.getName(), AQUA + lang("0.has.resigned", oldCp.getName()));
+                oldClan.addBb(oldCp.getName(), lang("0.has.resigned", oldCp.getName()));
                 oldClan.removePlayerFromClan(uuid);
             }
         }
 
         ClanPlayer cp = cm.getCreateClanPlayer(uuid);
 
-        newClan.addBb(AQUA + lang("joined.the.clan", cp.getName()));
+        newClan.addBb(lang("joined.the.clan", cp.getName()));
         cm.serverAnnounce(lang("has.joined", cp.getName(), newClan.getName()));
         newClan.addPlayerToClan(cp);
     }
@@ -90,9 +92,9 @@ public class StaffCommands extends BaseCommand {
         tag = event.getNewTag();
         String cleanTag = Helper.cleanTag(tag);
 
-        TagValidator validator = new TagValidator(plugin, player, tag);
-        if (validator.getErrorMessage() != null) {
-            ChatBlock.sendMessage(player, validator.getErrorMessage());
+        Optional<String> validationError = plugin.getTagValidator().validate(player, tag);
+        if (validationError.isPresent()) {
+            ChatBlock.sendMessage(player, validationError.get());
             return;
         }
 
@@ -102,7 +104,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
+        clan.addBb(player.getName(), lang("tag.changed.to.0", ChatUtils.parseColors(tag)));
         clan.changeClanTag(tag);
         player.sendMessage(lang("0.tag.changed.to.1", player, clan.getTag(), tag));
     }
@@ -121,6 +123,8 @@ public class StaffCommands extends BaseCommand {
         for (Clan clan : cm.getClans()) {
             permissions.updateClanPermissions(clan);
         }
+        Bukkit.getPluginManager().callEvent(new ReloadEvent(sender));
+
         ChatBlock.sendMessage(sender, AQUA + lang("configuration.reloaded", sender));
     }
 
@@ -226,7 +230,7 @@ public class StaffCommands extends BaseCommand {
 
         if (!clanInput.isVerified()) {
             clanInput.verifyClan();
-            clanInput.addBb(sender.getName(), AQUA + lang("clan.0.has.been.verified", clanInput.getName()));
+            clanInput.addBb(sender.getName(), lang("clan.0.has.been.verified", clanInput.getName()));
             ChatBlock.sendMessage(sender, AQUA + lang("the.clan.has.been.verified", sender));
         } else {
             ChatBlock.sendMessage(sender, RED + lang("the.clan.is.already.verified", sender));
@@ -263,7 +267,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(sender.getName(), AQUA + lang("has.been.kicked.by", clanPlayer.getName(),
+        clan.addBb(sender.getName(), lang("has.been.kicked.by", clanPlayer.getName(),
                 sender.getName(), sender));
         clan.removePlayerFromClan(clanPlayer.getUniqueId());
     }
@@ -294,7 +298,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(sender.getName(), AQUA + lang("promoted.to.leader", promotePl.getName()));
+        clan.addBb(sender.getName(), lang("promoted.to.leader", promotePl.getName()));
         clan.promote(promotePl.getUniqueId());
         ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.promoted", sender));
     }
@@ -317,7 +321,7 @@ public class StaffCommands extends BaseCommand {
             return;
         }
         clan.demote(otherCp.getUniqueId());
-        clan.addBb(sender.getName(), AQUA + lang("demoted.back.to.member", otherCp.getName()));
+        clan.addBb(sender.getName(), lang("demoted.back.to.member", otherCp.getName()));
         ChatBlock.sendMessage(sender, AQUA + lang("player.successfully.demoted", sender));
     }
 
@@ -326,7 +330,11 @@ public class StaffCommands extends BaseCommand {
     @Description("{@@command.description.resetkdr.everyone}")
     public void resetKdr(CommandSender sender) {
         for (ClanPlayer cp : cm.getAllClanPlayers()) {
-            cm.resetKdr(cp);
+            PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                cm.resetKdr(cp);
+            }
         }
         ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.kdr.of.all.players", sender));
     }
@@ -335,20 +343,49 @@ public class StaffCommands extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("simpleclans.admin.resetkdr")
     @Description("{@@command.description.resetkdr.player}")
-    public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput player) {
-        ClanPlayer cp = player.getClanPlayer();
-        cm.resetKdr(cp);
-        ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));
+    public void resetKdr(CommandSender sender, @Name("player") ClanPlayerInput clanPlayer) {
+        ClanPlayer cp = clanPlayer.getClanPlayer();
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            cm.resetKdr(cp);
+            ChatBlock.sendMessage(sender, RED + lang("you.have.reseted.0.kdr", sender, cp.getName()));
+        }
     }
 
     @Subcommand("%admin %permanent")
     @CommandCompletion("@clans")
     @CommandPermission("simpleclans.admin.permanent")
     @Description("{@@command.description.admin.permanent}")
-    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clan) {
-        boolean permanent = !clan.getClan().isPermanent();
-        clan.getClan().setPermanent(permanent);
-        clan.getClan().addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
-        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getClan().getName()));
+    public void togglePermanent(CommandSender sender, @Name("clan") ClanInput clanInput) {
+        Clan clan = clanInput.getClan();
+        boolean permanent = !clan.isPermanent();
+        clan.setPermanent(permanent);
+        clan.addBb(sender.getName(), lang((permanent) ? "permanent.status.enabled" : "permanent.status.disabled", sender.getName()));
+        ChatBlock.sendMessage(sender, AQUA + lang("you.have.toggled.permanent.status", sender, clan.getName()));
+    }
+
+    @Subcommand("%mod %rename")
+    @CommandCompletion("@clans @nothing")
+    @CommandPermission("simpleclans.mod.rename")
+    @Description("{@@command.description.mod.rename}")
+    public void rename(CommandSender sender, @Name("clan") ClanInput clanInput, @Name("name") String clanName) {
+        Clan clan = clanInput.getClan();
+        clan.setName(clanName);
+        storage.updateClan(clan);
+
+        ChatBlock.sendMessageKey(sender, "you.have.successfully.renamed.the.clan", clanName);
+    }
+
+    @Subcommand("%mod %locale")
+    @CommandPermission("simpleclans.mod.locale")
+    @Description("{@@command.description.mod.locale}")
+    @CommandCompletion("@locales")
+    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Values("@locales") @Name("locale") @Single String locale) {
+        ClanPlayer cp = input.getClanPlayer();
+        cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
+        plugin.getStorageManager().updateClanPlayer(cp);
+
+        ChatBlock.sendMessage(sender, lang("locale.has.been.changed"));
     }
 }

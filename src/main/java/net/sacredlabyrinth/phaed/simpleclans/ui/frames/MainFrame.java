@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.*;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.staff.StaffFrame;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -87,19 +88,25 @@ public class MainFrame extends SCFrame {
 	}
 
 	public void addResetKdr() {
-		List<String> resetKrLore;
+		if (!plugin.getPermissionsManager().has(getViewer(), "simpleclans.vip.resetkdr")) {
+			return;
+		}
+
+		List<String> resetKdrLore;
 		if (plugin.getSettingsManager().is(ECONOMY_PURCHASE_RESET_KDR)) {
-			resetKrLore = Arrays.asList(
-					lang("gui.main.reset.kdr.lore.price", getViewer(), plugin.getSettingsManager().getString(ECONOMY_RESET_KDR_PRICE)),
+			double price = plugin.getSettingsManager().getDouble(ECONOMY_RESET_KDR_PRICE);
+			resetKdrLore = Arrays.asList(
+					lang("gui.main.reset.kdr.lore.price", getViewer(), CurrencyFormat.format(price)),
 					lang("gui.main.reset.kdr.lore", getViewer()));
 		} else {
-			resetKrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
+			resetKdrLore = Collections.singletonList(lang("gui.main.reset.kdr.lore", getViewer()));
 		}
 		SCComponent resetKdr = new SCComponentImpl(lang("gui.main.reset.kdr.title", getViewer()),
-				resetKrLore, XMaterial.ANVIL, 5);
+				resetKdrLore, XMaterial.ANVIL, 5);
 		resetKdr.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(), "resetkdr", false));
 		resetKdr.setConfirmationRequired(ClickType.LEFT);
 		resetKdr.setPermission(ClickType.LEFT, "simpleclans.vip.resetkdr");
+
 		add(resetKdr);
 	}
 

@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Level;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause.PLAYER_KILLED;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 
 /**
@@ -48,6 +49,7 @@ public class PlayerDeath extends SCListener {
         // record death for victim
         victimCp.addDeath();
         plugin.getStorageManager().updateClanPlayer(victimCp);
+        plugin.getStorageManager().updateClanPlayer(attackerCp);
     }
 
     @EventHandler
@@ -98,7 +100,7 @@ public class PlayerDeath extends SCListener {
                 }
                 player.sendMessage(ChatColor.AQUA + lang("player.got.money", player, money,
                         victim.getName(), attacker.getKDR()));
-                plugin.getPermissionsManager().playerGrantMoney(player, money);
+                plugin.getPermissionsManager().grantPlayer(player, money, PLAYER_KILLED);
             }
         }
     }
@@ -165,7 +167,7 @@ public class PlayerDeath extends SCListener {
     	ClanPlayer killer = kill.getKiller();
     	ClanPlayer victim = kill.getVictim();
 		killer.addKill(type);
-		plugin.getStorageManager().insertKill(killer, victim, type.getShortname());
+		plugin.getStorageManager().insertKill(killer, victim, type.getShortname(), kill.getTime());
 	}
 
     private double calculateReward(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim) {

@@ -3,7 +3,8 @@
 /bin/
 /.classpath
 /.project
-/dependency-reduced-pom.xml
 *.jar
 .settings
 .factorypath
+SimpleClans.iml
+dependency-reduced-pom.xml

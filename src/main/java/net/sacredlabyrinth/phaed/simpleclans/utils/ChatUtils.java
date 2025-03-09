@@ -22,6 +22,8 @@ public class ChatUtils {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("(%([A-Za-z]+)%)");
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("[&§][0-9a-fA-Fk-orK-OR]");
+    private static final Pattern HEX_STRIP_COLOR_PATTERN = Pattern.compile("([&§]#[0-9A-Fa-f]{6})|([&§][0-9a-fA-Fk-orK-OR])|([&§]x([&§][a-fA-F0-9]){6})");
 
     static {
         try {
@@ -55,15 +57,13 @@ public class ChatUtils {
     }
 
     public static String stripColors(String text) {
-        if (HEX_COLOR_SUPPORT) {
-            Matcher matcher = HEX_COLOR_PATTERN.matcher(text);
-            StringBuffer buffer = new StringBuffer();
-            while (matcher.find()) {
-                matcher.appendReplacement(buffer, "");
-            }
-            text = matcher.appendTail(buffer).toString();
+        Pattern pattern = HEX_COLOR_SUPPORT ? HEX_STRIP_COLOR_PATTERN : STRIP_COLOR_PATTERN;
+        Matcher matcher = pattern.matcher(text);
+        StringBuffer buffer = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(buffer, "");
         }
-        return oldStripColors(text);
+        return matcher.appendTail(buffer).toString();
     }
 
     public static String getLastColorCode(String msg) {
@@ -74,7 +74,7 @@ public class ChatUtils {
         String one = msg.substring(msg.length() - 2, msg.length() - 1);
         String two = msg.substring(msg.length() - 1);
 
-        if (one.equals("\u00a7")) {
+        if (one.equals("§")) {
             return one + two;
         }
 
@@ -83,12 +83,6 @@ public class ChatUtils {
         }
 
         return "";
-    }
-
-    private static String oldStripColors(String text) {
-        return text.replaceAll("[&][0-9A-Fa-fk-orx]", "")
-                .replaceAll(String.valueOf((char) 194), "") //don't know why
-                .replaceAll("[\u00a7][0-9A-Fa-fk-orx]", "");
     }
 
     public static BaseComponent[] toBaseComponents(@Nullable CommandSender receiver, @NotNull String text) {
@@ -156,16 +150,17 @@ public class ChatUtils {
     }
 
     public static void applyLastColorToFollowingLines(@NotNull List<String> lines) {
-        if (lines.get(0).length() == 0 || lines.get(0).charAt(0) != COLOR_CHAR) {
+        if (lines.get(0).isEmpty() || lines.get(0).charAt(0) != COLOR_CHAR) {
             lines.set(0, ChatColor.WHITE + lines.get(0));
         }
         for (int i = 1; i < lines.size(); i++) {
             final String pLine = lines.get(i - 1);
             final String subLine = lines.get(i);
 
-            if (subLine.length() == 0 || subLine.charAt(0) != COLOR_CHAR) {
+            if (subLine.isEmpty() || subLine.charAt(0) != COLOR_CHAR) {
                 lines.set(i, getLastColors(pLine) + subLine);
             }
         }
     }
+
 }

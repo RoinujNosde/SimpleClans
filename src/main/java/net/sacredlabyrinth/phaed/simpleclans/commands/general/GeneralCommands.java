@@ -5,22 +5,22 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandParameter;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.annotation.*;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.data.*;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.RequestCanceller;
+import net.sacredlabyrinth.phaed.simpleclans.conversation.ResetKdrPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
+import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.RequestManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryDrawer;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.MainFrame;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -62,8 +62,25 @@ public class GeneralCommands extends BaseCommand {
         }
     }
 
+    @Subcommand("%locale")
+    @CommandPermission("simpleclans.anyone.locale")
+    @Description("{@@command.description.locale}")
+    @CommandCompletion("@locales")
+    public void locale(ClanPlayer cp, @Values("@locales") @Name("locale") @Single String locale) {
+        if (!settings.is(LANGUAGE_SELECTOR)) {
+            ChatBlock.sendMessageKey(cp, "locale.is.prohibited");
+            return;
+        }
+
+        cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
+        plugin.getStorageManager().updateClanPlayer(cp);
+
+        ChatBlock.sendMessageKey(cp, "locale.has.been.changed");
+    }
+
     @Subcommand("%create")
     @CommandPermission("simpleclans.leader.create")
+    @CommandCompletion("%compl:tag %compl:name")
     @Description("{@@command.description.create}")
     public void create(Player player, @Optional @Name("tag") String tag, @Optional @Name("name") String name) {
         ClanPlayer cp = cm.getAnyClanPlayer(player.getUniqueId());
@@ -156,17 +173,30 @@ public class GeneralCommands extends BaseCommand {
         ChatBlock.sendMessage(player, AQUA + lang("friendy.fire.is.now.managed.by.your.clan", player));
     }
 
+    @Subcommand("%resetkdr %confirm")
+    @CommandPermission("simpleclans.vip.resetkdr")
+    @Description("{@@command.description.resetkdr}")
+    public void resetKdrConfirm(Player player, ClanPlayer cp) {
+        if (!settings.is(ALLOW_RESET_KDR)) {
+            ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
+            return;
+        }
+        PlayerResetKdrEvent event = new PlayerResetKdrEvent(cp);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled() && cm.purchaseResetKdr(player)) {
+            cm.resetKdr(cp);
+            ChatBlock.sendMessage(player, RED + lang("you.have.reseted.your.kdr", player));
+        }
+    }
+
     @Subcommand("%resetkdr")
     @CommandPermission("simpleclans.vip.resetkdr")
     @Description("{@@command.description.resetkdr}")
     public void resetKdr(Player player, ClanPlayer cp) {
         if (!settings.is(ALLOW_RESET_KDR)) {
             ChatBlock.sendMessage(player, RED + lang("disabled.command", player));
-            return;
-        }
-        if (cm.purchaseResetKdr(player)) {
-            cm.resetKdr(cp);
-            ChatBlock.sendMessage(player, RED + lang("you.have.reseted.your.kdr", player));
+        } else {
+            new SCConversation(plugin, player, new ResetKdrPrompt(cm), 60).begin();
         }
     }
 
@@ -256,7 +286,7 @@ public class GeneralCommands extends BaseCommand {
             Clan clan = clans.get(i);
             String name = " " + (clan.isVerified() ? settings.getColored(PAGE_CLAN_NAME_COLOR) : GRAY) + clan.getName();
             String line = MessageFormat.format(lineFormat, i + 1, leftBracket, clan.getColorTag(),
-                    rightBracket, name, clan.getBalance());
+                    rightBracket, name, clan.getBalanceFormatted());
             sender.sendMessage(line);
         }
     }

@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.sacredlabyrinth.phaed.simpleclans.events.*;
@@ -9,6 +10,8 @@ import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.DateFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -112,13 +115,13 @@ public class Clan implements Serializable, Comparable<Clan> {
     @Deprecated
     public void deposit(double amount, Player player) {
         if (SimpleClans.getInstance().getPermissionsManager().playerHasMoney(player, amount)) {
-            if (SimpleClans.getInstance().getPermissionsManager().playerChargeMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("player.clan.deposit", player, amount));
-                addBb(player.getName(), AQUA + lang("bb.clan.deposit", amount));
+            if (SimpleClans.getInstance().getPermissionsManager().chargePlayer(player, amount)) {
+                player.sendMessage(AQUA + lang("player.clan.deposit", player, CurrencyFormat.format(amount)));
+                addBb(player.getName(), lang("bb.clan.deposit", CurrencyFormat.format(amount)));
                 setBalance(getBalance() + amount);
                 SimpleClans.getInstance().getStorageManager().updateClan(this);
             } else {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, CurrencyFormat.format(amount)));
             }
         } else {
             player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
@@ -149,9 +152,9 @@ public class Clan implements Serializable, Comparable<Clan> {
     @Deprecated
     public void withdraw(double amount, Player player) {
         if (getBalance() >= amount) {
-            if (SimpleClans.getInstance().getPermissionsManager().playerGrantMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("player.clan.withdraw", player, amount));
-                addBb(player.getName(), AQUA + lang("bb.clan.withdraw", amount));
+            if (SimpleClans.getInstance().getPermissionsManager().grantPlayer(player, amount)) {
+                player.sendMessage(AQUA + lang("player.clan.withdraw", player, CurrencyFormat.format(amount)));
+                addBb(player.getName(), lang("bb.clan.withdraw", CurrencyFormat.format(amount)));
                 setBalance(getBalance() - amount);
             }
         } else {
@@ -246,6 +249,16 @@ public class Clan implements Serializable, Comparable<Clan> {
     }
 
     /**
+     * Returns the clan's balance formatted
+     *
+     * @return the balance formatted
+     */
+    @Placeholder("balance_formatted")
+    public String getBalanceFormatted() {
+        return CurrencyFormat.format(balance);
+    }
+
+    /**
      * (used internally)
      *
      * @param balance the balance to set
@@ -292,7 +305,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void setTag(String tag) {
         this.tag = tag;
     }
-
     /**
      * Returns the first color in the clan's tag
      *
@@ -453,7 +465,7 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     @Placeholder("founded")
     public String getFoundedString() {
-        return new java.text.SimpleDateFormat("MMM dd, ''yy h:mm a").format(new Date(this.founded));
+        return DateFormat.formatDateTime(founded);
     }
 
     /**
@@ -492,6 +504,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getStorageManager().updateClan(this);
     }
 
+    public void setBb(List<String> bb) {
+        this.bb = new ArrayList<>(bb);
+    }
 
     /**
      * Adds a bulletin board message without saving it to the database
@@ -1277,8 +1292,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
+            addBb(msg);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1287,8 +1302,8 @@ public class Clan implements Serializable, Comparable<Clan> {
      */
     public void addBb(String announcerName, String msg, boolean updateLastUsed) {
         if (isVerified()) {
-            addBb(SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + msg, updateLastUsed);
-            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR) + "* " + SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR) + ChatUtils.parseColors(msg));
+            addBb(msg, updateLastUsed);
+            clanAnnounce(announcerName, SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX) + ChatUtils.parseColors(msg));
         }
     }
 
@@ -1305,31 +1320,35 @@ public class Clan implements Serializable, Comparable<Clan> {
      * @param maxSize amount of lines to display
      */
     public void displayBb(Player player, int maxSize) {
-        if (isVerified()) {
-            ChatBlock.sendBlank(player);
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
-            String pageHeadingsColor = SimpleClans.getInstance().getSettingsManager().getColored(PAGE_HEADINGS_COLOR);
-            ChatBlock.saySingle(player, lang("bulletin.board.header", bbAccentColor, pageHeadingsColor, getName()));
-
-            List<String> localBb;
-            if (maxSize == -1) {
-                localBb = bb;
-                maxSize = SimpleClans.getInstance().getSettingsManager().getInt(BB_SIZE);
-            } else {
-                localBb = new ArrayList<>(bb);
-            }
-            while (localBb.size() > maxSize) {
-                localBb.remove(0);
-            }
-
-            for (String msg : localBb) {
-                if (!sendBbTime(player, msg)) {
-                    String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
-                    ChatBlock.sendMessage(player, bbAccentColor + "* " + bbColor + ChatUtils.parseColors(msg));
-                }
-            }
-            ChatBlock.sendBlank(player);
+        if (!isVerified()) {
+            return;
         }
+
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+
+        ChatBlock.sendBlank(player);
+        ChatBlock.saySingle(player, lang("bulletin.board.header", getName()));
+
+        List<String> localBb;
+        if (maxSize == -1) {
+            localBb = bb;
+            maxSize = settings.getInt(BB_SIZE);
+        } else {
+            localBb = new ArrayList<>(bb);
+        }
+
+        while (localBb.size() > maxSize) {
+            localBb.remove(0);
+        }
+
+        for (String msg : localBb) {
+            if (!sendBbTime(player, msg)) {
+                String bbPrefix = settings.getColored(BB_PREFIX);
+                ChatBlock.sendMessage(player, bbPrefix + ChatUtils.parseColors(msg));
+            }
+        }
+
+        ChatBlock.sendBlank(player);
     }
 
     /**
@@ -1345,16 +1364,19 @@ public class Clan implements Serializable, Comparable<Clan> {
             if (index < 1) {
                 return false;
             }
+
+            String bbPrefix = SimpleClans.getInstance().getSettingsManager().getColored(BB_PREFIX);
+
             long time = (System.currentTimeMillis() - Long.parseLong(msg.substring(0, index))) / 1000L;
-            String bbAccentColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_ACCENT_COLOR);
-            String bbColor = SimpleClans.getInstance().getSettingsManager().getColored(BB_COLOR);
-            msg = ChatUtils.parseColors(bbAccentColor + "* " + bbColor + msg.substring(++index));
-            TextComponent textComponent = new TextComponent(msg);
-            textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
+            msg = ChatUtils.parseColors(bbPrefix + msg.substring(++index));
+
+            BaseComponent[] baseComponent = TextComponent.fromLegacyText(msg);
+            TextComponent textMessage = new TextComponent(baseComponent);
+            textMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(
                     Dates.formatTime(time, 1) + lang("bb.ago"))));
-            player.spigot().sendMessage(textComponent);
+            player.spigot().sendMessage(textMessage);
             return true;
-        } catch (Throwable rock) {
+        } catch (Exception rock) {
             return false;
         }
     }
@@ -1371,7 +1393,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         List<Clan> clans = SimpleClans.getInstance().getClanManager().getClans();
 
         if (isPermanent() && !force) {
-            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent"));
+            ChatBlock.sendMessage(sender, RED + lang("cannot.disband.permanent", sender));
             return;
         }
 
@@ -1404,17 +1426,18 @@ public class Clan implements Serializable, Comparable<Clan> {
             String disbanded = lang("clan.disbanded");
 
             if (c.removeWarringClan(this)) {
-                c.addBb(disbanded, AQUA + lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
+                c.addBb(disbanded, lang("you.are.no.longer.at.war", c.getName(), getColorTag()));
             }
 
             if (c.removeRival(getTag())) {
-                c.addBb(disbanded, AQUA + lang("has.been.disbanded.rivalry.ended", getName()));
+                c.addBb(disbanded, lang("has.been.disbanded.rivalry.ended", getName()));
             }
 
             if (c.removeAlly(getTag())) {
-                c.addBb(disbanded, AQUA + lang("has.been.disbanded.alliance.ended", getName()));
+                c.addBb(disbanded, lang("has.been.disbanded.alliance.ended", getName()));
             }
         }
+
         SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
 
         SimpleClans.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SimpleClans.getInstance(), () -> {
@@ -1462,7 +1485,7 @@ public class Clan implements Serializable, Comparable<Clan> {
             warring.add(targetClan.getTag());
             flags.put(WARRING_KEY, warring);
             if (requestPlayer != null) {
-                addBb(requestPlayer.getName(), AQUA + lang("you.are.at.war",
+                addBb(requestPlayer.getName(), lang("you.are.at.war",
                         getName(), targetClan.getColorTag()));
             }
             SimpleClans.getInstance().getStorageManager().updateClan(this);

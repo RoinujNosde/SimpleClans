@@ -11,6 +11,11 @@ public class UpdateClanPlayer extends Update<ClanPlayer> {
     }
 
     @Override
+    public boolean isBungeeSubchannel() {
+        return false;
+    }
+
+    @Override
     protected Class<ClanPlayer> getType() {
         return ClanPlayer.class;
     }

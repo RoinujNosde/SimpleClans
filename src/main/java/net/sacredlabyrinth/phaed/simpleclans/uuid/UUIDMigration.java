@@ -1,11 +1,12 @@
 package net.sacredlabyrinth.phaed.simpleclans.uuid;
 
-import java.util.UUID;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 /**
  *
@@ -24,6 +25,7 @@ public class UUIDMigration {
         }
     }
 
+    @Deprecated
     public static UUID getForcedPlayerUUID(String playerName) {
         Player player = Bukkit.getPlayerExact(playerName);
 

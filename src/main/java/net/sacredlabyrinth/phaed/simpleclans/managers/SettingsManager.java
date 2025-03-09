@@ -6,6 +6,7 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -16,8 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
 import static net.sacredlabyrinth.phaed.simpleclans.utils.RankingNumberResolver.RankingType;
@@ -96,8 +97,8 @@ public final class SettingsManager {
         if (configFile.exists()) {
             try {
                 config.load(configFile);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (IOException | InvalidConfigurationException ex) {
+                SimpleClans.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
         frameConfigs.clear();
@@ -108,8 +109,8 @@ public final class SettingsManager {
     public void save() {
         try {
             config.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            SimpleClans.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
@@ -123,7 +124,7 @@ public final class SettingsManager {
                     " that matches their clan tag.");
         }
 
-        if (discordSrv == null && is (DISCORDCHAT_ENABLE)) {
+        if (discordSrv == null && is(DISCORDCHAT_ENABLE)) {
             plugin.getLogger().warning("DiscordChat can't be initialized, please, install DiscordSRV.");
         }
     }
@@ -180,7 +181,7 @@ public final class SettingsManager {
      * Check whether a word is disallowed
      *
      * @param word the world
-     * @return whether its a disallowed word
+     * @return whether its disallowed word
      */
     public boolean isDisallowedWord(String word) {
         for (String disallowedTag : getStringList(DISALLOWED_TAGS)) {
@@ -200,13 +201,8 @@ public final class SettingsManager {
      * @return whether the string contains the color code
      */
     public boolean hasDisallowedColor(String str) {
-        for (String disallowedTag : getStringList(DISALLOWED_TAG_COLORS)) {
-            if (str.contains("&" + disallowedTag)) {
-                return true;
-            }
-        }
-
-        return false;
+        String loweredString = str.toLowerCase();
+        return getStringList(DISALLOWED_TAG_COLORS).stream().map(String::toLowerCase).anyMatch(color -> loweredString.contains("&" + color));
     }
 
     /**
@@ -339,13 +335,16 @@ public final class SettingsManager {
         ALLOW_RESET_KDR("settings.allow-reset-kdr", false),
         REJOIN_COOLDOWN("settings.rejoin-cooldown", 60),
         ENABLE_REJOIN_COOLDOWN("settings.rejoin-cooldown-enabled", false),
-        ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
         RANKING_TYPE("settings.ranking-type", "DENSE"),
         LIST_DEFAULT_ORDER_BY("settings.list-default-order-by", "kdr"),
         LORE_LENGTH("settings.lore-length", 36),
         PVP_ONLY_WHILE_IN_WAR("settings.pvp-only-while-at-war", false),
         PAST_CLANS_LIMIT("settings.past-clans-limit", 10),
         USERNAME_REGEX("settings.username-regex", "^\\**[a-zA-Z0-9_$]{1,16}$"),
+        TAG_REGEX("settings.tag-regex", ""),
+        ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
+        DATE_TIME_PATTERN("settings.date-time-pattern", "HH:mm - dd/MM/yyyy"),
+        BUNGEE_SERVERS("settings.bungee-servers"),
         /*
         ================
         > Tag Settings
@@ -353,12 +352,12 @@ public final class SettingsManager {
          *
          */
         TAG_DEFAULT_COLOR("tag.default-color", "8"),
-        TAG_MAX_LENGTH("tag.max-length", 5),
         TAG_BRACKET_COLOR("tag.bracket.color", "8"),
         TAG_BRACKET_LEADER_COLOR("tag.bracket.leader-color", "4"),
         TAG_BRACKET_LEFT("tag.bracket.left", ""),
-        TAG_BRACKET_RIGHT("tag.bracket.right", ""),
+        TAG_MAX_LENGTH("tag.max-length", 5),
         TAG_MIN_LENGTH("tag.min-length", 2),
+        TAG_BRACKET_RIGHT("tag.bracket.right", ""),
         TAG_SEPARATOR_COLOR("tag.separator.color", "8"),
         TAG_SEPARATOR_LEADER_COLOR("tag.separator.leader-color", "4"),
         TAG_SEPARATOR_CHAR("tag.separator.char", " ."),
@@ -476,6 +475,7 @@ public final class SettingsManager {
         CLAN_MAX_DESCRIPTION_LENGTH("clan.max-description-length", 120),
         CLAN_MIN_DESCRIPTION_LENGTH("clan.min-description-length", 10),
         CLAN_MAX_MEMBERS("clan.max-members", 25),
+        CLAN_UNVERIFIED_MAX_MEMBERS("clan.unverified-max-members", 10),
         CLAN_MAX_ALLIANCES("clan.max-alliances", -1),
         CLAN_CONFIRMATION_FOR_PROMOTE("clan.confirmation-for-promote", false),
         CLAN_TRUST_MEMBERS_BY_DEFAULT("clan.trust-members-by-default", false),
@@ -483,6 +483,7 @@ public final class SettingsManager {
         CLAN_PERCENTAGE_ONLINE_TO_DEMOTE("clan.percentage-online-to-demote", 100.0),
         CLAN_FF_ON_BY_DEFAULT("clan.ff-on-by-default", false),
         CLAN_MIN_TO_VERIFY("clan.min-to-verify", 1),
+        CLAN_DEFAULT_RANK("clan.default-rank", "recruit"),
         /*
         ================
         > Tasks Settings
@@ -546,8 +547,7 @@ public final class SettingsManager {
         > BB Settings
         ================
          */
-        BB_COLOR("bb.color", "e"),
-        BB_ACCENT_COLOR("bb.accent-color", "8"),
+        BB_PREFIX("bb.prefix", "&8* &e"),
         BB_SHOW_ON_LOGIN("bb.show-on-login", true),
         BB_SIZE("bb.size", 6),
         BB_LOGIN_SIZE("bb.login-size", 6),
@@ -608,6 +608,7 @@ public final class SettingsManager {
         MYSQL_ENABLE("mysql.enable", false),
         MYSQL_PASSWORD("mysql.password", ""),
         MYSQL_DATABASE("mysql.database", ""),
+        MYSQL_TABLE_PREFIX("mysql.table_prefix", "sc_"),
         /*
         ================
         > Permissions Settings

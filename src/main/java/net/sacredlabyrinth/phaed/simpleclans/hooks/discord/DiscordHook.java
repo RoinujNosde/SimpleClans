@@ -70,18 +70,13 @@ public class DiscordHook implements Listener {
 
     private static final int MAX_CHANNELS_PER_CATEGORY = 50;
     private static final int MAX_CHANNELS_PER_GUILD = 500;
-
     private final SimpleClans plugin;
     private final SettingsManager settingsManager;
     private final ChatManager chatManager;
     private final ClanManager clanManager;
     private final AccountLinkManager accountManager = DiscordSRV.getPlugin().getAccountLinkManager();
-
-    private final Guild guild = DiscordSRV.getPlugin().getMainGuild();
     private final List<String> textCategories;
-    private final List<String> discordClanTags;
     private final List<String> clanTags;
-    private final Role leaderRole;
     private final List<String> whitelist;
 
     public DiscordHook(SimpleClans plugin) {
@@ -89,14 +84,13 @@ public class DiscordHook implements Listener {
         settingsManager = plugin.getSettingsManager();
         chatManager = plugin.getChatManager();
         clanManager = plugin.getClanManager();
+
         textCategories = settingsManager.getStringList(DISCORDCHAT_TEXT_CATEGORY_IDS).stream().
                 filter(this::categoryExists).collect(Collectors.toList());
         whitelist = settingsManager.getStringList(DISCORDCHAT_TEXT_WHITELIST);
 
         clanTags = clanManager.getClans().stream().map(Clan::getTag).collect(Collectors.toList());
-        discordClanTags = getCachedChannels().stream().map(GuildChannel::getName).collect(Collectors.toList());
 
-        leaderRole = getLeaderRole();
         setupDiscord();
     }
 
@@ -229,7 +223,7 @@ public class DiscordHook implements Listener {
     @Subscribe
     public void onPlayerLinking(AccountLinkedEvent event) {
         ClanPlayer clanPlayer = clanManager.getClanPlayer(event.getPlayer());
-        Member member = guild.getMember(event.getUser());
+        Member member = getGuild().getMember(event.getUser());
         if (clanPlayer == null || member == null) {
             return;
         }
@@ -250,7 +244,7 @@ public class DiscordHook implements Listener {
     @Subscribe
     public void onPlayerUnlinking(AccountUnlinkedEvent event) {
         ClanPlayer clanPlayer = clanManager.getClanPlayer(event.getPlayer());
-        Member member = guild.getMember(event.getDiscordUser());
+        Member member = getGuild().getMember(event.getDiscordUser());
         if (clanPlayer == null || clanPlayer.getClan() == null || member == null) {
             return;
         }
@@ -260,14 +254,23 @@ public class DiscordHook implements Listener {
     }
 
     protected void setupDiscord() {
-        clearChannels();
-        resetPermissions();
-        createChannels();
+        Map<String, TextChannel> discordTagChannels = getChannels().stream().
+                collect(Collectors.toMap(TextChannel::getName, textChannel -> textChannel));
+        SimpleClans.debug("DiscordTagChannels before clearing: " + String.join(",", discordTagChannels.keySet()));
+
+        clearChannels(discordTagChannels);
+        SimpleClans.debug("DiscordTagChannels after clearing: " + String.join(",", discordTagChannels.keySet()));
+
+        resetPermissions(discordTagChannels);
+
+        SimpleClans.debug("ClanTags before creating: " + String.join(",", clanTags));
+        createChannels(discordTagChannels);
+        SimpleClans.debug("ClanTags after creating: " + String.join(",", clanTags));
     }
 
     @NotNull
     public Guild getGuild() {
-        return guild;
+        return DiscordSRV.getPlugin().getMainGuild();
     }
 
     /**
@@ -275,10 +278,10 @@ public class DiscordHook implements Listener {
      */
     @NotNull
     public Role getLeaderRole() {
-        Role role = guild.getRoleById(settingsManager.getString(DISCORDCHAT_LEADER_ID));
+        Role role = getGuild().getRoleById(settingsManager.getString(DISCORDCHAT_LEADER_ID));
 
         if (role == null || !role.getName().equals(settingsManager.getString(DISCORDCHAT_LEADER_ROLE))) {
-            role = guild.createRole().
+            role = getGuild().createRole().
                     setName(settingsManager.getString(DISCORDCHAT_LEADER_ROLE)).
                     setColor(getLeaderColor()).
                     setMentionable(true).
@@ -317,19 +320,19 @@ public class DiscordHook implements Listener {
      */
     @Nullable
     public Category createCategory() {
-        if (guild.getChannels().size() >= MAX_CHANNELS_PER_GUILD) {
+        if (getGuild().getChannels().size() >= MAX_CHANNELS_PER_GUILD) {
             return null;
         }
 
         String categoryName = settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT);
         Category category = null;
         try {
-            category = guild.createCategory(categoryName).
+            category = getGuild().createCategory(categoryName).
                     addRolePermissionOverride(
-                            guild.getPublicRole().getIdLong(),
+                            getGuild().getPublicRole().getIdLong(),
                             Collections.emptyList(),
                             Collections.singletonList(VIEW_CHANNEL)).
-                    addMemberPermissionOverride(guild.getSelfMember().getIdLong(),
+                    addMemberPermissionOverride(getGuild().getSelfMember().getIdLong(),
                             Arrays.asList(VIEW_CHANNEL, MANAGE_CHANNEL),
                             Collections.emptyList()).
                     submit().get();
@@ -352,7 +355,6 @@ public class DiscordHook implements Listener {
      * <p>Sets positive {@link Permission#VIEW_CHANNEL} permission to all linked clan members.</p>
      *
      * @param clanTag the clan tag
-     *
      * @throws InvalidChannelException  clan is not verified or permanent,
      *                                  no one member is linked or clan is not in the whitelist.
      * @throws ChannelExistsException   if channel is already exist
@@ -378,12 +380,14 @@ public class DiscordHook implements Listener {
 
         try {
             availableCategory.createTextChannel(clanTag).complete();
+            SimpleClans.debug(String.format("[%s] Creating a discord text channel for %s clan", Thread.currentThread().getId(), clanTag));
         } catch (ErrorResponseException ex) {
             Response response = ex.getResponse();
             plugin.getLogger().warning(String.format("Could not create a channel for clan %s, error %d - %s",
                     clanTag, response.code, response.message));
             return;
         }
+
         for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
             // The map is formed from clan#getMembers (so the clan exists)
             //noinspection ConstantConditions
@@ -396,10 +400,8 @@ public class DiscordHook implements Listener {
      * Retrieves channel in SimpleClans categories.
      *
      * @param channelName the channel name
-     *
-     * @see #getCachedCategories() retreive categories.
-     *
      * @return the channel
+     * @see #getCachedCategories() retreive categories.
      */
     public Optional<TextChannel> getCachedChannel(@NotNull String channelName) {
         return getCachedChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findFirst();
@@ -409,12 +411,11 @@ public class DiscordHook implements Listener {
      * Checks if a category can be obtained by id.
      *
      * @param categoryId the category id
-     * @see #channelExists(String)
-     *
      * @return true if the category exists
+     * @see #channelExists(String)
      */
     public boolean categoryExists(String categoryId) {
-        return guild.getCategoryById(categoryId) != null;
+        return getGuild().getCategoryById(categoryId) != null;
     }
 
     /**
@@ -423,7 +424,18 @@ public class DiscordHook implements Listener {
      * @see #categoryExists(String)
      */
     public boolean channelExists(String clanTag) {
-        return getChannels().stream().map(TextChannel::getName).anyMatch(name -> name.equals(clanTag));
+        return getChannel(clanTag).isPresent();
+    }
+
+    /**
+     * Retrieves the channel in SimpleClans categories.
+     *
+     * @param channelName the channel name
+     * @return the channel
+     * @see #getCachedChannel(String) retreive the <b>cached</b> channel.
+     */
+    public Optional<TextChannel> getChannel(@NotNull String channelName) {
+        return getChannels().stream().filter(textChannel -> textChannel.getName().equals(channelName)).findAny();
     }
 
     /**
@@ -431,27 +443,31 @@ public class DiscordHook implements Listener {
      * If there are no channels, removes category as well.
      *
      * @param channelName the channel name
-     *
      * @return true, if channel was deleted and false if not.
      */
     @SuppressWarnings("UnusedReturnValue")
     public boolean deleteChannel(@NotNull String channelName) {
+        boolean deleted = false;
+
         if (channelExists(channelName)) {
             for (Category category : getCachedCategories()) {
-                if (category.getTextChannels().size() > 0) {
+                if (!category.getTextChannels().isEmpty()) {
                     for (TextChannel textChannel : category.getTextChannels()) {
                         if (textChannel.getName().equals(channelName)) {
                             textChannel.delete().complete();
-                            return true;
+                            deleted = true;
+                            break;
                         }
                     }
 
-                    if (category.getTextChannels().size() == 0) {
+                    if (category.getTextChannels().isEmpty()) {
                         textCategories.remove(category.getId());
                         settingsManager.set(DISCORDCHAT_TEXT_CATEGORY_IDS, textCategories);
                         settingsManager.save();
                         category.delete().complete();
                     }
+
+                    return deleted;
                 }
             }
         }
@@ -465,7 +481,7 @@ public class DiscordHook implements Listener {
     public List<Category> getCachedCategories() {
         return textCategories.stream().
                 filter(this::categoryExists).
-                map(guild::getCategoryById).
+                map(getGuild()::getCategoryById).
                 collect(Collectors.toList());
     }
 
@@ -475,7 +491,7 @@ public class DiscordHook implements Listener {
      * @return categories from guild
      */
     public List<Category> getCategories() {
-        return guild.getCategoriesByName(settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT), false);
+        return getGuild().getCategoriesByName(settingsManager.getString(DISCORDCHAT_TEXT_CATEGORY_FORMAT), false);
     }
 
     /**
@@ -502,51 +518,54 @@ public class DiscordHook implements Listener {
         return DiscordUtil.getMemberById(discordId);
     }
 
-    private void clearChannels() {
+    private void clearChannels(Map<String, TextChannel> discordTagChannels) {
         // Removes abandoned channels
-        ArrayList<String> clansToDelete = new ArrayList<>(discordClanTags);
+        ArrayList<String> clansToDelete = new ArrayList<>(discordTagChannels.keySet());
         clansToDelete.removeAll(clanTags);
-        clansToDelete.forEach(this::deleteChannel);
+        clansToDelete.forEach(clanChannel -> {
+            deleteChannel(clanChannel);
+            discordTagChannels.remove(clanChannel);
+        });
 
         // Removes invalid channels
-        for (String clanTag : clanTags) {
+        Iterator<String> iterator = discordTagChannels.keySet().iterator();
+        while (iterator.hasNext()) {
+            String clanChannel = iterator.next();
             try {
-                validateChannel(clanTag);
+                validateChannel(clanChannel);
             } catch (InvalidChannelException ex) {
                 SimpleClans.debug(ex.getMessage());
-                deleteChannel(clanTag);
-
+                deleteChannel(clanChannel);
+                iterator.remove();
             } catch (ChannelExistsException | ChannelsLimitException ex) {
                 SimpleClans.debug(ex.getMessage());
             }
         }
     }
 
-    private void resetPermissions() {
-        getCachedChannels().stream().
-                map(TextChannel::getMemberPermissionOverrides).
-                flatMap(Collection::stream).
-                filter(permissionOverride -> !Objects.equals(permissionOverride.getPermissionHolder(), guild.getPublicRole())).
-                filter(permissionOverride -> !Objects.equals(permissionOverride.getMember(), guild.getSelfMember())).
-                forEach(permissionOverride -> permissionOverride.delete().queue());
+    private void resetPermissions(Map<String, TextChannel> discordClanChannels) {
+        for (Map.Entry<String, TextChannel> channelEntry : discordClanChannels.entrySet()) {
+            TextChannel channel = channelEntry.getValue();
+            Clan clan = clanManager.getClan(channelEntry.getKey());
+            Map<ClanPlayer, Member> discordPlayers = getDiscordPlayers(clan);
 
-        clanTags.stream().map(clanManager::getClan).
-                filter(Objects::nonNull).
-                map(Clan::getMembers).
-                flatMap(Collection::stream).
-                forEach(clanPlayer -> {
-                    Member member = getMember(clanPlayer);
-                    Clan clan = clanPlayer.getClan();
-                    if (member != null && clan != null) {
-                        updateViewPermission(member, clan, ADD);
-                    }
-                });
+            for (Member member : discordPlayers.values()) {
+                PermissionOverride override = channel.getPermissionOverride(member);
+                if (override != null) {
+                    override.delete().queue(afterSuccess -> updateViewPermission(member, channel, ADD));
+                }
+            }
+        }
     }
 
-    private void createChannels() {
+    private void createChannels(Map<String, TextChannel> discordClanChannels) {
         if (!settingsManager.is(DISCORDCHAT_AUTO_CREATION)) {
             return;
         }
+
+        // Removes already used discord channels from creation
+        clanTags.removeAll(discordClanChannels.keySet());
+
         for (String clan : clanTags) {
             try {
                 createChannel(clan);
@@ -577,7 +596,7 @@ public class DiscordHook implements Listener {
         }
 
         Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clan);
-        if (discordClanPlayers.size() == 0) {
+        if (discordClanPlayers.isEmpty()) {
             throw new InvalidChannelException(String.format("Clan %s doesn't have any linked players", clanTag),
                     "your.clan.doesnt.have.any.linked.player");
         }
@@ -611,28 +630,36 @@ public class DiscordHook implements Listener {
     }
 
     private void updateLeaderRole(@NotNull Member member, @NotNull ClanPlayer clanPlayer, DiscordAction action) {
-        if (!clanPlayer.isLeader()) {
+        if (action == ADD && clanPlayer.isLeader()) {
+            getGuild().addRoleToMember(member, getLeaderRole()).queue();
+            SimpleClans.debug(String.format("Added leader role to %s (%s) discord member", member.getNickname(), member.getId()));
+        } else {
+            getGuild().removeRoleFromMember(member, getLeaderRole()).queue();
+            SimpleClans.debug(String.format("Revoked leader role from %s (%s) discord member", member.getNickname(), member.getId()));
+        }
+    }
+
+    private void updateViewPermission(@Nullable Member member, @NotNull GuildChannel channel, @NotNull DiscordAction action) {
+        if (member == null) {
             return;
         }
 
         if (action == ADD) {
-            guild.addRoleToMember(member, leaderRole).queue();
+            channel.upsertPermissionOverride(member).
+                    setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
+            SimpleClans.debug(String.format("Added view permission to %s (%s) discord member", member.getNickname(), member.getId()));
         } else {
-            guild.removeRoleFromMember(member, leaderRole).queue();
+            channel.getManager().removePermissionOverride(member).queue();
+            SimpleClans.debug(String.format("Revoked view permission from %s (%s) discord member", member.getNickname(), member.getId()));
         }
     }
 
     private void updateViewPermission(@NotNull Member member, @NotNull Clan clan, DiscordAction action) {
-        Optional<TextChannel> channel = getCachedChannel(clan.getTag());
+        String tag = clan.getTag();
+        Optional<TextChannel> channel = getChannel(tag);
         if (channel.isPresent()) {
             TextChannel textChannel = channel.get();
-
-            if (action == ADD) {
-                textChannel.upsertPermissionOverride(member).
-                        setPermissions(Collections.singletonList(VIEW_CHANNEL), Collections.emptyList()).queue();
-            } else {
-                textChannel.getManager().removePermissionOverride(member).queue();
-            }
+            updateViewPermission(member, textChannel, action);
         }
     }
 

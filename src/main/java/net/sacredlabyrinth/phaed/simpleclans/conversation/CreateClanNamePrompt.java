@@ -4,6 +4,7 @@ import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.PreCreateClanEvent;
+import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.conversations.ConversationContext;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.conversation.CreateClanTagPrompt.TAG_KEY;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
+import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.CLAN_DEFAULT_RANK;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.RED;
 
@@ -66,17 +68,20 @@ public class CreateClanNamePrompt extends StringPrompt {
             plugin.getClanManager().createClan(player, tag, name);
 
             Clan clan = plugin.getClanManager().getClan(tag);
-            clan.addBb(player.getName(), AQUA +
-                    lang("clan.created", name));
+            clan.addBb(player.getName(), lang("clan.created", name));
             plugin.getStorageManager().updateClan(clan);
+            if (!plugin.getSettingsManager().getString(CLAN_DEFAULT_RANK).isEmpty()) {
+                clan.setDefaultRank(plugin.getSettingsManager().getString(CLAN_DEFAULT_RANK));
 
-            if (plugin.getSettingsManager().is(REQUIRE_VERIFICATION)) {
-                boolean verified = !plugin.getSettingsManager().is(REQUIRE_VERIFICATION)
-                        || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
 
-                if (!verified) {
-                    ChatBlock.sendMessage(player, AQUA +
-                            lang("get.your.clan.verified.to.access.advanced.features", player));
+                if (plugin.getSettingsManager().is(REQUIRE_VERIFICATION)) {
+                    boolean verified = !plugin.getSettingsManager().is(REQUIRE_VERIFICATION)
+                            || plugin.getPermissionsManager().has(player, "simpleclans.mod.verify");
+
+                    if (!verified) {
+                        ChatBlock.sendMessage(player, AQUA +
+                                lang("get.your.clan.verified.to.access.advanced.features", player));
+                    }
                 }
             }
         }

@@ -2,24 +2,25 @@ package net.sacredlabyrinth.phaed.simpleclans.commands.clan;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import net.sacredlabyrinth.phaed.simpleclans.ChatBlock;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
-import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.DisbandPrompt;
 import net.sacredlabyrinth.phaed.simpleclans.conversation.SCConversation;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.DiscordHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.discord.exceptions.DiscordHookException;
 import net.sacredlabyrinth.phaed.simpleclans.managers.*;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
+import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
+import static net.sacredlabyrinth.phaed.simpleclans.events.EconomyTransactionEvent.Cause.DISCORD_CREATION;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.RED;
 
 @CommandAlias("%clan")
 @Conditions("%basic_conditions|leader")
@@ -63,7 +64,7 @@ public class LeaderCommands extends BaseCommand {
                     player));
             return;
         }
-        clan.addBb(player.getName(), AQUA + lang("demoted.back.to.member", otherCp.getName()));
+        clan.addBb(player.getName(), lang("demoted.back.to.member", otherCp.getName()));
         clan.demote(otherCp.getUniqueId());
     }
 
@@ -90,13 +91,14 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
         if (settings.is(CLAN_CONFIRMATION_FOR_PROMOTE) && clan.getLeaders().size() > 1) {
-            requestManager.addPromoteRequest(cp, otherPl.getName(), clan);
+            requestManager.requestAllLeaders(cp, ClanRequest.PROMOTE, otherPl.getName(), "asking.for.the.promotion",
+                    player.getName(), otherPl.getName());
             ChatBlock.sendMessage(player, AQUA + lang("promotion.vote.has.been.requested.from.all.leaders",
                     player));
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("promoted.to.leader", otherPl.getName()));
+        clan.addBb(player.getName(), lang("promoted.to.leader", otherPl.getName()));
         clan.promote(otherPl.getUniqueId());
     }
 
@@ -105,7 +107,8 @@ public class LeaderCommands extends BaseCommand {
     @Description("{@@command.description.disband}")
     public void disband(Player player, ClanPlayer cp, Clan clan) {
         if (clan.getLeaders().size() != 1) {
-            requestManager.addDisbandRequest(cp, clan);
+            requestManager.requestAllLeaders(cp, ClanRequest.DISBAND, clan.getTag(), "asking.to.disband",
+                    player.getName());
             ChatBlock.sendMessage(player, AQUA +
                     lang("clan.disband.vote.has.been.requested.from.all.leaders", player));
             return;
@@ -133,7 +136,7 @@ public class LeaderCommands extends BaseCommand {
         }
         if (cm.purchaseVerification(player)) {
             clan.verifyClan();
-            clan.addBb(player.getName(), AQUA + lang("clan.0.has.been.verified", clan.getName()));
+            clan.addBb(player.getName(), lang("clan.0.has.been.verified", clan.getName()));
             ChatBlock.sendMessage(player, AQUA + lang("the.clan.has.been.verified", player));
         }
     }
@@ -156,7 +159,7 @@ public class LeaderCommands extends BaseCommand {
             ChatBlock.sendMessage(player, ChatColor.RED + lang("this.player.is.already.trusted", player));
             return;
         }
-        clan.addBb(player.getName(), AQUA + lang("has.been.given.trusted.status.by", trustedInput.getName(),
+        clan.addBb(player.getName(), lang("has.been.given.trusted.status.by", trustedInput.getName(),
                 player.getName()));
         trustedInput.setTrusted(true);
         storage.updateClanPlayer(trustedInput);
@@ -181,10 +184,45 @@ public class LeaderCommands extends BaseCommand {
             return;
         }
 
-        clan.addBb(player.getName(), AQUA + lang("has.been.given.untrusted.status.by", trustedInput.getName(),
+        clan.addBb(player.getName(), lang("has.been.given.untrusted.status.by", trustedInput.getName(),
                 player.getName()));
         trustedInput.setTrusted(false);
         storage.updateClanPlayer(trustedInput);
+    }
+
+    @Subcommand("%rename")
+    @CommandPermission("simpleclans.leader.rename")
+    @CommandCompletion("@nothing")
+    @Description("{@@command.description.rename}")
+    public void rename(Player player, ClanPlayer cp, Clan clan, @Name("name") String clanName) {
+        if (clanName.contains("&")) {
+            ChatBlock.sendMessageKey(cp, "your.clan.name.cannot.contain.color.codes");
+            return;
+        }
+        boolean bypass = plugin.getPermissionsManager().has(player, "simpleclans.mod.bypass");
+        if (!bypass) {
+            if (ChatUtils.stripColors(clanName).length() > plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)) {
+                ChatBlock.sendMessage(player, RED + lang("your.clan.name.cannot.be.longer.than.characters",
+                        player, plugin.getSettingsManager().getInt(CLAN_MAX_LENGTH)));
+                return;
+            }
+            if (ChatUtils.stripColors(clanName).length() <= plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)) {
+                ChatBlock.sendMessage(player, RED + lang("your.clan.name.must.be.longer.than.characters",
+                        player, plugin.getSettingsManager().getInt(CLAN_MIN_LENGTH)));
+                return;
+            }
+        }
+
+        if (clan.getLeaders().size() != 1) {
+            requestManager.requestAllLeaders(cp, ClanRequest.RENAME, clanName, "asking.to.rename", cp.getName(), clanName);
+            ChatBlock.sendMessageKey(cp, "rename.vote.has.been.requested.from.all.leaders");
+            return;
+        }
+
+        clan.setName(clanName);
+        storage.updateClan(clan);
+
+        ChatBlock.sendMessageKey(cp, "you.have.successfully.renamed.your.clan", clanName);
     }
 
     @Subcommand("%discord %create")
@@ -201,11 +239,11 @@ public class LeaderCommands extends BaseCommand {
         double amount = settings.getDouble(ECONOMY_DISCORD_CREATION_PRICE);
         if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
             if (!permissions.playerHasMoney(player, amount)) {
-                player.sendMessage(AQUA + lang("not.sufficient.money", player, amount));
+                player.sendMessage(AQUA + lang("not.sufficient.money", player, CurrencyFormat.format(amount)));
                 return;
             }
 
-            if (!permissions.playerChargeMoney(player, amount)) {
+            if (!permissions.chargePlayer(player, amount, DISCORD_CREATION)) {
                 return;
             }
         }
@@ -216,7 +254,7 @@ public class LeaderCommands extends BaseCommand {
         } catch (DiscordHookException ex) {
             // Return player's money if clan creation went wrong
             if (settings.is(ECONOMY_PURCHASE_DISCORD_CREATE)) {
-                permissions.playerGrantMoney(player, amount);
+                permissions.grantPlayer(player, amount, DISCORD_CREATION);
             }
             String messageKey = ex.getMessageKey();
             if (messageKey != null) {

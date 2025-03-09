@@ -83,3 +83,6 @@ Feel free to learn our [Javadoc](https://ci.roinujnosde.me/job/SimpleClans/Javad
 [![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo.roinujnosde.me%2Freleases%2Fnet%2Fsacredlabyrinth%2Fphaed%2Fsimpleclans%2FSimpleClans%2Fmaven-metadata.xml)](https://repo.roinujnosde.me/#/releases/net/sacredlabyrinth/phaed/simpleclans/SimpleClans)
 ##### API Examples
 * [Examples of how to use the API](https://simpleclans.gitbook.io/simpleclans/other/simpleclans-api)
+
+
+[![Mikasa Host](https://mikasa.host/images/partners/banners/SimpleClans.gif)](https://mikasa.host/ref/6)

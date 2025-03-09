@@ -130,10 +130,11 @@ public final class ChatManager {
                 .replace("%nick-color%",
                         (sender.isLeader() ? leaderColor : sender.isTrusted() ? trustedColor : memberColor))
                 .replace("%player%", sender.getName())
-                .replace("%rank%", rankFormat)
+                .replace("%rank%", rankFormat);
+        parsedFormat = parseWithPapi(message.getSender(), parsedFormat)
                 .replace("%message%", message.getContent());
 
-        return parseWithPapi(message.getSender(), parsedFormat);
+        return parsedFormat;
     }
 
     public boolean isDiscordHookEnabled() {

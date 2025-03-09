@@ -6,13 +6,13 @@ import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankOperator;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
+import net.sacredlabyrinth.phaed.simpleclans.utils.CurrencyFormat;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.MessageFormat;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
-import static org.bukkit.ChatColor.AQUA;
 
 /**
  *
@@ -60,7 +60,7 @@ public class CollectUpkeepTask extends BukkitRunnable {
                 clan.disband(null, true, false);
             }
             if (response == EconomyResponse.SUCCESS) {
-                clan.addBb(AQUA + MessageFormat.format(lang("upkeep.collected"), upkeep), false);
+                clan.addBb(MessageFormat.format(lang("upkeep.collected"), CurrencyFormat.format(upkeep)), false);
             }
         });
     }
