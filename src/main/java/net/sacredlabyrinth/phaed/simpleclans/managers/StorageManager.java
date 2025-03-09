@@ -418,6 +418,7 @@ public final class StorageManager {
                         clan.setRanks(Helper.ranksFromJson(ranksJson));
                         clan.setDefaultRank(Helper.defaultRankFromJson(ranksJson));
                         clan.setBanner(banner);
+                        clan.setMaxSize(clan.getMaxSize());
 
                         out.add(clan);
                     } catch (Exception ex) {
@@ -492,6 +493,7 @@ public final class StorageManager {
                         clan.setRanks(Helper.ranksFromJson(ranksJson));
                         clan.setDefaultRank(Helper.defaultRankFromJson(ranksJson));
                         clan.setBanner(banner);
+                        clan.setMaxSize(clan.getMaxSize());
 
                         out = clan;
                     } catch (Exception ex) {

@@ -69,8 +69,6 @@ public class Clan implements Serializable, Comparable<Clan> {
     public Clan() {
         this.capeUrl = "";
         this.tag = "";
-
-        setMaxSize(getMaxSize());
     }
 
     public Clan(String tag, String name, boolean verified) {
