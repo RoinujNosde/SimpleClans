@@ -64,7 +64,7 @@ war-and-protection:
     protection-providers:
         - Landlord4Provider
         - WorldGuard6Provider
-        - GriefPrevention
+        - GriefPreventionProvider
     listeners:
         priority: HIGHEST
         ignored-list:
