@@ -19,11 +19,13 @@ public abstract class PageableFrame<T> extends SCFrame {
     public void createComponents() {
         super.createComponents();
         SCComponent nextPage = new SCComponentImpl.Builder(getConfig(), "next_page")
+                .withViewer(getViewer())
                 .withDisplayNameKey("gui.next.page.title").build();
         setOneTimeListener(nextPage, this::nextPage, getPaginator().hasNextPage());
         add(nextPage);
 
         SCComponent previousPage = new SCComponentImpl.Builder(getConfig(), "previous_page")
+                .withViewer(getViewer())
                 .withDisplayNameKey("gui.previous.page.title").build();
         setOneTimeListener(previousPage, this::previousPage, getPaginator().hasPreviousPage());
         add(previousPage);

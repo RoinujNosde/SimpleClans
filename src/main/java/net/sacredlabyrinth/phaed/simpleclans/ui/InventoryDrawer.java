@@ -3,6 +3,7 @@ package net.sacredlabyrinth.phaed.simpleclans.ui;
 import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import net.sacredlabyrinth.phaed.simpleclans.events.FrameOpenEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.PostComponentsCreationEvent;
 import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.utils.WordWrapper;
 import org.bukkit.Bukkit;
@@ -82,6 +83,7 @@ public class InventoryDrawer {
         frame.clear();
         try {
             frame.createComponents();
+            Bukkit.getPluginManager().callEvent(new PostComponentsCreationEvent(frame));
         } catch (NoSuchFieldError ex) {
             runHelpCommand(frame.getViewer());
             return;

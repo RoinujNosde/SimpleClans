@@ -33,7 +33,8 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addClans() {
-        SCComponent clanList = new SCComponentImpl.Builder(getConfig(), "clans").withViewer(getViewer())
+        SCComponent clanList = new SCComponentImpl.Builder(getConfig(), "clans")
+                .withViewer(getViewer())
                 .withDisplayNameKey("gui.main.clan.list.title")
                 .withLoreKey("gui.staff.clan.list.lore.left.click")
                 .withLoreKey("gui.staff.clan.list.lore.right.click").build();
@@ -45,7 +46,8 @@ public class StaffFrame extends SCFrame {
     }
 
     private void addPlayers() {
-        SCComponent players = new SCComponentImpl.Builder(getConfig(), "players").withViewer(getViewer())
+        SCComponent players = new SCComponentImpl.Builder(getConfig(), "players")
+                .withViewer(getViewer())
                 .withDisplayNameKey("gui.staff.player.list.title")
                 .withLoreKey("gui.staff.player.list.lore.left.click")
                 .withLoreKey("gui.staff.player.list.lore.right.click").build();

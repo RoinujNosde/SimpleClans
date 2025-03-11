@@ -41,18 +41,16 @@ public class LeaderboardFrame extends PageableFrame<ClanPlayer> {
     public void createComponents() {
         super.createComponents();
         List<SCComponent> list = new ListBuilder<>(getConfig(), "list", paginator.getCurrentElements())
-                .withDisplayNameKey("gui.leaderboard.player.title",
-                        cp -> getViewer(), rankingResolver::getRankingNumber, ClanPlayer::getName)
-                .withListener(ClickType.LEFT, this::openDetails, null)
+                .withViewer(getViewer())
+                .withDisplayNameKey("gui.leaderboard.player.title", rankingResolver::getRankingNumber, ClanPlayer::getName)
+                .withListener(ClickType.LEFT, this::openDetails, (String) null)
                 .withLorePermission("simpleclans.anyone.leaderboard")
                 .withLoreLine(cp ->
                         cp.getClan() == null ? lang("gui.playerdetails.player.lore.noclan", getViewer())
                                 : lang("gui.playerdetails.player.lore.clan", getViewer()
                         ))
-                .withLoreKey("gui.playerdetails.player.lore.kdr", cp -> getViewer(),
-                        cp -> KDRFormat.format(cp.getKDR()))
-                .withLoreKey("gui.playerdetails.player.lore.last.seen", cp -> getViewer(),
-                        cp -> cp.getLastSeenString(getViewer()))
+                .withLoreKey("gui.playerdetails.player.lore.kdr", cp -> KDRFormat.format(cp.getKDR()))
+                .withLoreKey("gui.playerdetails.player.lore.last.seen", cp -> cp.getLastSeenString(getViewer()))
                 .withOwningPlayer(cp -> Bukkit.getOfflinePlayer(cp.getUniqueId())).build();
         addAll(list);
     }

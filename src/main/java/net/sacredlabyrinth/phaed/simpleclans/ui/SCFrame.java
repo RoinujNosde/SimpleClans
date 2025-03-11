@@ -44,12 +44,13 @@ public abstract class SCFrame {
 	}
 
 	public int getSize() {
-		return getConfig().getInt("rows") * 9;
+		return getConfig().getInt("rows", 6) * 9;
 	}
 
 	@OverridingMethodsMustInvokeSuper
 	public void createComponents() {
 		SCComponent back = new SCComponentImpl.Builder(getConfig(), "back")
+				.withViewer(getViewer())
 				.withDisplayNameKey("gui.back.title").build();
 		back.setListener(ClickType.LEFT, () -> InventoryDrawer.open(getParent()));
 		add(back);
@@ -58,6 +59,7 @@ public abstract class SCFrame {
 		if (decorSection != null) {
 			for (String key : decorSection.getKeys(false)) {
 				addAll(new SCComponentImpl.ListBuilder<>(getConfig(), "decorations." + key)
+						.withViewer(getViewer())
 						.withDisplayNameKey(" ").build());
 			}
 		}

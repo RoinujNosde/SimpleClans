@@ -1,6 +1,7 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui;
 
 import com.cryptomorin.xseries.XMaterial;
+import net.sacredlabyrinth.phaed.simpleclans.RankPermission;
 import net.sacredlabyrinth.phaed.simpleclans.ui.frames.Components;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -54,6 +55,7 @@ public class SCComponentImpl extends SCComponent {
 			itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 			item.setItemMeta(itemMeta);
 		}
+		checkSlot(slot);
 		this.slot = slot;
 	}
 	
@@ -65,6 +67,18 @@ public class SCComponentImpl extends SCComponent {
 	@Override
 	public int getSlot() {
 		return slot;
+	}
+
+	private static void checkMaterial(String material) {
+		if (material == null || material.isEmpty()) {
+			throw new IllegalStateException("material cannot be null or empty");
+		}
+	}
+
+	private static void checkSlot(int slot) {
+		if (slot < 0) {
+			throw new IllegalStateException("slot must be >= 0 and < 54");
+		}
 	}
 
 	public static class Builder {
@@ -93,9 +107,10 @@ public class SCComponentImpl extends SCComponent {
 
 		public Builder(FileConfiguration config, String id) {
 			String materialName = config.getString("components." + id + ".material");
-			if (materialName == null) materialName = "";
+			checkMaterial(materialName);
 			item = Objects.requireNonNull(XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE).parseItem());
 			slot = config.getInt("components." + id + ".slot");
+			checkSlot(slot);
 			enabled = config.getBoolean("components." + id + ".enabled");
 		}
 
@@ -110,6 +125,7 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public Builder withDisplayNameKey(@NotNull String key, Object... args) {
+			if (viewer == null) throw new IllegalStateException("viewer is null");
 			return withDisplayName(lang(key, viewer, args));
 		}
 
@@ -127,10 +143,12 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public Builder withLoreKey(@NotNull String key, Object... args) {
+			if (viewer == null) throw new IllegalStateException("viewer is null");
 			return withLoreLine(lang(key, viewer, args));
 		}
 
 		public Builder withSlot(int slot) {
+			checkSlot(slot);
 			this.slot = slot;
 			return this;
 		}
@@ -161,15 +179,18 @@ public class SCComponentImpl extends SCComponent {
 		private Function<T, String> displayName = (t) -> null;
 		private final List<Function<T, String>> lore = new ArrayList<>();
 		private final Map<ClickType, Function<T, Runnable>> listeners = new HashMap<>();
-		private final Map<ClickType, String> permissions = new HashMap<>();
+		private final Map<ClickType, String> bukkitPermissions = new HashMap<>();
+		private final Map<ClickType, RankPermission> rankPermissions = new HashMap<>();
+		private final Set<ClickType> confirmationRequired = new HashSet<>();
 		private String lorePermission;
 
 		public ListBuilder(@NotNull FileConfiguration config, @NotNull String id, @NotNull List<T> elements) {
 			String materialName = config.getString("components." + id + ".material");
-			if (materialName == null) materialName = "";
+			checkMaterial(materialName);
 			material = XMaterial.matchXMaterial(materialName).orElse(XMaterial.STONE);
 			item = (t) -> Objects.requireNonNull(material.parseItem());
-			slots = config.getIntegerList("components." + id + ".slots");
+			slots = config.getIntegerList("components." + id + ".slots").stream().filter(i -> i >= 0 && i < 54)
+					.collect(Collectors.toList());
 			this.elements = elements;
 			enabled = config.getBoolean("components." + id + ".enabled");
 		}
@@ -217,6 +238,7 @@ public class SCComponentImpl extends SCComponent {
 		@NotNull
 		private String processLang(@NotNull String key, T t, Function<T, Object>[] args) {
 			Object[] processedArgs = Arrays.stream(args).map(func -> func.apply(t)).toArray();
+			if (viewer == null) throw new IllegalStateException("viewer is null");
 			return lang(key, viewer, processedArgs);
 		}
 
@@ -226,8 +248,19 @@ public class SCComponentImpl extends SCComponent {
 		}
 
 		public ListBuilder<T> withListener(@NotNull ClickType click, @Nullable Function<T, Runnable> runnable, @Nullable String permission) {
-			permissions.put(click, permission);
+			bukkitPermissions.put(click, permission);
 			listeners.put(click, runnable);
+			return this;
+		}
+
+		public ListBuilder<T> withListener(@NotNull ClickType click, @Nullable Function<T, Runnable> runnable, @Nullable RankPermission permission) {
+			rankPermissions.put(click, permission);
+			listeners.put(click, runnable);
+			return this;
+		}
+
+		public ListBuilder<T> withConfirmationRequired(@NotNull ClickType click) {
+			confirmationRequired.add(click);
 			return this;
 		}
 
@@ -251,7 +284,9 @@ public class SCComponentImpl extends SCComponent {
 				}
 				component.setLorePermission(lorePermission);
 				listeners.forEach((click, fn) -> component.setListener(click, fn.apply(t)));
-				permissions.forEach(component::setPermission);
+				bukkitPermissions.forEach(component::setPermission);
+				rankPermissions.forEach(component::setPermission);
+				confirmationRequired.forEach(component::setConfirmationRequired);
 				components.add(component);
 			}
 			return components;
