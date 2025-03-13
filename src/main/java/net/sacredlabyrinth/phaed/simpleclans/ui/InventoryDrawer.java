@@ -95,7 +95,7 @@ public class InventoryDrawer {
             return;
         }
         for (SCComponent c : frame.getComponents()) {
-            if (c.getSlot() >= frame.getSize()) {
+            if (c.getSlot() >= frame.getSize() || !c.isEnabled()) {
                 continue;
             }
             checkLorePermission(frame, c);

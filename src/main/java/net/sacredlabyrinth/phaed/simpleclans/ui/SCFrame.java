@@ -76,9 +76,6 @@ public abstract class SCFrame {
 	}
 	
 	public void add(@NotNull SCComponent c) {
-		if (!c.isEnabled()) {
-			return;
-		}
 		SCComponent old = getComponent(c.getSlot());
 		if (old != null) {
 			components.remove(old);
