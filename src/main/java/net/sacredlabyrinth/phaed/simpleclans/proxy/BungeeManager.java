@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class BungeeManager implements ProxyManager, PluginMessageListener {
 
@@ -35,12 +37,14 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     private static final String CHAT_CHANNEL = "Chat";
     private static final String BROADCAST = "Broadcast";
     private static final String MESSAGE = "Message";
+    private static final String VERSION = "v1";
+    private static final Pattern SUBCHANNEL_PATTERN = Pattern.compile("SimpleClans\\|(?<subchannel>\\w+)\\|(?<version>v\\d+)");
 
     private final SimpleClans plugin;
     private final Gson gson;
     private final List<String> onlinePlayers = new ArrayList<>();
     private String serverName = "";
-    private final Set<String> unknownChannels = new HashSet<>();
+    private final Set<String> unsupportedChannels = new HashSet<>();
 
     public BungeeManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -62,15 +66,29 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] data) {
         ByteArrayDataInput input = ByteStreams.newDataInput(data);
         String subChannel = input.readUTF();
-        if (unknownChannels.contains(subChannel)) {
+        if (unsupportedChannels.contains(subChannel)) {
             return;
         }
         SimpleClans.debug("Message received, sub-channel: " + subChannel);
         try {
-            Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + subChannel);
+            String className;
+            String version = null;
+            Matcher matcher = SUBCHANNEL_PATTERN.matcher(subChannel);
+            if (matcher.find()) {
+                className = matcher.group("subchannel");
+                version = matcher.group("version");
+            } else {
+                className = subChannel;
+            }
+            Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + className);
             MessageListener listener = (MessageListener) clazz.getConstructor(BungeeManager.class).newInstance(this);
             String serverName = null;
             if (!listener.isBungeeSubchannel()) {
+                if (!VERSION.equals(version)) {
+                    plugin.getLogger().severe(String.format("Unsupported channel (%s), expected version: %s", subChannel, VERSION));
+                    unsupportedChannels.add(subChannel);
+                    return;
+                }
                 serverName = input.readUTF();
             }
             if (serverName != null && !isServerAllowed(serverName)) {
@@ -81,8 +99,8 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
             SimpleClans.debug("Message processed");
         } catch (ClassNotFoundException e) {
             SimpleClans.debug(String.format("Unknown channel: %s", subChannel));
-            unknownChannels.add(subChannel);
-        } catch (ReflectiveOperationException ex) {
+            unsupportedChannels.add(subChannel);
+        } catch (Exception ex) {
             plugin.getLogger().log(Level.SEVERE, String.format("Error processing channel %s", subChannel), ex);
         }
     }
@@ -156,7 +174,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("Forward");
         output.writeUTF("ONLINE");
-        output.writeUTF(MESSAGE);
+        output.writeUTF(createSubchannelName(MESSAGE));
         output.writeUTF(serverName);
         output.writeUTF(playerName);
         output.writeUTF(message);
@@ -221,6 +239,10 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         Bukkit.getPluginManager().registerEvents(listener, plugin);
     }
 
+    private String createSubchannelName(String subchannel) {
+        return String.format("SimpleClans|%s|%s", subchannel, VERSION);
+    }
+
     private void forwardPluginMessage(final String subChannel, final String message) {
         forwardPluginMessage(subChannel, message, true);
     }
@@ -236,7 +258,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("Forward");
         output.writeUTF(target);
-        output.writeUTF(subChannel);
+        output.writeUTF(createSubchannelName(subChannel));
         output.writeUTF(serverName);
         output.writeUTF(message);
 
@@ -248,6 +270,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
                 player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray()));
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isChannelRegistered() {
         return Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord");
     }
