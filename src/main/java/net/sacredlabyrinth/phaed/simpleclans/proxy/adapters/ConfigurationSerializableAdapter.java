@@ -39,8 +39,12 @@ public class ConfigurationSerializableAdapter implements TypeAdapterFactory {
                     return null;
                 }
                 Map map = adapter.read(in);
+                Class<?> rawType = type.getRawType();
+                if (!ConfigurationSerializable.class.isAssignableFrom(rawType)) {
+                    throw new RuntimeException("Type must be ConfigurationSerializable");
+                }
                 return ConfigurationSerialization.deserializeObject(map,
-                        (Class<? extends ConfigurationSerializable>) type.getRawType());
+                        rawType.asSubclass(ConfigurationSerializable.class));
             }
         };
     }
