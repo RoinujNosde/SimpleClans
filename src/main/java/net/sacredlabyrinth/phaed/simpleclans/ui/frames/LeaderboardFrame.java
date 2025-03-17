@@ -34,7 +34,7 @@ public class LeaderboardFrame extends PageableFrame<ClanPlayer> {
 
         rankingResolver = new RankingNumberResolver<>(clanPlayers, c -> KDRFormat.toBigDecimal(c.getKDR()), false,
                 plugin.getSettingsManager().getRankingType());
-        paginator = new Paginator<>(getSize() - 9, this.clanPlayers);
+        paginator = new Paginator<>(getPageSize(), this.clanPlayers);
     }
 
     @Override

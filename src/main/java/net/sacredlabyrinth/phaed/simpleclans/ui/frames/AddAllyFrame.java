@@ -23,7 +23,7 @@ public class AddAllyFrame extends PageableFrame<Clan> {
         List<Clan> notAllies = plugin.getClanManager().getClans().stream()
                 .filter(c -> !c.equals(subject) && !c.isRival(subject.getTag()) && !c.isAlly(subject.getTag()))
                 .collect(Collectors.toList());
-        paginator = new Paginator<>(getSize() - 9, notAllies);
+        paginator = new Paginator<>(getPageSize(), notAllies);
     }
 
     @Override
