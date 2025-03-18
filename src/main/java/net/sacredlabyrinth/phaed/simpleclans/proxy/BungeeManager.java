@@ -17,14 +17,16 @@ import net.sacredlabyrinth.phaed.simpleclans.proxy.adapters.SCMessageAdapter;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.listeners.MessageListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class BungeeManager implements ProxyManager, PluginMessageListener {
 
@@ -35,12 +37,15 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     private static final String CHAT_CHANNEL = "Chat";
     private static final String BROADCAST = "Broadcast";
     private static final String MESSAGE = "Message";
+    private static final String VERSION = "v1";
+    private static final Pattern SUBCHANNEL_PATTERN =
+            Pattern.compile("SimpleClans\\|(?<subchannel>\\w+)\\|(?<version>v\\d+)\\|(?<server>.+)");
 
     private final SimpleClans plugin;
     private final Gson gson;
     private final List<String> onlinePlayers = new ArrayList<>();
     private String serverName = "";
-    private final Set<String> unknownChannels = new HashSet<>();
+    private final Set<String> unsupportedChannels = new HashSet<>();
 
     public BungeeManager(SimpleClans plugin) {
         this.plugin = plugin;
@@ -60,29 +65,47 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
 
     @SuppressWarnings("UnstableApiUsage")
     public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte[] data) {
-        ByteArrayDataInput input = ByteStreams.newDataInput(data);
-        String subChannel = input.readUTF();
-        if (unknownChannels.contains(subChannel)) {
+        ByteArrayDataInput dataInput = ByteStreams.newDataInput(data);
+        String subChannel = dataInput.readUTF();
+        if (unsupportedChannels.contains(subChannel)) {
             return;
         }
+
         SimpleClans.debug("Message received, sub-channel: " + subChannel);
         try {
-            Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + subChannel);
-            MessageListener listener = (MessageListener) clazz.getConstructor(BungeeManager.class).newInstance(this);
             String serverName = null;
-            if (!listener.isBungeeSubchannel()) {
-                serverName = input.readUTF();
+            String className = subChannel;
+            String version = null;
+            Matcher matcher = SUBCHANNEL_PATTERN.matcher(subChannel);
+            if (matcher.find()) {
+                serverName = matcher.group("server");
+                className = matcher.group("subchannel");
+                version = matcher.group("version");
+            }
+            Class<?> clazz = Class.forName("net.sacredlabyrinth.phaed.simpleclans.proxy.listeners." + className);
+            MessageListener listener = (MessageListener) clazz.getConstructor(BungeeManager.class).newInstance(this);
+            if (listener.isBungeeSubchannel()) {
+                listener.accept(dataInput); //uses the original data
+                return;
+            }
+            if (!VERSION.equals(version)) {
+                plugin.getLogger().severe(String.format("Unsupported channel (%s), expected version: %s", subChannel, VERSION));
+                unsupportedChannels.add(subChannel);
+                return;
             }
             if (serverName != null && !isServerAllowed(serverName)) {
                 SimpleClans.debug(String.format("Server not allowed: %s", serverName));
                 return;
             }
-            listener.accept(input);
-            SimpleClans.debug("Message processed");
+            byte[] messageBytes = new byte[dataInput.readShort()];
+            dataInput.readFully(messageBytes);
+            final ByteArrayDataInput message = ByteStreams.newDataInput(messageBytes);
+
+            listener.accept(message); // uses the internal data
         } catch (ClassNotFoundException e) {
             SimpleClans.debug(String.format("Unknown channel: %s", subChannel));
-            unknownChannels.add(subChannel);
-        } catch (ReflectiveOperationException ex) {
+            unsupportedChannels.add(subChannel);
+        } catch (Exception ex) {
             plugin.getLogger().log(Level.SEVERE, String.format("Error processing channel %s", subChannel), ex);
         }
     }
@@ -120,7 +143,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
 
     @Override
     public void sendMessage(SCMessage message) {
-        forwardPluginMessage(CHAT_CHANNEL, gson.toJson(message), false);
+        forwardToOnlineServers(CHAT_CHANNEL, gson.toJson(message));
     }
 
     @Override
@@ -145,43 +168,27 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     }
 
     private void sendBroadcast(@NotNull String message) {
-        forwardPluginMessage(BROADCAST, message, false);
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    private void sendPrivateMessage(@NotNull String playerName, @NotNull String message) {
-        if (!isChannelRegistered()) {
-            return;
-        }
-        ByteArrayDataOutput output = ByteStreams.newDataOutput();
-        output.writeUTF("Forward");
-        output.writeUTF("ONLINE");
-        output.writeUTF(MESSAGE);
-        output.writeUTF(serverName);
-        output.writeUTF(playerName);
-        output.writeUTF(message);
-
-        sendOnBungeeChannel(output);
+        forwardToOnlineServers(BROADCAST, message);
     }
 
     @Override
     public void sendDelete(Clan clan) {
-        forwardPluginMessage(DELETE_CLAN_CHANNEL, clan.getTag());
+        forwardToAllServers(DELETE_CLAN_CHANNEL, clan.getTag());
     }
 
     @Override
     public void sendDelete(ClanPlayer cp) {
-        forwardPluginMessage(DELETE_CLANPLAYER_CHANNEL, cp.getUniqueId().toString());
+        forwardToAllServers(DELETE_CLANPLAYER_CHANNEL, cp.getUniqueId().toString());
     }
 
     @Override
     public void sendUpdate(Clan clan) {
-        forwardPluginMessage(UPDATE_CLAN_CHANNEL, gson.toJson(clan));
+        forwardToAllServers(UPDATE_CLAN_CHANNEL, gson.toJson(clan));
     }
 
     @Override
     public void sendUpdate(ClanPlayer cp) {
-        forwardPluginMessage(UPDATE_CLANPLAYER_CHANNEL, gson.toJson(cp));
+        forwardToAllServers(UPDATE_CLANPLAYER_CHANNEL, gson.toJson(cp));
     }
 
     public SimpleClans getPlugin() {
@@ -205,40 +212,60 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     }
 
     private void requestServerName() {
-        Listener listener = new Listener() {
-            @SuppressWarnings("UnstableApiUsage")
-            @EventHandler
-            void on(PlayerJoinEvent event) {
+        Bukkit.getScheduler().runTaskTimer(plugin, task -> {
+            if (!serverName.isEmpty()) {
+                task.cancel();
+                return;
+            }
+            Bukkit.getOnlinePlayers().stream().findFirst().ifPresent(player -> {
+                @SuppressWarnings("UnstableApiUsage")
                 ByteArrayDataOutput output = ByteStreams.newDataOutput();
                 output.writeUTF("GetServer");
-
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    event.getPlayer().sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
-                    PlayerJoinEvent.getHandlerList().unregister(this); //only needed once
-                });
-            }
-        };
-        Bukkit.getPluginManager().registerEvents(listener, plugin);
+                player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray());
+            });
+        }, 0L, 20L);
     }
 
-    private void forwardPluginMessage(final String subChannel, final String message) {
-        forwardPluginMessage(subChannel, message, true);
+    private String createSubchannelName(String subchannel) {
+        return String.format("SimpleClans|%s|%s|%s", subchannel, VERSION, serverName);
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private void forwardPluginMessage(final String subChannel, final String message, final boolean all) {
+    private void sendPrivateMessage(@NotNull String playerName, @NotNull String message) {
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeUTF(playerName);
+        output.writeUTF(message);
+
+        forwardPluginMessage(MESSAGE, output, false);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void forwardToAllServers(final String subChannel, final String message) {
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeUTF(message);
+        forwardPluginMessage(subChannel, output, true);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void forwardToOnlineServers(final String subChannel, final String message) {
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+        output.writeUTF(message);
+        forwardPluginMessage(subChannel, output, false);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private void forwardPluginMessage(final String subChannel, final ByteArrayDataOutput message, final boolean all) {
         SimpleClans.debug(String.format("Forwarding message, channel %s, message %s, all %s", subChannel, message, all));
         if (!isChannelRegistered()) {
-            SimpleClans.debug("Not registered");
             return;
         }
-        String target = all ? "ALL" : "ONLINE";
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("Forward");
-        output.writeUTF(target);
-        output.writeUTF(subChannel);
-        output.writeUTF(serverName);
-        output.writeUTF(message);
+        output.writeUTF(all ? "ALL" : "ONLINE");
+        output.writeUTF(createSubchannelName(subChannel));
+
+        output.writeShort(message.toByteArray().length);
+        output.write(message.toByteArray());
 
         sendOnBungeeChannel(output);
     }
@@ -248,8 +275,11 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
                 player.sendPluginMessage(plugin, "BungeeCord", output.toByteArray()));
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isChannelRegistered() {
-        return Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord");
+        boolean registered = Bukkit.getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord");
+        SimpleClans.debug(String.format("BungeeCord channel registered: %s", registered));
+        return registered;
     }
 
 }
