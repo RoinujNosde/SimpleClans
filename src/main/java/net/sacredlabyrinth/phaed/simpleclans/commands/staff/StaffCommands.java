@@ -7,6 +7,7 @@ import net.sacredlabyrinth.phaed.simpleclans.commands.ClanInput;
 import net.sacredlabyrinth.phaed.simpleclans.commands.ClanPlayerInput;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerHomeSetEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.PlayerResetKdrEvent;
+import net.sacredlabyrinth.phaed.simpleclans.events.ReloadEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.TagChangeEvent;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.managers.ClanManager;
@@ -15,7 +16,6 @@ import net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager;
 import net.sacredlabyrinth.phaed.simpleclans.managers.StorageManager;
 import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.utils.TagValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -123,6 +123,8 @@ public class StaffCommands extends BaseCommand {
         for (Clan clan : cm.getClans()) {
             permissions.updateClanPermissions(clan);
         }
+        Bukkit.getPluginManager().callEvent(new ReloadEvent(sender));
+
         ChatBlock.sendMessage(sender, AQUA + lang("configuration.reloaded", sender));
     }
 
@@ -379,7 +381,7 @@ public class StaffCommands extends BaseCommand {
     @CommandPermission("simpleclans.mod.locale")
     @Description("{@@command.description.mod.locale}")
     @CommandCompletion("@locales")
-    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Values("@locales") @Name("locale") String locale) {
+    public void locale(CommandSender sender, @Name("player") ClanPlayerInput input, @Values("@locales") @Name("locale") @Single String locale) {
         ClanPlayer cp = input.getClanPlayer();
         cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
         plugin.getStorageManager().updateClanPlayer(cp);

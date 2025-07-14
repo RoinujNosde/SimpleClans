@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import com.google.common.base.Charsets;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanBalanceUpdateEvent;
 import net.sacredlabyrinth.phaed.simpleclans.loggers.BankLogger;
@@ -11,7 +10,6 @@ import net.sacredlabyrinth.phaed.simpleclans.storage.SQLiteCore;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
 import net.sacredlabyrinth.phaed.simpleclans.utils.YAMLSerializer;
 import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDFetcher;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,13 +18,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.*;
@@ -59,7 +61,7 @@ public final class StorageManager {
      * @return the ChatBlock
      */
     public ChatBlock getChatBlock(Player player) {
-    	return chatBlocks.get(player.getUniqueId().toString());
+    	return chatBlocks.get(player.getName());
     }
 
     /**
@@ -67,13 +69,7 @@ public final class StorageManager {
      *
      */
     public void addChatBlock(CommandSender player, ChatBlock cb) {
-		UUID uuid = UUIDMigration.getForcedPlayerUUID(player.getName());
-
-		if (uuid == null) {
-			return;
-		}
-
-		chatBlocks.put(uuid.toString(), cb);
+		chatBlocks.put(player.getName(), cb);
     }
 
     /**
@@ -151,6 +147,7 @@ public final class StorageManager {
                     		+ " `victim` varchar(16) NOT NULL,"
                     		+ " `victim_tag` varchar(16) NOT NULL,"
                     		+ " `kill_type` varchar(1) NOT NULL,"
+                            + " `created_at` datetime NULL,"
                     		+ " PRIMARY KEY  (`kill_id`));";
                     core.execute(query);
                 }
@@ -228,6 +225,7 @@ public final class StorageManager {
                     		+ " `victim` varchar(16) NOT NULL,"
                     		+ " `victim_tag` varchar(16) NOT NULL,"
                     		+ " `kill_type` varchar(1) NOT NULL,"
+                            + " `created_at` datetime NULL,"
                     		+ " PRIMARY KEY  (`kill_id`));";
                     core.execute(query);
                 }
@@ -541,7 +539,7 @@ public final class StorageManager {
 
                         if (last_seen == 0) {
                             last_seen = (new Date()).getTime();
-                        }           
+                        }
 
                         ClanPlayer cp = new ClanPlayer();
                         if (uuid != null) {
@@ -931,11 +929,11 @@ public final class StorageManager {
      * @param victim the victim
      * @param type the kill type
      */
-    public void insertKill(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim, @NotNull String type) {
-        String query = "INSERT INTO `" + getPrefixedTable("kills") + "` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, " +
-                "`victim`, `victim_tag`, `kill_type`) ";
+    public void insertKill(@NotNull ClanPlayer attacker, @NotNull ClanPlayer victim, @NotNull String type, @NotNull LocalDateTime time) {
+        String query = "INSERT INTO `sc_kills` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, " +
+                "`victim`, `victim_tag`, `kill_type`, `created_at`) ";
         String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attacker.getTag()
-                + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victim.getTag() + "','" + type + "');";
+                + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victim.getTag() + "','" + type + "','" + time + "');";
         core.executeUpdate(query + values);
     }
 
@@ -1174,53 +1172,93 @@ public final class StorageManager {
             query = "CREATE UNIQUE INDEX IF NOT EXISTS `uq_player_uuid` ON `" + getPrefixedTable("players") + "` (`uuid`);";
             core.execute(query);
         }
+
+        // From 2.19.3 to 2.20.0
+        if (!core.existsColumn(getPrefixedTable("kills"), "created_at")) {
+            query = "ALTER TABLE sc_kills ADD `created_at` datetime NULL;";
+            core.execute(query);
+        }
     }
 
     /**
      * Updates the database to the latest version
      *
      */
-
 	private void updatePlayersToUUID() {
-		plugin.getLogger().log(Level.WARNING, "Starting Migration to UUID Players !");
-		plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DONT STOP BUKKIT ! ==================== ");
-		plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DONT STOP BUKKIT ! ==================== ");
-		plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DONT STOP BUKKIT ! ==================== ");
-        SimpleClans.getInstance().setUUID(false);
+        logMigrationStart();
+
         List<ClanPlayer> cps = retrieveClanPlayers();
+        Map<String, UUID> uuidMap = fetchUUIDs(cps);
 
-        int i = 1;
-        for (ClanPlayer cp : cps) {
+        int totalPlayers = cps.size();
+        for (int i = 0; i < totalPlayers; i++) {
+            ClanPlayer cp = cps.get(i);
             try {
-                UUID uuidPlayer;
-                if (SimpleClans.getInstance().getServer().getOnlineMode()) {
-                    uuidPlayer = UUIDFetcher.getUUIDOfThrottled(cp.getName());
-                } else {
-                    uuidPlayer = UUID.nameUUIDFromBytes(("OfflinePlayer:" + cp.getName()).getBytes(Charsets.UTF_8));
+                UUID uuid = uuidMap.get(cp.getName());
+                if (uuid != null) {
+                    updatePlayerInDatabase(cp.getName(), uuid);
+                    logSuccess(i + 1, totalPlayers, cp.getName(), uuid);
                 }
-                String query = "UPDATE `" + getPrefixedTable("players") + "` SET uuid = '" + uuidPlayer.toString() + "' WHERE name = '" + cp.getName() + "';";
-                core.executeUpdate(query);
-
-                String query2 = "UPDATE `" + getPrefixedTable("kills") + "` SET attacker_uuid = '" + uuidPlayer + "' WHERE attacker = '" + cp.getName() + "';";
-                core.executeUpdate(query2);
-
-                String query3 = "UPDATE `" + getPrefixedTable("kills") + "` SET victim_uuid = '" + uuidPlayer + "' WHERE victim = '" + cp.getName() + "';";
-                core.executeUpdate(query3);
-                plugin.getLogger().info("[" + i + " / " + cps.size() + "] Success: " + cp.getName() + "; UUID: " + uuidPlayer);
             } catch (Exception ex) {
-            	plugin.getLogger().log(Level.WARNING, "[" + i + " / " + cps.size() + "] Failed [ERRO]: " + cp.getName() + "; UUID: ???");
+                logFailure(i + 1, totalPlayers, cp.getName(), ex);
             }
-            i++;
         }
+
+        logMigrationEnd(totalPlayers);
+    }
+
+    private void updatePlayerInDatabase(String playerName, UUID uuid) {
+        String[] tables = {"players", "kills", "kills"};
+        String[] columns = {"uuid", "attacker_uuid", "victim_uuid"};
+        String[] conditions = {"name", "attacker", "victim"};
+
+        for (int i = 0; i < tables.length; i++) {
+            String query = String.format("UPDATE `%s` SET %s = '%s' WHERE %s = '%s';",
+                    getPrefixedTable(tables[i]), columns[i], uuid.toString(), conditions[i], playerName);
+            core.executeUpdate(query);
+        }
+    }
+
+    private Map<String, UUID> fetchUUIDs(List<ClanPlayer> clanPlayers) {
+        Map<String, UUID> uuidMap = new HashMap<>();
+
+        try {
+            if (SimpleClans.getInstance().getServer().getOnlineMode()) {
+                uuidMap = UUIDFetcher.fetchUUIDsForClanPlayers(clanPlayers);
+            } else {
+                uuidMap = clanPlayers.stream().collect(Collectors.toMap(ClanPlayer::getName, player ->
+                        UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8))));
+            }
+        } catch (InterruptedException | ExecutionException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error fetching UUIDs in bulk: " + ex.getMessage(), ex);
+        }
+
+        return uuidMap;
+    }
+
+    private void logSuccess(int current, int total, String playerName, UUID uuid) {
+        plugin.getLogger().info(String.format("[%d / %d] Success: %s; UUID: %s", current, total, playerName, uuid));
+    }
+
+    private void logFailure(int current, int total, String playerName, Exception ex) {
+        plugin.getLogger().log(Level.WARNING, String.format("[%d / %d] Failed [ERROR]: %s; UUID: ???", current, total, playerName), ex);
+    }
+
+    private void logMigrationStart() {
+        plugin.getLogger().log(Level.WARNING, "Starting Migration to UUID Players!");
+        plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DON'T STOP BUKKIT! ====================");
+        plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DON'T STOP BUKKIT! ====================");
+        plugin.getLogger().log(Level.WARNING, "==================== ATTENTION DON'T STOP BUKKIT! ====================");
+    }
+
+    private void logMigrationEnd(int totalPlayers) {
         plugin.getLogger().log(Level.WARNING, "==================== END OF MIGRATION ====================");
         plugin.getLogger().log(Level.WARNING, "==================== END OF MIGRATION ====================");
         plugin.getLogger().log(Level.WARNING, "==================== END OF MIGRATION ====================");
 
-
-        if (!cps.isEmpty()) {
-        	plugin.getLogger().info(MessageFormat.format(lang("clan.players"), cps.size()));
+        if (totalPlayers > 0) {
+            plugin.getLogger().info(MessageFormat.format(lang("clan.players"), totalPlayers));
         }
-        SimpleClans.getInstance().setUUID(true);
     }
 
     private String getPrefixedTable(String name) {

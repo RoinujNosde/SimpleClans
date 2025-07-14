@@ -57,11 +57,12 @@ settings:
     username-regex: '(\.|\*){0,1}[a-zA-Z0-9_$]{1,16}'
     tag-regex: ''
     date-time-pattern: 'HH:mm - dd/MM/yyyy'
+    bungee-servers: []
 war-and-protection:
     war-enabled: false
     land-sharing: true
     protection-providers:
-        - WorldGuardProvider
+        - Landlord4Provider
         - WorldGuard6Provider
         - GriefPreventionProvider
     listeners:

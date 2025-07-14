@@ -83,15 +83,12 @@ public class SCPlayerListener extends SCListener {
         if (isBlacklistedWorld(player)) {
             return;
         }
-        ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
+        ClanPlayer cp = plugin.getClanManager().getCreateClanPlayer(player.getUniqueId());
 
         updatePlayerName(player);
         plugin.getClanManager().updateLastSeen(player);
         plugin.getClanManager().updateDisplayName(player);
 
-        if (cp == null) {
-            return;
-        }
         plugin.getPermissionsManager().addPlayerPermissions(cp);
 
         if (settingsManager.is(BB_SHOW_ON_LOGIN) && cp.isBbEnabled() && cp.getClan() != null) {

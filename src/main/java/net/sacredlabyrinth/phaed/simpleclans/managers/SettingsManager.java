@@ -170,7 +170,7 @@ public final class SettingsManager {
      * @return whether the string contains the color code
      */
     public boolean hasDisallowedColor(String str) {
-        var loweredString = str.toLowerCase();
+        String loweredString = str.toLowerCase();
         return getStringList(DISALLOWED_TAG_COLORS).stream().map(String::toLowerCase).anyMatch(color -> loweredString.contains("&" + color));
     }
 
@@ -313,6 +313,7 @@ public final class SettingsManager {
         TAG_REGEX("settings.tag-regex", ""),
         ACCEPT_OTHER_ALPHABETS_LETTERS("settings.accept-other-alphabets-letters-on-tag", false),
         DATE_TIME_PATTERN("settings.date-time-pattern", "HH:mm - dd/MM/yyyy"),
+        BUNGEE_SERVERS("settings.bungee-servers"),
         /*
         ================
         > Tag Settings
