@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanPlayerTeleportEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -80,7 +79,7 @@ public final class TeleportManager {
     }
 
     public void teleportToHome(@NotNull Player player, @NotNull Location destination, @NotNull String clanName) {
-        PaperLib.teleportAsync(player, getSafe(destination), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+        plugin.getScheduler().teleportAsync(player, getSafe(destination), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
             if (result) {
                 ChatBlock.sendMessage(player, AQUA + lang("now.at.homebase", player, clanName));
             } else {

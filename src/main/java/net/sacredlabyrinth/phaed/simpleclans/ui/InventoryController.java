@@ -25,6 +25,7 @@ import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.COMMANDS_CLAN;
+import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
 
 /**
  *
@@ -91,7 +92,7 @@ public class InventoryController implements Listener {
 		}
 
 		Runnable finalListener = listener;
-		Bukkit.getScheduler().runTask(SimpleClans.getInstance(), () -> {
+		SimpleClans.getInstance().getScheduler().runAtEntity(entity, task -> {
 			ItemStack currentItem = event.getCurrentItem();
 			if (currentItem == null) return;
 

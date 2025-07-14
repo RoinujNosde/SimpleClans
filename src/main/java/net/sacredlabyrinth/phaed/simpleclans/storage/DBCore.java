@@ -38,6 +38,7 @@ public interface DBCore {
 
     /**
      * Execute a select statement
+     *
      * @param query the query
      * @return the result set or null if the query failed
      */
@@ -52,6 +53,7 @@ public interface DBCore {
 
     /**
      * Execute a statement
+     *
      * @param query the query
      * @return true if the statement was executed
      */
@@ -67,6 +69,7 @@ public interface DBCore {
 
     /**
      * Check whether a table exists
+     *
      * @param table the table
      * @return true if the table exists
      */
@@ -83,7 +86,7 @@ public interface DBCore {
     /**
      * Check whether a column exists
      *
-     * @param table the table
+     * @param table  the table
      * @param column the column
      * @return true if the column exists
      */
@@ -112,7 +115,7 @@ public interface DBCore {
             }
         };
         if (plugin.getSettingsManager().is(ConfigField.PERFORMANCE_USE_THREADS)) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, executeUpdate);
+            plugin.getScheduler().runLaterAsync(executeUpdate, 0);
         } else {
             executeUpdate.run();
         }

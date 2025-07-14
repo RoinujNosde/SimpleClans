@@ -488,6 +488,6 @@ public final class RequestManager {
             }
         }
 
-        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getPluginManager().callEvent(new RequestEvent(req)));
+        plugin.getScheduler().runNextTick((task) -> Bukkit.getPluginManager().callEvent(new RequestEvent(req)));
     }
 }
