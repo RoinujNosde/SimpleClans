@@ -178,21 +178,17 @@ public class InventoryController implements Listener {
 		SimpleClans plugin = SimpleClans.getInstance();
 		String baseCommand = plugin.getSettingsManager().getString(COMMANDS_CLAN);
 		String finalCommand = String.format("%s %s ", baseCommand, subcommand) + String.join(" ", args);
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				player.performCommand(finalCommand);
-				if (!update) {
-					player.closeInventory();
-				} else {
-					SCFrame currentFrame = frames.get(player.getUniqueId());
-					if (currentFrame instanceof ConfirmationFrame) {
-						currentFrame = currentFrame.getParent();
-					}
-					InventoryDrawer.open(currentFrame);
+		plugin.getScheduler().runAtEntity(player, task -> {
+			player.performCommand(finalCommand);
+			if (!update) {
+				player.closeInventory();
+			} else {
+				SCFrame currentFrame = frames.get(player.getUniqueId());
+				if (currentFrame instanceof ConfirmationFrame) {
+					currentFrame = currentFrame.getParent();
 				}
+				InventoryDrawer.open(currentFrame);
 			}
-		}.runTask(plugin);
+		});
 	}
 }

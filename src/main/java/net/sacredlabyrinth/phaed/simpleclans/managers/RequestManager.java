@@ -442,26 +442,21 @@ public final class RequestManager {
      * Starts the task that asks for the votes of all requests
      */
     public void askerTask() {
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                for (Iterator<Map.Entry<String, Request>> iter = requests.entrySet().iterator(); iter.hasNext(); ) {
-                    Request req = iter.next().getValue();
-
-                    if (req == null) {
-                        continue;
-                    }
-
-                    if (req.reachedRequestLimit()) {
-                        iter.remove();
-                    }
-
-                    ask(req);
-                    req.incrementAskCount();
+        plugin.getScheduler().runTimerAsync(() -> {
+            for (Iterator<Map.Entry<String, Request>> iter = requests.entrySet().iterator(); iter.hasNext(); ) {
+                Request req = iter.next().getValue();
+                if (req == null) {
+                    continue;
                 }
+
+                if (req.reachedRequestLimit()) {
+                    iter.remove();
+                }
+
+                ask(req);
+                req.incrementAskCount();
             }
-        }.runTaskTimerAsynchronously(plugin, 0, plugin.getSettingsManager().getSeconds(REQUEST_FREQUENCY));
+        }, 0, plugin.getSettingsManager().getSeconds(REQUEST_FREQUENCY));
     }
 
     /**

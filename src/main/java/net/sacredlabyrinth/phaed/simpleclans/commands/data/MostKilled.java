@@ -25,25 +25,22 @@ public class MostKilled extends Sendable {
 
     @Override
     public void send() {
-        plugin.getStorageManager().getMostKilled(data -> new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (data.isEmpty()) {
-                    ChatBlock.sendMessage(player, RED + lang("nokillsfound", player));
-                    return;
-                }
-
-                sendHeader();
-
-                Map<String, Integer> killsPerPlayer = Helper.sortByValue(data);
-
-                for (Map.Entry<String, Integer> attackerVictim : killsPerPlayer.entrySet()) {
-                    addLine(attackerVictim);
-                }
-
-                sendBlock();
+        plugin.getStorageManager().getMostKilled(data -> plugin.getScheduler().runAtEntity(player, task -> {
+            if (data.isEmpty()) {
+                ChatBlock.sendMessage(player, RED + lang("nokillsfound", player));
+                return;
             }
-        }.runTask(plugin));
+
+            sendHeader();
+
+            Map<String, Integer> killsPerPlayer = Helper.sortByValue(data);
+
+            for (Map.Entry<String, Integer> attackerVictim : killsPerPlayer.entrySet()) {
+                addLine(attackerVictim);
+            }
+
+            sendBlock();
+        }));
     }
 
     private void addLine(Map.Entry<String, Integer> attackerVictim) {

@@ -37,35 +37,31 @@ public class UpdateChecker {
 	 * 
 	 */
 	public void check() {
-		new BukkitRunnable() {
+		plugin.getScheduler().runAsync(task -> {
+			try {
+				URL url = new URL(LATEST_VERSION_URL);
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.addRequestProperty("User-Agent", userAgent);
+				InputStreamReader reader = new InputStreamReader(connection.getInputStream());
 
-			@Override
-			public void run() {
-				try {
-					URL url = new URL(LATEST_VERSION_URL);
-					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-					connection.addRequestProperty("User-Agent", userAgent);
-					InputStreamReader reader = new InputStreamReader(connection.getInputStream());
-					
-					JsonElement parse = JsonParser.parseReader(reader);
-					if (parse.isJsonObject()) {
-						String latestVersion = parse.getAsJsonObject().get("name").getAsString();
+				JsonElement parse = JsonParser.parseReader(reader);
+				if (parse.isJsonObject()) {
+					String latestVersion = parse.getAsJsonObject().get("name").getAsString();
 
-						if (compareVersions(version, latestVersion) < 0) {
-							plugin.getLogger().info(String.format("You're running an outdated version (%s).", version));
-							plugin.getLogger().info(String.format("The latest version is %s. Download it at:", latestVersion));
-							plugin.getLogger().info("https://www.spigotmc.org/resources/simpleclans.71242/");
-						}
-						
+					if (compareVersions(version, latestVersion) < 0) {
+						plugin.getLogger().info(String.format("You're running an outdated version (%s).", version));
+						plugin.getLogger().info(String.format("The latest version is %s. Download it at:", latestVersion));
+						plugin.getLogger().info("https://www.spigotmc.org/resources/simpleclans.71242/");
 					}
-					
-					reader.close();
-				} catch (MalformedURLException ignored) {
-				} catch (IOException | JsonParseException ex) {
-					plugin.getLogger().log(Level.WARNING, "Error checking the plugin version...");
+
 				}
+
+				reader.close();
+			} catch (MalformedURLException ignored) {
+			} catch (IOException | JsonParseException ex) {
+				plugin.getLogger().log(Level.WARNING, "Error checking the plugin version...");
 			}
-		}.runTaskAsynchronously(plugin);
+		});
 	}
 
 	public static int compareVersions(@NotNull String a, @NotNull String b) {

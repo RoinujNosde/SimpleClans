@@ -718,12 +718,7 @@ public final class StorageManager {
      */
     @Deprecated
     public void updateClanAsync(final Clan clan) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                updateClan(clan);
-            }
-        }.runTaskAsynchronously(plugin);
+        plugin.getScheduler().runAsync(task -> updateClan(clan));
     }
 
     /**
@@ -732,12 +727,7 @@ public final class StorageManager {
      * @param cp to update
      */
     public void updatePlayerNameAsync(final @NotNull ClanPlayer cp) {
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-                updatePlayerName(cp);
-			}
-		}.runTaskAsynchronously(plugin);
+        plugin.getScheduler().runAsync(task -> updatePlayerName(cp));
     }
 
     /**
@@ -1032,13 +1022,7 @@ public final class StorageManager {
      * @param callback the callback
      */
     public void getMostKilled(DataCallback<Map<String, Integer>> callback) {
-    	new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				callback.onResultReady(getMostKilled());
-			}
-		}.runTaskAsynchronously(plugin);
+        plugin.getScheduler().runAsync(task -> callback.onResultReady(getMostKilled()));
     }
 
     /**
@@ -1046,12 +1030,7 @@ public final class StorageManager {
      *
      */
     public void getKillsPerPlayer(final String playerName, final DataCallback<Map<String, Integer>> callback) {
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-				callback.onResultReady(getKillsPerPlayer(playerName));
-			}
-		}.runTaskAsynchronously(plugin);
+        plugin.getScheduler().runAsync(task -> callback.onResultReady(getKillsPerPlayer(playerName)));
     }
 
     /**
