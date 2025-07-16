@@ -78,7 +78,7 @@ public class SimpleClans extends JavaPlugin {
     }
 
     public static void debug(String msg) {
-        if (getInstance().getSettingsManager().is(DEBUG)) {
+        if (getInstance() == null || getInstance().getSettingsManager().is(DEBUG)) {
             logger.log(Level.INFO, msg);
         }
     }
