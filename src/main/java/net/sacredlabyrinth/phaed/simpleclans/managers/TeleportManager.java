@@ -150,7 +150,7 @@ public final class TeleportManager {
     }
 
     private void startCounter() {
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        plugin.getScheduler().runTimer(() -> {
             waitingPlayers.values().removeIf(ts -> ts.getPlayer() == null);
             for (Iterator<TeleportState> iter = waitingPlayers.values().iterator(); iter.hasNext(); ) {
                 TeleportState state = iter.next();
@@ -174,7 +174,7 @@ public final class TeleportManager {
 
                 state.setProcessing(false);
             }
-        }, 0, 20L);
+        }, 0, 20);
     }
 
     private void teleport(TeleportState state) {
