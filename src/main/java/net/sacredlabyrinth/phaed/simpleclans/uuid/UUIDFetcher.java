@@ -138,9 +138,13 @@ public final class UUIDFetcher {
 
     private static @Nullable UUID fetchUUID(@NotNull URL url) throws IOException {
         HttpURLConnection connection = createConnection(url);
-        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+            return null;
+        }
+        if (responseCode != HttpURLConnection.HTTP_OK) {
             throw new IOException(String.format("Unexpected response code: %d. Response: %s",
-                    connection.getResponseCode(), connection.getResponseMessage()));
+                    responseCode, connection.getResponseMessage()));
         }
 
         JsonObject response = gson.fromJson(new InputStreamReader(connection.getInputStream(), UTF_8), JsonObject.class);
