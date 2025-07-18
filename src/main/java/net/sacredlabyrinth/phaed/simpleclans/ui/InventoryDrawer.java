@@ -47,7 +47,7 @@ public class InventoryDrawer {
             if (!frame.equals(OPENING.get(uuid))) {
                 return;
             }
-            Bukkit.getScheduler().runTask(plugin, () -> {
+            plugin.getScheduler().runAtEntity(frame.getViewer(), syncTask -> {
                 frame.getViewer().openInventory(inventory);
                 InventoryController.register(frame);
                 OPENING.remove(uuid);
