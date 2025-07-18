@@ -1440,10 +1440,10 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         SimpleClans.getInstance().getRequestManager().removeRequest(getTag());
 
-        SimpleClans.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SimpleClans.getInstance(), () -> {
+        SimpleClans.getInstance().getScheduler().runNextTick(task -> {
             SimpleClans.getInstance().getClanManager().removeClan(getTag());
             SimpleClans.getInstance().getStorageManager().deleteClan(this);
-        }, 1);
+        });
     }
 
     public void disband() {

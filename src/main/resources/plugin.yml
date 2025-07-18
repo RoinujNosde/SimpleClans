@@ -11,6 +11,7 @@ loadbefore:
   - GriefPrevention
   - PlotSquared
 api-version: '1.13'
+folia-supported: true
 authors:
   - Phaed
   - RoinujNosde

@@ -25,6 +25,7 @@ import java.util.*;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.ConfigField.COMMANDS_CLAN;
+import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
 
 /**
  *
@@ -91,7 +92,7 @@ public class InventoryController implements Listener {
 		}
 
 		Runnable finalListener = listener;
-		Bukkit.getScheduler().runTask(SimpleClans.getInstance(), () -> {
+		SimpleClans.getInstance().getScheduler().runAtEntity(entity, task -> {
 			ItemStack currentItem = event.getCurrentItem();
 			if (currentItem == null) return;
 
@@ -177,21 +178,17 @@ public class InventoryController implements Listener {
 		SimpleClans plugin = SimpleClans.getInstance();
 		String baseCommand = plugin.getSettingsManager().getString(COMMANDS_CLAN);
 		String finalCommand = String.format("%s %s ", baseCommand, subcommand) + String.join(" ", args);
-		new BukkitRunnable() {
-
-			@Override
-			public void run() {
-				player.performCommand(finalCommand);
-				if (!update) {
-					player.closeInventory();
-				} else {
-					SCFrame currentFrame = frames.get(player.getUniqueId());
-					if (currentFrame instanceof ConfirmationFrame) {
-						currentFrame = currentFrame.getParent();
-					}
-					InventoryDrawer.open(currentFrame);
+		plugin.getScheduler().runAtEntity(player, task -> {
+			player.performCommand(finalCommand);
+			if (!update) {
+				player.closeInventory();
+			} else {
+				SCFrame currentFrame = frames.get(player.getUniqueId());
+				if (currentFrame instanceof ConfirmationFrame) {
+					currentFrame = currentFrame.getParent();
 				}
+				InventoryDrawer.open(currentFrame);
 			}
-		}.runTask(plugin);
+		});
 	}
 }
