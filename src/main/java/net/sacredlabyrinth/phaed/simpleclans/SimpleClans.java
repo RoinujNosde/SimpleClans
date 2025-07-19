@@ -210,10 +210,14 @@ public class SimpleClans extends JavaPlugin {
         getSettingsManager().loadAndSave();
     }
 
+    // TODO Replace this with getFoliaLib#getScheduler?
     public PlatformScheduler getScheduler() {
         return foliaLib.getScheduler();
     }
 
+    public FoliaLib getFoliaLib() {
+        return foliaLib;
+    }
     /**
      * @return the clanManager
      */

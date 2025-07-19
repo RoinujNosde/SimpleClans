@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.conversation;
 
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 import org.bukkit.conversations.Conversable;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationCanceller;
@@ -48,6 +49,10 @@ public class SCConversation extends Conversation {
     }
 
     public void addConversationCanceller(@NotNull ConversationCanceller canceller) {
+        // not supported yet by Folia, https://github.com/PaperMC/Folia/issues/216
+        if (SimpleClans.getInstance().getFoliaLib().isFolia()) {
+            return;
+        }
         canceller.setConversation(this);
         cancellers.add(canceller);
     }
