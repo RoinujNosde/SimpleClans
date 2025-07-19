@@ -27,7 +27,7 @@ public class PlayerHeadCacheTask extends BukkitRunnable {
      */
     public void start() {
         int hour = 3600;
-        this.runTaskTimerAsynchronously(plugin, 0, (hour + 60) * 20);
+        plugin.getScheduler().runTimerAsync(this, 0, (hour + 60) * 20);
     }
 
     @Override
