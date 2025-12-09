@@ -760,7 +760,7 @@ public final class StorageManager {
 
                 byUuid.setName(currentName);
                 byUuid.setLastSeen(System.currentTimeMillis());
-                updateClanPlayer(byUuid);
+                updateClanPlayer(byUuid, true); // Force immediate update
                 plugin.getLogger().info(String.format("Player name updated in database: %s", currentName));
                 return;
             }
@@ -955,9 +955,19 @@ public final class StorageManager {
      *
      */
     public void updateClanPlayer(ClanPlayer cp) {
+        updateClanPlayer(cp, false);
+    }
+
+    /**
+     * Update a clan player to the database
+     *
+     * @param cp the clan player to update
+     * @param forceImmediate if true, bypasses periodic save setting and updates immediately
+     */
+    public void updateClanPlayer(ClanPlayer cp, boolean forceImmediate) {
         cp.updateLastSeen();
         plugin.getProxyManager().sendUpdate(cp);
-        if (plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
+        if (!forceImmediate && plugin.getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             modifiedClanPlayers.add(cp);
             return;
         }
