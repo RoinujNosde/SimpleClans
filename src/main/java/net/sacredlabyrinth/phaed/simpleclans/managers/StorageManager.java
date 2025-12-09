@@ -778,26 +778,24 @@ public final class StorageManager {
             plugin.getLogger().warning(String.format("Duplicate detection!\n" + " - Record A: %s/%s\n" + " - Record B: %s/%s\n" + "➜ Merging records.", byName.getName(), byName.getUniqueId(), byUuid.getName(), byUuid.getUniqueId()));
 
             UUID oldByNameUuid = byName.getUniqueId();
-            UUID oldByUuidUuid = byUuid.getUniqueId();
 
             // Merge data (keep the byUuid record as base, merge stats from byName)
             ClanPlayer merged = mergeClanPlayers(byUuid, byName);
             merged.setUniqueId(currentUuid);
             merged.setName(currentName);
 
-            // Delete both old records
+            // Delete the record with wrong UUID only
             String deleteByName = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByNameUuid + "';";
-            String deleteByUuid = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByUuidUuid + "';";
             core.executeUpdate(deleteByName);
-            core.executeUpdate(deleteByUuid);
 
-            // Insert merged record
-            insertClanPlayer(merged);
+            // Update the kept record with merged data
+            updateClanPlayer(merged, true);
 
             // Update in-memory
             plugin.getClanManager().deleteClanPlayerFromMemory(oldByNameUuid);
-            plugin.getClanManager().deleteClanPlayerFromMemory(oldByUuidUuid);
             plugin.getClanManager().importClanPlayer(merged);
+            
+            plugin.getLogger().info(String.format("Duplicate records merged for %s (%s)", currentName, currentUuid));
         } catch (Exception e) {
             plugin.getServer().getLogger().log(Level.SEVERE, "[SimpleClans] Error synchronizing player data for " + player.getName(), e);
         }
