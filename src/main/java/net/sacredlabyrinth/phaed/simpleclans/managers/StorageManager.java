@@ -741,10 +741,239 @@ public final class StorageManager {
     }
 
     /**
+     * Retrieves a clan player from the database by name
+     *
+     * @param name the player name to search for
+     * @return the ClanPlayer if found, null otherwise
+     */
+    public @Nullable ClanPlayer retrieveClanPlayerByName(String name) {
+        String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = '" + name + "';";
+        ResultSet res = core.select(query);
+
+        if (res != null) {
+            try {
+                if (res.next()) {
+                    return buildClanPlayerFromResultSet(res);
+                }
+            } catch (SQLException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Error retrieving ClanPlayer by name: " + name, ex);
+            } finally {
+                try {
+                    res.close();
+                } catch (SQLException e) {
+                    plugin.getLogger().log(Level.SEVERE, "Error closing ResultSet", e);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Helper method to build a ClanPlayer from a ResultSet
+     */
+    private ClanPlayer buildClanPlayerFromResultSet(ResultSet res) throws SQLException {
+        String uuid = res.getString("uuid");
+        String name = res.getString("name");
+        String tagStr = res.getString("tag");
+        boolean leader = res.getBoolean("leader");
+        boolean friendly_fire = res.getBoolean("friendly_fire");
+        boolean trusted = res.getBoolean("trusted");
+        int neutral_kills = res.getInt("neutral_kills");
+        int rival_kills = res.getInt("rival_kills");
+        int civilian_kills = res.getInt("civilian_kills");
+        int ally_kills = res.getInt("ally_kills");
+        int deaths = res.getInt("deaths");
+        long last_seen = res.getLong("last_seen");
+        long join_date = res.getLong("join_date");
+        String flags = res.getString("flags");
+        String packed_past_clans = res.getString("packed_past_clans");
+        String resign_times = res.getString("resign_times");
+        Locale locale = Helper.forLanguageTag(res.getString("locale"));
+
+        if (last_seen == 0) {
+            last_seen = (new Date()).getTime();
+        }
+
+        ClanPlayer cp = new ClanPlayer();
+        if (uuid != null) {
+            cp.setUniqueId(UUID.fromString(uuid));
+        }
+        cp.setFlags(flags);
+        cp.setName(name);
+        cp.setLeader(leader);
+        cp.setFriendlyFire(friendly_fire);
+        cp.setNeutralKills(neutral_kills);
+        cp.setRivalKills(rival_kills);
+        cp.setCivilianKills(civilian_kills);
+        cp.setAllyKills(ally_kills);
+        cp.setDeaths(deaths);
+        cp.setLastSeen(last_seen);
+        cp.setJoinDate(join_date);
+        cp.setPackedPastClans(packed_past_clans);
+        cp.setTrusted(leader || trusted);
+        cp.setResignTimes(Helper.resignTimesFromJson(resign_times));
+        cp.setLocale(locale);
+        
+        // Set clan relationship if tag exists
+        if (tagStr != null && !tagStr.isEmpty()) {
+            Clan clan = plugin.getClanManager().getClan(tagStr);
+            if (clan != null) {
+                cp.setClan(clan);
+            }
+        }
+
+        return cp;
+    }
+
+    /**
+     * Synchronizes player data in the database, handling duplicates
+     * - If name differs but UUID matches: update name
+     * - If names match but UUIDs differ: update UUID
+     * - If both name and UUID exist in different records: merge and delete duplicates
+     *
+     * @param player the player to sync
+     */
+    public void syncPlayerData(@NotNull Player player) {
+        String currentName = player.getName();
+        UUID currentUuid = player.getUniqueId();
+
+        ClanPlayer byName = retrieveClanPlayerByName(currentName);
+        ClanPlayer byUuid = retrieveOneClanPlayer(currentUuid);
+
+        // Case 1: No records exist - create new
+        if (byName == null && byUuid == null) {
+            plugin.getLogger().info(String.format("No existing records for %s (%s)", currentName, currentUuid));
+            return;
+        }
+
+        // Case 2: Found by name only, UUID differs - update UUID
+        if (byName != null && byUuid == null) {
+            plugin.getLogger().warning(String.format(
+                "Correcting UUID for %s: %s → %s",
+                byName.getName(), byName.getUniqueId(), currentUuid
+            ));
+            
+            UUID oldUuid = byName.getUniqueId();
+            
+            // Delete old record and insert with corrected UUID
+            String deleteQuery = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldUuid + "';";
+            core.executeUpdate(deleteQuery);
+            
+            byName.setUniqueId(currentUuid);
+            byName.setName(currentName);
+            byName.setLastSeen(System.currentTimeMillis());
+            insertClanPlayer(byName);
+            
+            // Update in-memory reference
+            plugin.getClanManager().deleteClanPlayerFromMemory(oldUuid);
+            plugin.getClanManager().importClanPlayer(byName);
+            return;
+        }
+
+        // Case 3: Found by UUID only, name differs - update name
+        if (byName == null && byUuid != null) {
+            plugin.getLogger().info(String.format(
+                "Correcting name for %s to %s (%s)",
+                byUuid.getName(), currentName, currentUuid
+            ));
+            
+            byUuid.setName(currentName);
+            updateClanPlayer(byUuid);
+            return;
+        }
+
+        // Case 4: Both found and they're the same record - just update
+        if (byName != null && byUuid != null && byName.getUniqueId().equals(byUuid.getUniqueId())) {
+            byUuid.setName(currentName);
+            updateClanPlayer(byUuid);
+            return;
+        }
+
+        // Case 5: Both found but different records - merge duplicates
+        if (byName != null && byUuid != null) {
+            plugin.getLogger().warning(String.format(
+                "Duplicate detection!\n" +
+                " - Record A: %s/%s\n" +
+                " - Record B: %s/%s\n" +
+                "➜ Merging records.",
+                byName.getName(), byName.getUniqueId(),
+                byUuid.getName(), byUuid.getUniqueId()
+            ));
+
+            UUID oldByNameUuid = byName.getUniqueId();
+            UUID oldByUuidUuid = byUuid.getUniqueId();
+
+            // Merge data (keep the byUuid record as base, merge stats from byName)
+            ClanPlayer merged = mergeClanPlayers(byUuid, byName);
+            merged.setUniqueId(currentUuid);
+            merged.setName(currentName);
+
+            // Delete both old records
+            String deleteByName = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByNameUuid + "';";
+            String deleteByUuid = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByUuidUuid + "';";
+            core.executeUpdate(deleteByName);
+            core.executeUpdate(deleteByUuid);
+
+            // Insert merged record
+            insertClanPlayer(merged);
+
+            // Update in-memory
+            plugin.getClanManager().deleteClanPlayerFromMemory(oldByNameUuid);
+            plugin.getClanManager().deleteClanPlayerFromMemory(oldByUuidUuid);
+            plugin.getClanManager().importClanPlayer(merged);
+        }
+    }
+
+    /**
+     * Merges two ClanPlayer records, combining their stats
+     */
+    private ClanPlayer mergeClanPlayers(ClanPlayer primary, ClanPlayer secondary) {
+        ClanPlayer merged = new ClanPlayer();
+        
+        // Copy identity from primary
+        merged.setUniqueId(primary.getUniqueId());
+        merged.setName(primary.getName());
+        
+        // Keep clan membership from primary (or secondary if primary has none)
+        Clan primaryClan = primary.getClan();
+        Clan secondaryClan = secondary.getClan();
+        if (primaryClan != null) {
+            merged.setClan(primaryClan);
+        } else if (secondaryClan != null) {
+            merged.setClan(secondaryClan);
+        }
+        
+        merged.setLeader(primary.isLeader() || secondary.isLeader());
+        merged.setTrusted(primary.isTrusted() || secondary.isTrusted());
+        
+        // Merge stats (sum kills/deaths)
+        merged.setNeutralKills(primary.getNeutralKills() + secondary.getNeutralKills());
+        merged.setRivalKills(primary.getRivalKills() + secondary.getRivalKills());
+        merged.setCivilianKills(primary.getCivilianKills() + secondary.getCivilianKills());
+        merged.setAllyKills(primary.getAllyKills() + secondary.getAllyKills());
+        merged.setDeaths(primary.getDeaths() + secondary.getDeaths());
+        
+        // Keep earliest join date and latest last seen
+        merged.setJoinDate(Math.min(primary.getJoinDate(), secondary.getJoinDate()));
+        merged.setLastSeen(Math.max(primary.getLastSeen(), secondary.getLastSeen()));
+        
+        // Merge other properties from primary
+        merged.setFriendlyFire(primary.isFriendlyFire());
+        merged.setFlags(primary.getFlags());
+        merged.setPackedPastClans(primary.getPackedPastClans());
+        merged.setResignTimes(primary.getResignTimes());
+        merged.setLocale(primary.getLocale());
+        
+        return merged;
+    }
+
+    /**
      * Change the name of a player in the database
      *
      * @param cp to update
+     * @deprecated Use syncPlayerData instead for proper duplicate handling
      */
+    @Deprecated
     public void updatePlayerName(final @NotNull ClanPlayer cp) {
         String query = "UPDATE `" + getPrefixedTable("players") + "` SET `name` = '" + cp.getName() + "' WHERE uuid = '" + cp.getUniqueId() + "';";
         core.executeUpdate(query);

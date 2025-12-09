@@ -174,27 +174,13 @@ public class SCPlayerListener extends SCListener {
     }
 
     private void updatePlayerName(@NotNull final Player player) {
+        // Synchronize player data in database, handling any duplicates
+        plugin.getStorageManager().syncPlayerData(player);
+        
+        // Update in-memory ClanPlayer if exists
         final ClanPlayer cp = plugin.getClanManager().getAnyClanPlayer(player.getUniqueId());
-
-        ClanPlayer duplicate = null;
-        for (ClanPlayer other : plugin.getClanManager().getAllClanPlayers()) {
-            if (other.getName().equals(player.getName()) && !other.getUniqueId().equals(player.getUniqueId())) {
-                duplicate = other;
-                break;
-            }
-        }
-
-        if (duplicate != null) {
-            plugin.getLogger().warning(String.format("Found duplicate for %s, UUIDs: %s, %s", player.getName(),
-                    player.getUniqueId(), duplicate.getUniqueId()));
-            // Use first 15 characters of UUID with tilde prefix to fit in varchar(16) column
-            String shortUuid = "~" + duplicate.getUniqueId().toString().substring(0, 15);
-            duplicate.setName(shortUuid);
-            plugin.getStorageManager().updatePlayerName(duplicate);
-        }
         if (cp != null) {
             cp.setName(player.getName());
-            plugin.getStorageManager().updatePlayerName(cp);
         }
     }
 
