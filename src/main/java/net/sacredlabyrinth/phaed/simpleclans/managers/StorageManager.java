@@ -737,18 +737,20 @@ public final class StorageManager {
 
                 UUID oldUuid = byName.getUniqueId();
 
-                // Delete old record and insert with corrected UUID
-                String deleteQuery = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldUuid + "';";
-                core.executeUpdate(deleteQuery);
+                // Update UUID in database directly
+                String updateQuery = "UPDATE `" + getPrefixedTable("players") + "` SET `uuid` = '" + currentUuid + "', `name` = '" + currentName + "', `last_seen` = " + System.currentTimeMillis() + " WHERE uuid = '" + oldUuid + "';";
+                core.executeUpdate(updateQuery);
 
+                // Update in-memory object
                 byName.setUniqueId(currentUuid);
                 byName.setName(currentName);
                 byName.setLastSeen(System.currentTimeMillis());
-                insertClanPlayer(byName);
 
                 // Update in-memory reference
                 plugin.getClanManager().deleteClanPlayerFromMemory(oldUuid);
                 plugin.getClanManager().importClanPlayer(byName);
+                
+                plugin.getLogger().info(String.format("UUID corrected in database: %s", currentUuid));
                 return;
             }
 
