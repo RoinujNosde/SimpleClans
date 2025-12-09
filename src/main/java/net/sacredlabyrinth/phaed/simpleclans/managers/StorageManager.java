@@ -755,7 +755,7 @@ public final class StorageManager {
             }
 
             // Case 3: Found by UUID only, name differs - update name
-            if (byName == null && byUuid != null) {
+            if (byName == null) {
                 plugin.getLogger().info(String.format("Correcting name for %s to %s (%s)", byUuid.getName(), currentName, currentUuid));
 
                 byUuid.setName(currentName);
@@ -766,7 +766,7 @@ public final class StorageManager {
             }
 
             // Case 4: Both found and they're the same record - just update
-            if (byName != null && byUuid != null && byName.getUniqueId().equals(byUuid.getUniqueId())) {
+            if (byName.getUniqueId().equals(byUuid.getUniqueId())) {
                 byUuid.setName(currentName);
                 byUuid.setLastSeen(System.currentTimeMillis());
                 updateClanPlayer(byUuid);
@@ -775,31 +775,29 @@ public final class StorageManager {
             }
 
             // Case 5: Both found but different records - merge duplicates
-            if (byName != null && byUuid != null) {
-                plugin.getLogger().warning(String.format("Duplicate detection!\n" + " - Record A: %s/%s\n" + " - Record B: %s/%s\n" + "➜ Merging records.", byName.getName(), byName.getUniqueId(), byUuid.getName(), byUuid.getUniqueId()));
+            plugin.getLogger().warning(String.format("Duplicate detection!\n" + " - Record A: %s/%s\n" + " - Record B: %s/%s\n" + "➜ Merging records.", byName.getName(), byName.getUniqueId(), byUuid.getName(), byUuid.getUniqueId()));
 
-                UUID oldByNameUuid = byName.getUniqueId();
-                UUID oldByUuidUuid = byUuid.getUniqueId();
+            UUID oldByNameUuid = byName.getUniqueId();
+            UUID oldByUuidUuid = byUuid.getUniqueId();
 
-                // Merge data (keep the byUuid record as base, merge stats from byName)
-                ClanPlayer merged = mergeClanPlayers(byUuid, byName);
-                merged.setUniqueId(currentUuid);
-                merged.setName(currentName);
+            // Merge data (keep the byUuid record as base, merge stats from byName)
+            ClanPlayer merged = mergeClanPlayers(byUuid, byName);
+            merged.setUniqueId(currentUuid);
+            merged.setName(currentName);
 
-                // Delete both old records
-                String deleteByName = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByNameUuid + "';";
-                String deleteByUuid = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByUuidUuid + "';";
-                core.executeUpdate(deleteByName);
-                core.executeUpdate(deleteByUuid);
+            // Delete both old records
+            String deleteByName = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByNameUuid + "';";
+            String deleteByUuid = "DELETE FROM `" + getPrefixedTable("players") + "` WHERE uuid = '" + oldByUuidUuid + "';";
+            core.executeUpdate(deleteByName);
+            core.executeUpdate(deleteByUuid);
 
-                // Insert merged record
-                insertClanPlayer(merged);
+            // Insert merged record
+            insertClanPlayer(merged);
 
-                // Update in-memory
-                plugin.getClanManager().deleteClanPlayerFromMemory(oldByNameUuid);
-                plugin.getClanManager().deleteClanPlayerFromMemory(oldByUuidUuid);
-                plugin.getClanManager().importClanPlayer(merged);
-            }
+            // Update in-memory
+            plugin.getClanManager().deleteClanPlayerFromMemory(oldByNameUuid);
+            plugin.getClanManager().deleteClanPlayerFromMemory(oldByUuidUuid);
+            plugin.getClanManager().importClanPlayer(merged);
         } catch (Exception e) {
             plugin.getServer().getLogger().log(Level.SEVERE, "[SimpleClans] Error synchronizing player data for " + player.getName(), e);
         }
