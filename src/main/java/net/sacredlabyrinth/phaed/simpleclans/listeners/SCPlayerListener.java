@@ -187,7 +187,9 @@ public class SCPlayerListener extends SCListener {
         if (duplicate != null) {
             plugin.getLogger().warning(String.format("Found duplicate for %s, UUIDs: %s, %s", player.getName(),
                     player.getUniqueId(), duplicate.getUniqueId()));
-            duplicate.setName(duplicate.getUniqueId().toString());
+            // Use first 15 characters of UUID with tilde prefix to fit in varchar(16) column
+            String shortUuid = "~" + duplicate.getUniqueId().toString().substring(0, 15);
+            duplicate.setName(shortUuid);
             plugin.getStorageManager().updatePlayerName(duplicate);
         }
         if (cp != null) {
