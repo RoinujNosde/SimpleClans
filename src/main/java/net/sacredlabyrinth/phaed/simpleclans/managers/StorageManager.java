@@ -769,7 +769,7 @@ public final class StorageManager {
             if (byName.getUniqueId().equals(byUuid.getUniqueId())) {
                 byUuid.setName(currentName);
                 byUuid.setLastSeen(System.currentTimeMillis());
-                updateClanPlayer(byUuid);
+                updateClanPlayer(byUuid, true); // Force immediate update
                 plugin.getLogger().info(String.format("Player data synchronized: %s", currentName));
                 return;
             }
