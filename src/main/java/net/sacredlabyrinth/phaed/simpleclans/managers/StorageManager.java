@@ -790,7 +790,7 @@ public final class StorageManager {
             plugin.getClanManager().importClanPlayer(merged);
             
             plugin.getLogger().info(String.format("Duplicate records merged for %s (%s)", currentName, currentUuid));
-        } catch (Exception e) {
+        } catch (SQLException e) {
             plugin.getServer().getLogger().log(Level.SEVERE, "[SimpleClans] Error synchronizing player data for " + player.getName(), e);
         }
     }
