@@ -190,7 +190,7 @@ public final class StorageManager {
      *
      */
     @Deprecated
-    public void importFromDatabaseOnePlayer(@NotNull Player player) {
+    public void importFromDatabaseOnePlayer(Player player) {
         plugin.getClanManager().deleteClanPlayerFromMemory(player.getUniqueId());
 
         ClanPlayer cp = retrieveOneClanPlayer(player.getUniqueId());
@@ -634,23 +634,17 @@ public final class StorageManager {
         if (name == null || name.trim().isEmpty()) {
             return null;
         }
-        String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = '" + name + "';";
-        ResultSet res = core.select(query);
-
-        if (res != null) {
-            try {
+        String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = ?;";
+        try (Connection connection = core.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, name);
+            try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
                     return buildClanPlayerFromResultSet(res);
                 }
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Error retrieving ClanPlayer by name: " + name, ex);
-            } finally {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error closing ResultSet", e);
-                }
             }
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error retrieving ClanPlayer by name: " + name, ex);
         }
         return null;
     }
@@ -741,8 +735,15 @@ public final class StorageManager {
                 UUID oldUuid = byName.getUniqueId();
 
                 // Update UUID in database directly
-                String updateQuery = "UPDATE `" + getPrefixedTable("players") + "` SET `uuid` = '" + currentUuid + "', `name` = '" + currentName + "', `last_seen` = " + System.currentTimeMillis() + " WHERE uuid = '" + oldUuid + "';";
-                core.executeUpdate(updateQuery);
+                String updateQuery = "UPDATE `" + getPrefixedTable("players") + "` SET `uuid` = ?, `name` = ?, `last_seen` = ? WHERE uuid = ?;";
+                try (Connection conn = core.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(updateQuery)) {
+                    ps.setString(1, currentUuid.toString());
+                    ps.setString(2, currentName);
+                    ps.setLong(3, System.currentTimeMillis());
+                    ps.setString(4, oldUuid.toString());
+                    ps.executeUpdate();
+                }
 
                 // Update in-memory object
                 byName.setUniqueId(currentUuid);
@@ -752,13 +753,13 @@ public final class StorageManager {
                 // Update in-memory reference
                 plugin.getClanManager().deleteClanPlayerFromMemory(oldUuid);
                 plugin.getClanManager().importClanPlayer(byName);
-
+                
                 plugin.getLogger().info(String.format("UUID corrected in database: %s", currentUuid));
                 return;
             }
 
             // Case 3: Found by UUID only, name differs - update name
-            if (byName == null && !byUuid.getName().equals(currentName)) {
+            if (byName == null) {
                 plugin.getLogger().info(String.format("Correcting name for %s to %s (%s)", byUuid.getName(), currentName, currentUuid));
 
                 byUuid.setName(currentName);
@@ -769,7 +770,7 @@ public final class StorageManager {
             }
 
             // Case 4: Both found and they're the same record - just update
-            if (byName != null && byName.getUniqueId() != null && byName.getUniqueId().equals(byUuid.getUniqueId())) {
+            if (byName.getUniqueId().equals(byUuid.getUniqueId())) {
                 byUuid.setName(currentName);
                 byUuid.setLastSeen(System.currentTimeMillis());
                 updateClanPlayer(byUuid, true); // Force immediate update
@@ -797,9 +798,9 @@ public final class StorageManager {
             // Update in-memory
             plugin.getClanManager().deleteClanPlayerFromMemory(oldByNameUuid);
             plugin.getClanManager().importClanPlayer(merged);
-
+            
             plugin.getLogger().info(String.format("Duplicate records merged for %s (%s)", currentName, currentUuid));
-        } catch (Exception e) {
+        } catch (SQLException e) {
             plugin.getServer().getLogger().log(Level.SEVERE, "[SimpleClans] Error synchronizing player data for " + player.getName(), e);
         }
     }
@@ -962,7 +963,7 @@ public final class StorageManager {
     /**
      * Update a clan player to the database
      *
-     * @param cp             the clan player to update
+     * @param cp the clan player to update
      * @param forceImmediate if true, bypasses periodic save setting and updates immediately
      */
     public void updateClanPlayer(ClanPlayer cp, boolean forceImmediate) {
@@ -1024,7 +1025,7 @@ public final class StorageManager {
      *
      */
     @Deprecated
-    public void insertKill(@NotNull Player attacker, @NotNull String attackerTag, @NotNull Player victim, @NotNull String victimTag, @NotNull String type) {
+    public void insertKill(Player attacker, String attackerTag, Player victim, String victimTag, String type) {
         String query = "INSERT INTO `" + getPrefixedTable("kills") + "` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, `victim`, `victim_tag`, `kill_type`) ";
         String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attackerTag + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victimTag + "','" + type + "');";
         core.executeUpdate(query + values);
