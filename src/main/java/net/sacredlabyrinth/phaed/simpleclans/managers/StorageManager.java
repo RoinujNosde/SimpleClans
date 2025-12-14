@@ -732,8 +732,15 @@ public final class StorageManager {
                 UUID oldUuid = byName.getUniqueId();
 
                 // Update UUID in database directly
-                String updateQuery = "UPDATE `" + getPrefixedTable("players") + "` SET `uuid` = '" + currentUuid + "', `name` = '" + currentName + "', `last_seen` = " + System.currentTimeMillis() + " WHERE uuid = '" + oldUuid + "';";
-                core.executeUpdate(updateQuery);
+                String updateQuery = "UPDATE `" + getPrefixedTable("players") + "` SET `uuid` = ?, `name` = ?, `last_seen` = ? WHERE uuid = ?;";
+                try (Connection conn = core.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(updateQuery)) {
+                    ps.setString(1, currentUuid.toString());
+                    ps.setString(2, currentName);
+                    ps.setLong(3, System.currentTimeMillis());
+                    ps.setString(4, oldUuid.toString());
+                    ps.executeUpdate();
+                }
 
                 // Update in-memory object
                 byName.setUniqueId(currentUuid);
