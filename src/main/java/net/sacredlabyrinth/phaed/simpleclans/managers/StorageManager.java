@@ -631,23 +631,17 @@ public final class StorageManager {
      * @return the ClanPlayer if found, null otherwise
      */
     public @Nullable ClanPlayer retrieveClanPlayerByName(String name) {
-        String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = '" + name + "';";
-        ResultSet res = core.select(query);
-
-        if (res != null) {
-            try {
+        String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = ?;";
+        try (Connection connection = core.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, name);
+            try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
                     return buildClanPlayerFromResultSet(res);
                 }
-            } catch (SQLException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Error retrieving ClanPlayer by name: " + name, ex);
-            } finally {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error closing ResultSet", e);
-                }
             }
+        } catch (SQLException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error retrieving ClanPlayer by name: " + name, ex);
         }
         return null;
     }
