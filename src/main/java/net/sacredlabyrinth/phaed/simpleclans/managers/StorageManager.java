@@ -758,7 +758,7 @@ public final class StorageManager {
             }
 
             // Case 3: Found by UUID only, name differs - update name
-            if (byName == null) {
+            if (byName == null && !byUuid.getName().equals(currentName)) {
                 plugin.getLogger().info(String.format("Correcting name for %s to %s (%s)", byUuid.getName(), currentName, currentUuid));
 
                 byUuid.setName(currentName);
@@ -769,7 +769,7 @@ public final class StorageManager {
             }
 
             // Case 4: Both found and they're the same record - just update
-            if (byName.getUniqueId().equals(byUuid.getUniqueId())) {
+            if (byName != null && byName.getUniqueId() != null && byName.getUniqueId().equals(byUuid.getUniqueId())) {
                 byUuid.setName(currentName);
                 byUuid.setLastSeen(System.currentTimeMillis());
                 updateClanPlayer(byUuid, true); // Force immediate update
