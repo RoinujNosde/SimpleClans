@@ -173,6 +173,13 @@ public class SCPlayerListener extends SCListener {
         }, plugin, true);
     }
 
+    /**
+     * Change the name of a player in the database
+     *
+     * @param cp to update
+     * @deprecated Use syncPlayerData instead for proper duplicate handling
+     */
+    @Deprecated
     private void updatePlayerName(@NotNull final Player player) {
         // Synchronize player data in database, handling any duplicates
         plugin.getStorageManager().syncPlayerData(player);
