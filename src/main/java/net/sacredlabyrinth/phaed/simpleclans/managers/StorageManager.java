@@ -631,6 +631,9 @@ public final class StorageManager {
      * @return the ClanPlayer if found, null otherwise
      */
     public @Nullable ClanPlayer retrieveClanPlayerByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
         String query = "SELECT * FROM `" + getPrefixedTable("players") + "` WHERE `name` = '" + name + "';";
         ResultSet res = core.select(query);
 
