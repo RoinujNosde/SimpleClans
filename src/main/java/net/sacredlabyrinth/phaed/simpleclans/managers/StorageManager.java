@@ -60,7 +60,7 @@ public final class StorageManager {
      * @param player the Player
      * @return the ChatBlock
      */
-    public ChatBlock getChatBlock(Player player) {
+    public ChatBlock getChatBlock(@NotNull Player player) {
         return chatBlocks.get(player.getName());
     }
 
@@ -190,7 +190,7 @@ public final class StorageManager {
      *
      */
     @Deprecated
-    public void importFromDatabaseOnePlayer(Player player) {
+    public void importFromDatabaseOnePlayer(@NotNull Player player) {
         plugin.getClanManager().deleteClanPlayerFromMemory(player.getUniqueId());
 
         ClanPlayer cp = retrieveOneClanPlayer(player.getUniqueId());
@@ -749,7 +749,7 @@ public final class StorageManager {
                 // Update in-memory reference
                 plugin.getClanManager().deleteClanPlayerFromMemory(oldUuid);
                 plugin.getClanManager().importClanPlayer(byName);
-                
+
                 plugin.getLogger().info(String.format("UUID corrected in database: %s", currentUuid));
                 return;
             }
@@ -794,7 +794,7 @@ public final class StorageManager {
             // Update in-memory
             plugin.getClanManager().deleteClanPlayerFromMemory(oldByNameUuid);
             plugin.getClanManager().importClanPlayer(merged);
-            
+
             plugin.getLogger().info(String.format("Duplicate records merged for %s (%s)", currentName, currentUuid));
         } catch (Exception e) {
             plugin.getServer().getLogger().log(Level.SEVERE, "[SimpleClans] Error synchronizing player data for " + player.getName(), e);
@@ -959,7 +959,7 @@ public final class StorageManager {
     /**
      * Update a clan player to the database
      *
-     * @param cp the clan player to update
+     * @param cp             the clan player to update
      * @param forceImmediate if true, bypasses periodic save setting and updates immediately
      */
     public void updateClanPlayer(ClanPlayer cp, boolean forceImmediate) {
@@ -1021,7 +1021,7 @@ public final class StorageManager {
      *
      */
     @Deprecated
-    public void insertKill(Player attacker, String attackerTag, Player victim, String victimTag, String type) {
+    public void insertKill(@NotNull Player attacker, @NotNull String attackerTag, @NotNull Player victim, @NotNull String victimTag, @NotNull String type) {
         String query = "INSERT INTO `" + getPrefixedTable("kills") + "` (  `attacker_uuid`, `attacker`, `attacker_tag`, `victim_uuid`, `victim`, `victim_tag`, `kill_type`) ";
         String values = "VALUES ( '" + attacker.getUniqueId() + "','" + attacker.getName() + "','" + attackerTag + "','" + victim.getUniqueId() + "','" + victim.getName() + "','" + victimTag + "','" + type + "');";
         core.executeUpdate(query + values);
