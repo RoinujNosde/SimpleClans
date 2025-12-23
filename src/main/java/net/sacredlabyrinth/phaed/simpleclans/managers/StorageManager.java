@@ -86,21 +86,69 @@ public final class StorageManager {
                 if (!core.existsTable(getPrefixedTable("clans"))) {
                     plugin.getLogger().info("Creating table: " + getPrefixedTable("clans"));
 
-                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("clans") + "` (" + " `id` bigint(20) NOT NULL auto_increment," + " `verified` tinyint(1) default '0'," + " `tag` varchar(25) NOT NULL," + " `color_tag` varchar(255) NOT NULL," + " `name` varchar(100) NOT NULL," + " `description` varchar(255)," + " `friendly_fire` tinyint(1) default '0'," + " `founded` bigint NOT NULL," + " `last_used` bigint NOT NULL," + " `packed_allies` text NOT NULL," + " `packed_rivals` text NOT NULL," + " `packed_bb` mediumtext NOT NULL," + " `cape_url` varchar(255) NOT NULL," + " `flags` text NOT NULL," + " `balance` double(64,2)," + " `fee_enabled` tinyint(1) default '0'," + " `fee_value` double(64,2)," + " `ranks` text NOT NULL," + " `banner` text," + " PRIMARY KEY  (`id`)," + " UNIQUE KEY `uq_simpleclans_1` (`tag`));";
+                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("clans") + "` ("
+                            + " `id` bigint(20) NOT NULL auto_increment,"
+                            + " `verified` tinyint(1) default '0',"
+                            + " `tag` varchar(25) NOT NULL,"
+                            + " `color_tag` varchar(255) NOT NULL,"
+                            + " `name` varchar(100) NOT NULL,"
+                            + " `description` varchar(255),"
+                            + " `friendly_fire` tinyint(1) default '0',"
+                            + " `founded` bigint NOT NULL,"
+                            + " `last_used` bigint NOT NULL,"
+                            + " `packed_allies` text NOT NULL,"
+                            + " `packed_rivals` text NOT NULL,"
+                            + " `packed_bb` mediumtext NOT NULL,"
+                            + " `cape_url` varchar(255) NOT NULL,"
+                            + " `flags` text NOT NULL,"
+                            + " `balance` double(64,2),"
+                            + " `fee_enabled` tinyint(1) default '0',"
+                            + " `fee_value` double(64,2),"
+                            + " `ranks` text NOT NULL,"
+                            + " `banner` text,"
+                            + " PRIMARY KEY  (`id`),"
+                            + " UNIQUE KEY `uq_simpleclans_1` (`tag`));";
                     core.execute(query);
                 }
 
                 if (!core.existsTable(getPrefixedTable("players"))) {
                     plugin.getLogger().info("Creating table: " + getPrefixedTable("players"));
 
-                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("players") + "` (" + " `id` bigint(20) NOT NULL auto_increment," + " `name` varchar(16) NOT NULL," + " `leader` tinyint(1) default '0'," + " `tag` varchar(25) NOT NULL," + " `friendly_fire` tinyint(1) default '0'," + " `neutral_kills` int(11) default NULL," + " `rival_kills` int(11) default NULL," + " `civilian_kills` int(11) default NULL," + " `ally_kills` int(11) default NULL," + " `deaths` int(11) default NULL," + " `last_seen` bigint NOT NULL," + " `join_date` bigint NOT NULL," + " `trusted` tinyint(1) default '0'," + " `flags` text NOT NULL," + " `packed_past_clans` text," + " `resign_times` text," + " `locale` varchar(10)," + " PRIMARY KEY  (`id`)," + " UNIQUE KEY `uq_sc_players_1` (`name`));";
+                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("players") + "` ("
+                            + " `id` bigint(20) NOT NULL auto_increment,"
+                            + " `name` varchar(16) NOT NULL,"
+                            + " `leader` tinyint(1) default '0',"
+                            + " `tag` varchar(25) NOT NULL,"
+                            + " `friendly_fire` tinyint(1) default '0',"
+                            + " `neutral_kills` int(11) default NULL,"
+                            + " `rival_kills` int(11) default NULL,"
+                            + " `civilian_kills` int(11) default NULL,"
+                            + " `ally_kills` int(11) default NULL,"
+                            + " `deaths` int(11) default NULL,"
+                            + " `last_seen` bigint NOT NULL,"
+                            + " `join_date` bigint NOT NULL,"
+                            + " `trusted` tinyint(1) default '0',"
+                            + " `flags` text NOT NULL,"
+                            + " `packed_past_clans` text,"
+                            + " `resign_times` text,"
+                            + " `locale` varchar(10),"
+                            + " PRIMARY KEY  (`id`),"
+                            + " UNIQUE KEY `uq_sc_players_1` (`name`));";
                     core.execute(query);
                 }
 
                 if (!core.existsTable(getPrefixedTable("kills"))) {
                     plugin.getLogger().info("Creating table: " + getPrefixedTable("kills"));
 
-                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("kills") + "` (" + " `kill_id` bigint(20) NOT NULL auto_increment," + " `attacker` varchar(16) NOT NULL," + " `attacker_tag` varchar(16) NOT NULL," + " `victim` varchar(16) NOT NULL," + " `victim_tag` varchar(16) NOT NULL," + " `kill_type` varchar(1) NOT NULL," + " `created_at` datetime NULL," + " PRIMARY KEY  (`kill_id`));";
+                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("kills") + "` ("
+                            + " `kill_id` bigint(20) NOT NULL auto_increment,"
+                            + " `attacker` varchar(16) NOT NULL,"
+                            + " `attacker_tag` varchar(16) NOT NULL,"
+                            + " `victim` varchar(16) NOT NULL,"
+                            + " `victim_tag` varchar(16) NOT NULL,"
+                            + " `kill_type` varchar(1) NOT NULL,"
+                            + " `created_at` datetime NULL,"
+                            + " PRIMARY KEY  (`kill_id`));";
                     core.execute(query);
                 }
             } else {
@@ -116,21 +164,69 @@ public final class StorageManager {
                 if (!core.existsTable(getPrefixedTable("clans"))) {
                     plugin.getLogger().info("Creating table: " + getPrefixedTable("clans"));
 
-                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("clans") + "` (" + " `id` bigint(20)," + " `verified` tinyint(1) default '0'," + " `tag` varchar(25) NOT NULL," + " `color_tag` varchar(255) NOT NULL," + " `name` varchar(100) NOT NULL," + " `description` varchar(255)," + " `friendly_fire` tinyint(1) default '0'," + " `founded` bigint NOT NULL," + " `last_used` bigint NOT NULL," + " `packed_allies` text NOT NULL," + " `packed_rivals` text NOT NULL," + " `packed_bb` mediumtext NOT NULL," + " `cape_url` varchar(255) NOT NULL," + " `flags` text NOT NULL," + " `balance` double(64,2) default 0.0," + " `fee_enabled` tinyint(1) default '0'," + " `fee_value` double(64,2)," + " `ranks` text NOT NULL," + " `banner` text," + "  PRIMARY KEY  (`id`)," + " UNIQUE (`tag`));";
+                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("clans") + "` ("
+                            + " `id` bigint(20),"
+                            + " `verified` tinyint(1) default '0',"
+                            + " `tag` varchar(25) NOT NULL,"
+                            + " `color_tag` varchar(255) NOT NULL,"
+                            + " `name` varchar(100) NOT NULL,"
+                            + " `description` varchar(255),"
+                            + " `friendly_fire` tinyint(1) default '0',"
+                            + " `founded` bigint NOT NULL,"
+                            + " `last_used` bigint NOT NULL,"
+                            + " `packed_allies` text NOT NULL,"
+                            + " `packed_rivals` text NOT NULL,"
+                            + " `packed_bb` mediumtext NOT NULL,"
+                            + " `cape_url` varchar(255) NOT NULL,"
+                            + " `flags` text NOT NULL,"
+                            + " `balance` double(64,2) default 0.0,"
+                            + " `fee_enabled` tinyint(1) default '0',"
+                            + " `fee_value` double(64,2),"
+                            + " `ranks` text NOT NULL,"
+                            + " `banner` text,"
+                            + "  PRIMARY KEY  (`id`),"
+                            + " UNIQUE (`tag`));";
                     core.execute(query);
                 }
 
                 if (!core.existsTable(getPrefixedTable("players"))) {
                     plugin.getLogger().info("Creating table: " + getPrefixedTable("players"));
 
-                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("players") + "` (" + " `id` bigint(20)," + " `name` varchar(16) NOT NULL," + " `leader` tinyint(1) default '0'," + " `tag` varchar(25) NOT NULL," + " `friendly_fire` tinyint(1) default '0'," + " `neutral_kills` int(11) default NULL," + " `rival_kills` int(11) default NULL," + " `civilian_kills` int(11) default NULL," + " `ally_kills` int(11) default NULL," + " `deaths` int(11) default NULL," + " `last_seen` bigint NOT NULL," + " `join_date` bigint NOT NULL," + " `trusted` tinyint(1) default '0'," + " `flags` text NOT NULL," + " `packed_past_clans` text," + " `resign_times` text," + " `locale` varchar(10)," + " PRIMARY KEY  (`id`)," + " UNIQUE (`name`));";
+                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("players") + "` ("
+                            + " `id` bigint(20),"
+                            + " `name` varchar(16) NOT NULL,"
+                            + " `leader` tinyint(1) default '0',"
+                            + " `tag` varchar(25) NOT NULL,"
+                            + " `friendly_fire` tinyint(1) default '0',"
+                            + " `neutral_kills` int(11) default NULL,"
+                            + " `rival_kills` int(11) default NULL,"
+                            + " `civilian_kills` int(11) default NULL,"
+                            + " `ally_kills` int(11) default NULL,"
+                            + " `deaths` int(11) default NULL,"
+                            + " `last_seen` bigint NOT NULL,"
+                            + " `join_date` bigint NOT NULL,"
+                            + " `trusted` tinyint(1) default '0',"
+                            + " `flags` text NOT NULL,"
+                            + " `packed_past_clans` text,"
+                            + " `resign_times` text,"
+                            + " `locale` varchar(10),"
+                            + " PRIMARY KEY  (`id`),"
+                            + " UNIQUE (`name`));";
                     core.execute(query);
                 }
 
                 if (!core.existsTable(getPrefixedTable("kills"))) {
                     plugin.getLogger().info("Creating table: " + getPrefixedTable("kills"));
 
-                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("kills") + "` (" + " `kill_id` bigint(20)," + " `attacker` varchar(16) NOT NULL," + " `attacker_tag` varchar(16) NOT NULL," + " `victim` varchar(16) NOT NULL," + " `victim_tag` varchar(16) NOT NULL," + " `kill_type` varchar(1) NOT NULL," + " `created_at` datetime NULL," + " PRIMARY KEY  (`kill_id`));";
+                    String query = "CREATE TABLE IF NOT EXISTS `" + getPrefixedTable("kills") + "` ("
+                            + " `kill_id` bigint(20),"
+                            + " `attacker` varchar(16) NOT NULL,"
+                            + " `attacker_tag` varchar(16) NOT NULL,"
+                            + " `victim` varchar(16) NOT NULL,"
+                            + " `victim_tag` varchar(16) NOT NULL,"
+                            + " `kill_type` varchar(1) NOT NULL,"
+                            + " `created_at` datetime NULL,"
+                            + " PRIMARY KEY  (`kill_id`));";
                     core.execute(query);
                 }
             } else {
