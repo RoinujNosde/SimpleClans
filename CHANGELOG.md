@@ -1,5 +1,59 @@
 # Changelog
 
+## [2.20.0](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.2...v2.20.0) (2026-01-09)
+
+
+### Features
+
+* add %simpleclans_is_invite_enabled% placeholder ([#424](https://github.com/RoinujNosde/SimpleClans/issues/424)) ([01c7986](https://github.com/RoinujNosde/SimpleClans/commit/01c79862b9586e042d019e997b0180e9ff589289))
+* added config for the db table prefix ([#408](https://github.com/RoinujNosde/SimpleClans/issues/408)) ([46702f9](https://github.com/RoinujNosde/SimpleClans/commit/46702f90abe9bc644a66f5ba29b593dd28a4cd4e))
+* added price and date formatters ([#401](https://github.com/RoinujNosde/SimpleClans/issues/401)) ([b2c7d12](https://github.com/RoinujNosde/SimpleClans/commit/b2c7d12b609b3b13a10d463a3ebed096d5bf3331))
+* added reload event for better plugin integration ([#441](https://github.com/RoinujNosde/SimpleClans/issues/441)) ([f466a86](https://github.com/RoinujNosde/SimpleClans/commit/f466a863091d76c687c77d4bcdd753a4a5c1c7ce))
+* adds completions to clan create command ([#452](https://github.com/RoinujNosde/SimpleClans/issues/452)) ([6b2a3f8](https://github.com/RoinujNosde/SimpleClans/commit/6b2a3f85ac81ff81ce6ad1b23065631a519deffc))
+* compile under Java 21 LTS ([#446](https://github.com/RoinujNosde/SimpleClans/issues/446)) ([13cf348](https://github.com/RoinujNosde/SimpleClans/commit/13cf348084db171578f91c620f41907d3c1fb15d))
+* **db:** add `datetime` column to `sc_kills` ([#432](https://github.com/RoinujNosde/SimpleClans/issues/432)) ([f5e1387](https://github.com/RoinujNosde/SimpleClans/commit/f5e1387246b24a07e991eb4e32d726fe8326dbbd))
+* **lang:** new crowdin updates ([#332](https://github.com/RoinujNosde/SimpleClans/issues/332)) ([9f4f39a](https://github.com/RoinujNosde/SimpleClans/commit/9f4f39a42091f43764ee75dbd3f91764c21105ad))
+* **lang:** new crowdin updates ([#439](https://github.com/RoinujNosde/SimpleClans/issues/439)) ([b1b5fef](https://github.com/RoinujNosde/SimpleClans/commit/b1b5fef7bf316a2c4775816dde9498ae22462ac2))
+* limit unverified clan members ([#422](https://github.com/RoinujNosde/SimpleClans/issues/422)) ([cb314db](https://github.com/RoinujNosde/SimpleClans/commit/cb314dbe7b1b3b63691c8881957614816139862d))
+* only send bungee messages to allowed servers ([#455](https://github.com/RoinujNosde/SimpleClans/issues/455)) ([da8d343](https://github.com/RoinujNosde/SimpleClans/commit/da8d3438973b5b4d8ac6dc199c102a5599bfa25e))
+* possibility to set a default rank for new clans ([#418](https://github.com/RoinujNosde/SimpleClans/issues/418)) ([c9df6ac](https://github.com/RoinujNosde/SimpleClans/commit/c9df6acb139cd7195d36586e0152f2cfca938cfe))
+
+
+### Bug Fixes
+
+* Bukkit#getOfflinePlayers causing the server to hang ([c8e67cf](https://github.com/RoinujNosde/SimpleClans/commit/c8e67cfd4f0e7ba83d417bd7bc716f1d8ba4456f))
+* check bungee channel version and ownership ([#460](https://github.com/RoinujNosde/SimpleClans/issues/460)) ([2bdd6bc](https://github.com/RoinujNosde/SimpleClans/commit/2bdd6bc3bf1ca58289789e1548798c236f5b1c51))
+* clan disband should require a confirmation in gui ([f4f47b2](https://github.com/RoinujNosde/SimpleClans/commit/f4f47b20602f57e35dbb9f341a4b17ba8234fa39))
+* created_at migration should use prefixed table ([#456](https://github.com/RoinujNosde/SimpleClans/issues/456)) ([ee1feb4](https://github.com/RoinujNosde/SimpleClans/commit/ee1feb4276521900dfabc5e403811466e3f9935a))
+* **discord:** bump DiscordSRV to 1.27.0 ([#414](https://github.com/RoinujNosde/SimpleClans/issues/414)) ([ad910e9](https://github.com/RoinujNosde/SimpleClans/commit/ad910e9c309e83dfbaa508d1c86f45e982ec4ab1))
+* **discord:** more debug messages for DiscordHook ([#437](https://github.com/RoinujNosde/SimpleClans/issues/437)) ([5a490b1](https://github.com/RoinujNosde/SimpleClans/commit/5a490b11a3c99db5a65fa944e6579572f89d492a))
+* **discord:** revoke discord leader role on events ([#411](https://github.com/RoinujNosde/SimpleClans/issues/411)) ([1375679](https://github.com/RoinujNosde/SimpleClans/commit/1375679df825b7dfb2c8d6ea36c7ca6777cde697))
+* **discord:** use fresh reference for guild and role objects and non-cached channels ([#438](https://github.com/RoinujNosde/SimpleClans/issues/438)) ([a759884](https://github.com/RoinujNosde/SimpleClans/commit/a759884b8d393052912ba0f4a802345e7e10941c))
+* fire FrameOpenEvent sync ([67d3e70](https://github.com/RoinujNosde/SimpleClans/commit/67d3e70f58c01e91c095baf47dc92dc308d4355f))
+* getAnyClanPlayer(String) requesting data from Mojang servers ([9097fa0](https://github.com/RoinujNosde/SimpleClans/commit/9097fa02fa68b80ae17cb4d67f6c9cedb0740d05))
+* kills table prefix ([0406c61](https://github.com/RoinujNosde/SimpleClans/commit/0406c61b0f51006731c907b2a8785ffa5be412e6)), closes [#470](https://github.com/RoinujNosde/SimpleClans/issues/470)
+* missed name in /clan stats command ([cddde54](https://github.com/RoinujNosde/SimpleClans/commit/cddde547b1bc96a4a8c7343365d1a91439e3649e))
+* missing import for charset ([24af2c0](https://github.com/RoinujNosde/SimpleClans/commit/24af2c03d01d93fd060b626f82af8fa0f17735c1))
+* more fixes for RequestManager ([#405](https://github.com/RoinujNosde/SimpleClans/issues/405)) ([b363efe](https://github.com/RoinujNosde/SimpleClans/commit/b363efe530ab0eb0dde4274e72cdaf82e23e31a2))
+* no need to create ClanPlayer on placeholder request ([52ff77e](https://github.com/RoinujNosde/SimpleClans/commit/52ff77e6c105810466d45306a8c5982a858610f5))
+* NPE while setting owner of skull ([5212296](https://github.com/RoinujNosde/SimpleClans/commit/5212296d62355c49bf64ddc7dadfb531c51c0026))
+* order of FrameOpenEvent ([8cd0b2e](https://github.com/RoinujNosde/SimpleClans/commit/8cd0b2e45431723537234ebf01116362d9b91f24))
+* placeholders being parsed in clan chat ([f708149](https://github.com/RoinujNosde/SimpleClans/commit/f7081499b26d933b041c8e4d4c38f38ada1f6c12))
+* player can change locale even if selector is disabled ([146713f](https://github.com/RoinujNosde/SimpleClans/commit/146713fd48e213fe2d2966823cd72834e963f792))
+* players not able to vote on some requests ([bc85864](https://github.com/RoinujNosde/SimpleClans/commit/bc85864134319b2850ee7c221e589e24338e2064))
+* players not getting removed from clans on purge ([da9ec6c](https://github.com/RoinujNosde/SimpleClans/commit/da9ec6c9179492c33a5e16ac5bfbb30d380f82ce))
+* rename command not checking length ([876b5ac](https://github.com/RoinujNosde/SimpleClans/commit/876b5ac50eb9948b572a60d788d4460c3fe0c82b))
+* RequestManager requesting data from Mojang servers ([b37512b](https://github.com/RoinujNosde/SimpleClans/commit/b37512be7d58103342f2e9e71e9e4f5a6783bbe4))
+* return null when username is not found - UUIDFetcher ([#466](https://github.com/RoinujNosde/SimpleClans/issues/466)) ([a2e59c9](https://github.com/RoinujNosde/SimpleClans/commit/a2e59c940140bbf5950cdec9adb3fdae4047b41d))
+* update the Mojang API endpoint ([#413](https://github.com/RoinujNosde/SimpleClans/issues/413)) ([d4d144f](https://github.com/RoinujNosde/SimpleClans/commit/d4d144fe365e6ac6bd19ecc236265aa25315a197))
+* uuid bulk fetching over Mojang and minetools APIs ([#451](https://github.com/RoinujNosde/SimpleClans/issues/451)) ([57076fb](https://github.com/RoinujNosde/SimpleClans/commit/57076fb033004351630e6e6cfa561f0cb85f10e3))
+* wrong request key in requestAllLeaders ([d2825df](https://github.com/RoinujNosde/SimpleClans/commit/d2825df01ba99e17cd83b4a0b453acd7ac6b6211))
+
+
+### Documentation
+
+* added mikasa's banner ([3b51299](https://github.com/RoinujNosde/SimpleClans/commit/3b51299dd615917c1e2d35cd00672c27d2a4800d))
+
 ## [2.19.2](https://github.com/RoinujNosde/SimpleClans/compare/v2.19.1...v2.19.2) (2023-08-03)
 
 
