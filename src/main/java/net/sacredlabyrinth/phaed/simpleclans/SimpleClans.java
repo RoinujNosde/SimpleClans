@@ -1,6 +1,8 @@
 package net.sacredlabyrinth.phaed.simpleclans;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
@@ -65,6 +67,7 @@ public class SimpleClans extends JavaPlugin {
 
     private BankLogger bankLogger;
     private TagValidator tagValidator;
+    private FoliaLib foliaLib;
 
     /**
      * @return the logger
@@ -100,6 +103,7 @@ public class SimpleClans extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        foliaLib = new FoliaLib(this);
         new LanguageMigration(this).migrate();
         settingsManager = new SettingsManager(this);
         new BbMigration(settingsManager);
@@ -206,6 +210,14 @@ public class SimpleClans extends JavaPlugin {
         getSettingsManager().loadAndSave();
     }
 
+    // TODO Replace this with getFoliaLib#getScheduler?
+    public PlatformScheduler getScheduler() {
+        return foliaLib.getScheduler();
+    }
+
+    public FoliaLib getFoliaLib() {
+        return foliaLib;
+    }
     /**
      * @return the clanManager
      */

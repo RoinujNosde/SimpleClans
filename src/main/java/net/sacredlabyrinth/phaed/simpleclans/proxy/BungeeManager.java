@@ -59,7 +59,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
         }
         Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
         Bukkit.getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", this);
-        Bukkit.getScheduler().runTaskTimer(plugin, this::requestPlayerList, 0, 60 * 20);
+        plugin.getScheduler().runTimer(this::requestPlayerList, 0, 60 * 20);
         requestServerName();
     }
 
@@ -212,7 +212,7 @@ public final class BungeeManager implements ProxyManager, PluginMessageListener 
     }
 
     private void requestServerName() {
-        Bukkit.getScheduler().runTaskTimer(plugin, task -> {
+        plugin.getScheduler().runTimer(task -> {
             if (!serverName.isEmpty()) {
                 task.cancel();
                 return;

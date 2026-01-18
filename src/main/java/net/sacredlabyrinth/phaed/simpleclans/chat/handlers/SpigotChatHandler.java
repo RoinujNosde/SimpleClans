@@ -21,31 +21,28 @@ public class SpigotChatHandler implements ChatHandler {
         /*
           TODO: Make it async, change Type to Channel in 3.0
         */
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                ChatEvent event = new ChatEvent(message.getContent(), message.getSender(), message.getReceivers(),
-                        ChatEvent.Type.valueOf(message.getChannel().name()));
+        plugin.getScheduler().runLater(() -> {
+            ChatEvent event = new ChatEvent(message.getContent(), message.getSender(), message.getReceivers(),
+                    ChatEvent.Type.valueOf(message.getChannel().name()));
 
-                getPluginManager().callEvent(event);
-                if (event.isCancelled()) {
-                    return;
-                }
-                message.setContent(stripColorsAndFormatsPerPermission(message.getSender(),event.getMessage()));
-
-                ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
-                        message.getSource() == DISCORD ? "DISCORD" : message.getChannel()));
-
-                String format = settingsManager.getString(configField);
-                String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
-
-                plugin.getLogger().info(ChatUtils.stripColors(formattedMessage));
-
-                for (ClanPlayer cp : message.getReceivers()) {
-                    ChatBlock.sendMessage(cp, formattedMessage);
-                }
+            getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                return;
             }
-        }.runTask(plugin);
+            message.setContent(stripColorsAndFormatsPerPermission(message.getSender(),event.getMessage()));
+
+            ConfigField configField = ConfigField.valueOf(String.format("%sCHAT_FORMAT",
+                    message.getSource() == DISCORD ? "DISCORD" : message.getChannel()));
+
+            String format = settingsManager.getString(configField);
+            String formattedMessage = chatManager.parseChatFormat(format, message, event.getPlaceholders());
+
+            plugin.getLogger().info(ChatUtils.stripColors(formattedMessage));
+
+            for (ClanPlayer cp : message.getReceivers()) {
+                ChatBlock.sendMessage(cp, formattedMessage);
+            }
+        }, 0);
     }
 
     private String stripColorsAndFormatsPerPermission(ClanPlayer sender, String message) {
