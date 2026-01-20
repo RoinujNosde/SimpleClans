@@ -19,6 +19,7 @@ import java.util.Set;
  */
 public abstract class SCComponent {
 
+	private boolean enabled = true;
 	private final HashMap<ClickType, Runnable> listeners = new HashMap<>();
 	private final HashMap<ClickType, Object> permissions = new HashMap<>();
 	private final Set<ClickType> verified = new HashSet<>();
@@ -29,6 +30,14 @@ public abstract class SCComponent {
 	public abstract ItemStack getItem();
 
 	public abstract int getSlot();
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	@Nullable
 	public ItemMeta getItemMeta() {

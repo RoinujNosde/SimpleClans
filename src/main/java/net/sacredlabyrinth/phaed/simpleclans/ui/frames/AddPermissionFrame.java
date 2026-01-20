@@ -1,23 +1,27 @@
 package net.sacredlabyrinth.phaed.simpleclans.ui.frames;
 
-import com.cryptomorin.xseries.XMaterial;
 import net.sacredlabyrinth.phaed.simpleclans.Helper;
 import net.sacredlabyrinth.phaed.simpleclans.Rank;
-import net.sacredlabyrinth.phaed.simpleclans.ui.*;
+import net.sacredlabyrinth.phaed.simpleclans.ui.InventoryController;
+import net.sacredlabyrinth.phaed.simpleclans.ui.PageableFrame;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponent;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCComponentImpl.ListBuilder;
+import net.sacredlabyrinth.phaed.simpleclans.ui.SCFrame;
 import net.sacredlabyrinth.phaed.simpleclans.utils.Paginator;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static net.sacredlabyrinth.phaed.simpleclans.SimpleClans.lang;
 
-public class AddPermissionFrame extends SCFrame {
-	private final String[] availablePermissions;
-	private final Paginator paginator;
+public class AddPermissionFrame extends PageableFrame<String> {
+	private final List<String> availablePermissions;
+	private final Paginator<String> paginator;
 	private final Rank rank;
 
 	public AddPermissionFrame(SCFrame parent, Player viewer, Rank rank) {
@@ -25,63 +29,38 @@ public class AddPermissionFrame extends SCFrame {
 		this.rank = rank;
 		Set<String> rankPerms = rank.getPermissions();
 		availablePermissions = Arrays.stream(Helper.fromPermissionArray()).filter(p -> !rankPerms.contains(p))
-				.toArray(String[]::new);
-		paginator = new Paginator(getSize() - 9, availablePermissions.length);
+				.collect(Collectors.toList());
+		paginator = new Paginator<>(getPageSize(), availablePermissions);
 	}
 
 	@Override
 	public void createComponents() {
-		for (int slot = 0; slot < 9; slot++) {
-			if (slot == 2 || slot == 6 || slot == 7)
-				continue;
-			add(Components.getPanelComponent(slot));
-		}
-		add(Components.getBackComponent(getParent(), 2, getViewer()));
-
-		add(Components.getPreviousPageComponent(6, this::previousPage, paginator, getViewer()));
-		add(Components.getNextPageComponent(7, this::nextPage, paginator, getViewer()));
-
-		int slot = 9;
-		for (int i = paginator.getMinIndex(); paginator.isValidIndex(i); i++) {
-
-			String permission = availablePermissions[i];
-
-			SCComponent c = new SCComponentImpl(
-					lang("gui.add.permission.permission.title",getViewer(), permission),
-					Collections.singletonList(lang("gui.add.permission.permission.lore",getViewer())),
-					XMaterial.PAPER, slot);
-			c.setListener(ClickType.LEFT, () -> InventoryController.runSubcommand(getViewer(),
-					"rank permissions add", true, rank.getName(), permission));
-			c.setPermission(ClickType.LEFT, "simpleclans.leader.rank.permissions.add");
-			add(c);
-			slot++;
-		}
+		super.createComponents();
+		List<SCComponent> list = new ListBuilder<>(getConfig(), "list", paginator.getCurrentElements())
+				.withViewer(getViewer())
+				.withDisplayNameKey("gui.add.permission.permission.title", p -> p)
+				.withLoreKey("gui.add.permission.permission.lore")
+				.withListener(ClickType.LEFT, this::addPermission, "simpleclans.leader.rank.permissions.add")
+				.build();
+		addAll(list);
 	}
 
-	private void previousPage() {
-		if (paginator.previousPage()) {
-			updateFrame();
-		}
+	private Runnable addPermission(String permission) {
+		return () -> {
+			availablePermissions.remove(permission);
+			InventoryController.runSubcommand(getViewer(), "rank permissions add", true,
+					rank.getName(), permission);
+		};
 	}
 
-	private void nextPage() {
-		if (paginator.nextPage()) {
-			updateFrame();
-		}
-	}
-
-	private void updateFrame() {
-		InventoryDrawer.open(this);
+	@Override
+	public Paginator<String> getPaginator() {
+		return paginator;
 	}
 
 	@Override
 	public @NotNull String getTitle() {
-		return lang("gui.add.permission.title",getViewer());
-	}
-
-	@Override
-	public int getSize() {
-		return 3 * 9;
+		return lang("gui.add.permission.title", getViewer());
 	}
 
 }

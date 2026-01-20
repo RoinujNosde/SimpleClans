@@ -1,0 +1,27 @@
+rows: 3
+components:
+  decorations:
+    panels:
+      enabled: true
+      slots: [ 0, 1, 2, 3, 5, 6, 7, 8 ]
+      material: GRAY_STAINED_GLASS_PANE
+  clans:
+    enabled: true
+    material: PURPLE_BANNER
+    slot: 9
+  players:
+    enabled: true
+    material: WHITE_BANNER
+    slot: 10
+  reload:
+    enabled: true
+    material: SPAWNER
+    slot: 17
+  global_ff:
+    enabled: true
+    material: DIAMOND_SWORD
+    slot: 12
+  back:
+    enabled: true
+    slot: 4
+    material: ARROW

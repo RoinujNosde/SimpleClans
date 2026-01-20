@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -147,6 +148,7 @@ public class Components {
         return c;
     }
 
+    @Deprecated
     public static SCComponent getBackComponent(@Nullable SCFrame parent, int slot, Player viewer) {
         SCComponent back = new SCComponentImpl(lang("gui.back.title", viewer), null,
                 XMaterial.ARROW, slot);
@@ -154,11 +156,13 @@ public class Components {
         return back;
     }
 
+    @Deprecated
     public static SCComponent getPanelComponent(int slot) {
         return new SCComponentImpl(" ", null, XMaterial.GRAY_STAINED_GLASS_PANE, slot);
     }
 
-    public static @NotNull SCComponent getPreviousPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator paginator, @NotNull Player viewer) {
+    @Deprecated
+    public static @NotNull SCComponent getPreviousPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator<?> paginator, @NotNull Player viewer) {
         if (!paginator.hasPreviousPage()) {
             return getPanelComponent(slot);
         }
@@ -168,7 +172,8 @@ public class Components {
         return c;
     }
 
-    public static @NotNull SCComponent getNextPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator paginator, @NotNull Player viewer) {
+    @Deprecated
+    public static @NotNull SCComponent getNextPageComponent(int slot, @Nullable Runnable listener, @NotNull Paginator<?> paginator, @NotNull Player viewer) {
         if (!paginator.hasNextPage()) {
             return getPanelComponent(slot);
         }
@@ -187,18 +192,23 @@ public class Components {
         });
     }
 
-    @SuppressWarnings("deprecation")
     public static void setOwningPlayer(@NotNull ItemStack item, @NotNull OfflinePlayer player) {
-        SkullMeta itemMeta = (SkullMeta) item.getItemMeta();
-        if (itemMeta == null || player.getName() == null) {
+        if (player.getName() == null) {
             return;
         }
-        try {
-            itemMeta.setOwningPlayer(player);
-        } catch (NoSuchMethodError e) {
-            itemMeta.setOwner(player.getName());
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta instanceof SkullMeta) {
+            setOwningPlayer((SkullMeta) itemMeta, player);
+            item.setItemMeta(itemMeta);
         }
+    }
 
-        item.setItemMeta(itemMeta);
+    @SuppressWarnings("deprecation")
+    public static void setOwningPlayer(@NotNull SkullMeta skullMeta, @NotNull OfflinePlayer player) {
+        try {
+            skullMeta.setOwningPlayer(player);
+        } catch (NoSuchMethodError e) {
+            skullMeta.setOwner(player.getName());
+        }
     }
 }

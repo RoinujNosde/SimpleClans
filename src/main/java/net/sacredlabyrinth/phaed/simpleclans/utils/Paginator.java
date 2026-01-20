@@ -2,19 +2,21 @@ package net.sacredlabyrinth.phaed.simpleclans.utils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 
  * @author RoinujNosde
  *
  */
-public class Paginator {
+public class Paginator<T> {
 	
 	private int currentPage;
 	private final int sizePerPage;
 	private int totalElements;
-	private Collection<?> collection;
+	private List<T> collection;
 
 	public Paginator(int sizePerPage, int totalElements) {
 		if (sizePerPage < 1) {
@@ -27,12 +29,17 @@ public class Paginator {
 		this.totalElements = totalElements;
 	}
 
-	public Paginator(int sizePerPage, @NotNull Collection<?> collection) {
+	@Deprecated
+	public Paginator(int sizePerPage, @NotNull Collection<T> collection) {
+		this(sizePerPage, new ArrayList<>(collection));
+	}
+
+	public Paginator(int sizePerPage, @NotNull List<T> list) {
 		if (sizePerPage < 1) {
 			throw new IllegalArgumentException("sizePerPage cannot be less than 1");
 		}
 		this.sizePerPage = sizePerPage;
-		this.collection = collection;
+		this.collection = list;
 	}
 	
 	/**
@@ -81,7 +88,21 @@ public class Paginator {
 	public int getCurrentPage() {
 		return currentPage;
 	}
-	
+
+	/**
+	 *
+	 * @return the elements in the current page
+	 *
+	 * @throws IllegalStateException if the underlining collection is null
+	 */
+	public @NotNull List<T> getCurrentElements() throws IllegalStateException {
+		if (collection == null) {
+			throw new IllegalStateException("the collection is null");
+		}
+		int maxIndex = Math.min(getMaxIndex(), collection.size());
+		return collection.subList(getMinIndex(), maxIndex);
+	}
+
 	/**
 	 * Increases the page number if there are elements to display
 	 *
@@ -90,11 +111,11 @@ public class Paginator {
 	 * </p>
 	 */
 	public boolean nextPage() {
-		if (!hasNextPage()) {
-			return false;
+		boolean hasNext = hasNextPage();
+		if (hasNext) {
+			currentPage++;
 		}
-		currentPage++;
-		return true;
+		return hasNext;
 	}
 
 	/**
@@ -112,11 +133,11 @@ public class Paginator {
 	 * </p>
 	 */
 	public boolean previousPage() {
-		if (hasPreviousPage()) {
+		boolean hasPrevious = hasPreviousPage();
+		if (hasPrevious) {
 			currentPage--;
-			return true;
 		}
-		return false;
+		return hasPrevious;
 	}
 
 	/**
