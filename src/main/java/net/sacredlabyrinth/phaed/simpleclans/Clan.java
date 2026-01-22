@@ -82,6 +82,8 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (SimpleClans.getInstance().getSettingsManager().is(CLAN_FF_ON_BY_DEFAULT)) {
             friendlyFire = true;
         }
+
+        setMaxSize(getMaxSize());
     }
 
     @Override
@@ -305,6 +307,7 @@ public class Clan implements Serializable, Comparable<Clan> {
     public void setTag(String tag) {
         this.tag = tag;
     }
+
     /**
      * Returns the first color in the clan's tag
      *
@@ -559,6 +562,28 @@ public class Clan implements Serializable, Comparable<Clan> {
     @Placeholder("size")
     public int getSize() {
         return members.size();
+    }
+
+    /**
+     * @return max members of clan
+     */
+    @Placeholder("max_size")
+    public int getMaxSize() {
+        if (flags.has("max-size")) {
+            return flags.getNumber("max-size").intValue();
+        }
+
+        SettingsManager settings = SimpleClans.getInstance().getSettingsManager();
+        return !verified ? settings.getInt(CLAN_UNVERIFIED_MAX_MEMBERS) : settings.getInt(CLAN_MAX_MEMBERS);
+    }
+
+    /**
+     * Set max members size of clan
+     *
+     * @param maxSize number
+     */
+    public void setMaxSize(int maxSize) {
+        flags.put("max-size", maxSize);
     }
 
     /**
