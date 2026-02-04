@@ -1038,6 +1038,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         // remove permissions
         SimpleClans.getInstance().getPermissionsManager().removeClanPlayerPermissions(cp);
 
+        // Register leave time for global cooldown (applies to kicks as well)
+        cp.updateLastClanLeaveTime();
+
         cp.setClan(null);
         cp.addPastClan(getColorTag() + (cp.isLeader() ? DARK_RED + "*" : ""));
         cp.setLeader(false);
@@ -1408,6 +1411,9 @@ public class Clan implements Serializable, Comparable<Clan> {
         SimpleClans.getInstance().getPermissionsManager().removeClanPermissions(this);
         for (ClanPlayer cp : clanPlayers) {
             if (cp.getTag().equals(getTag())) {
+                // Register leave time for global cooldown
+                cp.updateLastClanLeaveTime();
+
                 cp.setClan(null);
                 cp.setJoinDate(0);
                 cp.setRank(null);
@@ -1416,6 +1422,9 @@ public class Clan implements Serializable, Comparable<Clan> {
                 }
 
                 cp.setLeader(false);
+
+                // Save the updated clan player
+                SimpleClans.getInstance().getStorageManager().updateClanPlayer(cp);
             }
         }
 

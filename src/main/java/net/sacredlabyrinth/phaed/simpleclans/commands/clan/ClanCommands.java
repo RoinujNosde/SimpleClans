@@ -148,10 +148,12 @@ public class ClanCommands extends BaseCommand {
             ChatBlock.sendMessage(sender, RED + lang("you.cannot.invite.yourself", sender));
             return;
         }
-        long minutesBeforeRejoin = cm.getMinutesBeforeRejoin(invited.getClanPlayer(), clan);
-        if (minutesBeforeRejoin != 0) {
+
+        // Check global cooldown (applies to joining ANY clan)
+        long minutesBeforeJoin = cm.getMinutesBeforeRejoin(invited.getClanPlayer());
+        if (minutesBeforeJoin != 0) {
             ChatBlock.sendMessage(sender, RED +
-                    lang("the.player.must.wait.0.before.joining.your.clan.again", sender, minutesBeforeRejoin));
+                    lang("the.player.must.wait.before.joining.any.clan", sender, minutesBeforeJoin));
             return;
         }
 
@@ -367,7 +369,6 @@ public class ClanCommands extends BaseCommand {
     public void resignConfirm(Player player, ClanPlayer cp, Clan clan) {
         if (clan.isPermanent() || !clan.isLeader(player) || clan.getLeaders().size() > 1) {
             clan.addBb(player.getName(), lang("0.has.resigned", player.getName()));
-            cp.addResignTime(clan.getTag());
             clan.removePlayerFromClan(player.getUniqueId());
 
             ChatBlock.sendMessage(cp, AQUA + lang("resign.success", player));

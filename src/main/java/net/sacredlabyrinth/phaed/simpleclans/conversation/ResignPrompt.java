@@ -17,7 +17,6 @@ public class ResignPrompt extends ConfirmationPrompt {
     protected Prompt confirm(ClanPlayer sender, Clan clan) {
         if (clan.isPermanent() || !sender.isLeader() || clan.getLeaders().size() > 1) {
             clan.addBb(sender.getName(), lang("0.has.resigned", sender.getName()));
-            sender.addResignTime(clan.getTag());
             clan.removePlayerFromClan(sender.getUniqueId());
 
             return new MessagePromptImpl(AQUA + lang("resign.success", sender));
