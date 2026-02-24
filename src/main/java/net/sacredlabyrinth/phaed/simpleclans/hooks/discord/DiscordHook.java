@@ -361,40 +361,67 @@ public class DiscordHook implements Listener {
      * @throws CategoriesLimitException if categories reached the limit.
      * @throws ChannelsLimitException   if discord reached the channels limit.
      */
-    public void createChannel(@NotNull String clanTag)
-            throws InvalidChannelException, CategoriesLimitException, ChannelsLimitException, ChannelExistsException {
-        validateChannel(clanTag);
-        Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clanManager.getClan(clanTag));
+    private final Set<String> channelIsBeingCreated = java.util.concurrent.ConcurrentHashMap.newKeySet();
+	public void createChannel(@NotNull String clanTag)
+			throws InvalidChannelException, CategoriesLimitException, ChannelsLimitException, ChannelExistsException {
 
-        if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
-            throw new ChannelsLimitException("Discord reached the channels limit", "discord.reached.channels.limit");
-        }
+		// validate it, perchance it exists dont do anything just chill
+		if (channelExists(clanTag)) {
+			return;
+		}
 
-        Category availableCategory = getCachedCategories().stream().
-                filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY).
-                findAny().orElseGet(this::createCategory);
+		// prevent duplicate creation (this might genuinely be useless but i felt like making it)
+		if (!channelIsBeingCreated.add(clanTag)) {
+			return;
+		}
 
-        if (availableCategory == null) {
-            throw new CategoriesLimitException("Discord reached the categories limit", "discord.reached.category.limit");
-        }
+		try {
 
-        try {
-            availableCategory.createTextChannel(clanTag).complete();
-            SimpleClans.debug(String.format("[%s] Creating a discord text channel for %s clan", Thread.currentThread().getId(), clanTag));
-        } catch (ErrorResponseException ex) {
-            Response response = ex.getResponse();
-            plugin.getLogger().warning(String.format("Could not create a channel for clan %s, error %d - %s",
-                    clanTag, response.code, response.message));
-            return;
-        }
+			// double validation!!! 
+			if (channelExists(clanTag)) {
+				return;
+			}
 
-        for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
-            // The map is formed from clan#getMembers (so the clan exists)
-            //noinspection ConstantConditions
-            updateViewPermission(entry.getValue(), entry.getKey().getClan(), ADD);
-            updateLeaderRole(entry.getValue(), entry.getKey(), ADD);
-        }
-    }
+			validateChannel(clanTag);
+
+			Map<ClanPlayer, Member> discordClanPlayers = getDiscordPlayers(clanManager.getClan(clanTag));
+
+			if (getChannels().size() >= settingsManager.getInt(DISCORDCHAT_TEXT_LIMIT)) {
+				throw new ChannelsLimitException("Discord reached the channels limit", "discord.reached.channels.limit");
+			}
+
+			Category availableCategory = getCachedCategories().stream()
+					.filter(category -> category.getTextChannels().size() < MAX_CHANNELS_PER_CATEGORY)
+					.findAny()
+					.orElseGet(this::createCategory);
+
+			if (availableCategory == null) {
+				throw new CategoriesLimitException("Discord reached the categories limit", "discord.reached.category.limit");
+			}
+
+			TextChannel createdChannel;
+			try {
+				createdChannel = availableCategory.createTextChannel(clanTag).complete();
+				SimpleClans.debug(String.format("[%s] Creating a discord text channel for %s clan",
+						Thread.currentThread().getId(), clanTag));
+			} catch (ErrorResponseException ex) {
+				Response response = ex.getResponse();
+				plugin.getLogger().warning(String.format(
+						"Could not create a channel for clan %s, error %d - %s",
+						clanTag, response.code, response.message));
+				return;
+			}
+
+			for (Map.Entry<ClanPlayer, Member> entry : discordClanPlayers.entrySet()) {
+				updateViewPermission(entry.getValue(), entry.getKey().getClan(), ADD);
+				updateLeaderRole(entry.getValue(), entry.getKey(), ADD);
+			}
+
+		} finally {
+			// unlock channel creation for this clantag, perchance.
+			channelsBeingCreated.remove(clanTag);
+		}
+	}
 
     /**
      * Retrieves channel in SimpleClans categories.
