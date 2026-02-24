@@ -1,22 +1,25 @@
 package net.sacredlabyrinth.phaed.simpleclans.proxy.listeners;
 
 import com.google.common.io.ByteArrayDataInput;
-import net.sacredlabyrinth.phaed.simpleclans.chat.SCMessage;
 import net.sacredlabyrinth.phaed.simpleclans.proxy.BungeeManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
-public class Chat extends MessageListener {
+public class Message extends MessageListener {
 
-    public Chat(BungeeManager bungee) {
+    public Message(BungeeManager bungee) {
         super(bungee);
     }
 
     @Override
     public void accept(ByteArrayDataInput data) {
-        SCMessage message = getGson().fromJson(data.readUTF(), SCMessage.class);
-        if (message.getSender().getClan() == null) {
-            return;
+        String target = data.readUTF();
+        String message = data.readUTF();
+
+        Player player = Bukkit.getPlayerExact(target);
+        if (player != null) {
+            player.sendMessage(message);
         }
-        bungee.getPlugin().getChatManager().processChat(message);
     }
 
     @Override

@@ -66,15 +66,21 @@ public class GeneralCommands extends BaseCommand {
     @CommandPermission("simpleclans.anyone.locale")
     @Description("{@@command.description.locale}")
     @CommandCompletion("@locales")
-    public void locale(ClanPlayer cp, @Values("@locales") @Name("locale") String locale) {
+    public void locale(ClanPlayer cp, @Values("@locales") @Name("locale") @Single String locale) {
+        if (!settings.is(LANGUAGE_SELECTOR)) {
+            ChatBlock.sendMessageKey(cp, "locale.is.prohibited");
+            return;
+        }
+
         cp.setLocale(Helper.forLanguageTag(locale.replace("_", "-")));
         plugin.getStorageManager().updateClanPlayer(cp);
 
-        ChatBlock.sendMessage(cp, lang("locale.has.been.changed"));
+        ChatBlock.sendMessageKey(cp, "locale.has.been.changed");
     }
 
     @Subcommand("%create")
     @CommandPermission("simpleclans.leader.create")
+    @CommandCompletion("%compl:tag %compl:name")
     @Description("{@@command.description.create}")
     public void create(Player player, @Optional @Name("tag") String tag, @Optional @Name("name") String name) {
         ClanPlayer cp = cm.getAnyClanPlayer(player.getUniqueId());

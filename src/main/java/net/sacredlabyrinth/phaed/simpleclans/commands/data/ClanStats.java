@@ -56,16 +56,24 @@ public class ClanStats extends Sendable {
     }
 
     private void addRows(List<ClanPlayer> clanPlayers) {
-        for (ClanPlayer cpm : clanPlayers) {
-            String name = (cpm.isLeader() ? sm.getColored(PAGE_LEADER_COLOR) : (cpm.isTrusted() ? sm.getColored(PAGE_TRUSTED_COLOR) :
-                    sm.getColored(PAGE_UNTRUSTED_COLOR)) + cpm.getName());
-            String rival = NumberFormat.getInstance().format(cpm.getRivalKills());
-            String neutral = NumberFormat.getInstance().format(cpm.getNeutralKills());
-            String civilian = NumberFormat.getInstance().format(cpm.getCivilianKills());
-            String deaths = NumberFormat.getInstance().format(cpm.getDeaths());
-            String kdr = KDRFormat.format(cpm.getKDR());
+        for (ClanPlayer cp : clanPlayers) {
+            String color;
+            if (cp.isLeader()) {
+                color = sm.getColored(PAGE_LEADER_COLOR);
+            } else if (cp.isTrusted()) {
+                color = sm.getColored(PAGE_TRUSTED_COLOR);
+            } else {
+                color = sm.getColored(PAGE_UNTRUSTED_COLOR);
+            }
 
-            chatBlock.addRow("  " + name, YELLOW + kdr, WHITE + rival, GRAY + neutral, DARK_GRAY + civilian,
+            NumberFormat formatter = NumberFormat.getInstance(cp.getLocale());
+            String rival = formatter.format(cp.getRivalKills());
+            String neutral = formatter.format(cp.getNeutralKills());
+            String civilian = formatter.format(cp.getCivilianKills());
+            String deaths = formatter.format(cp.getDeaths());
+            String kdr = KDRFormat.format(cp.getKDR());
+
+            chatBlock.addRow(color + cp.getName(), YELLOW + kdr, WHITE + rival, GRAY + neutral, DARK_GRAY + civilian,
                     DARK_RED + deaths);
         }
     }

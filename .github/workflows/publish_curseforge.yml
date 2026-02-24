@@ -7,13 +7,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up JDK 16
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: 16
         cache: 'maven'
-        distribution: 'adopt'
+        distribution: 'temurin'
     - name: Build with Maven
       run: ./mvnw -B package --file pom.xml
     - name: Upload artifact
@@ -26,6 +26,6 @@ jobs:
         changelog: ${{ github.event.release.body }}
         changelog_type: markdown
         display_name: ${{ github.event.release.tag_name }}
-        game_versions: 8849,8503,7915,7667,7330,7105,6588,630,591,585,531
+        game_versions: 11515,9974,9190,8849,8503,7915,7667,7330,7105,6588,630,591,585,531
         release_type: release
-        relations: vault:optionalDependency,worldguard:optionalDependency,grief-prevention:optionalDependency
+        relations: vault:optionalDependency,worldguard:optionalDependency,grief-prevention:optionalDependency,plotsquared:optionalDependency

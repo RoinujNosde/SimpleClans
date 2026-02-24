@@ -17,7 +17,7 @@ public class DateFormat {
         try {
             format = new SimpleDateFormat(pattern);
         } catch (IllegalArgumentException ex) {
-            plugin.getLogger().warning("%s is not a valid pattern!".formatted(pattern));
+            plugin.getLogger().warning(String.format("%s is not a valid pattern!", (pattern)));
             format = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
         }
     }

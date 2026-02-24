@@ -118,9 +118,12 @@ public class SimpleClansExpansion extends PlaceholderExpansion implements Relati
     public String onRequest(@Nullable OfflinePlayer player, @NotNull String params) {
         ClanPlayer cp = null;
         if (player != null) {
-            cp = clanManager.getCreateClanPlayer(player.getUniqueId());
+            cp = clanManager.getAnyClanPlayer(player.getUniqueId());
         }
-        Clan clan = cp != null ? cp.getClan() : null;
+        if (cp == null) {
+            return "";
+        }
+        Clan clan = cp.getClan();
         Matcher matcher = TOP_CLANS_PATTERN.matcher(params);
         if (matcher.find()) {
             int position = Integer.parseInt(matcher.group("position"));

@@ -5,7 +5,6 @@ import net.sacredlabyrinth.phaed.simpleclans.events.RequestEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.RequestFinishedEvent;
 import net.sacredlabyrinth.phaed.simpleclans.events.WarEndEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.ChatUtils;
-import net.sacredlabyrinth.phaed.simpleclans.uuid.UUIDMigration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,7 +44,7 @@ public final class RequestManager {
         }
         String msg = MessageFormat.format(lang("asking.for.the.demotion"), requester.getName(), demotedName);
 
-        ClanPlayer demotedTp = plugin.getClanManager().getClanPlayer(UUIDMigration.getForcedPlayerUUID(demotedName));
+        ClanPlayer demotedTp = plugin.getClanManager().getAnyClanPlayer(demotedName);
 
         List<ClanPlayer> acceptors = Helper.stripOffLinePlayers(clan.getLeaders());
         acceptors.remove(demotedTp);
@@ -250,8 +249,9 @@ public final class RequestManager {
         @Nullable
         Clan targetClan = plugin.getClanManager().getClan(target);
 
+        ClanPlayer targetCp = plugin.getClanManager().getAnyClanPlayer(target);
         @Nullable
-        UUID targetPlayer = UUIDMigration.getForcedPlayerUUID(target);
+        UUID targetUuid = targetCp != null ? targetCp.getUniqueId() : null;
 
         List<String> accepts = req.getAccepts();
         List<String> denies = req.getDenies();
@@ -271,16 +271,16 @@ public final class RequestManager {
                 break;
             case DEMOTE:
             case PROMOTE:
-                if (!req.votingFinished() || targetPlayer == null) {
+                if (!req.votingFinished() || targetUuid == null) {
                     return;
                 }
                 target = requestClan.getTag();
 
                 if (req.getType() == ClanRequest.DEMOTE) {
-                    processDemote(req, requestClan, targetPlayer, denies);
+                    processDemote(req, requestClan, targetUuid, denies);
                 }
                 if (req.getType() == ClanRequest.PROMOTE) {
-                    processPromote(req, requestClan, targetPlayer, denies);
+                    processPromote(req, requestClan, targetUuid, denies);
                 }
                 break;
             case DISBAND:

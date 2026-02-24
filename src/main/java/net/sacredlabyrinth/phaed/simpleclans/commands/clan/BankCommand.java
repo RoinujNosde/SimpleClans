@@ -72,15 +72,15 @@ public class BankCommand extends BaseCommand {
          */
         BankOperator operator = new BankOperator(player, permissions.playerGetMoney(player));
         switch (clan.withdraw(operator, COMMAND, amount)) {
-            case SUCCESS -> {
+            case SUCCESS:
                 if (permissions.grantPlayer(player, amount)) {
                     player.sendMessage(AQUA + lang("player.clan.withdraw", player, CurrencyFormat.format(amount)));
                     clan.addBb(player.getName(), lang("bb.clan.withdraw", CurrencyFormat.format(amount), player.getName()));
                 } else {
                     clan.setBalance(operator, REVERT, BankLogger.Operation.WITHDRAW, clan.getBalance() + amount);
                 }
-            }
-            case NOT_ENOUGH_BALANCE -> player.sendMessage(lang("clan.bank.not.enough.money", player));
+            case NOT_ENOUGH_BALANCE:
+                player.sendMessage(lang("clan.bank.not.enough.money", player));
         }
     }
 
@@ -118,8 +118,8 @@ public class BankCommand extends BaseCommand {
             return;
         }
         /*
-        * ——————————————————————————————————
-        */
+         * ——————————————————————————————————
+         */
 
         if (!permissions.playerHasMoney(player, amount)) {
             player.sendMessage(AQUA + lang("not.sufficient.money", player, CurrencyFormat.format(amount)));
