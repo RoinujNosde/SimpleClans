@@ -77,7 +77,7 @@ public final class SettingsManager {
 
     public double getPercent(ConfigField field) {
         double value = getDouble(field);
-        return (getDouble(field) >= 0 || getDouble(field) <= 100) ? value : toDouble(field.defaultValue);
+        return (value >= 0 && value <= 100) ? value : toDouble(field.defaultValue);
     }
 
     public boolean is(ConfigField field) {

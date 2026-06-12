@@ -60,7 +60,7 @@ public class SCPlayerListener extends SCListener {
         String tagLabel = cp != null && cp.isTagEnabled() ? cp.getTagLabel() : null;
         if (settingsManager.is(CHAT_COMPATIBILITY_MODE) && settingsManager.is(DISPLAY_CHAT_TAGS)) {
             if (tagLabel != null) {
-                if (player.getDisplayName().contains("{clan}")) {
+                if (!event.isAsynchronous() && player.getDisplayName().contains("{clan}")) {
                     player.setDisplayName(player.getDisplayName().replace("{clan}", tagLabel));
                 } else if (event.getFormat().contains("{clan}")) {
                     event.setFormat(event.getFormat().replace("{clan}", tagLabel));
@@ -73,7 +73,7 @@ public class SCPlayerListener extends SCListener {
                 event.setFormat(event.getFormat().replace("tagLabel", ""));
             }
         } else {
-            plugin.getClanManager().updateDisplayName(player);
+            runSync(() -> plugin.getClanManager().updateDisplayName(player));
         }
     }
 
@@ -161,16 +161,31 @@ public class SCPlayerListener extends SCListener {
 
             Channel channel = cp.getChannel();
             if (channel != NONE) {
-                PermissionsManager pm = plugin.getPermissionsManager();
-                if ((channel == Channel.ALLY && !pm.has(player, "simpleclans.member.ally")) ||
-                        (channel == CLAN && !pm.has(player, "simpleclans.member.chat"))) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
-                    return;
-                }
-                plugin.getChatManager().processChat(SPIGOT, channel, cp, event.getMessage());
                 event.setCancelled(true);
+                runSync(() -> processClanChat(player, cp, channel, event.getMessage()));
             }
         }, plugin, true);
+    }
+
+    private void processClanChat(@NotNull Player player, @NotNull ClanPlayer cp, @NotNull Channel channel, @NotNull String message) {
+        if (isBlacklistedWorld(player)) {
+            return;
+        }
+        PermissionsManager pm = plugin.getPermissionsManager();
+        if ((channel == Channel.ALLY && !pm.has(player, "simpleclans.member.ally")) ||
+                (channel == CLAN && !pm.has(player, "simpleclans.member.chat"))) {
+            ChatBlock.sendMessage(player, ChatColor.RED + lang("insufficient.permissions", player));
+            return;
+        }
+        plugin.getChatManager().processChat(SPIGOT, channel, cp, message);
+    }
+
+    private void runSync(@NotNull Runnable runnable) {
+        if (Bukkit.isPrimaryThread()) {
+            runnable.run();
+        } else {
+            Bukkit.getScheduler().runTask(plugin, runnable);
+        }
     }
 
     private void updatePlayerName(@NotNull final Player player) {

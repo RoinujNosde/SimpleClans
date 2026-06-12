@@ -229,6 +229,7 @@ permissions:
     default: op
     children:
       simpleclans.admin.reload: true
+      simpleclans.admin.purge: true
       simpleclans.admin.all-seeing-eye: true
       simpleclans.admin.resetkdr: true
       simpleclans.admin.demote: true
@@ -249,6 +250,7 @@ permissions:
       simpleclans.mod.globalff: true
       simpleclans.mod.bypass: true
       simpleclans.mod.home: true
+      simpleclans.mod.hometp: true
       simpleclans.mod.mostkilled: true
       simpleclans.mod.keep-items: true
       simpleclans.mod.nopvpinwar: true

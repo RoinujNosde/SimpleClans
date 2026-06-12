@@ -41,8 +41,8 @@ public final class StorageManager {
     private final SimpleClans plugin;
     private DBCore core;
     private final HashMap<String, ChatBlock> chatBlocks = new HashMap<>();
-    private final Set<Clan> modifiedClans = new HashSet<>();
-    private final Set<ClanPlayer> modifiedClanPlayers = new HashSet<>();
+    private final Set<Clan> modifiedClans = Collections.synchronizedSet(new HashSet<>());
+    private final Set<ClanPlayer> modifiedClanPlayers = Collections.synchronizedSet(new HashSet<>());
 
     /**
      *
@@ -1275,28 +1275,32 @@ public final class StorageManager {
 	 */
 	public void saveModified() {
         try (PreparedStatement pst = prepareUpdateClanPlayerStatement(core.getConnection())) {
-            //removing purged players
-            modifiedClanPlayers.retainAll(plugin.getClanManager().getAllClanPlayers());
-            for (ClanPlayer cp : modifiedClanPlayers) {
-                setValues(pst, cp);
-                pst.addBatch();
-            }
-            pst.executeBatch();
+            synchronized (modifiedClanPlayers) {
+                //removing purged players
+                modifiedClanPlayers.retainAll(plugin.getClanManager().getAllClanPlayers());
+                for (ClanPlayer cp : modifiedClanPlayers) {
+                    setValues(pst, cp);
+                    pst.addBatch();
+                }
+                pst.executeBatch();
 
-            modifiedClanPlayers.clear();
+                modifiedClanPlayers.clear();
+            }
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Error saving modified ClanPlayers:", ex);
         }
         try (PreparedStatement pst = prepareUpdateClanStatement(core.getConnection())) {
-            //removing disbanded clans
-            modifiedClans.retainAll(plugin.getClanManager().getClans());
-            for (Clan clan : modifiedClans) {
-                setValues(pst, clan);
-                pst.addBatch();
-            }
-            pst.executeBatch();
+            synchronized (modifiedClans) {
+                //removing disbanded clans
+                modifiedClans.retainAll(plugin.getClanManager().getClans());
+                for (Clan clan : modifiedClans) {
+                    setValues(pst, clan);
+                    pst.addBatch();
+                }
+                pst.executeBatch();
 
-            modifiedClans.clear();
+                modifiedClans.clear();
+            }
         } catch (SQLException ex) {
             plugin.getLogger().log(Level.SEVERE, "Error saving modified Clans:", ex);
         }

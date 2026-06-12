@@ -35,24 +35,25 @@ public class InventoryDrawer {
             return;
         }
 
-	FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(plugin, () -> open(frame));
+            return;
+        }
+
+        FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
-	}
-	OPENING.put(uuid, frame);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-	    Inventory inventory = prepareInventory(frame);
+        }
+        OPENING.put(uuid, frame);
 
-            if (!frame.equals(OPENING.get(uuid))) {
-                return;
-            }
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                frame.getViewer().openInventory(inventory);
-                InventoryController.register(frame);
-                OPENING.remove(uuid);
-            });
-        });
+        Inventory inventory = prepareInventory(frame);
+        if (!frame.equals(OPENING.get(uuid))) {
+            return;
+        }
+        frame.getViewer().openInventory(inventory);
+        InventoryController.register(frame);
+        OPENING.remove(uuid);
     }
 
     @NotNull
