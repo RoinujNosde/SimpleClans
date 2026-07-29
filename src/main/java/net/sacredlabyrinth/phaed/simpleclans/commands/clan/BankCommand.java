@@ -83,7 +83,7 @@ public class BankCommand extends BaseCommand {
             case NOT_ENOUGH_BALANCE:
                 player.sendMessage(lang("clan.bank.not.enough.money", player));
                 break;
-            case default:
+            default:
                 break;
         }
     }
