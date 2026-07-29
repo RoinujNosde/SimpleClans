@@ -79,8 +79,12 @@ public class BankCommand extends BaseCommand {
                 } else {
                     clan.setBalance(operator, REVERT, BankLogger.Operation.WITHDRAW, clan.getBalance() + amount);
                 }
+                break;
             case NOT_ENOUGH_BALANCE:
                 player.sendMessage(lang("clan.bank.not.enough.money", player));
+                break;
+            case default:
+                break;
         }
     }
 
