@@ -28,6 +28,11 @@ import static net.sacredlabyrinth.phaed.simpleclans.managers.SettingsManager.Con
  */
 public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     private static final long serialVersionUID = 1L;
+    /**
+     * Special key used in resignTimes to store the global clan leave time.
+     * This is used for the rejoin cooldown that prevents joining or creating ANY clan.
+     */
+    public static final String GLOBAL_RESIGN_KEY = "*";
     private UUID uniqueId;
     private String displayName;
     private boolean leader;
@@ -605,16 +610,8 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     /**
-     * Returns the time in millis when the player resigned from the clan
-     *
-     * @return the time in millis
-     */
-    public Long getResignTime(String tag) {
-        return resignTimes.get(tag);
-    }
-
-    /**
      * Sets the resign times (does not update to db)
+     * Filters out expired cooldowns before storing.
      */
     public void setResignTimes(@Nullable Map<String, Long> resignTimes) {
         if (resignTimes != null) {
@@ -629,10 +626,20 @@ public class ClanPlayer implements Serializable, Comparable<ClanPlayer> {
     }
 
     /**
-     * Adds the clan to the resign times map
+     * Returns the last time this player left any clan (global cooldown).
+     *
+     * @return the time in millis when the player last left a clan, or null if never
      */
-    public void addResignTime(String tag) {
-        if (tag != null) resignTimes.put(tag, System.currentTimeMillis());
+    public @Nullable Long getLastClanLeaveTime() {
+        return resignTimes.get(GLOBAL_RESIGN_KEY);
+    }
+
+    /**
+     * Updates the global clan leave time to now.
+     * This is called when a player leaves a clan by any means (resign, kick, disband).
+     */
+    public void updateLastClanLeaveTime() {
+        resignTimes.put(GLOBAL_RESIGN_KEY, System.currentTimeMillis());
     }
 
     /**

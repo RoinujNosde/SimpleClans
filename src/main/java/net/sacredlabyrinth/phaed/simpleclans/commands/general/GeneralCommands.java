@@ -90,6 +90,17 @@ public class GeneralCommands extends BaseCommand {
                     cp.getClan().getName()));
             return;
         }
+
+        // Check global cooldown before allowing clan creation
+        if (cp != null) {
+            long minutesBeforeCreate = cm.getMinutesBeforeRejoin(cp);
+            if (minutesBeforeCreate != 0) {
+                ChatBlock.sendMessage(player, RED + lang("you.must.wait.before.joining.or.creating.clan", 
+                        player, minutesBeforeCreate));
+                return;
+            }
+        }
+
         HashMap<Object, Object> initialData = new HashMap<>();
         initialData.put(TAG_KEY, tag);
         initialData.put(NAME_KEY, name);

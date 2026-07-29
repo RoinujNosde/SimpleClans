@@ -908,12 +908,19 @@ public final class ClanManager {
         });
     }
 
-    public long getMinutesBeforeRejoin(@NotNull ClanPlayer cp, @NotNull Clan clan) {
+    /**
+     * Returns the number of minutes before a player can join or create any clan.
+     * This checks the global cooldown that applies after leaving any clan (resign, kick, disband).
+     *
+     * @param cp the clan player to check
+     * @return minutes remaining, or 0 if no cooldown is active
+     */
+    public long getMinutesBeforeRejoin(@NotNull ClanPlayer cp) {
         SettingsManager settings = plugin.getSettingsManager();
         if (settings.is(ENABLE_REJOIN_COOLDOWN)) {
-            Long resign = cp.getResignTime(clan.getTag());
-            if (resign != null) {
-                long timePassed = Instant.ofEpochMilli(resign).until(Instant.now(), ChronoUnit.MINUTES);
+            Long resignTime = cp.getLastClanLeaveTime();
+            if (resignTime != null) {
+                long timePassed = Instant.ofEpochMilli(resignTime).until(Instant.now(), ChronoUnit.MINUTES);
                 int cooldown = settings.getInt(REJOIN_COOLDOWN);
                 if (timePassed < cooldown) {
                     return cooldown - timePassed;
