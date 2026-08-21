@@ -584,6 +584,7 @@ public final class SettingsManager {
         ================
          */
         PERMISSIONS_AUTO_GROUP_GROUPNAME("permissions.auto-group-groupname", false),
+        PERMISSIONS_LUCKPERMS_CONTEXTS("permissions.luckperms-contexts", false),
         /*
         ================
         > Performance Settings

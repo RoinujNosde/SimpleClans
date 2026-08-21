@@ -152,6 +152,7 @@ public final class ClanManager {
 
         plugin.getRequestManager().deny(cp); // denies any previous invitation
         SimpleClans.getInstance().getPermissionsManager().updateClanPermissions(clan);
+        SimpleClans.getInstance().signalContextUpdate(clan);
         SimpleClans.getInstance().getServer().getPluginManager().callEvent(new CreateClanEvent(clan));
     }
 
@@ -493,6 +494,7 @@ public final class ClanManager {
 
                 plugin.getStorageManager().updateClanPlayer(cp);
                 plugin.getStorageManager().updateClan(clan);
+                plugin.signalContextUpdate(cp.toPlayer());
             }
         }
 

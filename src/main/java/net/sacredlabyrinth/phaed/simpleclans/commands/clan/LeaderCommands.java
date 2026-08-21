@@ -163,6 +163,7 @@ public class LeaderCommands extends BaseCommand {
                 player.getName()));
         trustedInput.setTrusted(true);
         storage.updateClanPlayer(trustedInput);
+        plugin.signalContextUpdate(trustedInput.toPlayer());
     }
 
     @Subcommand("%untrust")
@@ -188,6 +189,7 @@ public class LeaderCommands extends BaseCommand {
                 player.getName()));
         trustedInput.setTrusted(false);
         storage.updateClanPlayer(trustedInput);
+        plugin.signalContextUpdate(trustedInput.toPlayer());
     }
 
     @Subcommand("%rename")

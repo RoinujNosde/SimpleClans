@@ -249,6 +249,7 @@ mysql:
     table_prefix: 'sc_'
 permissions:
   auto-group-groupname: false
+  luckperms-contexts: false
   YourClanNameHere:
   - test.permission
 performance:

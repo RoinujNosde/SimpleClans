@@ -2,6 +2,7 @@ package net.sacredlabyrinth.phaed.simpleclans;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import net.sacredlabyrinth.phaed.simpleclans.commands.SCCommandManager;
+import net.sacredlabyrinth.phaed.simpleclans.hooks.luckperms.LuckPermsContextHook;
 import net.sacredlabyrinth.phaed.simpleclans.hooks.papi.SimpleClansExpansion;
 import net.sacredlabyrinth.phaed.simpleclans.language.LanguageResource;
 import net.sacredlabyrinth.phaed.simpleclans.listeners.*;
@@ -60,6 +61,7 @@ public class SimpleClans extends JavaPlugin {
     private ProtectionManager protectionManager;
     private ChatManager chatManager;
     private ProxyManager proxyManager;
+    private LuckPermsContextHook luckPermsContextHook;
     private boolean hasUUID;
     private static final Pattern ACF_PLACEHOLDER_PATTERN = Pattern.compile("\\{(?<key>[a-zA-Z]+?)}");
 
@@ -127,6 +129,7 @@ public class SimpleClans extends JavaPlugin {
         startTasks();
         startMetrics();
         hookIntoPAPI();
+        hookIntoLuckPerms();
         new UpdateChecker(this).check();
     }
 
@@ -152,6 +155,42 @@ public class SimpleClans extends JavaPlugin {
         if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
             getLogger().info("PlaceholderAPI found. Registering hook...");
             new SimpleClansExpansion(this).register();
+        }
+    }
+
+    /**
+     * Registers or unregisters the LuckPerms hook, according to the plugin availability
+     * and to the current settings. Can be called at any time, to apply setting changes.
+     */
+    public void hookIntoLuckPerms() {
+        boolean enabled = getPluginManager().isPluginEnabled("LuckPerms")
+                && settingsManager.is(PERMISSIONS_LUCKPERMS_CONTEXTS);
+
+        if (enabled && luckPermsContextHook == null) {
+            getLogger().info("LuckPerms found. Registering contexts...");
+            luckPermsContextHook = new LuckPermsContextHook(this);
+            luckPermsContextHook.register();
+        } else if (!enabled && luckPermsContextHook != null) {
+            luckPermsContextHook.unregister();
+            luckPermsContextHook = null;
+        }
+    }
+
+    /**
+     * Invalidates the LuckPerms contexts of an online player, if the hook is enabled
+     */
+    public void signalContextUpdate(@Nullable Player player) {
+        if (luckPermsContextHook != null && player != null) {
+            luckPermsContextHook.signalContextUpdate(player);
+        }
+    }
+
+    /**
+     * Invalidates the LuckPerms contexts of all online members of a clan, if the hook is enabled
+     */
+    public void signalContextUpdate(@NotNull Clan clan) {
+        if (luckPermsContextHook != null) {
+            luckPermsContextHook.signalContextUpdate(clan);
         }
     }
 
@@ -198,6 +237,9 @@ public class SimpleClans extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (luckPermsContextHook != null) {
+            luckPermsContextHook.unregister();
+        }
         if (getSettingsManager().is(PERFORMANCE_SAVE_PERIODICALLY)) {
             getStorageManager().saveModified();
         }
