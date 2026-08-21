@@ -1015,6 +1015,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (player != null) {
             SimpleClans.getInstance().getClanManager().updateDisplayName(player);
         }
+        SimpleClans.getInstance().signalContextUpdate(player);
         Bukkit.getPluginManager().callEvent(new PlayerJoinedClanEvent(this, cp));
     }
 
@@ -1054,6 +1055,7 @@ public class Clan implements Serializable, Comparable<Clan> {
         if (matched != null) {
             SimpleClans.getInstance().getClanManager().updateDisplayName(matched);
         }
+        SimpleClans.getInstance().signalContextUpdate(matched);
         Bukkit.getPluginManager().callEvent(new PlayerKickedClanEvent(this, cp));
     }
 
@@ -1076,6 +1078,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
+        SimpleClans.getInstance().signalContextUpdate(cp.toPlayer());
         Bukkit.getPluginManager().callEvent(new PlayerPromoteEvent(this, cp));
     }
 
@@ -1097,6 +1100,7 @@ public class Clan implements Serializable, Comparable<Clan> {
 
         // add clan permission
         SimpleClans.getInstance().getPermissionsManager().addClanPermissions(cp);
+        SimpleClans.getInstance().signalContextUpdate(cp.toPlayer());
         Bukkit.getPluginManager().callEvent(new PlayerDemoteEvent(this, cp));
     }
 
@@ -1418,6 +1422,7 @@ public class Clan implements Serializable, Comparable<Clan> {
                 cp.setLeader(false);
             }
         }
+        SimpleClans.getInstance().signalContextUpdate(this);
 
         Bukkit.getPluginManager().callEvent(new DisbandClanEvent(sender, this));
         clans.remove(this);

@@ -96,6 +96,7 @@ public class SCPlayerListener extends SCListener {
         }
 
         plugin.getPermissionsManager().addClanPermissions(cp);
+        plugin.signalContextUpdate(player);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

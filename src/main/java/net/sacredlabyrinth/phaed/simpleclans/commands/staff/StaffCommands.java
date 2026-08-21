@@ -119,9 +119,11 @@ public class StaffCommands extends BaseCommand {
         settings.loadAndSave();
         storage.importFromDatabase();
         permissions.loadPermissions();
+        plugin.hookIntoLuckPerms();
 
         for (Clan clan : cm.getClans()) {
             permissions.updateClanPermissions(clan);
+            plugin.signalContextUpdate(clan);
         }
         Bukkit.getPluginManager().callEvent(new ReloadEvent(sender));
 

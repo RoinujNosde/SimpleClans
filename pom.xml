@@ -251,6 +251,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>biz.princeps</groupId>
             <artifactId>landlord-latest</artifactId>
             <version>4.363</version>
