@@ -27,19 +27,16 @@ public class Kills extends Sendable {
 
     @Override
     public void send() {
-        plugin.getStorageManager().getKillsPerPlayer(polled, data -> new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (data.isEmpty()) {
-                    ChatBlock.sendMessage(player, ChatColor.RED + lang("nokillsfound", player));
-                    return;
-                }
-                configureAndSendHeader();
-                addLines(data);
-
-                sendBlock();
+        plugin.getStorageManager().getKillsPerPlayer(polled, data -> plugin.getScheduler().runAtEntity(player, task -> {
+            if (data.isEmpty()) {
+                ChatBlock.sendMessage(player, ChatColor.RED + lang("nokillsfound", player));
+                return;
             }
-        }.runTask(plugin));
+            configureAndSendHeader();
+            addLines(data);
+
+            sendBlock();
+        }));
     }
 
     private void addLines(Map<String, Integer> data) {

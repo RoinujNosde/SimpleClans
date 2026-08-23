@@ -19,7 +19,7 @@ public class SaveDataTask extends BukkitRunnable {
      */
 	public void start() {
 		long interval = plugin.getSettingsManager().getMinutes(PERFORMANCE_SAVE_INTERVAL);
-		runTaskTimerAsynchronously(plugin, interval, interval);
+		plugin.getScheduler().runTimerAsync(this, interval, interval);
 	}
 
 	@Override

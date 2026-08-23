@@ -1,6 +1,5 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
-import io.papermc.lib.PaperLib;
 import net.sacredlabyrinth.phaed.simpleclans.*;
 import net.sacredlabyrinth.phaed.simpleclans.events.ClanPlayerTeleportEvent;
 import net.sacredlabyrinth.phaed.simpleclans.utils.VanishUtils;
@@ -80,7 +79,7 @@ public final class TeleportManager {
     }
 
     public void teleportToHome(@NotNull Player player, @NotNull Location destination, @NotNull String clanName) {
-        PaperLib.teleportAsync(player, getSafe(destination), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
+        plugin.getScheduler().teleportAsync(player, getSafe(destination), PlayerTeleportEvent.TeleportCause.COMMAND).thenAccept(result -> {
             if (result) {
                 ChatBlock.sendMessage(player, AQUA + lang("now.at.homebase", player, clanName));
             } else {
@@ -151,7 +150,7 @@ public final class TeleportManager {
     }
 
     private void startCounter() {
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+        plugin.getScheduler().runTimer(() -> {
             waitingPlayers.values().removeIf(ts -> ts.getPlayer() == null);
             for (Iterator<TeleportState> iter = waitingPlayers.values().iterator(); iter.hasNext(); ) {
                 TeleportState state = iter.next();
@@ -175,7 +174,7 @@ public final class TeleportManager {
 
                 state.setProcessing(false);
             }
-        }, 0, 20L);
+        }, 0, 20);
     }
 
     private void teleport(TeleportState state) {

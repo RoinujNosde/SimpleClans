@@ -1,5 +1,6 @@
 package net.sacredlabyrinth.phaed.simpleclans.managers;
 
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 import net.sacredlabyrinth.phaed.simpleclans.ClanPlayer;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -14,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ public class ProtectionManager {
     private final SettingsManager settingsManager;
     private final ClanManager clanManager;
     private final Logger logger;
-    private final Map<War, BukkitTask> wars = new HashMap<>();
+    private final Map<War, WrappedTask> wars = new HashMap<>();
     private final List<ProtectionProvider> providers = new ArrayList<>();
     private LandProtection landProtection;
     private final SimpleClans plugin;
@@ -46,7 +46,7 @@ public class ProtectionManager {
             return;
         }
         //running on next tick, so all plugins are already loaded
-        Bukkit.getScheduler().runTask(plugin, this::registerProviders);
+        plugin.getScheduler().runNextTick((task) -> registerProviders()) ;
         clearWars();
     }
 
@@ -149,11 +149,10 @@ public class ProtectionManager {
         return true;
     }
 
-    @Nullable
-    private BukkitTask scheduleTask(@NotNull War war, int expirationTime) {
-        BukkitTask timeoutTask = null;
+    private WrappedTask scheduleTask(@NotNull War war, int expirationTime) {
+        WrappedTask timeoutTask = null;
         if (expirationTime > 0) {
-            timeoutTask = Bukkit.getScheduler().runTaskLater(plugin, new WarTimeoutTask(war), expirationTime);
+            timeoutTask = plugin.getScheduler().runLater(() -> new WarTimeoutTask(war),  expirationTime);
         }
         return timeoutTask;
     }
@@ -162,12 +161,12 @@ public class ProtectionManager {
         if (expirationTime < 1) {
             return;
         }
-        for (Map.Entry<War, BukkitTask> entry : wars.entrySet()) {
+        for (Map.Entry<War, WrappedTask> entry : wars.entrySet()) {
             War war = entry.getKey();
             if (!war.getClans().contains(clan)) {
                 continue;
             }
-            BukkitTask task = entry.getValue();
+            WrappedTask task = entry.getValue();
             if (task != null && !task.isCancelled()) {
                 task.cancel();
             }

@@ -49,7 +49,7 @@ public class CreateClanNamePrompt extends StringPrompt {
         if (errorPrompt != null) return errorPrompt;
 
         String finalClanName = clanName;
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        plugin.getScheduler().runNextTick((task) -> {
             String tag = (String) context.getSessionData(TAG_KEY);
             //noinspection ConstantConditions
             PreCreateClanEvent event = new PreCreateClanEvent(player, tag, finalClanName);

@@ -35,19 +35,19 @@ public class InventoryDrawer {
             return;
         }
 
-	FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
+        FrameOpenEvent event = new FrameOpenEvent(frame.getViewer(), frame);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
-	}
-	OPENING.put(uuid, frame);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-	    Inventory inventory = prepareInventory(frame);
+        }
+        OPENING.put(uuid, frame);
+        plugin.getScheduler().runAsync(task -> {
+            Inventory inventory = prepareInventory(frame);
 
             if (!frame.equals(OPENING.get(uuid))) {
                 return;
             }
-            Bukkit.getScheduler().runTask(plugin, () -> {
+            plugin.getScheduler().runAtEntity(frame.getViewer(), syncTask -> {
                 frame.getViewer().openInventory(inventory);
                 InventoryController.register(frame);
                 OPENING.remove(uuid);
@@ -70,7 +70,6 @@ public class InventoryDrawer {
     }
 
     /**
-     *
      * @deprecated use {@link InventoryDrawer#open(SCFrame)}
      */
     @Deprecated
@@ -122,7 +121,7 @@ public class InventoryDrawer {
     }
 
     private static void runHelpCommand(@NotNull Player player) {
-        Bukkit.getScheduler().runTask(plugin, () -> plugin.getServer().getConsoleSender().sendMessage(lang("gui.not.supported")));
+        plugin.getServer().getConsoleSender().sendMessage(lang("gui.not.supported"));
         SettingsManager settingsManager = plugin.getSettingsManager();
         settingsManager.set(ENABLE_GUI, false);
         String commandClan = settingsManager.getString(COMMANDS_CLAN);
@@ -148,10 +147,10 @@ public class InventoryDrawer {
     }
 
     private static boolean hasPermission(@NotNull Player viewer, @NotNull Object permission) {
-    	if (permission instanceof String) {
-    		return plugin.getPermissionsManager().has(viewer, (String) permission);
-		}
-    	return plugin.getPermissionsManager().has(viewer, (RankPermission) permission, false);
-	}
+        if (permission instanceof String) {
+            return plugin.getPermissionsManager().has(viewer, (String) permission);
+        }
+        return plugin.getPermissionsManager().has(viewer, (RankPermission) permission, false);
+    }
 
 }

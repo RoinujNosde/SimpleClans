@@ -120,7 +120,7 @@ public class SCPlayerListener extends SCListener {
         ClanPlayer cp = plugin.getClanManager().getClanPlayer(event.getPlayer());
         if (cp != null) {
             Clan clan = Objects.requireNonNull(cp.getClan());
-            Bukkit.getScheduler().runTask(plugin, () -> {
+            plugin.getScheduler().runNextTick((task) -> {
                 if (clan.getOnlineMembers().isEmpty()) {
                     plugin.getProtectionManager().setWarExpirationTime(cp.getClan(),
                             settingsManager.getMinutes(WAR_DISCONNECT_EXPIRATION_TIME));
