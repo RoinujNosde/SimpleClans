@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,9 +69,13 @@ public class ChatBlock {
         rows.add(contents);
     }
 
-
     public int size() {
         return rows.size();
+    }
+
+    @VisibleForTesting
+    public LinkedList<String[]> getRows() {
+        return rows;
     }
 
     @Deprecated
@@ -141,7 +146,7 @@ public class ChatBlock {
             }
 
             List<String> measuredCols = new ArrayList<>();
-            String row[] = rows.pollFirst();
+            String[] row = rows.pollFirst();
 
             for (int sid = 0; sid < row.length; sid++) {
                 String col = "";
@@ -214,7 +219,7 @@ public class ChatBlock {
                         if (flex) {
                             String col = measuredCols.get(j);
 
-                            if (col.length() > 0) {
+                            if (!col.isEmpty()) {
                                 measuredCols.set(j, col.substring(0, col.length() - 1));
                                 didFlex = true;
                             }
@@ -233,10 +238,10 @@ public class ChatBlock {
 
             // concatenate final strings
 
-            String finalString = "";
+            StringBuilder finalString = new StringBuilder();
 
             for (String measured : measuredCols) {
-                finalString += measured;
+                finalString.append(measured);
             }
 
             // crop and print out
@@ -244,7 +249,7 @@ public class ChatBlock {
             if (cropRight) {
                 msg = cropRightToFit(msg, LINE_LENGTH);
             }
-            if (color.length() > 0) {
+            if (!color.isEmpty()) {
                 msg = color + msg;
             }
 
@@ -261,7 +266,7 @@ public class ChatBlock {
         int out = 0;
 
         for (String col : cols) {
-            out += msgLength(col);
+            out += (int) msgLength(col);
         }
 
         return out;
@@ -315,7 +320,7 @@ public class ChatBlock {
     }
 
     private static String cropRightToFit(String msg, double length) {
-        if (msg == null || msg.length() == 0 || length == 0) {
+        if (msg == null || msg.isEmpty() || length == 0) {
             return "";
         }
 
@@ -327,7 +332,7 @@ public class ChatBlock {
     }
 
     private static String cropLeftToFit(String msg, double length) {
-        if (msg == null || msg.length() == 0 || length == 0) {
+        if (msg == null || msg.isEmpty() || length == 0) {
             return "";
         }
 
@@ -402,6 +407,10 @@ public class ChatBlock {
     private static int charLength(char x) {
         String normalized = StringSimplifier.simplifiedString(x + "");
 
+        if (normalized == null) {
+            return 0;
+        }
+
         if ("i.:,;|!".contains(normalized)) {
             return 2;
         } else if ("l'".contains(normalized)) {
@@ -458,7 +467,7 @@ public class ChatBlock {
 
                 // If the word is not too long to fit
 
-                len += wordLength;
+                len += (int) wordLength;
 
                 if (len < LINE_LENGTH) {
                     words.add(split.remove(0));
